@@ -1,0 +1,33 @@
+#templateMain
+{
+    width:100%;
+	padding:0rem 0 0.625rem;
+    background-color:#ffffff;
+    min-height:50rem;
+    color: #000000;
+}
+
+/* 'standard' stack class */
+.templateStack
+{
+	width:100%;
+}
+
+.centerWhite
+{
+	text-align: center;
+	background-color: #ffffff;
+	padding: 0.625rem;
+}
+
+.centered
+{
+	text-align: center;
+}
+
+.centerColored
+{
+	text-align: center;
+	padding: 0.625rem;
+}
+

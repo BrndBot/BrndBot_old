@@ -1,0 +1,1 @@
+<div style="width:681px;">			<div style="text-align:center">	 			<div style="position:relative">						<div>						<img src="test.png" alt="">											</div>	 				<div style="z-index:100;position:absolute;top:250px;color:#ffffff;background-color:#ff0000;padding:10px;font-size:3rem">						I can stop Googling myself.					</div> 				</div>			</div>		</div>

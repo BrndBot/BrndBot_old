@@ -1,0 +1,149 @@
+.channelCorral
+{
+	padding-top: 2rem;
+	padding-bottom: 2.5rem;
+}
+
+.channelChoice
+{
+	padding-bottom:.4rem;
+}
+
+.previewTitle
+{
+	font-size: 1.75rem;
+}
+
+#wait
+{
+	margin-left: 10rem;
+	margin-top: 1.875rem;
+}
+
+.channelBadge
+{
+	position:relative;
+}
+
+.eachButton
+{
+	width:11rem;
+	padding-top; 1.25rem;
+	padding-bottom: 1.25rem;
+	border-width: 0rem;
+}
+
+.viewButtonPanel
+{
+	background-color: #f2f2f2;	
+	width: 46.25rem;
+	display: none;
+	padding-left:1.6875rem;
+	border-width: 0rem;
+	height:4.25rem;
+}
+
+.listBackground
+{
+	height:100%;
+	width:100%;
+	margin-bottom:2.5rem;
+}
+
+#rightColumn
+{
+	padding:1.25rem 0.625rem 0.625rem 0.9375rem;
+}
+
+.rightColButton
+{
+	width: 4.6875rem;
+	color: #ffffff;
+	background-image: none;
+	width:6.25rem;
+	background-color: #ccc;
+	border-width: 0rem;
+}
+
+.rightColHdr
+{
+	font-size: 1.25rem;
+	color: #000000;
+	padding-top:1.5625rem;
+	padding-bottom:0.625rem;
+}
+
+.rightColText
+{
+	font-size: 1.25rem;
+	color: #CDC4BD;
+}
+
+.rightColText p
+{
+	padding: 0.3125rem 0rem 0rem 0rem;
+	margin: 0rem 0rem 0rem 0rem;
+}
+
+.mainContentHeader
+{
+	padding-bottom: 1.5625rem;
+	padding-top: 3.75rem;
+	padding-left: .5rem;
+}
+
+.subContentHeader
+{
+	border-bottom: 0.175rem solid #c6c4c4;
+	width:100%;
+}
+
+#setRightDims
+{
+	min-width: 9rem;
+	height: 40rem;
+	margin-left: 1.1875rem;
+	padding: 1.25rem;
+	font-size: .75rem;
+}
+
+#setRightDims div.zeeTitle
+{
+	font-weight: strong;
+	color: #847A74;
+}
+
+#setRightDims p
+{
+	color: #9E9E9E;
+	line-height:0.375rem;
+}
+
+#lastCreated
+{
+	font-size: 1.56rem;
+	color: #c6c4c4;
+	padding-bottom: .5rem;
+	padding-left: 2.1875rem;
+}
+
+.viewClassesIcon {
+	background-image: url("/images/Classes_Small_White.png");
+	background-position: 0 0rem;
+}
+
+.viewWorkshopsIcon {
+	background-image: url("/images/Workshops_Small_White.png");
+	background-position: 0 0rem;
+}
+
+.viewTeachersIcon {
+	background-image: url("/images/Teacher_small_White.png");
+	background-position: 0 0rem;
+}
+
+/* template styles */
+.listItem
+{
+	width:100%;
+}

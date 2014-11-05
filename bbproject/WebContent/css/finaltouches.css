@@ -1,0 +1,28 @@
+.ftPrompt
+{
+	font-size: .94rem;
+	text-align: left;
+}
+
+#successPane
+{
+	padding:1.25rem;
+}
+
+.brndbotFinishImg
+{
+	margin-bottom:1.25rem;
+	text-align: center;
+}
+
+.noticeTxt
+{
+	font-style: italic;
+	font-size: 1.31rem;
+	padding: 1.25rem 0rem 1.25rem 0rem;
+}
+
+.formTextInput
+{
+	width: 32rem;
+}

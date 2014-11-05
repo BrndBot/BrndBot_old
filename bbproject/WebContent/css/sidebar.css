@@ -1,0 +1,151 @@
+
+#panelbar
+{
+    list-style-type: none;
+    padding: 1.5rem 0;
+    margin: 0;
+}
+
+#panelbar li
+{
+	line-height: 3.5rem;
+	cursor: pointer;
+}
+
+.leftSpan
+{
+	width: 4.2rem;
+	float: left;
+}
+
+.rightSpan
+{
+	font-size: 1rem;
+	float: none;
+}
+
+.isActive
+{
+	background-color: #fff;
+}
+
+.isInactive
+{
+	background-color: #ddd;
+}
+
+.isInactive .rightSpan
+{
+	background-color:#ddd;
+}
+
+.isActive .rightSpan
+{
+	background-color:#ffffff;
+}
+
+.homeActive .leftSpan
+{
+	background-image: url('/images/sidebar/home_white.png'); 
+	background-repeat: no-repeat;
+	background-color: #2c4355;
+}
+
+.homeInactive .leftSpan
+{
+	background-image: url('/images/sidebar/home_blue.png'); 
+	background-repeat: no-repeat;
+}
+
+.emailActive .leftSpan
+{
+	background-image: url('/images/sidebar/email_white.png'); 
+	background-repeat: no-repeat;
+	background-color: #f27821;
+	height: 12.55rem;
+}
+
+.emailInactive .leftSpan
+{
+	background-image: url('/images/sidebar/email_blue.png'); 
+	background-repeat: no-repeat;
+	height: 3.5rem;
+}
+
+.emailActive .rightSpan
+{
+	height: 12rem;
+}
+
+.emailActive .inActive
+{
+	height: 3.5rem;
+}
+
+.rightSpan p
+{
+	line-height: .7rem;
+	background-color: #ddd;
+	color: gray;
+	cursor: pointer;
+	padding-left: 1.5rem;
+}
+
+#emailPs .isActiveOrange, .rightSpan p:hover
+{
+	color: #f27821;
+}
+
+.socialInactive .leftSpan
+{
+	background-image: url('/images/sidebar/social_blue.png'); 
+	background-repeat: no-repeat;
+}
+
+.socialActive .leftSpan
+{
+	background-image: url('/images/sidebar/social_white.png'); 
+	background-repeat: no-repeat;
+	background-color: #fbc02c;
+}
+
+.autoActive .leftSpan
+{
+	background-image: url('/images/sidebar/autorespond_white.png'); 
+	background-repeat: no-repeat;
+	background-color: #5cc1a4;
+}
+
+.autoInactive .leftSpan
+{
+	background-image: url('/images/sidebar/autorespond_blue.png'); 
+	background-repeat: no-repeat;
+}
+
+.acctActive .leftSpan
+{
+	background-image: url('/images/sidebar/acctsettings_white.png'); 
+	background-repeat: no-repeat;
+	background-color: #2c4355;
+}
+
+.acctInactive .leftSpan
+{
+	background-image: url('/images/sidebar/acctsettings_blue.png'); 
+	background-repeat: no-repeat;
+}
+
+#emailPs
+{
+	background-color: #ddd;
+	height: 10rem;
+	line-height: 10px;
+	margin-top: -1rem;
+	padding-top: 1px;
+	width: 11.4rem;
+}
+
+.normalPrompt
+{
+	margin-left: 1.5rem;
+}

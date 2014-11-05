@@ -1,0 +1,44 @@
+.homeBadge
+{
+	cursor: pointer;
+	float: left;
+	width: 24%;
+}
+
+.spaceMe
+{
+	text-align:center;
+	padding-bottom:2rem
+}
+
+.badgePrompt
+{
+	padding:1rem 0 3rem 0;
+	text-align: center;
+}
+
+#brndbotDashMain {
+    width:100%;
+	padding:0rem 0 0.625rem;
+    background-color: #ffffff;
+    min-height:50rem;
+    font-family: proxima-nova;
+}
+
+#brndbotDashBody {
+	width:100%;
+    margin:0 0;
+	height: 53.125rem;
+	padding: 0 0;
+}
+
+#imageWrapper2
+{
+	height:11rem;
+}
+
+#leftColumn
+{
+	width:15.625rem;
+	float:left;
+}

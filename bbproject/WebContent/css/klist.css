@@ -1,0 +1,108 @@
+.templateDetail
+{
+	font-variant: small-caps;
+}
+
+#brndbotMain .sortUp
+{
+	cursor: pointer;
+	display:none;
+    position: absolute;
+    top: -0.9375rem;
+    left: .125rem;
+}
+
+.myListItem
+{
+	width: 47.8125rem;
+	font-family:proxima-nova;
+	position: relative;
+}
+
+#brndbotMain .sortDown
+{
+	cursor: pointer;
+	display:none;
+	position: absolute; 
+	bottom: -1.25rem;
+	left: .125rem;
+	z-index:1;
+}
+
+#brndbotMain .trashBlock
+{
+	cursor: pointer;
+	display:none;
+    position: absolute;
+    top:-0.9375rem;
+    right:.125rem;
+}
+
+.listViewButton
+{
+	margin-top: -.5rem;
+	margin-left: 4.375rem;
+	border-width: 0rem;
+	position: absolute;
+	right: 2rem;
+	bottom: 1rem;
+}
+
+#showListHere > div
+{
+	padding: 1.0625rem 0.3125rem 0rem 0.625rem;
+	min-height: 6.25rem;
+}
+
+.k-listview .k-state-selected 
+{
+	background: #E5ECE1;
+	color: #000000;
+}
+.dashListHeader
+{
+	font-size: 1.625rem;
+	font-weight: strong;
+	padding-top: 0.625rem;
+	padding-bottom: 0.625rem;
+}
+
+#centerDashColumn
+{
+	padding-right: 1.875rem;
+	height:100%;
+}
+
+.listTextHeader
+{
+	font-size: 1.625rem;
+	padding-bottom: 0.375rem;
+	padding-top: 1.5625rem;
+}
+
+.listDescription
+{
+	font-size: 1rem;
+	text-align: left;
+	width: 27rem;
+	line-height: 1.9375rem;
+}
+
+.listTitle
+{
+	font-size: 1.375rem;
+	padding-bottom:0.375rem;
+	padding-top: 0.375rem;
+	text-align: left;
+}
+
+.channelTitle
+{
+	font-size: 1.875rem;
+	font-weight: bold;
+}
+
+#channelPreview
+{
+	width:100%;
+}

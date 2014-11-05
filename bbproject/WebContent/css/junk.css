@@ -1,0 +1,73 @@
+/* :nth-of-type(1) */
+
+.k-panel
+{
+	-webkit-transform: translatez(0);
+}
+
+#panelbar > .k-item > .k-link > .k-image
+{
+	margin-top: 2px;
+	margin-left: -5px;
+}
+
+.k-state-active:hover
+{
+	background-color: inherit;
+}
+
+.k-panelbar > li > .k-link
+{
+	color: #ccc;
+}
+
+k-block, .k-header, .k-grid-header, .k-toolbar, .k-grouping-header, .k-pager-wrap, .k-button, .k-draghandle, html .km-pane-wrapper .k-header
+{
+	background-color: #ffffff;
+	border-color: inherit;
+}
+
+/* general properties of the top level item */
+.k-panelbar > .k-first
+{
+	line-height: 4rem;
+	min-height: 2.6rem;
+}
+
+/*
+.k-panelbar > li.k-state-default > .k-link
+{
+	color: #ccc;	
+}
+*/
+
+.k-panelbar span
+{
+	color: blue;
+}
+
+.k-panelbar > .k-item > .k-link, .k-panel > .k-item > .k-link 
+{
+	line-height:3.3rem;
+	border-width: 0px;
+}
+
+.barSpacer
+{
+	width: 5.6rem;
+}
+
+/* line items in the drop down list */
+.k-panel > .k-item > .k-link
+{
+	padding-left: 5.6rem;
+	border: none;
+	background-color: #ddd;
+	line-height:2rem;
+}
+
+.k-panel > .k-item > .k-link:hover
+{
+	color: #f27821;
+	background-color: inherit;
+}
