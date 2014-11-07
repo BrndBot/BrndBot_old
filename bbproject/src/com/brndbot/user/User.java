@@ -1,5 +1,7 @@
 package com.brndbot.user;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.DbUtils;
 import com.brndbot.user.User;
+import com.brndbot.util.PWHash;
 
 public class User 
 {
@@ -139,6 +142,7 @@ public class User
 		return user;
 	}
 	
+	/* This version assumes a hashed password in the database. */
 	static public int Login(String email_address, String password, DbConnection con)
     {
     	int user_id = 0;
@@ -151,7 +155,8 @@ public class User
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				if (rs.getString("Password").equals(password))
+				String pwHash = rs.getString("Password");
+				if (PWHash.validatePassword(password, pwHash))
 				{
 					user_id = rs.getInt(1);
 				}
@@ -159,6 +164,12 @@ public class User
 		}
 		catch (SQLException e)
 		{
+			e.printStackTrace();
+		}
+		catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
+		catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		finally

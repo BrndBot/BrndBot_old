@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import com.brndbot.db.DbConnection;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
+import com.brndbot.util.PWHash;
 
 public class SaveUserServlet extends HttpServlet
 {
@@ -38,13 +39,16 @@ public class SaveUserServlet extends HttpServlet
 		// Gather data
 		String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
 		String userPassword = Utils.getStringParameter(request, "hiddenPassword");
-		
+
+		// TODO this is a crock! Remove as soon as I understand why it's there.
 		if (!userPassword.equals("mbdemo"))
 		{
 			System.out.println("Wrong password for signup!");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
+
+		String hashedPassword = PWHash.getHash(userPassword);
 
 //		String userConfirmPassword = Utils.getStringParameter(request, "userConfirmPassword");
 		String companyName = Utils.getStringParameter(request, "hiddenCompany");
@@ -69,7 +73,7 @@ public class SaveUserServlet extends HttpServlet
 			String sql = "INSERT INTO user (EmailAddress, Password, Company, CompanyAddress, URL, FacebookURL, TwitterHandle, LinkedIn, YouTube, Instagram) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setString(1, userEmail);
-			pstmt.setString(2, userPassword);
+			pstmt.setString(2, hashedPassword);
 			pstmt.setString(3, companyName);
 			pstmt.setString(4, companyAddress);
 			pstmt.setString(5, companyURL);

@@ -10,7 +10,7 @@ public class SystemProp
 {
 	static private SystemProp _sys_props = null;
 
-	static final private String PROPERTY_FILENAME_BASE = "\\webapps\\ROOT\\system.properties";
+	static final private String PROPERTY_FILENAME_BASE = "\\webapps\\brndbot\\WEB-INF\\system.properties";
 	static private String PROPERTY_FILENAME;
 
 	// The property names for the system.properties configuration file in main folder

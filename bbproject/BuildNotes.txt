@@ -1,0 +1,13 @@
+The calling sequence of org.slf4j.spi.LocationAwareLogger.log has
+changed between versions 1.5 and 1.6. This means that using the latest
+version of slf4j breaks thinks, specifically snaq. It may be possible
+to upgrade snaq and slf4j at the same time. Or maybe it's really an
+incompatibility with the version of Logger we're using?
+
+Bringing everything to current versions fixes it.
+
+System properties is currently in ROOT. Bad place for it. HORRIBLE place for it.
+
+We're using Pictaculous to generate the palette. What is it exactly.
+Is it something we can put on our own site? Can we license it
+or whatever? (www.pictaculous.com)

@@ -47,7 +47,7 @@ abstract public class MBPoly
 		}
 		String ret = desc.replaceAll("\"", "&quot;");
 		ret = ret.replaceAll("'", "&apos;");
-		ret = ret.replaceAll("’", "&apos;");
+//		ret = ret.replaceAll("ï¿½", "&apos;");
 		ret = ret.replaceAll("`", "&apos;");
 		String text = Jsoup.parse(ret.replaceAll("(?i)<br[^>]*>", "br2nl").replaceAll("\n", "br2nl")).text();
 	    return text.replaceAll("br2nl ", "\n").replaceAll("br2nl", "\n").trim();

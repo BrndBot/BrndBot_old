@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet
 		int user_id = User.Login(email_address, password, con);
 		if (user_id == 0)
 		{
-			System.out.println("Failed login em: " + email_address + ", pw: " + password);
+			System.out.println("Failed login em: " + email_address /* + ", pw: " + password*/);
 			con.close();
 			response.sendRedirect("index.jsp");
 			return;

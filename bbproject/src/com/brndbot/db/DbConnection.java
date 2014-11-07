@@ -51,6 +51,7 @@ public class DbConnection
 		{
 			try
 			{
+				System.out.println("In GetDb");
 				_driver = (Driver)Class.forName(DB_CLASS_NAME).newInstance();
 				DriverManager.registerDriver(_driver);
 				
@@ -79,15 +80,23 @@ public class DbConnection
 			
 			if (_driver != null)
 			{
+				// TODO replace hard-coding with configuration file.
+				System.out.println ("getting connection pool");
 				_pool = new ConnectionPool("gpConnections",
 			            3,
 			            10,
 			            20,
 			            28000,
 			            ODBC_DRIVER,
-			            "root",
-			            "brnd");
-				if (_pool == null) System.out.println("_pool is null");
+			            "brndbot",
+			            "wrongpassword");
+			            //"root",
+			            //"brnd");
+				if (_pool == null) {
+					System.out.println("_pool is null");
+				} else {
+					System.out.println("Got _pool");
+				}
 				con = createViableDbConnection();
 /*				int db_schema = SysConfig.isDbSchemaHappy(con); 
 				if (db_schema != 0)
@@ -136,11 +145,14 @@ public class DbConnection
 		final long timeout = 3000;  // 3 second timeout
 		try
 		{
+			System.out.println ("Getting connection, Is con null? " + (con == null));
+			System.out.println ("Getting connection, Is _pool null? " + (_pool == null));
 		    con._conn = _pool.getConnection(timeout);
 		    if (con._conn == null)
 		    {
 		        System.out.println("Database pool get connection failed!!!");
 		    }
+		    System.out.println ("getting connection: 2");
 		}
 		catch (SQLException sqlx)
 		{
@@ -151,6 +163,7 @@ public class DbConnection
 		finally
 		{
 		}
+	    System.out.println ("getting connection: 3");
 		return con;
 	}
 	
