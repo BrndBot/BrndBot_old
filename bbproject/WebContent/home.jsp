@@ -63,7 +63,8 @@
 	if (user == null)
 	{
 		System.out.println("User returned null, something is wrong.  Userid: " + user_id);
-		response.sendRedirect("index.jsp");
+		// Assume the problem is that no logo was uploaded.
+		response.sendRedirect("signup.jsp?toLogo=1");
 		return;
 	}
 	System.out.println("UserID: " + user.getUserID().intValue());

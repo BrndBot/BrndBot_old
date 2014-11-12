@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.brndbot.system.SystemProp;
+
 import snaq.db.ConnectionPool;
 
 public class DbConnection
@@ -88,10 +90,10 @@ public class DbConnection
 			            20,
 			            28000,
 			            ODBC_DRIVER,
-			            "brndbot",
-			            "wrongpassword");
-			            //"root",
-			            //"brnd");
+			            SystemProp.get(SystemProp.DB_USER),
+			            SystemProp.get(SystemProp.DB_PW));
+//			            "brndbot",
+//			            "wiahdihb");
 				if (_pool == null) {
 					System.out.println("_pool is null");
 				} else {

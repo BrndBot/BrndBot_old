@@ -16,6 +16,8 @@ public class SystemProp
 	// The property names for the system.properties configuration file in main folder
 	static final public String TOMCAT_BASE = "tomcat.base";
 	static final public String WEB_NAME = "web.name";
+	static final public String DB_USER = "db.user";
+	static final public String DB_PW = "db.pw";
 	static final public String ASSETS = "assets";
 	static final public String MINDBODY_NAME = "mindbody.name";
 	static final public String MINDBODY_KEY = "mindbody.key";

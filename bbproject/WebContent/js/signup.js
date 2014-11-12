@@ -210,6 +210,8 @@ $(document).ready(function()
             {
             	alert('Call to color processor failed: ' + xhr.status);
             	alert(thrownError);
+            	uploadStatus("Try again?");
+            	displayForLogo(true);
             }
     	});
     }
@@ -492,7 +494,12 @@ function replaceAll(find, rep, str)
 
 function onError(e) 
 {
-	alert('There was an unexpected error processing the logo.  The maximum file sie is ' + MAX_LOGO_SIZE + '.  Was your file too big?');
+	// New informative error.
+    var err = e.XMLHttpRequest.responseText;
+    if (!err)
+    	err = "No error information.";
+    alert(err);
+	//alert('There was an unexpected error processing the logo.  The maximum file sie is ' + MAX_LOGO_SIZE + '.  Was your file too big?');
 	window.location = 'signup.jsp?toLogo=1';
 }
 
