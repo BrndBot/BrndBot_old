@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.db.DbConnection;
 import com.brndbot.system.Utils;
 import com.brndbot.user.User;
@@ -15,6 +18,8 @@ public class EmailExistServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
+	final static Logger logger = LoggerFactory.getLogger(EmailExistServlet.class);
+	
 	public EmailExistServlet ()
     {
         super();
@@ -27,7 +32,7 @@ public class EmailExistServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("--------Entering EmailExistServlet----------");
+		logger.info("Entering EmailExistServlet");
 
 		DbConnection con = DbConnection.GetDb();
 
