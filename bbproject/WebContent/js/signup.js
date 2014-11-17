@@ -18,6 +18,7 @@ var targetImage = null;
 
 $(document).ready(function() 
 {
+	console.log("signup.js in document ready");
 	displayForLogo(toLogo);
 
 	$("#helpFindUrls").kendoButton({
@@ -158,11 +159,14 @@ $(document).ready(function()
     	// Get the name for pictaculous/php all
     	var logoName = e.response.imageName;
     	files = e.files;
+    	console.log("Returned from SaveImageServlet, logoName = " + logoName);
 
     	if (logoName.indexOf("localhost") > -1)
     	{
     		logoName = 'http://brndbot.com:8080/images/DemoLogo.jpg';
     	}
+    	
+    	console.log("Invoking " + PHP_SERVER_PAGE + '?name=' + encodeURIComponent(logoName));
 
     	$.ajax({
             type: 'GET',
@@ -170,15 +174,24 @@ $(document).ready(function()
             url: PHP_SERVER_PAGE + '?name=' + encodeURIComponent(logoName),
             success: function(data)
             {
+            	console.log("Came back from PHP page " + PHP_SERVER_PAGE);
             	uploadStatus("Saving your palette, please wait...");
+            	console.dir(data);
 
             	var json = jQuery.parseJSON(data);
+            	console.log("Came back from parseJSON");
+            	if (json.status == "error") {
+            		uploadStatus ("There was a problem:" + json.error);
+            		return;
+            	}
 
             	var kuler = json.kuler_themes;
             	buildColorArray(other_colors, kuler);
+            	console.log("Built kuler color array");
 
             	var cl = json.cl_themes;
             	buildColorArray(other_colors, cl);
+            	console.log("Built cl color array");
 
             	// Load the returned palette into the local arrays
                 for (var i = 0; i < json.info.colors.length; i++)
@@ -204,6 +217,7 @@ $(document).ready(function()
                 }, 2500);
 
                 // Meanwhile, let's populate the color detail pane
+                console.log("Populating color detail pane");
                 populateColorDetailPane();
             },
             error: function (xhr, ajaxOptions, thrownError)
@@ -695,12 +709,15 @@ function doSubmitForUser()
         data: $('#userDataForm').serialize(), // serializes the form's elements.
         success: function(data)
         {
+        	console.log('SaveUserServlet returned successfully');
         	brndBotUserID = data[signUpUserKey];
-        	if (brndBotUserID == 0) alert(brndBotUserID);
-//        	alert('successfully saved.');
+        	if (brndBotUserID == 0) {
+        		alert("Unsuccessful registration");
+        	}
         },
         error: function (xhr, ajaxOptions, thrownError)
         {
+        	console.log('SaveUserServlet returned error: ' + thrownError);
 //        	alert('Call to Brndbot server failed: ' + xhr.status);
         	alert(thrownError);
         }

@@ -13,6 +13,8 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javazoom.upload.MultipartFormDataRequest;
 import javazoom.upload.UploadException;
@@ -30,6 +32,8 @@ public class SaveImageServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
+	final static Logger logger = LoggerFactory.getLogger(SaveImageServlet.class);
+	
 	public SaveImageServlet ()
     {
         super();
@@ -42,7 +46,7 @@ public class SaveImageServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("--------Entering new SaveImageServlet----------");
+		logger.debug("--------Entering new SaveImageServlet----------");
 
 		MultipartFormDataRequest data;
 		String responseString = null;
@@ -63,21 +67,21 @@ public class SaveImageServlet extends HttpServlet
 			int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
 			if (user_id == 0)
 			{
-				System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
+				logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
 				response.sendRedirect("index.jsp");
 				return;
 			}
-			System.out.println("User ID: " + user_id);
+			logger.debug("User ID: " + user_id);
 	
 			// Make sure the image type is passed
 			int type = Utils.getIntSession(session, SessionUtils.IMAGE_ID_KEY);
 			if (type == 0)
 			{
-				System.out.println("No IMAGE TYPE passed (type=" + type + "). Programming error.");
+				logger.error("No IMAGE TYPE passed (type=" + type + "). Programming error.");
 				responseString = "Internal error: No image type passed";
 				return;
 			}
-			System.out.println("Image ID Key: " + type);
+			logger.debug("Image ID Key: " + type);
 			ImageType image_type = ImageType.create(type);
 			if (image_type == null)
 			{
@@ -101,25 +105,25 @@ public class SaveImageServlet extends HttpServlet
 	//				existing_logo.getImage().getImageName().length() > 0 ? 
 	//					existing_logo.getImage().getImageName() : "");
 	
-				System.out.println("files.size:  " + files.size());
+				logger.debug("files.size:  " + files.size());
 				Image image = null;
 				try {
 					image = Image.uploadFile(user_id, image_type, files, con);
 				} catch (Exception e) {
-					System.out.println("Exception uploading file: " + e.getClass().getName());
+					logger.error("Exception uploading file: " + e.getClass().getName());
 					responseString = "Internal error: " + e.getClass().getName();
 				}
 				if (image != null)
 				{
 					String assets = SystemProp.get(SystemProp.ASSETS);
 					return_name = Utils.Slashies(assets + "\\" + image.getImageName());
-					System.out.println("JSON RETURN NAME: " + return_name);
+					logger.debug("JSON RETURN NAME: " + return_name);
 					int bounding_height = 0;
 					int bounding_width = 0;
 					int saved_img_id = 0;
 					if (image_type.equals(ImageType.DEFAULT_LOGO))
 					{
-						System.out.println("We got a LOGO");
+						logger.debug("We got a LOGO");
 						UserLogo user_logo = new UserLogo(user_id, image);
 						bounding_height = UserLogo.MAX_BOUNDING_HEIGHT;
 						bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
@@ -129,22 +133,23 @@ public class SaveImageServlet extends HttpServlet
 							image_type.equals(ImageType.TEACHER_PHOTO) ||
 							image_type.equals(ImageType.ALTERNATE_LOGO))
 					{
-						System.out.println("We got a " + image_type.getItemText());
+						logger.debug("We got a " + image_type.getItemText());
 	
 						//Use logo binding size for now, will be replaced
 						bounding_height = UserLogo.MAX_BOUNDING_HEIGHT;
 						bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
 						saved_img_id = image.save(con);
 					}
-					System.out.println("Saved Image ID = " + saved_img_id);
+					logger.debug("Saved Image ID = " + saved_img_id);
 					imgTag = UserLogo.getBoundImage(
 							image.getImageName(), 
 							bounding_height, bounding_width, true);
+					logger.debug("Returned from getBoundImage");
 				}
 				else
 				{
 					// Something failed, check the tomcat log
-					System.out.println("Upload of image came back NULL!");
+					logger.error("Upload of image came back NULL!");
 					response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 					if (responseString == null) {
 						responseString = "Internal error: Image upload failed";
@@ -154,13 +159,13 @@ public class SaveImageServlet extends HttpServlet
 			}
 			catch (ImageException e1) 
 			{
-				System.out.println("Exception: " + e1);
+				logger.error("Exception: " + e1);
 				e1.printStackTrace();
 				responseString = "Internal error: " + e1.getClass().getName();
 				return;
 			} catch (SQLException e) 
 			{
-				System.out.println("Exception saving image: " + e.getMessage());
+				logger.error("Exception saving image: " + e.getMessage());
 				e.printStackTrace();
 				responseString = "Internal error: " + e.getClass().getName();
 				return;
@@ -170,6 +175,7 @@ public class SaveImageServlet extends HttpServlet
 				con.close();
 			}
 	
+			logger.debug("Building json_obj");
 			JSONObject json_obj = new JSONObject();
 			try
 			{
@@ -178,11 +184,12 @@ public class SaveImageServlet extends HttpServlet
 				response.setContentType("application/json; charset=UTF-8");
 				
 				responseString = json_obj.toString();
+				logger.debug("returning serialized json_obj");
 			}
 			catch (JSONException e) 
 			{
 				e.printStackTrace();
-				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
 				responseString = "Internal error: " + e.getClass().getName();
 			}
 		} finally {

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.brndbot.block.BlockType;
 import com.brndbot.block.ChannelEnum;
@@ -21,6 +23,8 @@ import com.brndbot.user.ImageType;
 public class SetSessionServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
+	
+	final static Logger logger = LoggerFactory.getLogger(SetSessionServlet.class);
 	
 	private static int NEG_ONE = -1;
 
@@ -36,7 +40,7 @@ public class SetSessionServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("\n--------Entering SetSessionServlet----------");
+		logger.debug("--------Entering SetSessionServlet----------");
 
 		HttpSession session = request.getSession();
 		String action = Utils.getStringParameter(request, "action").toLowerCase();
@@ -71,12 +75,12 @@ public class SetSessionServlet extends HttpServlet
 			catch (JSONException e)
 			{
 				String s = "JSON error returning image_type: " + image_id + "\n" + e.getMessage();
-				System.out.println(s);
+				logger.error(s);
 				throw new RuntimeException(s);
 			}
 	        response.setContentType("application/json; charset=UTF-8");
 			PrintWriter out = response.getWriter();
-			System.out.println("JSON: " + json_obj.toString());
+			logger.debug("JSON: {}", json_obj.toString());
 			out.println(json_obj);
 			out.flush();
 			response.setStatus(HttpServletResponse.SC_OK);
@@ -86,7 +90,7 @@ public class SetSessionServlet extends HttpServlet
 		int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
 		if (user_id == 0)
 		{
-			System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
+			logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
 			response.sendRedirect("index.jsp");
 			return;
 		}
@@ -104,7 +108,7 @@ public class SetSessionServlet extends HttpServlet
 			}
 			catch (JSONException e) 
 			{
-				System.out.println("Json exception: " + e.getMessage());
+				logger.error("Json exception: {} ", e.getMessage());
 				e.printStackTrace();
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				return;
@@ -124,7 +128,7 @@ public class SetSessionServlet extends HttpServlet
 		if (!action.equals(SessionUtils.SET) && !action.equals(SessionUtils.CLEAR) 
 			&& !action.equals(SessionUtils.GET))
 		{
-			System.out.println("Invalid action: " + action);
+			logger.debug("Invalid action: " + action);
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -183,7 +187,7 @@ public class SetSessionServlet extends HttpServlet
 					content != BlockType.SCHEDULE.getValue().intValue() &&
 					content != BlockType.SALE.getValue().intValue())
 				{
-					System.out.println("Bad block type: " + content);
+					logger.error("Bad block type: " + content);
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					return;
 				}
@@ -214,15 +218,15 @@ public class SetSessionServlet extends HttpServlet
 
 		if (!foundOne && !action.equals(SessionUtils.CLEAR))
 		{
-			System.out.println("Bad args*********\n   channel: " + channel + ", content: " + content + ", database_id: " + database_id);
+			logger.error("Bad args*********\n   channel: " + channel + ", content: " + content + ", database_id: " + database_id);
 		}
 
 		channel = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		content = Utils.getIntSession(session, SessionUtils.CONTENT_KEY);
 		database_id = Utils.getIntSession(session, SessionUtils.DATABASE_ID_KEY);
-		System.out.println("Get channel: " + channel);
-		System.out.println("Get content: " + content);
-		System.out.println("Get database_id: " + database_id);
+		logger.debug("Get channel: " + channel);
+		logger.debug("Get content: " + content);
+		logger.debug("Get database_id: " + database_id);
 
 		JSONObject json_obj = new JSONObject();
 		try
@@ -233,7 +237,7 @@ public class SetSessionServlet extends HttpServlet
 		}
 		catch (JSONException e) 
 		{
-			System.out.println("Json exception: " + e.getMessage());
+			logger.error("Json exception: " + e.getMessage());
 			e.printStackTrace();
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;

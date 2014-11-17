@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.db.DbConnection;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
@@ -19,7 +22,9 @@ import com.brndbot.util.PWHash;
 public class SaveUserServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
-
+	
+	final static Logger logger = LoggerFactory.getLogger(SaveUserServlet.class);
+	
 	public SaveUserServlet ()
     {
         super();
@@ -32,7 +37,7 @@ public class SaveUserServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("--------Entering SaveUserServlet----------");
+		logger.debug("--------Entering SaveUserServlet----------");
 
 		DbConnection con = DbConnection.GetDb();
 
@@ -43,7 +48,7 @@ public class SaveUserServlet extends HttpServlet
 		// TODO this is a crock! Remove as soon as I understand why it's there.
 		if (!userPassword.equals("mbdemo"))
 		{
-			System.out.println("Wrong password for signup!");
+			logger.debug("User gave wrong password for signup!");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -91,12 +96,12 @@ public class SaveUserServlet extends HttpServlet
 			{
 				user_id = rs.getInt(1);
 			}
-			System.out.println("USER_ID: " + user_id);
+			logger.debug("USER_ID: " + user_id);
 			if (user_id == 0)
 			{
 				throw new RuntimeException("User ID is zero after save!!");
 /*				sql = "select UserID from user ORDER BY UserID desc limit 1";
-				System.out.println("Faking the user id mech");
+				logger.warn("Faking the user id mech");
 				Statement stmt3 = null;
 				stmt3 = con.createStatement();
 				ResultSet rs3 = con.QueryDB(sql, stmt3);
@@ -113,7 +118,7 @@ public class SaveUserServlet extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			System.out.println("EXCEPTION: " + e.getMessage());
+			logger.error("EXCEPTION: " + e.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			session.removeAttribute(SessionUtils.USER_ID);
 			return;
@@ -123,7 +128,7 @@ public class SaveUserServlet extends HttpServlet
 			pstmt = null;
 			con.close();
 		}
-		System.out.println("Saving user_id: " + user_id);
+		logger.debug("Saving user_id: " + user_id);
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
 		response.setStatus(HttpServletResponse.SC_OK);
 		return;

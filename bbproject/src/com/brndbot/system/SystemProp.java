@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class SystemProp
 {
-	static private SystemProp _sys_props = null;
+	//static private SystemProp _sys_props = null;
 
 	static final private String PROPERTY_FILENAME_BASE = "\\webapps\\brndbot\\WEB-INF\\system.properties";
 	static private String PROPERTY_FILENAME;
@@ -18,34 +18,39 @@ public class SystemProp
 	static final public String WEB_NAME = "web.name";
 	static final public String DB_USER = "db.user";
 	static final public String DB_PW = "db.pw";
+	static final public String DB_URL = "db.url";
 	static final public String ASSETS = "assets";
 	static final public String MINDBODY_NAME = "mindbody.name";
 	static final public String MINDBODY_KEY = "mindbody.key";
 	static final public String MINDBODY_STUDIOID = "mindbody.studioid";
 	static final public String PHP_SERVER_PAGE = "php.server.page";
 
-	private Properties _properties;
+	private static Properties _properties;
 
-	private SystemProp()
+
+//	static public SystemProp create()
+//	{
+//		if (_sys_props == null)
+//		{
+//			_sys_props = new SystemProp();
+//			_sys_props.loadProperties();
+//		}
+//		return _sys_props;
+//	}
+
+	public static void loadProperties()
 	{
+		System.out.println ("in loadProperties");
         Map<String, String> env = System.getenv();
         String catalina_home = env.get("CATALINA_HOME");
+        if (catalina_home == null) {
+        	catalina_home = System.getProperty("catalina.home");
+        }
+        if (catalina_home == null) {
+        	System.out.println("***FATAL*** CATALINA_HOME is not defined in environment variables.");
+        }
         PROPERTY_FILENAME = Utils.Slashies(catalina_home + PROPERTY_FILENAME_BASE);
         _properties = new Properties();
-	}
-
-	static public SystemProp create()
-	{
-		if (_sys_props == null)
-		{
-			_sys_props = new SystemProp();
-			_sys_props.loadProperties();
-		}
-		return _sys_props;
-	}
-
-	public void loadProperties()
-	{
 		FileInputStream in = null;
 		try 
 		{
@@ -54,6 +59,7 @@ public class SystemProp
 		} 
 		catch (FileNotFoundException e) 
 		{
+			System.out.println("***FATAL No properties file");
 			e.printStackTrace();
 		} 
 		catch (IOException e) 
@@ -75,14 +81,20 @@ public class SystemProp
 
 	static public void put(String property_name, String val)
 	{
-		SystemProp props = SystemProp.create();
-		props._properties.setProperty(property_name, val);
+		if (_properties == null)
+			loadProperties();
+		//SystemProp props = SystemProp.create();
+		SystemProp._properties.setProperty(property_name, val);
 	}
 
 	static public String get(String property_name)
 	{
-		SystemProp props = SystemProp.create();
-		String val = (String)props._properties.getProperty(property_name); 
+		System.out.println ("SystemProp.get, property = " + property_name);
+		System.out.println (_properties == null ? "_properties is _null" : "_properties is not null");
+		if (_properties == null)
+			loadProperties();
+		//SystemProp props = SystemProp.create();
+		String val = (String)SystemProp._properties.getProperty(property_name); 
 		return val;
 	}
 }

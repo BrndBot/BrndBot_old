@@ -14,7 +14,7 @@ import snaq.db.ConnectionPool;
 
 public class DbConnection
 {
-	static final private String ODBC_DRIVER = "jdbc:mysql://localhost:3306/brndbot";
+//	static final private String ODBC_DRIVER = "jdbc:mysql://localhost:3306/brndbot";
 	static final private String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
 	static private Driver _driver;
 	static private ConnectionPool _pool;
@@ -89,7 +89,7 @@ public class DbConnection
 			            10,
 			            20,
 			            28000,
-			            ODBC_DRIVER,
+			            "jdbc:mysql://" + SystemProp.get(SystemProp.DB_URL),
 			            SystemProp.get(SystemProp.DB_USER),
 			            SystemProp.get(SystemProp.DB_PW));
 //			            "brndbot",

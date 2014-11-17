@@ -8,9 +8,9 @@
 			caption: "Caption",
 			name: block.name,  
 			picture: block.imgURL,    
-			link: "http://www.brndbot.com/",  // Go here if user click the picture
+			link: "http://client.brndbot.com/",  // Go here if user click the picture
 			description: block.description,
-			actions: [{ name: block.name, link: 'http://www.brndbot.com' }],			
+			actions: [{ name: block.name, link: 'http://client.brndbot.com' }],			
 		};
 		FB.api('/me/photos', 'post', data, onPostToWallCompleted);
 	}
@@ -30,7 +30,7 @@ function publishWallPost(block)
     	[{
     	        'type':'image',
     	        'src': block.imgURL, width: '700',
-    	        'href':'http://www.brndbot.com/'
+    	        'href':'http://client.brndbot.com/'
     	}]
     };
     FB.ui(

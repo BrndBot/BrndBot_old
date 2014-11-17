@@ -18,6 +18,8 @@ import javax.imageio.ImageIO;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javazoom.upload.UploadFile;
 
@@ -25,9 +27,13 @@ import com.brndbot.db.DbConnection;
 import com.brndbot.db.DbUtils;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
+import com.brndbot.util.AppEnvironment;
 
 public class Image 
 {
+	
+	final static Logger logger = LoggerFactory.getLogger(Image.class);
+	
 	private Integer _image_id;
 	private Integer _user_id;  // 0 if it's a Brndbot stock image
 	private ImageType _image_type;
@@ -141,7 +147,7 @@ public class Image
 
 	public int save(DbConnection con) throws SQLException
 	{
-		System.out.println("IMAGE SAVE SAVE SAVE**************");
+		logger.debug("IMAGE SAVE SAVE SAVE**************");
 		PreparedStatement pstmt = con.createPreparedStatement("INSERT INTO images (" +
 				"ImageType, UserID, ImageName, ImageSize, ImageHeight, ImageWidth) " +
 				"VALUES (?, ?, ?, ?, ?, ?);");
@@ -155,6 +161,7 @@ public class Image
 		// Timestamp is defined by default as current system time 
 		pstmt.executeUpdate();
 		pstmt.close();
+		logger.debug ("returning from save");
 		return DbUtils.getLastInsertID(con);
 	}
 
@@ -236,7 +243,7 @@ public class Image
 	static public String getBoundImage(int image_id, int user_id,
 			int max_image_height, int max_image_width)
 	{
-		System.out.println("----entering getBoundImage----");
+		logger.debug("----entering getBoundImage----");
 		DbConnection con = DbConnection.GetDb();
 		Image image = getImageByID(image_id, user_id, con);
 		String s = "<div style=\"padding:0.625rem;\">Invalid image</div>";
@@ -253,7 +260,6 @@ public class Image
 				int w = ((int)(width * scale));
 				s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
 						image.getImageName(), h, w);
-//				System.out.println("Image: " + s);
 			}
 		}
 		con.close();
@@ -275,6 +281,7 @@ public class Image
 		// local_image_file_name should be something like 'images/file
 		String tomcat_base = SystemProp.get(SystemProp.TOMCAT_BASE);
 		String image_file = Utils.Slashies(tomcat_base + "\\" + local_image_file_name);
+		logger.debug("getBoundImage, Image file path: {}", image_file);
 		BufferedImage bimg = null;
 		try {
 			bimg = ImageIO.read(new File(image_file));
@@ -328,7 +335,7 @@ public class Image
 		Statement stmt = con.createStatement();
 //		String sql = "SELECT * FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
 		String sql = "SELECT ImageID, UserID, ImageType, ImageName, ImageSize, ImageHeight, ImageWidth FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
-		System.out.println("For images:\n" + sql);
+		logger.debug("For images:\n" + sql);
 		ResultSet rs = con.QueryDB(sql, stmt);
 		Image Image = null;
 		try 
@@ -336,14 +343,15 @@ public class Image
 			if (rs.next())
 			{
 				Image = new Image(rs);
-				System.out.println("FOUNDLOGO IMAGE");
+				logger.debug("FOUNDLOGO IMAGE");
 			}
 			else
-				System.out.println("Image not found!");
+				logger.error("Image not found!");
 		}
 		catch (SQLException e) 
 		{
-			System.out.println("Exception in getImageByID(): " + e.getMessage());
+			logger.error("Exception in getImageByID(): " + 
+						e.getClass().getName() + ", message = " + e.getMessage());
 			e.printStackTrace();
 		}
 		finally 
@@ -388,14 +396,16 @@ public class Image
 				if (!Image.isAnImage(extension))
 				{
 					con.close();
-					System.out.println("Invalid file type, must be an image, extension: " + extension);
+					logger.debug("Invalid file type, must be an image, extension: " + extension);
+					//TODO these log messages really don't help the user!!!
 					return null;
 				}
 				else
 				{
 					if (image_file.getFileSize() > image_type.getMaxFileSize())
 					{
-						System.out.println("Logo file is too big");
+						logger.info("Logo file is too big");
+						//TODO these log messages really don't help the user!!!
 						return null;
 					}
 
@@ -414,8 +424,9 @@ public class Image
 					return_image.setImageSize((int)image_file.getFileSize());
 
 					// Now save image to the images/uploads/.. folder
-					String tomcat_base = SystemProp.get(SystemProp.TOMCAT_BASE);
-					image_file.setFileName(Utils.Slashies(tomcat_base + "\\" + url_file_name));
+					//String tomcat_base = SystemProp.get(SystemProp.TOMCAT_BASE);
+					//image_file.setFileName(Utils.Slashies(tomcat_base + "\\" + url_file_name));
+					image_file.setFileName(AppEnvironment.baseInAppDirectory(url_file_name));
 					fos = new FileOutputStream(image_file.getFileName());
 					fos.write(bytes);
 					fos.close();
@@ -435,7 +446,7 @@ public class Image
 		ResultSet rs = null;
 		String sql = "SELECT ImageID, ImageName, ImageHeight, ImageWidth FROM images WHERE UserID = " + user_id + 
 				" AND ImageType = " + image_type.getValue().intValue() + " ORDER BY CreateDateTime;";
-		System.out.println(sql);
+		logger.debug("getImagesForDisplay: " + sql);
 		JSONArray json_array = new JSONArray();
 		try 
 		{
@@ -443,7 +454,6 @@ public class Image
 			while (rs.next())
 			{
 				JSONObject json_obj = new JSONObject();
-//				System.out.println("ID: " + rs.getInt(1));
 				json_obj.put("ID", rs.getInt(1));
 				genImageTag(json_obj, rs.getString(2), 200, 200,
 						rs.getInt(3), rs.getInt(4));
