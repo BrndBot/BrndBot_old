@@ -1,3 +1,8 @@
+/**
+ *  CONFIDENTIAL
+ *  
+ *  All rights reserved by Brndbot, Ltd. 2014
+ */
 
 package com.mindbodyonline.clients.svClass;
 

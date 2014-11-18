@@ -1,3 +1,8 @@
+/**
+ *  CONFIDENTIAL
+ *  
+ *  All rights reserved by Brndbot, Ltd. 2014
+ */
 package com.brndbot.system;
 
 import java.io.FileInputStream;

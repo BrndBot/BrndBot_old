@@ -1,4 +1,9 @@
 /**
+ *  CONFIDENTIAL
+ *  
+ *  All rights reserved by Brndbot, Ltd. 2014
+ */
+/**
  * Provides methods and attributes relating to classes and enrollments.
  * 
  */
