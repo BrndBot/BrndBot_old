@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.db.DbConnection;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
@@ -17,6 +20,8 @@ import com.brndbot.user.User;
 public class SavePaletteServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
+	
+	final static Logger logger = LoggerFactory.getLogger(SavePaletteServlet.class);
 
 	public SavePaletteServlet ()
     {
@@ -30,7 +35,7 @@ public class SavePaletteServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("--------Entering SavePaletteServlet----------");
+		logger.debug("--------Entering SavePaletteServlet----------");
 
 		// Get rid of previous values
 		DbConnection con = DbConnection.GetDb();
@@ -39,7 +44,7 @@ public class SavePaletteServlet extends HttpServlet
 		int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
 		if (user_id == 0)
 		{
-			System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
+			logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
 			response.sendRedirect("index.jsp");
 			return;
 		}
@@ -51,6 +56,9 @@ public class SavePaletteServlet extends HttpServlet
 		} 
 		catch (SQLException e) 
 		{
+			logger.error("Error deleting palette: {}  {}", 
+					e.getClass().getName(),
+					e.getMessage());
 			e.printStackTrace();
 			throw new RuntimeException("Exception: " + e);
 		}
@@ -62,11 +70,15 @@ public class SavePaletteServlet extends HttpServlet
 		String[] yours = yourPalette.split(",");
 		try
 		{
+			logger.debug("Writing palettes");
 			writePalette(user_id, true, suggested, con);
 			writePalette(user_id, false, yours, con);
 		} 
 		catch (SQLException e) 
 		{
+			logger.error("Error writing palette: {}  {}", 
+					e.getClass().getName(),
+					e.getMessage());
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}

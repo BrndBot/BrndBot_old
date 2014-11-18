@@ -122,6 +122,14 @@
     </servlet>
 
     <servlet>
+      <servlet-name>SavePaletteServlet</servlet-name>
+      <description>
+        Save palette
+      </description>
+      <servlet-class>com.brndbot.servlets.SavePaletteServlet</servlet-class>
+    </servlet>
+
+    <servlet>
       <servlet-name>SaveUserServlet</servlet-name>
       <description>
         Save user
@@ -192,6 +200,11 @@
     <servlet-mapping>
       <servlet-name>SaveHTMLAsImageServlet</servlet-name>
       <url-pattern>/SaveHTMLAsImageServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>SavePaletteServlet</servlet-name>
+      <url-pattern>/SavePaletteServlet</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
