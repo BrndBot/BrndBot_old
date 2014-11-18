@@ -23,6 +23,7 @@ public class User
 	private Integer _user_id;
 	private String _company_name;
 	private String _logo_name;
+	private Integer _org_id;
 	
 	public User(int user_id)
 	{
@@ -36,6 +37,15 @@ public class User
 	public void setUserID(int _user_id) {
 		this._user_id = new Integer(_user_id);
 	}
+	
+	public Integer getOrganizationID() {
+		return _org_id;
+	}
+	
+	public void setOrganizationID(int _org_id) {
+		this._org_id = new Integer(_org_id);
+	}
+		
 
 	public String getCompanyName() {
 		return _company_name;

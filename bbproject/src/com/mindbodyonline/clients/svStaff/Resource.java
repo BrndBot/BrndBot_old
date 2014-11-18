@@ -1,4 +1,8 @@
-
+/**
+ *  CONFIDENTIAL
+ *  
+ *  All rights reserved by Brndbot, Ltd. 2014
+ */
 package com.mindbodyonline.clients.svStaff;
 
 import javax.xml.bind.JAXBElement;
