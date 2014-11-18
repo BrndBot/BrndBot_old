@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
 import com.brndbot.system.SessionUtils;
@@ -25,6 +27,8 @@ import com.brndbot.user.ImageType;
 public class GetImagesServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
+	
+	final static Logger logger = LoggerFactory.getLogger(GetImagesServlet.class);
 
 	public GetImagesServlet ()
     {
@@ -38,13 +42,13 @@ public class GetImagesServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("--------Entering GetImagesServlet----------");
+		logger.debug("--------Entering GetImagesServlet----------");
 
 		HttpSession session = request.getSession();
 		int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
 		if (user_id == 0)
 		{
-			System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
+			logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
 			response.sendRedirect("index.jsp");
 			return;
 		}
@@ -53,7 +57,7 @@ public class GetImagesServlet extends HttpServlet
 		int type = Utils.getIntParameter(request, SessionUtils.IMAGE_ID_KEY);
 		if (type == 0)
 		{
-			System.out.println("No IMAGE TYPE passed (type=" + type + "). Programming error.");
+			logger.error("No IMAGE TYPE passed (type=" + type + "). Programming error.");
 			return;
 		}
 		ImageType image_type = ImageType.create(type);

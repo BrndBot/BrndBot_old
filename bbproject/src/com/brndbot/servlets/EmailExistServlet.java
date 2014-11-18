@@ -6,19 +6,28 @@
 package com.brndbot.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
 import com.brndbot.system.Utils;
+import com.brndbot.user.Organization;
 import com.brndbot.user.User;
 
+/** This servlet does validation of the signup form.
+ *  In spite of its name, it does more than checking if the email address is
+ *  already in the database.
+ */
 public class EmailExistServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -35,6 +44,9 @@ public class EmailExistServlet extends HttpServlet
 		doPost(request, response);
 	}
 
+	/** Currently this returns no data, just success or failure. We need to change it
+	 *  to return some simple JSON to indicate multiple failure modes.
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.info("Entering EmailExistServlet");
@@ -43,17 +55,34 @@ public class EmailExistServlet extends HttpServlet
 
 		// Gather data
 		String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
+		String authCode = Utils.getStringParameter(request, "hiddenAuth").toLowerCase();
 //		String userPassword = Utils.getStringParameter(request, "hiddenPassword");
 
-		// Add record to database
+		JSONArray json_array = new JSONArray();
+		String status = "ok";
+		
+		// Add record to database (lie)
 		if (User.doesEmailExist(userEmail, con))
 		{
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			status = "email_exists";
 		}
-		else
-		{
-			response.setStatus(HttpServletResponse.SC_OK);
+		Organization org = Organization.getByAuthCode("foo");
+		if (org == null) {
+			status = "no_org";
 		}
+		try {
+			JSONObject json_obj = new JSONObject();
+			json_obj.put("status",status);
+			json_array.put(json_obj);
+		} catch (JSONException e) {
+			logger.error ("JSON error: {}", e.getClass().getName());
+		}
+		PrintWriter out = response.getWriter();
+		String s = json_array.toString();
+		out.println(s);
+		out.flush();
+		response.setStatus(HttpServletResponse.SC_OK);
+
 		con.close();
 
 		return;

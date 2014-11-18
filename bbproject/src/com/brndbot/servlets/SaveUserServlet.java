@@ -70,6 +70,7 @@ public class SaveUserServlet extends HttpServlet
 		String linkedIn = Utils.getStringParameter(request, "hiddenLinkedIn");
 		String youTube = Utils.getStringParameter(request, "hiddenYouTube");
 		String instagram = Utils.getStringParameter(request, "hiddenInstagram");
+		String orgId = Utils.getStringParameter(request,  "hiddenOrgId");
 
 		HttpSession session = request.getSession();
 
@@ -80,7 +81,9 @@ public class SaveUserServlet extends HttpServlet
 		ResultSet rs = null;
 		try
 		{
-			String sql = "INSERT INTO user (EmailAddress, Password, Company, CompanyAddress, URL, FacebookURL, TwitterHandle, LinkedIn, YouTube, Instagram) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			String sql = "INSERT INTO user " +
+					" (EmailAddress, Password, Company, CompanyAddress, URL, FacebookURL, TwitterHandle, LinkedIn, YouTube, Instagram, orgid) " +
+					" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setString(1, userEmail);
 			pstmt.setString(2, hashedPassword);
@@ -92,6 +95,7 @@ public class SaveUserServlet extends HttpServlet
 			pstmt.setString(8, linkedIn);
 			pstmt.setString(9, youTube);
 			pstmt.setString(10, instagram);
+			pstmt.setInt(11, Integer.parseInt(orgId));
 			pstmt.executeUpdate();
 			// Get the new user ID
 			sql = "select LAST_INSERT_ID() FROM user;";

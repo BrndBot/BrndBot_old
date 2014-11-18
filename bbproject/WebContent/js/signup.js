@@ -15,6 +15,7 @@ var currentMockup = null;
 
 var currentSuggestedPalette = null;
 var targetImage = null;
+var orgId = null;
 
 $(document).ready(function() 
 {
@@ -557,6 +558,7 @@ function createMyAccount(e)
 	// Validate email and password
 	if (!validateEntryMade('#userEmail', 'Email Address') ||
 		!validateEntryMade('#userPassword', 'Password') ||
+		!validateEntryMade('#authCode', 'Authorizaton Code') ||
 		!validateEntryMade('#userConfirmPassword', 'Confirmation Password'))
 	{
 		dataEntryError('You must enter all fields to continue with your account creation.', scrollTo);
@@ -578,7 +580,9 @@ function createMyAccount(e)
 		return;
 	}
 
-	// Check to see if the email address exists
+	// Check to see if the email address exists and the authorization code 
+	// is known. We fold both of these into one servlet because multiple
+	// servlet checks would create a race condition.
 	$('#hiddenEmail').val($('#userEmail').val());
     $.ajax({
         type: 'POST',
@@ -586,6 +590,7 @@ function createMyAccount(e)
         data: $('#userDataForm').serialize(), // serializes the form's elements.
         success: function(data)
         {
+			orgId = data[orgId];
         	$('#registerNewUser').hide();
         	$('#tellUsAboutYourself').show();
         	$('#errorMsg').html('');
@@ -593,9 +598,18 @@ function createMyAccount(e)
         },
         error: function (xhr, ajaxOptions, thrownError)
         {
-    		dataEntryError('This email address already exists, please enter a different address.');
+        	// Need to be able to distinguish 2 different errors.
+        	// Can we do that with thrownError?
+        	if (thrownError == "org id") {
+        		dataEntryError('The authorization code is invalid.');
+   	    		$('#authCode').val('');
+		 		$('#authCode').focus();
+		 	} else {
+	    		dataEntryError('This email address already exists, please enter a different address.');
+	    	}
         }
     });
+    
 }
 
 // Test the structure of the email address
@@ -702,6 +716,8 @@ function doSubmitForUser()
 	$('#hiddenLinkedIn').val($('#linkedIn').val());
 	$('#hiddenYouTube').val($('#youtubeUrl').val());
 	$('#hiddenInstagram').val($('#instagramUrl').val());
+	$('#hiddenAuth').val($('#authCode').val());
+	$('#hiddenOrgId').val(orgId);
 
     $.ajax({
         type: 'POST',

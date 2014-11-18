@@ -73,6 +73,12 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 				       	<div class="formSpacer">
 				        	<input type="text" class="k-textbox editWidth" autocomplete="off" id="userEmail" />
 				       	</div>
+				    	<div  class="formLabelFor" style="padding-top:1.9375rem">
+				        	<label for="authCode">authorization code</label>
+				       	</div>
+				       	<div class="formSpacer">
+				        	<input type="text" class="k-textbox editWidth" autocomplete="off" id="authCode" />
+				       	</div>
 				    	<div class="formLabelFor">
 				        	<label for="userPassword">password</label>
 				       	</div>
@@ -472,6 +478,8 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 			<input id="hiddenLinkedIn" name="hiddenLinkedIn" type="text" style="display:none" />
 			<input id="hiddenYouTube" name="hiddenYouTube" type="text" style="display:none" />
 			<input id="hiddenInstagram" name="hiddenInstagram" type="text" style="display:none" />
+			<input id="hiddenAuth" name="hiddenAuth" type="text" style="display:none" />
+			<input id="hiddenOrgId" name="hiddenOrgId" type="text" style="display:none" />
 		</form>
 
 		<form id="paletteForm" method="post">
