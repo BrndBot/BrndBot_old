@@ -35,7 +35,7 @@ CREATE TABLE `images` (
   PRIMARY KEY (`ImageID`),
   KEY `ImageLogo_idx` (`ImageType`),
   KEY `ImageLogo_idx2` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,6 +66,22 @@ CREATE TABLE `ltfacilitytype` (
   `FacilityType` varchar(120) DEFAULT NULL,
   PRIMARY KEY (`FacilityID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `organization`
+--
+
+DROP TABLE IF EXISTS `organization`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `organization` (
+  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(120) NOT NULL,
+  `Authcode` varchar(12) NOT NULL,
+  UNIQUE KEY `unique_org_id` (`id`,`Name`),
+  KEY `orgidindex` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,9 +122,12 @@ CREATE TABLE `user` (
   `Instagram` varchar(200) DEFAULT NULL,
   `IsPriv` int(1) DEFAULT '0',
   `CreateDateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `orgid` int(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`UserID`),
-  UNIQUE KEY `EmailAddress` (`EmailAddress`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `EmailAddress` (`EmailAddress`),
+  KEY `userorgindex` (`orgid`),
+  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`orgid`) REFERENCES `organization` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,4 +174,4 @@ CREATE TABLE `userlogo` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-18 16:16:16
+-- Dump completed on 2014-11-19 20:34:14
