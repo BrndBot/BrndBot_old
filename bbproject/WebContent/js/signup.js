@@ -584,29 +584,35 @@ function createMyAccount(e)
 	// is known. We fold both of these into one servlet because multiple
 	// servlet checks would create a race condition.
 	$('#hiddenEmail').val($('#userEmail').val());
+	$('#hiddenAuth').val($('#authCode').val());
     $.ajax({
         type: 'POST',
         url: 'EmailExistServlet',
         data: $('#userDataForm').serialize(), // serializes the form's elements.
         success: function(data)
         {
-			orgId = data[orgId];
-        	$('#registerNewUser').hide();
-        	$('#tellUsAboutYourself').show();
-        	$('#errorMsg').html('');
-        	$('#errorMsg').hide();
+        	console.dir(data);
+        	status = data["status"];
+        	console.log ("status = " + status);
+			if (status == "ok") {
+				orgId = data["orgid"];
+				$('#hiddenOrgId').val(orgId);
+				console.log("orgId = " + orgId);
+	        	$('#registerNewUser').hide();
+	        	$('#tellUsAboutYourself').show();
+	        	$('#errorMsg').html('');
+	        	$('#errorMsg').hide();
+	        } else if (status == "email_exists") {
+	        	dataEntryError('This email address already exists, please enter a different address.');
+	        } else if (status == "no_org") {
+	        	dataEntryError('Invalid authorization code.');
+	        } else {
+	        	dataEntryError('Internal error.');
+	        }
         },
         error: function (xhr, ajaxOptions, thrownError)
         {
-        	// Need to be able to distinguish 2 different errors.
-        	// Can we do that with thrownError?
-        	if (thrownError == "org id") {
-        		dataEntryError('The authorization code is invalid.');
-   	    		$('#authCode').val('');
-		 		$('#authCode').focus();
-		 	} else {
-	    		dataEntryError('This email address already exists, please enter a different address.');
-	    	}
+    		dataEntryError('Internal error.');
         }
     });
     
@@ -717,7 +723,7 @@ function doSubmitForUser()
 	$('#hiddenYouTube').val($('#youtubeUrl').val());
 	$('#hiddenInstagram').val($('#instagramUrl').val());
 	$('#hiddenAuth').val($('#authCode').val());
-	$('#hiddenOrgId').val(orgId);
+	//$('#hiddenOrgId').val(orgId);	// alredy loaded
 
     $.ajax({
         type: 'POST',

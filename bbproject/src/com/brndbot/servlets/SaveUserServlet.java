@@ -49,15 +49,6 @@ public class SaveUserServlet extends HttpServlet
 		// Gather data
 		String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
 		String userPassword = Utils.getStringParameter(request, "hiddenPassword");
-
-		// TODO this is a crock! Remove as soon as I understand why it's there.
-		if (!userPassword.equals("mbdemo"))
-		{
-			logger.debug("User gave wrong password for signup!");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
 		String hashedPassword = PWHash.getHash(userPassword);
 
 //		String userConfirmPassword = Utils.getStringParameter(request, "userConfirmPassword");
@@ -127,7 +118,7 @@ public class SaveUserServlet extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			logger.error("EXCEPTION: " + e.getMessage());
+			logger.error("EXCEPTION: {}    {}", e.getClass().getName(), e.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			session.removeAttribute(SessionUtils.USER_ID);
 			return;

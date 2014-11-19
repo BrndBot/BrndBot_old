@@ -8,7 +8,9 @@
 package com.brndbot.user;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,39 @@ public class Organization {
 	 *  be more important than this degree of security.
 	 */
 	public static Organization getByAuthCode(String authCode) {
-		return null;		// TODO stub
+		Organization org = null;
+		DbConnection con = DbConnection.GetDb();
+		String sql = "SELECT id, Name FROM organization WHERE Authcode = ?;";
+//		String sql = "SELECT id, Name FROM organization WHERE Authcode = 'level1'";
+		PreparedStatement pstmt = con.createPreparedStatement(sql);
+		ResultSet rs = null;
+		try
+		{
+			pstmt.setString (1, authCode);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				org = new Organization();
+				org.setAuthCode(authCode);
+				org.setOrganizationID(rs.getInt(1));
+				org.setName(rs.getString(2));
+			}
+		} 
+		catch (SQLException e) 
+		{
+			logger.error ("Error in getByAuthCode query, authCode = {}", authCode);
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+		finally
+		{
+			DbUtils.close(pstmt, rs);
+		}
+		return org;
+	}
+	
+	public void setOrganizationID (int id) {
+		_id = id;
 	}
 	
 	public Integer getOrganizationID () {

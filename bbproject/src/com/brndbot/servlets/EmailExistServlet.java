@@ -56,29 +56,38 @@ public class EmailExistServlet extends HttpServlet
 		// Gather data
 		String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
 		String authCode = Utils.getStringParameter(request, "hiddenAuth").toLowerCase();
+		logger.debug("authCode = {}", authCode);
 //		String userPassword = Utils.getStringParameter(request, "hiddenPassword");
 
-		JSONArray json_array = new JSONArray();
+		JSONObject json_obj = new JSONObject();
 		String status = "ok";
-		
+		int orgID = 0;
 		// Add record to database (lie)
 		if (User.doesEmailExist(userEmail, con))
 		{
 			status = "email_exists";
 		}
-		Organization org = Organization.getByAuthCode("foo");
+		Organization org = Organization.getByAuthCode(authCode);
 		if (org == null) {
 			status = "no_org";
+		} else {
+			orgID = org.getOrganizationID();
 		}
 		try {
-			JSONObject json_obj = new JSONObject();
+			logger.debug("Putting status and org into JSON");
+			// put status into JSON
 			json_obj.put("status",status);
-			json_array.put(json_obj);
+			
+			// put organization ID into JSON
+			json_obj.put("orgid",orgID);
 		} catch (JSONException e) {
 			logger.error ("JSON error: {}", e.getClass().getName());
 		}
+
+		logger.debug("Writing JSON to output");
+        response.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = response.getWriter();
-		String s = json_array.toString();
+		String s = json_obj.toString();
 		out.println(s);
 		out.flush();
 		response.setStatus(HttpServletResponse.SC_OK);
