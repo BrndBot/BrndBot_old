@@ -1,3 +1,4 @@
+// bench.js - common javascript code for all the editors in BrndBot
 
 // used to reinitialize the upload image button
 var EMPTY_UPLOAD_HTML = '<input class="greyButton" name="files" id="files" type="file" />';
