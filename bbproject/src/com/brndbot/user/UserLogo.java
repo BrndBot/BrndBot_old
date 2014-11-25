@@ -15,6 +15,9 @@ import java.sql.Statement;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.DbUtils;
 import com.brndbot.system.Assert;
@@ -23,6 +26,8 @@ import com.brndbot.system.Utils;
 
 public class UserLogo 
 {
+	final static Logger logger = LoggerFactory.getLogger(UserLogo.class);
+
 	private Integer _user_id;
 	private Image _image;
 
@@ -81,6 +86,7 @@ public class UserLogo
 	
 	public int save(DbConnection con) throws ImageException
 	{
+		logger.debug("saving logo");
 		PreparedStatement pstmt = null;
 		int image_id = 0;
 		try 
@@ -89,7 +95,7 @@ public class UserLogo
 			con.startTransaction();
 			getImage().setUserID(this.getUserID().intValue());
 			image_id = getImage().save(con);
-			System.out.println("Image_ID from save: " + image_id);
+			logger.debug("Image_ID from save: {}", image_id);
 			
 			pstmt = con.createPreparedStatement("INSERT INTO userlogo (UserID, ImageID" +
 					") VALUES (?, ?);"); 
@@ -100,6 +106,9 @@ public class UserLogo
 		} 
 		catch (SQLException e)
 		{
+			logger.error ("Error saving logo: {}    {}", 
+					e.getClass().getName(),
+					e.getMessage());
 			con.rollback();
 			throw new ImageException("Unexpected error:\n" + e.getMessage());
 		}
@@ -112,6 +121,7 @@ public class UserLogo
 
 	static public void deleteLogo(int user_id, DbConnection con)
 	{
+		logger.debug("Deleting logo for user ID {}", user_id);
 		try 
 		{
 			con.startTransaction();
@@ -127,8 +137,10 @@ public class UserLogo
 		} 
 		catch (SQLException e1) 
 		{
+			logger.error ("Error deleting logo: {}    {}", 
+					e1.getClass().getName(),
+					e1.getMessage());
 			con.rollback();
-			e1.printStackTrace();
 		}
 	}
 /*
@@ -295,7 +307,9 @@ public class UserLogo
 		}
 		catch (SQLException e) 
 		{
-			System.out.println("Exception in getLogoByUserID(): " + e.getMessage());
+			logger.error("Exception in getLogoByUserID(): {}    {}", 
+					e.getClass().getName(),
+					e.getMessage());
 			e.printStackTrace();
 		}
 		finally 

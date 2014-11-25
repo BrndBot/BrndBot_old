@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.DbUtils;
 import com.brndbot.user.User;
@@ -20,6 +23,9 @@ import com.brndbot.util.PWHash;
 
 public class User 
 {
+	
+	final static Logger logger = LoggerFactory.getLogger(User.class);
+
 	private Integer _user_id;
 	private String _company_name;
 	private String _logo_name;
@@ -87,6 +93,7 @@ public class User
 		}
 		catch (SQLException e)
 		{
+			logger.error("Exception in doesEmailExist: {}", e.getClass().getName());
 			System.out.println(e);
 		}
 		finally
@@ -97,6 +104,7 @@ public class User
 				{
 					pstmt.close();
 				} catch (SQLException e) {
+					logger.error("Error closing: {}", e.getClass().getName());
 					e.printStackTrace();
 				}
 			}
@@ -114,7 +122,7 @@ public class User
 		// For now, toss an exception
     	if (recruiter == null)
     	{
-    		System.out.println("Recruiter is null in RecruiterMemCache: Recruiter ID=" + recruiter_id);
+    		logger.error("Recruiter is null in RecruiterMemCache: Recruiter ID=" + recruiter_id);
     		return null;
     	}
 
@@ -142,7 +150,7 @@ public class User
 				user.setLogoName(rs.getString(2));
 			}
 			else
-				System.out.println("Nothing found:\n" + sql + "\nUserID: " + user_id);
+				logger.error("Nothing found:\n" + sql + "\nUserID: " + user_id);
 		}
 		catch (SQLException e)
 		{
@@ -217,11 +225,13 @@ public class User
 		} 
 		catch (SQLException e) 
 		{
+			logger.error ("Execption in getUserPalette: {}    {}", 
+					e.getClass().getName(), e.getMessage());
 			e.printStackTrace();
 		}
 		if (list.size() == 0)
 		{
-			System.out.println("APPLYING DEFAULT PALETTE FOR USER_ID: " + user_id);
+			logger.debug("APPLYING DEFAULT PALETTE FOR USER_ID: " + user_id);
 			// Nothing in the database for this user, return default palette
 			list.add(new Palette("#ccc"));
 			list.add(new Palette("#ccc"));
@@ -234,7 +244,7 @@ public class User
 		return list;
 	}
 
-	static public boolean IsPrivileged(int user_id, DbConnection con)
+	static public boolean isPrivileged(int user_id, DbConnection con)
 	{
 		Statement stmt = con.createStatement();
 		String sql = "SELECT IsPriv FROM user WHERE " +
@@ -249,6 +259,9 @@ public class User
 		}
 		catch (SQLException e) 
 		{
+			logger.error ("Exception in isPrivileged: {}    {}",
+					e.getClass().getName(),
+					e.getMessage());
 			e.printStackTrace();
 		}
 		finally
@@ -258,9 +271,10 @@ public class User
 		return false;
 	}
 
-	static public void DeletePalettes(int user_id, DbConnection con) 
+	static public void deletePalettes(int user_id, DbConnection con) 
 			throws SQLException
 	{
+		logger.info("Deleting all palettes");
 		String sql = "DELETE FROM palettes";// WHERE UserID = " + user_id + ";";
 		con.ExecuteDB(sql, false);
 	}

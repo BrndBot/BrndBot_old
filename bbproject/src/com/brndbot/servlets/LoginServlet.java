@@ -88,7 +88,7 @@ public class LoginServlet extends HttpServlet
 			cookie.deleteCookie(LoginCookie.PASSWORD);
 		}
 
-		session.setAttribute(SessionUtils.IS_PRIV, User.IsPrivileged(user_id, con));
+		session.setAttribute(SessionUtils.IS_PRIV, User.isPrivileged(user_id, con));
 		con.close();
 
 		// Success!

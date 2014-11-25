@@ -1,4 +1,4 @@
-<!-- placeholder for the class block edit form -->
+<!-- placeholder for the class block edit form for Facebook -->
 
 <!-- placeholder for the class block edit form -->
 <div id="classBlockEdit" style="display:none">

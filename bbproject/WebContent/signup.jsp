@@ -389,10 +389,10 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 				<div id="mindBodyPos" class="unit size1of4 posSystem">
 					<img src="images/mindbody-logo.png" width="180" alt="" />
 				</div>
-				<div id="ncrPos" class="unit size1of4 posSystem">
+				<div id="ncrPos" class="unit size1of4 posSystem" style="visibility:hidden">
 					<img src="images/NCR-pos.png" alt="" width="140" />
 				</div>
-				<div id="ebayPos" class="unit lastUnit posSystem">
+				<div id="ebayPos" class="unit lastUnit posSystem" style="visibility:hidden">
 					<img src="images/ebay-pos.png" alt="" width="140" />
 				</div>
 				<div class="lastUnit" style="clear:both">&nbsp;</div>

@@ -57,7 +57,7 @@ public class SavePaletteServlet extends HttpServlet
 		// For now, just delete any previous palette information with id #1
 		try 
 		{
-			User.DeletePalettes(user_id, con);
+			User.deletePalettes(user_id, con);
 		} 
 		catch (SQLException e) 
 		{

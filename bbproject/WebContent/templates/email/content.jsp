@@ -1,4 +1,4 @@
-<!-- placeholder for the class block edit form -->
+<!-- placeholder for the class block edit form for email -->
 <div id="classBlockEdit" style="display:none">
 	<div class="blockEdit">
 		<div style="float:none">
