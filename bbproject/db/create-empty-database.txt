@@ -35,7 +35,7 @@ CREATE TABLE `images` (
   PRIMARY KEY (`ImageID`),
   KEY `ImageLogo_idx` (`ImageType`),
   KEY `ImageLogo_idx2` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,6 +102,24 @@ CREATE TABLE `palettes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `personality`
+--
+
+DROP TABLE IF EXISTS `personality`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `personality` (
+  `id` int(5) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `orgid` int(5) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `personality_ibfk_1` (`orgid`),
+  KEY `personalityidx` (`id`),
+  CONSTRAINT `personality_ibfk_1` FOREIGN KEY (`orgid`) REFERENCES `organization` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `user`
 --
 
@@ -123,11 +141,14 @@ CREATE TABLE `user` (
   `IsPriv` int(1) DEFAULT '0',
   `CreateDateTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `orgid` int(5) unsigned DEFAULT NULL,
+  `personalityid` int(5) DEFAULT NULL,
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `EmailAddress` (`EmailAddress`),
   KEY `userorgindex` (`orgid`),
+  KEY `user_pers_fk` (`personalityid`),
+  CONSTRAINT `user_pers_fk` FOREIGN KEY (`personalityid`) REFERENCES `personality` (`id`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`orgid`) REFERENCES `organization` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,4 +195,4 @@ CREATE TABLE `userlogo` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-19 20:34:14
+-- Dump completed on 2014-11-26 19:52:57
