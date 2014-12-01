@@ -164,7 +164,7 @@ $(document).ready(function()
 
     	if (logoName.indexOf("localhost") > -1)
     	{
-    		logoName = 'http://brndbot.com:8080/images/DemoLogo.jpg';
+    		logoName = 'http://client.brndbot.com/brndbot/images/YogaSaktiFakeLogo.jpg';
     	}
     	
     	console.log("Invoking " + PHP_SERVER_PAGE + '?name=' + encodeURIComponent(logoName));
