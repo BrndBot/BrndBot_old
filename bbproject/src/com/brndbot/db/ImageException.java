@@ -3,7 +3,7 @@
  *  
  *  All rights reserved by Brndbot, Ltd. 2014
  */
-package com.brndbot.user;
+package com.brndbot.db;
 
 public class ImageException extends Exception
 {

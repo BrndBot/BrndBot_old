@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import com.brndbot.block.BlockType;
 import com.brndbot.block.ChannelEnum;
+import com.brndbot.db.ImageType;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
-import com.brndbot.user.ImageType;
 
 public class SetSessionServlet extends HttpServlet
 {

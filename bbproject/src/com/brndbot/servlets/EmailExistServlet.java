@@ -20,9 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
+import com.brndbot.db.Organization;
+import com.brndbot.db.User;
 import com.brndbot.system.Utils;
-import com.brndbot.user.Organization;
-import com.brndbot.user.User;
 
 /** This servlet does validation of the signup form.
  *  In spite of its name, it does more than checking if the email address is

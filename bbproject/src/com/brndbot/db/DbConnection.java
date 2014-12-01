@@ -13,21 +13,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.system.SystemProp;
 
 import snaq.db.ConnectionPool;
 
+/** This embodies a series of interactions with the database. 
+ */
 public class DbConnection
 {
+	
+	final static Logger logger = LoggerFactory.getLogger(DbConnection.class);
+	
 //	static final private String ODBC_DRIVER = "jdbc:mysql://localhost:3306/brndbot";
 	static final private String DB_CLASS_NAME = "com.mysql.jdbc.Driver";
 	static private Driver _driver;
 	static private ConnectionPool _pool;
 
 	private Connection _conn;
+	private boolean saveAutoCommit;
 	
 	//Static class instantiation
-	  public Connection getConnection() 
+	public Connection getConnection() 
 	                      throws SQLException
 	  {
 		  return DriverManager.getConnection("jdbc:jdc:jdcpool");
@@ -38,6 +47,9 @@ public class DbConnection
 		_conn = null;
 	}
 
+	/** Close the DbConnection. It's mandatory to close after creating
+	 *  an object of this class. 
+	 */
 	public void close()
 	{
 		try 
@@ -46,6 +58,7 @@ public class DbConnection
 		} 
 		catch (SQLException e) 
 		{
+			logger.error("Error closing DbConnection: {}", e.getClass().getName());
 			e.printStackTrace();
 //			System.out.println("Non-graceful database shutdown, continuing...");
 		}
@@ -58,7 +71,7 @@ public class DbConnection
 		{
 			try
 			{
-				System.out.println("In GetDb");
+				logger.debug("In GetDb");
 				_driver = (Driver)Class.forName(DB_CLASS_NAME).newInstance();
 				DriverManager.registerDriver(_driver);
 				
@@ -66,22 +79,22 @@ public class DbConnection
 			} 
 			catch (InstantiationException e) 
 			{
-				System.out.println("InstantiationException registering driver: " + e.getMessage());
+				logger.error("InstantiationException registering driver: " + e.getMessage());
 				e.printStackTrace();
 			} 
 			catch (IllegalAccessException e) 
 			{
-				System.out.println("IllegalAccessException registering driver: " + e.getMessage());
+				logger.error("IllegalAccessException registering driver: " + e.getMessage());
 				e.printStackTrace();
 			} 
 			catch (ClassNotFoundException e) 
 			{
-				System.out.println("ClassNotFoundException registering driver: " + e.getMessage());
+				logger.error("ClassNotFoundException registering driver: " + e.getMessage());
 				e.printStackTrace();
 			} 
 			catch (SQLException e) 
 			{
-				System.out.println("SQLException registering driver: " + e.getMessage());
+				logger.error("SQLException registering driver: " + e.getMessage());
 				e.printStackTrace();
 			}
 			
@@ -124,12 +137,14 @@ public class DbConnection
 
 	public void startTransaction() throws SQLException
 	{
+		saveAutoCommit = _conn.getAutoCommit();
 		_conn.setAutoCommit(false);
 	}
 
 	public void commit() throws SQLException
 	{
 		_conn.commit();
+		_conn.setAutoCommit(saveAutoCommit);
 	}
 
 	public void rollback()
@@ -137,6 +152,7 @@ public class DbConnection
 		try 
 		{
 			_conn.rollback();
+			_conn.setAutoCommit(saveAutoCommit);
 		} 
 		catch (SQLException e) 
 		{
@@ -152,30 +168,30 @@ public class DbConnection
 		final long timeout = 3000;  // 3 second timeout
 		try
 		{
-			System.out.println ("Getting connection, Is con null? " + (con == null));
-			System.out.println ("Getting connection, Is _pool null? " + (_pool == null));
+			//logger.debug ("Getting connection, Is con null? " + (con == null));
+			//logger.debug ("Getting connection, Is _pool null? " + (_pool == null));
 		    con._conn = _pool.getConnection(timeout);
 		    if (con._conn == null)
 		    {
-		        System.out.println("Database pool get connection failed!!!");
+		        logger.error("Database pool get connection failed!!!");
 		    }
-		    System.out.println ("getting connection: 2");
 		}
 		catch (SQLException sqlx)
 		{
-			System.out.println("SQLException registering driver: " + sqlx.getMessage());
+			logger.error("SQLException registering driver: " + sqlx.getMessage());
 			sqlx.printStackTrace();
 			con = null;
 		}
 		finally
 		{
 		}
-	    System.out.println ("getting connection: 3");
 		return con;
 	}
 	
+	/** Issue a database query. This is protected so that only db classes can
+	 *  user it. */
 	// For SQL that retrieves some information from the database
-	public ResultSet QueryDB(String sql, Statement stmt)
+	protected ResultSet QueryDB(String sql, Statement stmt)
 	{
 		ResultSet rs = null;
 
@@ -186,14 +202,13 @@ public class DbConnection
 		}
 		catch (SQLException ex) 
 		{
-			System.out.println("*-*-*: " + sql);
-			System.out.println("SQLException in QueryDB: " + ex.getMessage());
+			logger.error("SQLException in QueryDB: {}", ex.getMessage());
 		}
 		return rs;
 	}
 
 	// For SQL that retrieves some information from the database
-	public ResultSet QueryDBException(String sql, Statement stmt) throws SQLException
+	protected ResultSet QueryDBException(String sql, Statement stmt) throws SQLException
 	{
 		ResultSet rs = null;
 
@@ -218,7 +233,7 @@ public class DbConnection
 	}
 */	
 
-	public int ExecuteDB(String sql, boolean tossException)
+	protected int ExecuteDB(String sql, boolean tossException)
 		throws SQLException
 	{
 		Statement stmt = null;
@@ -231,8 +246,7 @@ public class DbConnection
 		} 
 		catch (SQLException ex) 
 		{
-			System.out.println("SQLException in ExecuteDB: " + ex.getMessage());
-			System.out.println("*-*-*: " + sql);
+			logger.error("SQLException in ExecuteDB: " + ex.getMessage());
 			if (tossException)
 			{
 				throw new SQLException(ex.getMessage());
@@ -255,7 +269,7 @@ public class DbConnection
 		} 
 		catch (SQLException e) 
 		{
-			System.out.println("SQLException in createPreparedStatement: " + e.getMessage());
+			logger.error("SQLException in createPreparedStatement: {}", e.getMessage());
 		}
 		return statement;
 	}
@@ -269,7 +283,7 @@ public class DbConnection
 		} 
 		catch (SQLException e) 
 		{
-			System.out.println("SQLException in createStatement: " + e.getMessage());
+			logger.error("SQLException in createStatement: ", e.getMessage());
 		}
 		return statement;
 	}
@@ -283,7 +297,7 @@ public class DbConnection
 		} 
 		catch (SQLException e) 
 		{
-			System.out.println("SQLException in createStatement: " + e.getMessage());
+			logger.error("SQLException in createStatement: {}", e.getMessage());
 		}
 		return statement;
 	}

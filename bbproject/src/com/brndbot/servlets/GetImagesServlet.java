@@ -19,10 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
+import com.brndbot.db.Image;
+import com.brndbot.db.ImageType;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
-import com.brndbot.user.Image;
-import com.brndbot.user.ImageType;
 
 public class GetImagesServlet extends HttpServlet
 {

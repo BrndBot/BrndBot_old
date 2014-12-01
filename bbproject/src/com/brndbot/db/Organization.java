@@ -5,7 +5,7 @@
  */
 
 
-package com.brndbot.user;
+package com.brndbot.db;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,9 +14,6 @@ import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.brndbot.db.DbConnection;
-import com.brndbot.db.DbUtils;
 
 /** Representation of an organization as stored in the database.
  * 
@@ -29,23 +26,23 @@ import com.brndbot.db.DbUtils;
  *  	Organization ID
  *  	
  */
-public class Organization {
+public class Organization implements TableModel {
 
 	final static Logger logger = LoggerFactory.getLogger(Organization.class);
+	final static String tableName = "user";
 
 	private Integer _id;
 	private String _name;
 	private String _authCode;
 	
-	/** How do we do this? If auth codes are hashed, can't do a straightforward
-	 *  lookup. Auth codes are widely distributed anyway, so performance may
-	 *  be more important than this degree of security.
-	 */
+	public String getTableName () {
+		return tableName;
+	}
+
 	public static Organization getByAuthCode(String authCode) {
 		Organization org = null;
 		DbConnection con = DbConnection.GetDb();
 		String sql = "SELECT id, Name FROM organization WHERE Authcode = ?;";
-//		String sql = "SELECT id, Name FROM organization WHERE Authcode = 'level1'";
 		PreparedStatement pstmt = con.createPreparedStatement(sql);
 		ResultSet rs = null;
 		try

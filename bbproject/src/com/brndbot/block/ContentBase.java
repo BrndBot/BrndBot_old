@@ -7,11 +7,11 @@ package com.brndbot.block;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+//import java.sql.Statement;
+//import java.util.ArrayList;
 
-import com.brndbot.db.DbConnection;
-import com.brndbot.db.DbUtils;
+//import com.brndbot.db.DbConnection;
+//import com.brndbot.db.DbUtils;
 
 public class ContentBase
 {
@@ -53,28 +53,29 @@ public class ContentBase
 		}
 	}
 
-	static public ArrayList<ContentBase> getContentTypes(DbConnection con)
-	{
-		Statement stmt = con.createStatement();
-		ArrayList<ContentBase> lst = new ArrayList<ContentBase>();
-		String sql = "SELECT * FROM ltcontenttypes;";
-		ResultSet rs = con.QueryDB(sql, stmt);
-		try 
-		{
-			if (rs.next())
-			{
-				lst.add(new ContentBase(rs));
-			}
-		}
-		catch (SQLException e) 
-		{
-			System.out.println("Exception in getContentTypes(): " + e.getMessage());
-			e.printStackTrace();
-		}
-		finally 
-		{
-			DbUtils.close(stmt, rs);
-		}
-		return lst;
-	}
+	/** Huh???? There IS no ltcontenttypes table!! */
+//	static public ArrayList<ContentBase> getContentTypes(DbConnection con)
+//	{
+//		Statement stmt = con.createStatement();
+//		ArrayList<ContentBase> lst = new ArrayList<ContentBase>();
+//		String sql = "SELECT * FROM ltcontenttypes;";
+//		ResultSet rs = con.QueryDB(sql, stmt);
+//		try 
+//		{
+//			if (rs.next())
+//			{
+//				lst.add(new ContentBase(rs));
+//			}
+//		}
+//		catch (SQLException e) 
+//		{
+//			System.out.println("Exception in getContentTypes(): " + e.getMessage());
+//			e.printStackTrace();
+//		}
+//		finally 
+//		{
+//			DbUtils.close(stmt, rs);
+//		}
+//		return lst;
+//	}
 }

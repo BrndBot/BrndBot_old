@@ -3,7 +3,7 @@
  *  
  *  All rights reserved by Brndbot, Ltd. 2014
  */
-package com.brndbot.user;
+package com.brndbot.db;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -28,16 +28,15 @@ import org.slf4j.LoggerFactory;
 
 import javazoom.upload.UploadFile;
 
-import com.brndbot.db.DbConnection;
-import com.brndbot.db.DbUtils;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
 import com.brndbot.util.AppEnvironment;
 
-public class Image 
+public class Image implements TableModel 
 {
 	
 	final static Logger logger = LoggerFactory.getLogger(Image.class);
+	final static String tableName = "images";
 	
 	private Integer _image_id;
 	private Integer _user_id;  // 0 if it's a Brndbot stock image
@@ -63,7 +62,11 @@ public class Image
 		_image_width = new Integer(0);
 		_image = null;
 	}
-
+	
+	public String getTableName () {
+		return tableName;
+	}
+	
 	public Image(Image m)
 	{
 		_image_id = m._image_id;

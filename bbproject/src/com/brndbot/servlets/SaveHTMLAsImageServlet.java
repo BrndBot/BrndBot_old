@@ -25,12 +25,12 @@ import org.jsoup.nodes.Element;
 import org.xhtmlrenderer.simple.ImageRenderer;
 
 import com.brndbot.db.DbConnection;
+import com.brndbot.db.Image;
+import com.brndbot.db.ImageType;
 import com.brndbot.system.Assert;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
-import com.brndbot.user.Image;
-import com.brndbot.user.ImageType;
 
 public class SaveHTMLAsImageServlet extends HttpServlet
 {

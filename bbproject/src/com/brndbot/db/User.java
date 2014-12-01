@@ -3,7 +3,7 @@
  *  
  *  All rights reserved by Brndbot, Ltd. 2014
  */
-package com.brndbot.user;
+package com.brndbot.db;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -13,65 +13,181 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.brndbot.db.DbConnection;
-import com.brndbot.db.DbUtils;
-import com.brndbot.user.User;
+import com.brndbot.db.User;
 import com.brndbot.util.PWHash;
 
-public class User 
+public class User implements TableModel
 {
 	
 	final static Logger logger = LoggerFactory.getLogger(User.class);
-
+	final static String tableName = "user";
+	
 	private Integer _user_id;
+	private String _email;
+	private String _hashed_password;
 	private String _company_name;
+	private String _company_address;
+	private String _company_url;
 	private String _logo_name;
 	private Integer _org_id;
+	private Integer _personality_id;
+	private String _facebook;
+	private String _twitter;
+	private String _linked_in;
+	private String _you_tube;
+	private String _instagram;
+	
+	public User () {
+		
+	}
 	
 	public User(int user_id)
 	{
 		_user_id = new Integer(user_id);
+	}
+	
+	public String getTableName () {
+		return tableName;
 	}
 
 	public Integer getUserID() {
 		return _user_id;
 	}
 
-	public void setUserID(int _user_id) {
-		this._user_id = new Integer(_user_id);
+	public void setUserID(int user_id) {
+		this._user_id = new Integer(user_id);
+	}
+
+	
+	public void setEmail (String email) {
+		this._email = email;
+	}
+	
+	public void setHashedPassword (String hashed_pw) {
+		_hashed_password = hashed_pw;
+	}
+	
+	public void setFacebook (String facebook) {
+		_facebook = facebook;
+	}
+	
+	public void setTwitter (String twitter) {
+		_twitter = twitter;
+	}
+	
+	public void setYouTube (String you_tube) {
+		_you_tube = you_tube;
+	}
+	
+	public void setLinkedIn (String linked_in) {
+		_linked_in = linked_in;
+	}
+	
+	public void setInstagram (String instagram) {
+		_instagram = instagram;
 	}
 	
 	public Integer getOrganizationID() {
 		return _org_id;
 	}
 	
-	public void setOrganizationID(int _org_id) {
-		this._org_id = new Integer(_org_id);
+	public void setOrganizationID(int org_id) {
+		this._org_id = new Integer(org_id);
 	}
-		
+	
+	public void setPersonalityID(int pers_id) {
+		this._personality_id = pers_id;
+	}
+	
+	public Integer getPersonalityID() {
+		return _personality_id;
+	}
+	
 
 	public String getCompanyName() {
 		return _company_name;
 	}
 
-	public void setCompanyName(String _company_name) {
-		this._company_name = _company_name;
+	public void setCompanyName(String company_name) {
+		this._company_name = company_name;
+	}
+	
+	public void setCompanyAddress(String company_address) {
+		this._company_address = company_address;
+	}
+	
+	public void setCompanyURL (String company_url) {
+		this._company_url = company_url;
 	}
 
 	public String getLogoName() {
 		return _logo_name;
 	}
 
-	public void setLogoName(String _logo_name) {
-		this._logo_name = _logo_name;
+	public void setLogoName(String logo_name) {
+		this._logo_name = logo_name;
 	}
 
+	public void saveUser (DbConnection con) {
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		//int user_id = 0;
+		try
+		{
+			String sql = "INSERT INTO user " +
+					" (EmailAddress, Password, Company, CompanyAddress, URL, FacebookURL, TwitterHandle, LinkedIn, YouTube, Instagram, orgid) " +
+					" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			pstmt = con.createPreparedStatement(sql);
+			pstmt.setString(1, _email);
+			pstmt.setString(2, _hashed_password);
+			pstmt.setString(3, _company_name);
+			pstmt.setString(4, _company_address);
+			pstmt.setString(5, _company_url);
+			pstmt.setString(6, _facebook);
+			pstmt.setString(7, _twitter);
+			pstmt.setString(8, _linked_in);
+			pstmt.setString(9, _you_tube);
+			pstmt.setString(10, _instagram);
+			pstmt.setInt(11, _org_id);
+			pstmt.executeUpdate();
+			// Get the new user ID
+			sql = "select LAST_INSERT_ID() FROM user;";
+			stmt = con.createStatement();
+			ResultSet rs = con.QueryDB(sql, stmt);
+			if (rs.next())
+			{
+				_user_id = rs.getInt(1);
+			}
+			logger.debug("USER_ID: " + _user_id);
+			if (_user_id == 0)
+			{
+				throw new RuntimeException("User ID is zero after save!!");
+			}
+			rs.close();
+			stmt.close();
+		}
+		catch (Exception e)
+		{
+			logger.error("Exception in saveUser: {}    {}", e.getClass().getName(), e.getMessage());
+			return;
+		}
+		finally
+		{
+			pstmt = null;
+			con.close();
+		}
+	
+	}
+	
+	
 	static public void Delete(int user_id, DbConnection con)
 			throws SQLException
 	{
+		// TODO WHAT!!!!????  This will delete ALL users!!!!
 		String sql = "DELETE FROM user";// WHERE UserID = " + user_id + ";";
 		con.ExecuteDB(sql, false);
 	}
@@ -114,23 +230,7 @@ public class User
 		return ret;
 	}
 
-/*    static public User getUser (int user_id)
-    {
-    	Integer uID = new Integer(user_id);
-		User user = User.getUserByID(user_id);
 
-		// For now, toss an exception
-    	if (recruiter == null)
-    	{
-    		logger.error("Recruiter is null in RecruiterMemCache: Recruiter ID=" + recruiter_id);
-    		return null;
-    	}
-
-    	RecruiterTable new_recruiter = new RecruiterTable();
-        new_recruiter = recruiter.makeClone();
-        return new_recruiter;
-    }
-*/
 	static public User getUserNameAndLogo(int user_id, DbConnection con)
 	{
 		PreparedStatement pstmt = null;
@@ -165,7 +265,8 @@ public class User
 		return user;
 	}
 	
-	/* This version assumes a hashed password in the database. */
+	/* Attempt to log in with a user name and password. 
+	 * Returns 0 if login is invalid. */
 	static public int Login(String email_address, String password, DbConnection con)
     {
     	int user_id = 0;
@@ -244,6 +345,9 @@ public class User
 		return list;
 	}
 
+	/**
+	 * What constitutes a "privileged" user? Is privilege really just a binary state? 
+	 */
 	static public boolean isPrivileged(int user_id, DbConnection con)
 	{
 		Statement stmt = con.createStatement();
@@ -271,11 +375,5 @@ public class User
 		return false;
 	}
 
-	static public void deletePalettes(int user_id, DbConnection con) 
-			throws SQLException
-	{
-		logger.info("Deleting all palettes");
-		String sql = "DELETE FROM palettes";// WHERE UserID = " + user_id + ";";
-		con.ExecuteDB(sql, false);
-	}
+
 }

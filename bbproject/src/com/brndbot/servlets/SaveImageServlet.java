@@ -25,10 +25,10 @@ import javazoom.upload.MultipartFormDataRequest;
 import javazoom.upload.UploadException;
 
 import com.brndbot.db.DbConnection;
-import com.brndbot.user.Image;
-import com.brndbot.user.ImageException;
-import com.brndbot.user.ImageType;
-import com.brndbot.user.UserLogo;
+import com.brndbot.db.Image;
+import com.brndbot.db.ImageException;
+import com.brndbot.db.ImageType;
+import com.brndbot.db.UserLogo;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;

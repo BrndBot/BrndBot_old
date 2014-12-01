@@ -3,7 +3,7 @@
  *  
  *  All rights reserved by Brndbot, Ltd. 2014
  */
-package com.brndbot.user;
+package com.brndbot.db;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -18,15 +18,14 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.brndbot.db.DbConnection;
-import com.brndbot.db.DbUtils;
 import com.brndbot.system.Assert;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
 
-public class UserLogo 
+public class UserLogo implements TableModel
 {
 	final static Logger logger = LoggerFactory.getLogger(UserLogo.class);
+	final static String tableName = "userlogo";
 
 	private Integer _user_id;
 	private Image _image;
@@ -58,13 +57,27 @@ public class UserLogo
 		_image = new Image(m.getImage());
 	}
 
-	static final String CS = ", ";
+	//static final String CS = ", ";
 
-	public Integer getUserID() { return _user_id; }
-	public void setUserID(int arg) { _user_id = new Integer(arg); } 
+	public String getTableName () {
+		return tableName;
+	}
 
-	public Image getImage() { return _image; }
-	public void setImage(Image img) { _image = img; }
+	public Integer getUserID() { 
+		return _user_id; 
+	}
+	
+	public void setUserID(int arg) { 
+		_user_id = new Integer(arg); 
+	} 
+
+	public Image getImage() { 
+		return _image; 
+	}
+	
+	public void setImage(Image img) { 
+		_image = img; 
+	}
 
 	public UserLogo(ResultSet rs)
 	{

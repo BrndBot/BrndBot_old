@@ -23,9 +23,11 @@ import org.json.JSONObject;
 
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.DbUtils;
+import com.brndbot.db.Facility;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
 
+/** What ARE facilities??? */
 public class GetFacilitiesServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -53,44 +55,49 @@ public class GetFacilitiesServlet extends HttpServlet
 			return;
 		}
 
-		String sql = "SELECT * FROM ltfacilitytype order by FacilityType;";
-		DbConnection con = DbConnection.GetDb();
-		Statement stmt = con.createStatement();
-		ResultSet rs = con.QueryDB(sql, stmt);
-		JSONArray json_array = new JSONArray();
-
-        try 
-		{
-        	int i = 0;
-        	while (rs.next())
-			{
-				JSONObject json_obj = new JSONObject();
-				json_obj.put("FacilityID", rs.getInt(1));
-				json_obj.put("FacilityType", rs.getString(2));
-				json_array.put(i++, json_obj);
-			}
-		} 
-		catch (SQLException e) 
-		{
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
-		} 
-		catch (JSONException e1)
-		{
-			System.out.println("Exception: " + e1.getMessage());
-			e1.printStackTrace();
+//		String sql = "SELECT * FROM ltfacilitytype order by FacilityType;";
+//		DbConnection con = DbConnection.GetDb();
+//		Statement stmt = con.createStatement();
+//		ResultSet rs = con.QueryDB(sql, stmt);
+//		JSONArray json_array = new JSONArray();
+//
+//        try 
+//		{
+//        	int i = 0;
+//        	while (rs.next())
+//			{
+//				JSONObject json_obj = new JSONObject();
+//				json_obj.put("FacilityID", rs.getInt(1));
+//				json_obj.put("FacilityType", rs.getString(2));
+//				json_array.put(i++, json_obj);
+//			}
+//		} 
+//		catch (SQLException e) 
+//		{
+//			System.out.println("Exception: " + e.getMessage());
+//			e.printStackTrace();
+//		} 
+//		catch (JSONException e1)
+//		{
+//			System.out.println("Exception: " + e1.getMessage());
+//			e1.printStackTrace();
+//		}
+//		finally
+//		{
+//			DbUtils.close(stmt, rs);
+//			con.close();
+//		}
+		JSONArray json_array = Facility.getAllFacilities();
+		if (json_array == null) {
+	        response.setContentType("application/json; charset=UTF-8");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} else {
+	        response.setContentType("application/json; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.println(json_array);
+			out.flush();
+			response.setStatus(HttpServletResponse.SC_OK);
 		}
-		finally
-		{
-			DbUtils.close(stmt, rs);
-			con.close();
-		}
-
-        response.setContentType("application/json; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		out.println(json_array);
-		out.flush();
-		response.setStatus(HttpServletResponse.SC_OK);
 		return;
 	}
 }

@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.brndbot.db.DbConnection;
+import com.brndbot.db.User;
 import com.brndbot.system.LoginCookie;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
-import com.brndbot.user.User;
 
 public class LoginServlet extends HttpServlet
 {

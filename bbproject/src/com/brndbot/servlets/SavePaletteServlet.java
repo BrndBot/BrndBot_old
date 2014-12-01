@@ -18,9 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
+import com.brndbot.db.Palette;
+import com.brndbot.db.User;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
-import com.brndbot.user.User;
 
 public class SavePaletteServlet extends HttpServlet
 {
@@ -57,7 +58,7 @@ public class SavePaletteServlet extends HttpServlet
 		// For now, just delete any previous palette information with id #1
 		try 
 		{
-			User.deletePalettes(user_id, con);
+			Palette.deletePalettes(user_id, con);
 		} 
 		catch (SQLException e) 
 		{
@@ -96,14 +97,22 @@ public class SavePaletteServlet extends HttpServlet
 		return;
 	}
 
-	private void writePalette(int user_id, boolean isSuggested, String[] palette, DbConnection con) throws SQLException
+	// TODO shouldn't this be done as a transaction?
+	private void writePalette(int user_id, boolean isSuggested, String[] paletteColors, DbConnection con) throws SQLException
 	{
-		con.ExecuteDB("delete from palettes where UserId = " + user_id + " and IsSuggested = " +
-				(isSuggested ? "1" : "0"), true);
-		for (int i = 0; i < palette.length; i++)
+		Palette.deletePalettes(user_id, isSuggested, con);
+//		con.ExecuteDB("delete from palettes where UserId = " + user_id + " and IsSuggested = " +
+//				(isSuggested ? "1" : "0"), true);
+		for (int i = 0; i < paletteColors.length; i++)
 		{
-			con.ExecuteDB("insert into palettes (UserID, Sequence, IsSuggested, Color) values ("
-					+ user_id + ", " + i + ", " + (isSuggested ? "1" : "0") + ", \"" + palette[i] + "\");", false);
+			Palette palette = new Palette();
+			palette.setUserId(user_id);
+			palette.setIsSuggested(isSuggested);
+			palette.setColor(paletteColors[i]);
+			palette.setSequence(i);
+			palette.save(con);
+//			con.ExecuteDB("insert into palettes (UserID, Sequence, IsSuggested, Color) values ("
+//					+ user_id + ", " + i + ", " + (isSuggested ? "1" : "0") + ", \"" + palette[i] + "\");", false);
 		}
 	}
 }

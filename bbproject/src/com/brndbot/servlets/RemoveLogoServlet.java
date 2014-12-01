@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.brndbot.db.DbConnection;
+import com.brndbot.db.UserLogo;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
-import com.brndbot.user.UserLogo;
 
 public class RemoveLogoServlet extends HttpServlet
 {
