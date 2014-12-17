@@ -1,3 +1,5 @@
+<!--  SALE template for the FACEBOOK editor -- see the email/text.jsp file for detailed descriptions of how
+templates work. -->
 <div id="saleBlock-<%=templateEnum %>" class="blockSelectable" 
 	style="display:<%=((templateVisible) ? "" : "none") %>">
 	<div style="width:94%;padding:1.25rem;background: #ffffff;overflow:hidden;height:1%;">

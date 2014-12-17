@@ -1,15 +1,24 @@
+// bench.js - common javascript code for all the editors in BrndBot
 
 // used to reinitialize the upload image button
 var EMPTY_UPLOAD_HTML = '<input class="greyButton" name="files" id="files" type="file" />';
 
+// This array tracks the template ids, indexed by the number for that template in the stack (0 thru total #)
 var currentListID = new Array(0, 0, 0);
+
+// The template that was last selected.  Usually, it's the currently selected template, but during transitions like 
+//  sort up/down, it's the last selected.
 var lastSelectedBlock = null;
 
+// One-time initialization called after the page fully loads.  These are initializations common
+//  to all editor.  The functions called are typically editor-specific.
 function initTheBench() 
 {
-	// Create enough room for all the field arrays
+	// Create enough room for all the field arrays and define the map that correlates data fields 
+	//  to editor HTML fields by ID.
 	initFieldMap();
 
+	// Kendo data source used to get list data for classes
 	var classDataSource  = new kendo.data.DataSource({
 		transport: 
 		{
@@ -21,6 +30,7 @@ function initTheBench()
 		}
 	});
 
+	// Initialize the list widget in the popup for classes
 	$("#" + idPrefix[CLASS_OBJ - 1] + "Here").kendoListView({
 		dataSource: classDataSource,
 	    selectable: true,
@@ -29,6 +39,7 @@ function initTheBench()
 	    dataBound: onClassListSuccess
     });
 
+	// Kendo data source used to get list data for workshops
 	var workshopDataSource  = new kendo.data.DataSource({
 		transport: 
 		{
@@ -40,6 +51,7 @@ function initTheBench()
 		}
 	});
 
+	// Initialize the list widget in the popup for workshops
 	$("#" + idPrefix[WORKSHOP_OBJ - 1] + "Here").kendoListView({
 		dataSource: workshopDataSource,
 	    selectable: true,
@@ -48,6 +60,7 @@ function initTheBench()
 	    dataBound: onWorkshopListSuccess
     });
 
+	// Kendo data source used to get list data for teachers
 	var staffDataSource  = new kendo.data.DataSource({
 		transport: 
 		{
@@ -59,6 +72,7 @@ function initTheBench()
 		}
 	});
 
+	// Initialize the list widget in the popup for teachers/staff
 	$("#" + idPrefix[STAFF_OBJ - 1] + "Here").kendoListView({
 		dataSource: staffDataSource,
 	    selectable: true,
@@ -67,7 +81,7 @@ function initTheBench()
 	    dataBound: onStaffListSuccess
     });
 
-//    $(document).ready(function() {
+// left side tab control
 	$("#tabstrip").kendoTabStrip({
         animation:  {
             open: {
@@ -76,6 +90,7 @@ function initTheBench()
         }
     });
 
+// right side tab control
     $("#tabstrip2").kendoTabStrip({
         animation:  {
             open: {
@@ -86,7 +101,7 @@ function initTheBench()
     
     });
 
-    // Gallery views
+    // Kendo data source used to retrieve image data for the appropriate gallery
     var yourImagesDataSource = new kendo.data.DataSource({
 		transport: 
 		{
@@ -99,10 +114,13 @@ function initTheBench()
         pageSize: 6
     });
 
+	// Pagination control
     $("#yourImagesPager").kendoPager({
         dataSource: yourImagesDataSource
     });
 
+	// Assemble images in a list view.  It's setup in the styles that images will rollover to the 
+	//  next line automatically.
     $("#yourImagesView").kendoListView({
         dataSource: yourImagesDataSource,
         template: kendo.template($("#imageTemplate").html()),
@@ -112,10 +130,12 @@ function initTheBench()
 	    complete: yourImagesViewSuccess
 	});
     
+	// placeholder in case it's needed
     function yourImagesViewSuccess(e)
     {
     }
 
+	// Combo box-like control to select image type (Kendo widget)
     $("#imageTypeList").kendoMultiSelect({
 		animation: false,
 		maxSelectedItems: 1,
@@ -144,6 +164,7 @@ function initTheBench()
 		}
 	});
 
+	// Initialize the file upload widget
     function initFileUpload()
     {
 	    $("#files").kendoUpload({
@@ -174,6 +195,10 @@ function initTheBench()
 */
 	}
 
+	// These two functions try to remove a previous uploader and create one fresh.
+	//  Not sure if this works properly.  Kendo has a problem reinitializing a
+	//  widget after it is initially initted.  There are destroy() methods, but 
+	//  I've seen problems.
     takeApartUploader();
     initFileUpload();
 
@@ -182,6 +207,7 @@ function initTheBench()
     	alert('onError');
     }
 
+	// Try to remove an existing file uploader
     function takeApartUploader()
     {
 		var upload = $("#files").data("kendoMultiSelect");
@@ -194,6 +220,7 @@ function initTheBench()
 		}
     }
 
+	// AJAX call to get images was successful.  Display correctly by gallery type.
     function onSuccess(e)
     {
 		var dialog = $("#imageGalleryPopup").data("kendoWindow");
@@ -221,7 +248,7 @@ function initTheBench()
     	alert('hello your image');
     }
 
-    // teachers
+    // Kendo data source for accessing teacher/staff data
     var yourTeachersDataSource = new kendo.data.DataSource({
 		transport: 
 		{
@@ -238,6 +265,7 @@ function initTheBench()
         dataSource: yourTeachersDataSource
     });
 
+	// Init the Kendo teachers list widget
     $("#yourTeachersView").kendoListView({
         dataSource: yourTeachersDataSource,
         template: kendo.template($("#imageTemplate").html()),
@@ -257,6 +285,7 @@ function initTheBench()
     	alert('select teacher photo!');
     }
 
+	// Convert from element id to an index in an array
 	function getGalleryIdx(id)
 	{
 		if (id == "images")
@@ -270,14 +299,18 @@ function initTheBench()
 		return 4; //upload
 	}
 
+	// The tab control in the image gallery popup
 	$("#galleryTabs").kendoTabStrip({
     });
 
+	// Upload button
 	$('#uploadTeacherPhoto').kendoButton({
 	});
 
+	// Event handler for something in a list getting selected (class, workshop, teacher).
 	function publishClicked(e)
 	{
+		// Use the ID of the object selected to figure out what type of object it is.
 		var spl = e.event.target.id.split("Button");
 		if (spl.length != 2) alert('Unexpected button id: ' + e.event.target.id);
 		var myType = '';
@@ -300,6 +333,7 @@ function initTheBench()
 		else
 			alert('Unexpected type from id: ' + spl[0]);
 
+		// Calculate the ID for the overall list itself.  Extract the database ID from element ID.
 		var id = '#' + idPrefix[myType - 1] + 'Here';
 		var listView = $(id).data("kendoListView");
 		var database_id = parseInt(spl[1]);
@@ -313,6 +347,7 @@ function initTheBench()
 	        var id = parseInt(dataItem.ID);
 	        if (id == database_id)
 	        {
+				// Build a Javascript Block object to store in the blockStack array
 	        	block = new Block(
     				CURRENT_CHANNEL,
     				myType,
@@ -325,13 +360,19 @@ function initTheBench()
     				dataItem.FullDescription,
     				dataItem.ShortDescription,
     				dataItem.ImgURL);
+				// Add to stack
 	        	editorSpecificDynamicPush(block);
+
+				// Show the template that was just added
 				document.getElementById(blockStack[blockStack.length - 1].getBlockID()).scrollIntoView();
 
+				// Click on the new template to highlight it and load its data into the editor tab
 				$('#' + blockStack[blockStack.length - 1].getBlockID()).click();
 	        	i = dataItems.length;
 	        }
 		}
+
+		// Close the popup
 		var dialog = $("#contentPopup").data("kendoWindow");
 		dialog.close();
 	}
@@ -394,14 +435,16 @@ function initTheBench()
 		dialog.close();
 	});
 
+	// Make the popup window for the 3 main content types appear
 	function showPopup(e, listID)
 	{
-		// Show the correct list
+		// Show the correct list, hide the others
 		(listID == 'classHere') ? $('#classHere').show() : $('#classHere').hide(); 
 		(listID == 'staffHere') ? $('#staffHere').show() : $('#staffHere').hide(); 
 		(listID == 'workshopHere') ? $('#workshopHere').show() : $('#workshopHere').hide(); 
 
 		var myWin = $("#contentPopup");
+		// If not initalized, init and show
 		if (!myWin.data("kendoWindow"))
 		{
 			var dialog = myWin.kendoWindow({
@@ -420,7 +463,7 @@ function initTheBench()
 	    }
 	}
 
-	// Popup to image gallery
+	// Button to popup the image gallery
 	$('.viewImageGallery').each(function ()
 	{
 		$(this).kendoButton({
@@ -432,6 +475,7 @@ function initTheBench()
 		});
 	});
 	
+	// Show the image gallery popup
 	function popupImageGallery(id)
 	{
 		var myWin = $("#imageGalleryPopup");
@@ -447,6 +491,8 @@ function initTheBench()
 		        title: false,
 		        visible: false
 	        }).data("kendoWindow").center();
+
+			// Position window
 		    myWin.parent().css({ "width" : "800px"});
 		    myWin.parent().css({ "height" : "550px"});
 		    myWin.parent().css({ "top" : "50px"});
@@ -461,7 +507,9 @@ function initTheBench()
 	    }
 	}
 
-	// Select onclick handler for any block with the class 'blockSelectable'
+	// Select onclick handler for any block with the class 'blockSelectable'.
+	// If the template has that class, if you click on it with the mouse, this
+	// function gets called.
 	$('div[class^="blockSelectable"]').each(function ()
 	{
 		$(this).on('click', function(e)
@@ -480,6 +528,7 @@ function initTheBench()
 			var form = prepEditID(lastSelectedBlock);
 			if (form)
 			{
+				// Yes it does, so show it and hide unnecessary stuff
 				form.show();
 				showOtherTabs(lastSelectedBlock);
 				$('#toClassID').hide();
@@ -487,6 +536,8 @@ function initTheBench()
 				$('#toWorkshopID').hide();
 				$('#toNonWorkshopID').hide();
 //				$('#applyDiv').hide();
+
+				// lastSelectedBlock is the block that is being clicked on
 				var type = getBlockType(lastSelectedBlock);
 				if (type > 0)
 				{
@@ -498,6 +549,8 @@ function initTheBench()
 						$('#toWorkshopID').show();
 					if (type == NON_WORKSHOP_OBJ)
 						$('#toNonWorkshopID').show();
+
+					// Fill in the data in the editor on the right-hand side
 					var fields = masterFields[type - 1];
 					for (var x = 0; x < fields.length; x++)
 					{
@@ -507,8 +560,12 @@ function initTheBench()
 					}
 				}
 			}
+
+			// Put the highlight border on the template
 			$('#editType').html(blockStack[stackIdx - 1].getBlockTypeDesc());
 			$(lastSelectedBlock).css('border','.0625rem solid #000000');
+
+			// Show up/down buttons where appropriate
 			if (stackIdx > 0)
 			{
 				if (stackIdx > 1)
@@ -516,15 +573,20 @@ function initTheBench()
 				if (stackIdx < blockStack.length)
 					$(lastSelectedBlock + 'SortDownBtn').css('display', 'inline');
 			}
+
+			// The trash button (X)
 			$(lastSelectedBlock + 'TrashBtn').css('display', 'inline');
 			return false;
 		});
 	});
 
+	// Event handler for when the trash button (X) is clicked
 	$('div[class^="trashBlock"]').each(function ()
 	{
 		$(this).on('click', function(e)
 		{
+			// Remove from the blockStack and slide anything following the now-deleted
+			//  entry up one.
 			var form = prepEditID(lastSelectedBlock);
 			if (form)
 			{
@@ -540,6 +602,8 @@ function initTheBench()
 		click: openPopup
 	});
 
+	// Apply the values currently in the editor to the currently selected object.
+	// Redisplay the updated values in the template
 	$("#applyButton").kendoButton({
 		click: function()
 		{
@@ -560,11 +624,13 @@ function initTheBench()
 		}
 	});
 
+	// Redirect to the page that sends the email
 	function sendToFinalEmail()
 	{
 		window.location='emailfull.jsp';		
 	}
 
+	// Redirect to the page that posts to Facebook
 	function sendToFinalFacebook()
 	{
 		// Put the contents into the hidden form
@@ -606,6 +672,7 @@ function initTheBench()
 		click: openPopup
 	});
 
+	// Track the item that is selected in the popup list
 	function setListState(list, bType)
 	{
         var index = list.select().index();
@@ -651,6 +718,8 @@ function initTheBench()
 		doListSuccess(CLASS_OBJ);
 	}
 
+	// When you select an item from the popup list, and you are adding it to 
+	//  the stack in the editor, this is the routine that handles that.
 	function doListSuccess(cType)
 	{
 		var id = '#' + idPrefix[cType - 1] + 'Here'; 
@@ -682,6 +751,7 @@ function initTheBench()
 		doListSuccess(STAFF_OBJ);
 	}
 
+	// Show the popup window.  Initialize it if necessary.
 	function openPopup(e)
 	{
 		var myWin = $("#contentPopup");
@@ -708,6 +778,8 @@ function initTheBench()
 	}
 }
 
+// If you click on a selected block, it unselects the block.  This is the 
+//  function that unselects a selected block.
 function unselectLastSelectedBlock()
 {
 	var lastOne = 'x';
@@ -735,6 +807,8 @@ function unselectLastSelectedBlock()
 	return lastOne;
 }
 
+// Function that affects the removal of an item from the stack.  Has to handle
+//  the blockStack data array as well as the display templates
 function trashBlockClicked(e, id, scrollIntoView)
 {
 	var stackIdx = isolateEnum(id) - 1;
@@ -830,6 +904,8 @@ function getBlockType(idarg)
 	return type;
 }
 
+// Construe the editor ID based on the field being edited, via
+//  the assumed naming convention
 function prepEditID(id)
 {
 	var baseID = id.split("-");

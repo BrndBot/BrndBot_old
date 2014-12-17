@@ -26,12 +26,14 @@
 
     <link href="styles/kendo.common.min.css" rel="stylesheet">
     <link href="styles/kendo.rtl.min.css" rel="stylesheet">
+    	<!--  use the Kendo "flat" style -->
     <link href="styles/kendo.flat.min.css" rel="stylesheet">
     <link href="css/shared.css" rel="stylesheet">
     <link href="css/signup.css" rel="stylesheet">
     <link href="css/bench.css" rel="stylesheet">
     <link href="css/klist.css" rel="stylesheet">
-
+	
+	<!--  These include the Adobe Proximo Nova font -->
 	<script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
@@ -44,6 +46,7 @@
 		response.sendRedirect("index.jsp");
 		return;
 	}
+	// CHANNEL indicates the type of editor needed (i.e. email, Facebook, Twitter, etc.)
 	ChannelEnum CHANNEL = ChannelEnum.create(tmp_channel);
 	System.out.println("Channel in the bench: " + CHANNEL.getItemText() + " - " + CHANNEL.getValue().intValue());
 %>
@@ -55,13 +58,19 @@
     <script type="text/javascript" src="js/fieldmap.js"></script>
     <script type="text/javascript" src="js/bench.js"></script>
 
-    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
+    <%   // Include the "editor-specific" javascript.  Each editor shares the javascript logic above,
+    	 // but has it's own code in the respective javascript below.  There is an assumption in the shared
+    	 // javascript above that certain functions will be implemented in each of the editor-specific files.
+         if (CHANNEL.equals(ChannelEnum.EMAIL)) { 
+    %>
     <script type="text/javascript" src="js/emailbench.js"></script>
 	<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
     <script type="text/javascript" src="js/fbbench.js"></script>
 	<% } %>
 
 	<script type="text/javascript">
+		// To share the enumerated values used on the server, we define local variables using the 
+		//  same enumerated class variables.
 		var EMAIL_CHANNEL = <%=ChannelEnum.EMAIL.getValue().intValue() %>;
 		var FACEBOOK_CHANNEL = <%=ChannelEnum.FACEBOOK.getValue().intValue() %>;
 		var TWITTER_CHANNEL = <%=ChannelEnum.TWITTER.getValue().intValue() %>;
@@ -72,12 +81,17 @@
 <body>
 <%
 	System.out.println("-------------Entering bench.jsp---------------");
+
+	// Originally, there was one-and-only-one content object selected by the 
+	//  user before entering the editor.  The type of object is CONTENT_KEY,
+	//  and the ID for that type of object is DATABASE_ID_KEY.
 	int btype = Utils.getIntSession(session, SessionUtils.CONTENT_KEY);
 	Assert.that(btype != 0 ,"No block type passed to bench.jsp.");
 //	int id = Utils.getIntSession(session, SessionUtils.DATABASE_ID_KEY);
 	int id = Utils.getIntParameter(request, SessionUtils.DATABASE_ID_KEY);
 	Assert.that(id > 0 ,"No database id passed to bench.jsp.");
 
+	// UserID.  This needs to become an OAUTH2 process for security's sake
 	int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
 	if (user_id == 0)
 	{
@@ -86,14 +100,19 @@
 		return;
 	}
 
+	// The database uses a connection pool
 	DbConnection con = DbConnection.GetDb();
 
-	System.out.println(ChannelEnum.EMAIL + ", user: " + user_id + ", content: " + btype + ", db: " + id);
+//	System.out.println(ChannelEnum.EMAIL + ", user: " + user_id + ", content: " + btype + ", db: " + id);
 
+	// These are the bounding max width and height for sizing images.  This whole mechanism needs better requirements
+	//  and a more substantial commitment in terms of a class or set of classes that house all the image resizing
+	//  logic.  Requirements are needed before that class can be implemented.
 	int header_max_logo_width = CHANNEL.getDefaultImgWidth().intValue();
 	int header_max_logo_height = CHANNEL.getDefaultImgWidth().intValue();  // same for now
 
-	// Get the block chosen by the user on the dashboard
+	// Fill in the block for the content object chosen by the user on the dashboard.  See the JS below
+	// for how the block JS object is used.
 	Block starting_block = (Block)Block.getAsBlock(ChannelEnum.EMAIL, user_id, btype, id, header_max_logo_width);
 
 %>
@@ -105,7 +124,9 @@
 
 			<div id="leftSideBar">
 				<div style="position:relative">
-				
+					<!--  This is a Kendo UI widget for a tab control.  It follows a specific structure
+					       required by the widget.
+					-->
 					<div class="editorDiv">
 						<div id="tabstrip2" class="rounded">
 							<ul>
@@ -131,6 +152,7 @@
 
 									</div>
 								</div>
+								<!--  These get hidden or shown depending on the button selections made. -->
 								<div id="toClassID" style="float:left;display:none">
 									<button id="toNonClassButton" style="font-size: 1rem;width:7.5rem" 
 										class="greenButton rounded" >non-feature</button>
@@ -173,7 +195,9 @@
 							</div>
 						</div>
 					</div>
-					<!-- Add new blocks menu -->
+					<!-- Add new blocks menu.  This is another Kendo widget, so the structure is required to
+					     initialize the widget correctly.
+					 -->
 					<div id="tabstrip" class="rounded">
 						<ul>
 							<li class="k-state-active">
@@ -184,6 +208,7 @@
 							</li>
 						</ul>
 						<div>
+							<!-- The images for each choice come from the styles. -->
 							<div class="linkText" style="padding-left:0.1rem;">
 								<div id="newWorkshopLink" class="formSpacerLite addLink">
 									Workshops
@@ -252,6 +277,12 @@
 							Edit<span id="editType"></span>
 						</div>
 					</div>
+					<!--  These are positioned using the position:relative for the parent style, and the 
+					      position:absolute for these children styles.  This allows positioning of these child
+					      divs in an absolute position relative to the parent.  Meaning, always exactly positioned
+					      in a certain spot relative to wherever the parent resides.  This positioning uses top, bottom, right
+					      and left.
+					 -->
 					<div id="applyDiv2">
 						<button id="checkOutButton" style="font-size: 1rem;width:8rem" class="orangeButton" >continue</button>
 					</div>
@@ -287,10 +318,12 @@
 		<% } %>
 
  		<%
-			// Options anticipated by the templates
+			// Options anticipated by the templates.  The templates are separate JSPs and expect thse variables
+			//  to be instantiated.  So you'll see Eclipse think the templates have errors, but that's because
+			//  the variables are defined here, in the main JSP.
 			boolean templateVisible = true;
 			boolean isPreview = true;
-			// Must have the palette array, too
+			// Must have the palette array, too.  Retrieves the palette set by the user when signed-up.
 			ArrayList<Palette> paletteArray = User.getUserPalette(user_id, con);
 //			Palette new1 = new Palette("#e67a1e");
 //			Palette new2 = new Palette("#86cde5");
@@ -299,6 +332,10 @@
 			String chosenImg = "";
 			if (CHANNEL.equals(ChannelEnum.EMAIL)) 
 			{
+				// Args 2 and 3 are part of the mess regarding image bounding.  All these functions for 
+				//  "getImage, getBoundLogo" etc should be assembled into a new class that does a great
+				//  job on image resizing.  Future effort for image cropping could use th same class.  This is
+				//  a mess currently.  Needs good requirements!
 				chosenImg = UserLogo.getBoundLogo(user_id, 150, 150);
 			}
 /*			else if (CHANNEL.equals(ChannelEnum.FACEBOOK))
@@ -315,10 +352,37 @@
 			templateVisible = false;
 		%>
 <%
-			int templateEnum = 1;
+		// This is where the editor structures placeholders for template/content.  This is where the layouts
+		//  are filled in with data and shown.  For each slot, numbered from 1 to MAX_BLOCK_STACK_SIZE defined 
+		//  in the JS below, any template type that can exist in that slow is included.  The templates are all
+		//  hidden, but when content is chosen, the appropriate template for the appropriate slot in the stack
+		//  is filled with the content from the blockStack array.  The blockStack array holds the data.  It relies
+		//  on a static structure that accommodates all types of content.  
+		//
+		//  The template JSP files have fields that also follow a strict naming convention so that locations 
+		//  to place data can be found by the generic editor functions.
+		//
+		//  Some templates use templateEnum as a tie-breaker used in the ID fields of its respective HTML.  Any
+		//  template that uses templateEnum is expected by the generic editor JS to have a few characteristics:
+		//
+		//   1.  There can be more than one of the type of object in the stack.  For example, since the workshop
+		//       template for email uses templateEnum in the naming convention of its IDs, there can be more than
+		//       one workshop in an email.
+		//   2.  This object can be moved up or down in the stack.  That means that it should have the up and down
+		//       image controls defined in the template.
+		//   3.  Likewise, templates that do not use templateEnum are singletons (can only have 1 template for
+		//       that type of object) and it cannot be moved up or down.
+
+		
+		// IMPORTANT:  The number of sections included here for sets of templates must equal the value of the
+		// JS variable MAX_BLOCK_STACK_SIZE defined below!
+		int templateEnum = 1;
 %>
 
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
+	    <%  // Whatever is included here defines what type of data can be displayed in this particular slot
+	    	//  of the editor.  Currently, each slow may contain all types of data/templates, but it doesn't 
+	    	//  have to be that way.
+	    	if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
 			<%@include file="templates/email/template-set.jsp" %>
 		<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
 			<%@include file="templates/facebook/template-set.jsp" %>
@@ -349,7 +413,8 @@
 			templateEnum = 4;
 %>
 
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
+	    <%  // Currently, only email has more than 3 slots in the editor.
+	    	if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
 			<%@include file="templates/email/template-set.jsp" %>
 		<% } %>
 
@@ -378,6 +443,9 @@
 				&nbsp;
 			</div>
 
+			<!-- This div is the popup for choosing the type of content (workshop, class, teacher) from
+			       a Kendo list widget.
+			 -->
 			<div id="contentPopup" class="rounded" style="display:none;">
 			    <div>
 			    	<div class="unit size4of5 channelTitle">
@@ -390,6 +458,7 @@
 			    <div style="clear:both;line-height:0rem">
 			    	&nbsp;
 			    </div>
+			    <!--  Each of these divs gets initialized as a Kendo list widget. -->
 			    <div style="background-color: #ffffff">
 					<div id="classHere" style="display:none;">Loading data, one moment please...</div>
 					<div id="workshopHere" style="display:none;">Loading data, one moment please...</div>
@@ -397,6 +466,10 @@
 			    </div>
 			</div>
 	
+			<!-- This div is the popup for choosingan image from the gallery.  There is a known bug in this
+				 version of the software.  You cannot use the Kendo upload widget when placed on the pane of
+				 a Kendo tab control widget.  There are new designs for this to avoid this bug.
+			 -->
 			<div id="imageGalleryPopup" class="rounded" style="display:none;">
 			    <div>
 			    	<div class="unit size4of5 channelTitle" style="padding:10px 0 0 10px">
@@ -478,11 +551,14 @@
 			    </div>
 			</div>
 
+			<!-- Hidden form used to post the blockStack array of data assembled in the editor to 
+			     the server, which puts it on the session for later reuse if needed.
+			 -->
 			<form id="blockForm" method="post">
 				<input id="hiddenBlocks" name="hiddenBlocks" type="text" style="display:none" />
 			</form>
 
-			<!-- Hidden form used to post data for fusing the image -->
+			<!-- Hidden form used to post data for fusing the image and HTML into a single image. -->
 			<form id="htmlForm" method="post">
 				<input id="hiddenHtml" name="hiddenHtml" type="text" style="display:none" />
 			</form>
@@ -506,17 +582,21 @@
 	
 	</div> <!-- brndbotMain -->
 <script type="text/javascript">
-
+// This is the naiscent "style" implementation.  The design and implementation of the "style" (aka "layout variation")
+//  needs requirements before it can be done correctly.  At the time the implementation of this editor was halted,
+//  "styles" was all over the map.
 <% if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
 	var IMAGE_AND_BANNER_OBJ = <%=FBStyleType.FB_IMAGE_AND_BANNER.getValue().intValue()%>;
 	var TEXT_OVER_IMAGE_OBJ = <%=FBStyleType.FB_TEXT_OVER_IMAGE.getValue().intValue()%>;
 	var LOGO_ONLY_OBJ = <%=FBStyleType.FB_LOGO_ONLY.getValue().intValue()%>;
 <% } %>
 
+	// What channel are we editing
 	var EMAIL_CHANNEL = <%=ChannelEnum.EMAIL.getValue().intValue() %>;
 	var FACEBOOK_CHANNEL = <%=ChannelEnum.FACEBOOK.getValue().intValue() %>;
 	var CURRENT_CHANNEL = <%=CHANNEL.getValue().intValue() %>;
 	
+	// Types of objects (data)
 	var CLASS_OBJ = <%=BlockType.CLASS.getValue().intValue() %>;
 	var WORKSHOP_OBJ = <%=BlockType.WORKSHOP.getValue().intValue() %>;
 	var STAFF_OBJ = <%=BlockType.STAFF.getValue().intValue() %>;
@@ -537,7 +617,11 @@
 	var VIDEO_OBJ = <%=BlockType.VIDEO.getValue() %>;
 
 	// These are for the lists of objects that popup when you click on
-	//  an icon on the right pane.
+	//  an icon on the right pane.  These prefices are the key differentiator
+	//  in the naming scheme for IDs in the templates and related editory and 
+	//  layout/style design.  The Java class BlockType needs to enumerate
+	//  these values in an ascending order.  The hardcoded 17 for array size
+	//  could be derived from the Java class as an improvement.
 	var idPrefix = new Array(17);
 	idPrefix[CLASS_OBJ - 1] = '<%=BlockType.CLASS.getItemTextLowerCase()%>';
 	idPrefix[WORKSHOP_OBJ - 1] = '<%=BlockType.WORKSHOP.getItemTextLowerCase()%>';
@@ -557,9 +641,12 @@
 	idPrefix[WEB_LINK_OBJ - 1] = '<%=BlockType.NONWORKSHOP.getItemTextLowerCase()%>';
 	idPrefix[VIDEO_OBJ - 1] = '<%=BlockType.NONWORKSHOP.getItemTextLowerCase()%>';
 
-	// Variable content in the stack
+	// Variable content in the stack.  Assumes that VIDEO_OBJ is the last enumerated value in
+	//  the Java class BlockType (highest enumerated value).  Again, could be improved upon.
 	var masterFields = new Array(VIDEO_OBJ);
 
+	// Depending on channel type, set the max # of templates that can be edited and set the 
+	//  variable to be stored in the session to that channel.
     <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
 	var MAX_BLOCK_STACK_SIZE = 6;
 	SESSION_CHANNEL = EMAIL_CHANNEL;
@@ -568,6 +655,8 @@
 	SESSION_CHANNEL = FACEBOOK_CHANNEL;
 	<% } %>
 
+	// This is the array that keeps the data for each template being edited.  blockStack[0] is the top
+	//  template, blockStack[1] is 2nd, etc.
 	var blockStack = new Array();
 
 	// Image types
@@ -577,15 +666,18 @@
 	var IMAGE_TYPE_STOCK = <%=ImageType.STOCK.getValue() %>;
 	var IMAGE_TYPE_FUSED = <%=ImageType.FUSED_IMAGE.getValue() %>;
 
+	// The ID of the form used to post the blockStack array to the server to store in the session
 	var blockForm = $('#blockForm');
 
 	// Singleton class for client-side session management
 	var session_mgr = new Session();
 	session_mgr.setImageID(IMAGE_TYPE_USER);
 
+	// This function is called when all of page including HTML, JS and CSS are fully loaded.
 	$(document).ready(function() 
 	{
-		// If we were able to retrieve user's starting choice, run with it.
+		// If we were able to retrieve user's starting choice, run with it.  Should toss an error if not defined.
+		//  There is a Java class Block and a JS class Block (block.js) that are synched in design. 
 		<% if (starting_block != null) { %>
 			var the_starting_block = new Block(
 			<%=starting_block.get_channel_type().getValue().intValue() %>,
@@ -604,8 +696,10 @@
 			// doc.ready init for the bench, in bench.js
 			initTheBench();
 
+			// Display the editor-specific starting appearance.			
 			initialBlockDisplay(the_starting_block);
 
+			// ensure the top of the page is shown
 			document.getElementById("brndbotMain").scrollIntoView();
 		<% } %>
 	});

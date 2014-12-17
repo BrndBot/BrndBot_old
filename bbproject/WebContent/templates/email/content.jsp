@@ -1,4 +1,13 @@
 <!-- placeholder for the class block edit form for email -->
+<!-- EMAIL content.jsp
+This file contains the HTML for the right-hand side EDITOR for each type of data object.
+Like most of the editor, it relies on a strict naming convention.  See the "var idPrefix =" in bench.jsp
+to see where the prefixes are defined. So the naming convention is {prefix}BlockDesign.  The id for the editor
+HTML defined herein must have the precise ID to be "found".  When an object in the editor is selected, the 
+event handler looks for this id and shows it, hiding the previously shown editor, if any.
+
+The editor is one tab on the right-hand side.  There are other files used in the same manner for the other tabs.
+-->
 <div id="classBlockEdit" style="display:none">
 	<div class="blockEdit">
 		<div style="float:none">

@@ -1,5 +1,6 @@
 // This source file contains Javascript that is specific to the email version of bench.jsp
 
+// Called once to initialize Kendo widgets and controls specific to this version of the editor.
 function benchSpecificInits()
 {
 	$('#newGraphicLink').on('click', function(e)
@@ -22,6 +23,7 @@ function benchSpecificInits()
 		addFooterBlock(false, true);
 	});
 	
+	// Event handler when someone clicks the "up" button on a template
 	$('div[class^="sortUp"]').each(function () 
 	{
 		$(this).on('click', function(e)
@@ -31,12 +33,19 @@ function benchSpecificInits()
 		});
 	});
 	
+	// The event handler for toggling from the "big" version of a
+	// template to the "small" version (Feature, non-featured).  There
+	// is a naming convention dependency for switching to/from these
+	// template versions.
 	$("#toNonClassButton").kendoButton({
 		click: function()
 		{
+			// Get the block data
 			var stackIdx = isolateEnum(lastSelectedBlock) - 1;
 			var block = blockStack[stackIdx];
 			block.setBlockType(NON_CLASS_OBJ);
+
+			// Replace the entry in the array that houses all rows' data
 			blockStack.splice(stackIdx, 1, block);
 			$('#' + block.getBlockID()).hide();
 			
@@ -46,13 +55,18 @@ function benchSpecificInits()
 			$('#' + blockStack[stackIdx].getBlockID()).click();
 		}
 	});
-	
+
+	// This is the complementary event handler for switching back from small to big 
+	//  version of a template.
 	$("#toClassButton").kendoButton({
 		click: function()
 		{
+			// Get the block data
 			var stackIdx = isolateEnum(lastSelectedBlock) - 1;
 			var block = blockStack[stackIdx];
 			block.setBlockType(CLASS_OBJ);
+
+			// Replace the entry in the array that houses all rows' data
 			blockStack.splice(stackIdx, 1, block);
 			$('#' + block.getBlockID()).hide();
 			
@@ -63,6 +77,7 @@ function benchSpecificInits()
 		}
 	});
 	
+	// Same comments as above regarding class toggling, only for workshops
 	$("#toNonWorkshopButton").kendoButton({
 		click: function()
 		{
@@ -79,6 +94,7 @@ function benchSpecificInits()
 		}
 	});
 	
+	// See class version above
 	$("#toWorkshopButton").kendoButton({
 		click: function()
 		{
@@ -95,27 +111,37 @@ function benchSpecificInits()
 		}
 	});
 	
+	// This is the function that actually does the sort up operation
 	function sortUpClicked(e, id)
 	{
+		// Stop event percolating up the DOM
 		e.preventDefault();
+		
+		// Take the perimeter boundry down and lose the idea of a currently selected block
 		unselectLastSelectedBlock();
 	
+		// Assumption is that the template has an enumerated value
 		var stackIdx = isolateEnum(id) - 1;
 	//			$('#' + id).hide();
+	
+		// Switch the order in the data array first
 		var block = blockStack[stackIdx];
 		var other_block = blockStack[stackIdx - 1];
 		blockStack.splice(stackIdx - 1, 2, block, other_block); // switch the order
+
+		// Hide the previous templates since they are no longer accurate
 		$('#' + block.getBlockID()).hide();
 		$('#' + other_block.getBlockID()).hide();
 	
-		// recalculate the ids and redisplay
+		// recalculate the ids and redisplay the new order
 		fillBlock(stackIdx, blockStack[stackIdx - 1], true);
 		fillBlock(stackIdx + 1, blockStack[stackIdx], true);
 		var theBlock = '#' + blockStack[stackIdx - 1].getBlockID();
 		document.getElementById(blockStack[stackIdx - 1].getBlockID()).scrollIntoView();
-		$(theBlock).click();
+		$(theBlock).click(); // select the template we moved
 	}
 	
+	// Same as sortUp, only down
 	$('div[class^="sortDown"]').each(function () 
 	{
 		$(this).on('click', function(e)
@@ -146,8 +172,12 @@ function benchSpecificInits()
 	}
 }
 
+// Adds a footer object and template to the bottom of the stack
 function addFooterBlock(suppress_click, display_edit_type)
 {
+	// define the default values.  Needs to extract data from the database, not kludged/hardcoded.
+	//  I would create a Java class or function from a class, call it in bench.jsp in a scriptlet,
+	//  assign the results to a javascript variable and reference it globally.
 	var block = new Block(
 			EMAIL_CHANNEL,
 			FOOTER_OBJ,
@@ -169,6 +199,7 @@ function addFooterBlock(suppress_click, display_edit_type)
 	}
 }
 
+// Adds a schedule object and template to the bottom of the stack
 function addScheduleLink(suppress_click, display_edit_type)
 {
 	var id = '#' + idPrefix[SCHEDULE_OBJ - 1] + 'Block-' + (blockStack.length + 1);
@@ -191,6 +222,7 @@ function addScheduleLink(suppress_click, display_edit_type)
 	$(id).click();
 }
 
+// Adds a social media object and template to the bottom of the stack
 function addSocialBlock(suppress_click, display_edit_type)
 {
 	var block = new Block(
@@ -214,6 +246,7 @@ function addSocialBlock(suppress_click, display_edit_type)
 	}
 }
 
+// Adds a graphic/image object and template to the bottom of the stack
 function addGraphicBlock(suppress_click, display_edit_type)
 {
 	var block = new Block(
@@ -238,9 +271,16 @@ function addGraphicBlock(suppress_click, display_edit_type)
 	}
 }
 
-// Map the edit field with the corresponding display field
+// Map the edit field with the corresponding display field.  There is a similar function for this for each
+//  editor/channel type.
 function initFieldMap()
 {
+	// FieldMap constructor takes the following values:
+	// display_id = ID of the div in the template
+	// edit_id = ID of the control in the editor HTML used to modify value
+	// uses_enumeration = Is the template enumerated?  Used to calculate ID in template correctly
+	// field_type = what type of control (button, text field, textarea, etc.)
+
 	// GRAPHIC BLOCK
 	var hdr_arr = new Array();
 	masterFields[GRAPHIC_OBJ - 1] = hdr_arr;
@@ -304,6 +344,7 @@ function initFieldMap()
 	masterFields[FOOTER_OBJ - 1] = foot_arr;
 }
 
+// This function is called once when the editor first loads.  It displays the default set of templates for this editor.
 function initialBlockDisplay(the_starting_block)
 {
 	// display the panes (suppress selection)
@@ -316,6 +357,7 @@ function initialBlockDisplay(the_starting_block)
 	addFooterBlock(true, false);
 }
 
+// Adds a simple text object and template to the bottom of the stack
 function addTextBlock(suppress_click, display_edit_type)
 {
 	var block = new Block(

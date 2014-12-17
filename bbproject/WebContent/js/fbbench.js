@@ -1,5 +1,6 @@
 // This source file contains Javascript that is specific to the FB version of bench.jsp
 
+// Called once to initialize Kendo widgets and controls specific to this version of the editor.
 function benchSpecificInits()
 {
 	$('#newGraphicLink').on('click', function(e)
@@ -28,9 +29,16 @@ function benchSpecificInits()
 	}
 }
 
-// Map the edit field with the corresponding display field
+// Map the edit field with the corresponding display field.  There is a similar function for this for each
+//  editor/channel type.
 function initFieldMap()
 {
+	// FieldMap constructor takes the following values:
+	// display_id = ID of the div in the template
+	// edit_id = ID of the control in the editor HTML used to modify value
+	// uses_enumeration = Is the template enumerated?  Used to calculate ID in template correctly
+	// field_type = what type of control (button, text field, textarea, etc.)
+
 	// TEXT BLOCK
 	var arr = new Array();
 	arr.push(new FieldMap('textName', 'textEditName', true, INPUT_TEXT_FLD));
@@ -60,6 +68,7 @@ function initFieldMap()
 	masterFields[STAFF_OBJ - 1] = st_arr;
 }
 
+// This function is called once when the editor first loads.  It displays the default set of templates for this editor.
 function initialBlockDisplay(the_starting_block)
 {
 	// save the orig block type for use blow
@@ -82,6 +91,7 @@ function initialBlockDisplay(the_starting_block)
 //	addGraphicBlock(true);
 }
 
+// Adds a simple text object and template to the bottom of the stack
 function addTextBlock(suppress_click, display_edit_type)
 {
 	var block = new Block(

@@ -1,3 +1,5 @@
+<!--  WORKSHOP template for the EMAIL editor -- see the email/text.jsp file for detailed descriptions of how
+templates work. -->
 <div id="workshopBlock-<%=templateEnum %>" class="blockSelectable"
 		style="display:<%=((templateVisible) ? "" : "none") %>;border-bottom:0.1875rem solid <%=paletteArray.get(1).getColor() %>">
 	<div style="width:94%;padding:1.188rem;background: #ffffff;overflow:hidden;height:1%;">
