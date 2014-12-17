@@ -1,3 +1,5 @@
+<!--  SOCIAL MEDIA template for the FACEBOOK editor -- see the email/text.jsp file for detailed descriptions of how
+templates work. -->
 <div id="socialBlock-<%=templateEnum %>" class="blockSelectable" style="display:<%=((templateVisible) ? "" : "none") %>">
 	<div style="width:95%;padding:1.25rem;color:#ffffff;font-size: 1.375rem;background-color:<%=paletteArray.get(0).getColor() %>;overflow:hidden;height:1%;">
 		<div style="width:100%;">

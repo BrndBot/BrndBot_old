@@ -1,3 +1,6 @@
+<!--  These are formal Kendo templates used to layout each row in the Kendo list widget.  The templates
+      are referenced in the initialization of the widget by ID (template={id} option).
+ -->
 <script type="text/x-kendo-template" id="classTemplate">
 	<div class="myListItem">
 		<div style="padding-bottom:1.0625rem;padding-top:1.25rem">

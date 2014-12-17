@@ -1,3 +1,4 @@
+<!-- EMAIL - Defines what templates can be placed in this slot in the editor -->
 			<%@include file="graphic.jsp" %>
 			<%@include file="text.jsp" %>
 			<%@include file="workshop.jsp" %>

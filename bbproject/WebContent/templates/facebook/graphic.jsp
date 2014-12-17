@@ -1,3 +1,5 @@
+<!--  GRAPHIC template for the FACEBOOK editor -- see the email/text.jsp file for detailed descriptions of how
+templates work. -->
 <div id="graphicBlock-<%=templateEnum %>" style="display:<%=((templateVisible) ? "" : "none") %>;" 
 	class="blockSelectable">
 	<div style="width:94%;padding:0rem 1.25rem;background:#ffffff;overflow:hidden;">

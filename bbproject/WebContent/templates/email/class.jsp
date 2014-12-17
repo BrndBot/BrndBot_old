@@ -1,3 +1,5 @@
+<!--  CLASS template for the EMAIL editor -- see the email/text.jsp file for detailed descriptions of how
+templates work. -->
 <div id="classBlock-<%=templateEnum %>" 
 	class="blockSelectable" style="display:<%=((templateVisible) ? "" : "none") %>">
 

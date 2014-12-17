@@ -7,6 +7,8 @@ package com.brndbot.block;
 
 import java.util.ArrayList;
 
+// The enumerated valu and prefix are used to define Javascript equivalent variables
+//  in bench.jsp, so if you add something to this list, change the jsp too.
 public class BlockType
 {
 	final static BlockType[] _ENUMS;
@@ -59,6 +61,9 @@ public class BlockType
 	public final static BlockType WEB_LINK = 
 			new BlockType(new Integer(16), "WebLink");
 
+	// VIDEO SHOULD BE THE LAST, OR HIGHEST ENUMERATED VALUE.  There is a kludge reference in bench.jsp 
+	//  that is based on this assumption.  You could use the size of the arraylist enums to avoid that
+	//  assumption if you put a getter on it.
 	public final static BlockType VIDEO = 
 			new BlockType(new Integer(17), "Video");
 
@@ -97,13 +102,13 @@ public class BlockType
     	_item_number = value;
     	_item_text = sent_txt;
     }
-    
+
     public String getItemText() { return _item_text; }
-    
+
     public String getItemTextLowerCase() { return _item_text.toLowerCase(); }    
 
     public Integer getValue() { return _item_number; }
-    
+
     static public BlockType create(int type)
     {
     	BlockType stype = new BlockType(new Integer(type), "");

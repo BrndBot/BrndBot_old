@@ -1,3 +1,5 @@
+<!--  GRAPHIC template for the EMAIL editor -- see the email/text.jsp file for detailed descriptions of how
+templates work. -->
 <div id="graphicBlock-<%=templateEnum %>" style="display:<%=((templateVisible) ? "" : "none") %>;border-bottom:0.1875rem solid <%=paletteArray.get(0).getColor() %>" 
 	class="blockSelectable">
 	<div style="width:94%;padding:0rem 1.25rem;background: #ffffff;overflow:hidden;height:1%;line-height:1%">
