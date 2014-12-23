@@ -5,11 +5,14 @@
  */
 package com.brndbot.block;
 
+/** Does a SocialBlock really signify anything?
+ *  How is it different from a Block?
+ */
 public class SocialBlock extends BlockBase
 {
 	public SocialBlock(
 			ChannelEnum channel_type,
-			BlockType block_type,
+			//BlockType block_type,
 			String block_type_name,
 			int database_id,
 			String name,
@@ -21,7 +24,7 @@ public class SocialBlock extends BlockBase
 			String img_url)
 	{
 		super(channel_type,
-		block_type,
+		//block_type,
 		block_type_name,
 		database_id,
 		name,

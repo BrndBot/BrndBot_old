@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.brndbot.block.BlockType;
 import com.brndbot.block.ChannelEnum;
 import com.brndbot.db.ImageType;
 import com.brndbot.system.SessionUtils;
@@ -139,7 +138,7 @@ public class SetSessionServlet extends HttpServlet
 		}
 
 		int channel = NEG_ONE;
-		int content = NEG_ONE;
+		String content = "";
 		int database_id = NEG_ONE;
 		boolean foundOne = false;
 
@@ -180,29 +179,16 @@ public class SetSessionServlet extends HttpServlet
 				channel = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 			}
 
-			// Check content type
-			content = Utils.getIntParameter(request, SessionUtils.CONTENT_KEY);
-			if (content > 0)
-			{
-//				BlockType ch_enum = BlockType.create(content);
-//				System.out.println("Set non-zero content to: " + content + ", " + ch_enum.getItemText());
-				if (content != BlockType.CLASS.getValue().intValue() &&
-					content != BlockType.WORKSHOP.getValue().intValue() &&
-					content != BlockType.STAFF.getValue().intValue() &&
-					content != BlockType.SCHEDULE.getValue().intValue() &&
-					content != BlockType.SALE.getValue().intValue())
-				{
-					logger.error("Bad block type: " + content);
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-					return;
-				}
+			// Check content type. In the new world, this is a model name.
+			content = Utils.getStringParameter(request, SessionUtils.CONTENT_KEY);
+			if (content != null) {
 				session.setAttribute(SessionUtils.CONTENT_KEY, "" + content);
 				foundOne = true;
 			}
-			else
-			{
-				content = Utils.getIntSession(session, SessionUtils.CONTENT_KEY);
-			}
+//			else
+//			{
+//				content = Utils.getIntSession(session, SessionUtils.CONTENT_KEY);
+//			}
 
 			// Check database id
 			database_id = Utils.getIntParameter(request, SessionUtils.DATABASE_ID_KEY);
@@ -227,7 +213,7 @@ public class SetSessionServlet extends HttpServlet
 		}
 
 		channel = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
-		content = Utils.getIntSession(session, SessionUtils.CONTENT_KEY);
+//		content = Utils.getIntSession(session, SessionUtils.CONTENT_KEY);
 		database_id = Utils.getIntSession(session, SessionUtils.DATABASE_ID_KEY);
 		logger.debug("Get channel: " + channel);
 		logger.debug("Get content: " + content);

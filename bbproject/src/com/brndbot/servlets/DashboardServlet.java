@@ -18,13 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import com.brndbot.block.BlockType;
+
+
 import com.brndbot.block.ChannelEnum;
-import com.brndbot.mindbody.MBClass;
-import com.brndbot.mindbody.MBPolyException;
-import com.brndbot.mindbody.MBPolyFactory;
-import com.brndbot.mindbody.MBStaff;
-import com.brndbot.mindbody.MBWorkshop;
+import com.brndbot.client.ClientException;
+import com.brndbot.promo.Promotion;
 import com.brndbot.system.Assert;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
@@ -48,9 +46,11 @@ public class DashboardServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("--------Entering DashboardServlet----------");
+		logger.debug("--------Entering DashboardServlet----------");
 
-		int typeOfData = Utils.getIntParameter(request, "type");
+		/* In this new world, the type parameter will be the name of a Model,
+		 * and so a name rather than a number. */
+		String typeOfData = Utils.getStringParameter(request, "type");
 		HttpSession session = request.getSession();
 		int channel = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		Assert.that(channel != 0, "Channel is zero in DashboardServlet!");
@@ -66,36 +66,9 @@ public class DashboardServlet extends HttpServlet
 */
 		String jsonStr = "";
 		System.out.println("BlockType new: " + typeOfData);
-		try
-		{
-			MBPolyFactory factory = new MBPolyFactory();
-			if (typeOfData == BlockType.CLASS.getValue().intValue())
-			{
-				MBClass mbClass = 
-					(MBClass)factory.createMBPoly(BlockType.CLASS, 1);
-				mbClass.init();
-				jsonStr = mbClass.getDataAsJSON(100, max_width);
-			}
-			else if (typeOfData == BlockType.WORKSHOP.getValue().intValue())
-			{
-				MBWorkshop mbWorkshop = 
-						(MBWorkshop)factory.createMBPoly(BlockType.WORKSHOP, 1);
-				mbWorkshop.init();
-				jsonStr = mbWorkshop.getDataAsJSON(100, max_width);
-			}
-			else if (typeOfData == BlockType.STAFF.getValue().intValue())
-			{
-				MBStaff mbStaff = 
-						(MBStaff)factory.createMBPoly(BlockType.STAFF, 1);
-				mbStaff.init();
-				jsonStr = mbStaff.getDataAsJSON(100, max_width);
-			}
-		} 
-		catch (MBPolyException e) 
-		{
-			System.out.println("exception: " + e.getMessage());
-			e.printStackTrace();
-		}
+		// **** Get rid of specific BlockTypes. Maybe even of Blocks.
+		Promotion promo = Promotion.createPromotion (typeOfData);
+		// TODO convert promo to JSON ***
 
 		if (jsonStr.length() > 0)
 		{

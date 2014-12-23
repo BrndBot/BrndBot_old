@@ -5,11 +5,14 @@
  */
 package com.brndbot.block;
 
+/** What is the relationship of Block to BlockBase?
+ *  With the MindBody stuff stripped out, Block doesn't
+ *  seem to do anything special. */
 public class Block extends BlockBase
 {
 	public Block(
 			ChannelEnum channel_type,
-			BlockType block_type,
+			//BlockType block_type,
 			String block_type_name,
 			int database_id,
 			String name,
@@ -21,7 +24,7 @@ public class Block extends BlockBase
 			String img_url)
 	{
 		super(channel_type,
-		block_type,
+		//block_type,
 		block_type_name,
 		database_id,
 		name,
