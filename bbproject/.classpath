@@ -33,6 +33,10 @@
 	<classpathentry kind="lib" path="lib/dbpool-6.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-2.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/brndbotclient.jar" sourcepath="/brndbotclient/src"/>
+	<classpathentry kind="lib" path="lib/javax.servlet.jsp.jar"/>
+	<classpathentry kind="lib" path="lib/taglibs-standard-impl-1.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/taglibs-standard-jstlel-1.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/taglibs-standard-spec-1.2.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

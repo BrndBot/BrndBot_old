@@ -27,7 +27,6 @@
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="js/kendo.all.min.js"></script>
     <script type="text/javascript" src="js/signup.js"></script>
-	<script type="text/javascript" src="js/session.js"></script>
 
 <script type="text/javascript">
 
@@ -498,9 +497,6 @@ var signUpUserKey = '<%=SessionUtils.USER_ID %>';
 var PHP_SERVER_PAGE = '<%=SystemProp.get(SystemProp.PHP_SERVER_PAGE) %>';
 var IMAGE_TYPE_LOGO = <%=ImageType.DEFAULT_LOGO.getValue().intValue() %>;
 
-// Singleton class for client-side session management
-var session_mgr = new Session();
-session_mgr.setImageID(IMAGE_TYPE_LOGO);
 
 </script>
 

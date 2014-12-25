@@ -40,7 +40,6 @@
     <script type="text/javascript" src="js/sidebar.js"></script>
     <script type="text/javascript" src="js/home.js"></script>
 	<script type="text/javascript" src="js/content.js"></script>
-	<script type="text/javascript" src="js/session.js"></script>
 
 </head>
 <body>
@@ -50,7 +49,7 @@
 	int max_logo_height = 130;
 	int max_logo_width = 200;
 
-	int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
+	int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 	if (user_id == 0)
 	{
 		System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
@@ -156,67 +155,6 @@
 				</div>
 				<!--  END HOME.JSP -->
 
-				<!--  BEGINNING CONTENTTYPE.JSP -->
-<!-- 			<div id="contentTypeJsp" style="display:none;">
-					<div class="spaceMe">
-						<div style="text-align:left;">
-							<div class="formHeader formSpacer">
-								<span id="channelAction">Send an email</span>.<br />
-								What would you like to promote today?
-							</div>
-							<div class="formLabelFor formSpacer" style="font-variant: normal;">
-								Add text and instruction here.
-							</div>
-						</div>
-					</div>
-					<div class="spaceMe">
-						<div id="classContentBadge" class="homeBadge">
-							<div>
-								<img src="images/home/classes.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Class
-							</div>
-						</div>
-						<div id="workshopContentBadge" class="tmpAll homeBadge">
-							<div>
-								<img src="images/home/workshops.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Workshop
-							</div>
-						</div>
-						<div id="teacherContentBadge" class="tmpAll homeBadge lastUnit">
-							<div>
-								<img src="images/home/teacher.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Teacher
-							</div>
-						</div>
-					</div>
-					<div style="clear:both">&nbsp;</div>
-					<div style="text-align:center;">
- 					<div id="scheduleContentBadge" class="tmpAll homeBadge">
-							<div>
-								<img src="images/home/schedule.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Schedule
-							</div>
-						</div>
-						<div id="saleContentBadge" class="tmpAll homeBadge lastUnit">
-							<div>
-								<img src="images/home/schedule.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promotion / Sale
-							</div>
-						</div>
-					</div>
-				</div>
- -->
-				<!--  END CONTENTTYPE.JSP -->
 
 				<!--  BEGINNING DASHBOARD.JSP -->
 				<div id="dashboardJsp" style="display:none;">
@@ -310,58 +248,10 @@
 				</div>
 				<!--  END channelJsp -->
 
-				<!--  BEGINNING HUB.JSP -->
-				<div id="hubJsp" style="display:none;">
-				    <div class="mainContentHeader" style="width:60rem">
-				    	<div class="subContentHeader">
-				    		<div style="padding-bottom:1.25rem">
-								<div class="unit size2of3" style="font-size: 2.25rem;font-weight: strong;">
-							    	Your MindBody <span id="contentType">Content</span>
-								</div>
-						    	<div class="unit lastUnit">
-						        	<input id="hubContentSearch" type="text" class="k-textbox editWidth" placeholder="search..." />
-						    	</div>
-						    </div>
-						</div>
-			    	</div>
-
-				    <div class="listBackground">
-				    	<div id="viewHubButtonPanel" class="viewButtonPanel">
-				    		<div style="padding-top:1.25rem">
-					    		<div class="unit eachButton">
-					    			<button id="viewHubWorkshops" class="greenNoHoverButton">workshops</button>
-					    		</div>
-					    		<div class="unit eachButton">
-					    			<button id="viewHubClasses" class="grayNoHoverButton">classes</button>
-					    		</div>
-					    		<div class="unit eachButton">
-					    			<button id="viewHubTeachers" class="grayNoHoverButton">teachers</button>
-					    		</div>
-					    		<div class="lastUnit">
-									&nbsp;
-					    		</div>
-					    	</div>
-						</div>
-						<div id="wait">
-							<div style="padding-top:0.625rem;">
-								<img src="images/loader.gif" alt="" />
-							</div>
-						</div>
-		 				<div id="hubClassHere" style="display:none;border-color:#ffffff"></div>
-		 				<div id="hubClassPager" style="display:none;"></div>
-						<div id="hubWorkshopHere" style="display:none;border-color:#ffffff"></div>
-		 				<div id="hubWorkshopPager" style="display:none;"></div>
-						<div id="hubStaffHere" style="display:none;border-color:#ffffff"></div>
-		 				<div id="hubStaffPager" style="display:none;"></div>
-					</div>  <!-- end listBackground -->
-				</div>
-				<!--  END HUB.JSP -->
-
 			</div>
 		</div>
 	</div>
 </div>
-<%@include file="mbListFormats.jsp" %>
 
 <script type="text/javascript">
 	// Init the left-side panel
@@ -371,16 +261,6 @@
 	var FACEBOOK_CHANNEL = <%=ChannelEnum.FACEBOOK.getValue().intValue() %>;
 	var TWITTER_CHANNEL = <%=ChannelEnum.TWITTER.getValue().intValue() %>;
 	
-	var CLASS_OBJ = <%=BlockType.CLASS.getValue().intValue() %>;
-	var WORKSHOP_OBJ = <%=BlockType.WORKSHOP.getValue().intValue() %>;
-	var STAFF_OBJ = <%=BlockType.STAFF.getValue().intValue() %>;
-	var SALE_OBJ = <%=BlockType.SALE.getValue().intValue() %>;
-	var SCHEDULE_OBJ = <%=BlockType.SCHEDULE.getValue().intValue() %>;
-
-	var idPrefix = new Array(0, 0, 0);
-	idPrefix[CLASS_OBJ - 1] = '<%=BlockType.CLASS.getItemTextLowerCase() %>';
-	idPrefix[WORKSHOP_OBJ - 1] = '<%=BlockType.WORKSHOP.getItemTextLowerCase() %>';
-	idPrefix[STAFF_OBJ - 1] = '<%=BlockType.STAFF.getItemTextLowerCase() %>';
 
 	// Singleton class for client-side session management
 	var session_mgr = new Session();

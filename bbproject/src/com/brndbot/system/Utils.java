@@ -145,19 +145,12 @@ public class Utils
 		return arg.trim();
 	}
 
-/*	static private boolean outputParam()
-	{
-		 return (Utils.SafeString(EmpProp.get(EmpProp.PARAM_OUTPUT)).length() != 0);
-	}
-*/
+
 	static public String getStringParameter(
 			HttpServletRequest request,
 			String parameter)
 	{
 		String str = SafeString((String)request.getParameter(parameter)); 
-//		if (outputParam())
-//			System.out.println("Request Param " + parameter + ": " + 
-//					(str.length() != 0 ? str : "{empty}"));
 		return str;
 	}
 
@@ -166,11 +159,6 @@ public class Utils
 			String parameter)
 	{
 		String temp = SafeString((String)request.getParameter(parameter));
-//		if (outputParam())
-//			System.out.println("Int Param " + parameter + ": " + 
-//				(temp == null ? "{empty}" :
-//					(temp.length() == 0 ? "{empty}" : temp)));
-		System.out.println("TEMP for parameter: " + parameter + " is: " + temp);
 		int ret = 0;
 		try
 		{
@@ -186,10 +174,6 @@ public class Utils
 			String parameter)
 	{
 		String temp = SafeString((String)request.getParameter(parameter));
-//		if (outputParam())
-//			System.out.println("Int Param " + parameter + ": " + 
-//				(temp == null ? "{empty}" :
-//					(temp.length() == 0 ? "{empty}" : temp)));
 		long ret = 0;
 		try
 		{
@@ -205,9 +189,6 @@ public class Utils
 			String parameter)
 	{
 		String str = SafeString((String)request.getParameter(parameter)); 
-//		if (outputParam())
-//			System.out.println("Request Param " + parameter + ": " + 
-//					(str.length() != 0 ? str : "{empty}"));
 		return (str.length() == 0 ? null : str);
 	}
 
@@ -216,37 +197,7 @@ public class Utils
 			String parameter)
 	{
 		int temp = Utils.getIntParameter(request, parameter);
-//		if (outputParam())
-//			System.out.println("Int Param " + parameter + ": " + temp); 
 		return (temp == 0 ? null : new Integer(temp));
-	}
-
-	static public String getStringSession(
-			HttpSession session,
-			String parameter)
-	{
-		String str = SafeString((String)session.getAttribute(parameter)); 
-		return str;
-	}
-
-	static public int getIntSession(
-			HttpSession session,
-			String attribute) throws NumberFormatException
-	{
-		String temp = SafeString((String)session.getAttribute(attribute));
-		int ret = 0;
-//		if (outputParam())
-//			System.out.println("Session Int Param " + attribute + ": " + 
-//				(temp == null ? "{empty}" :
-//					(temp.length() == 0 ? "{empty}" : temp)));
-		try
-		{
-			ret = Integer.parseInt(temp);
-		}
-		catch (NumberFormatException e)
-		{ }
-
-		return ret;
 	}
 
 	static public String slashed(String str)
@@ -258,17 +209,6 @@ public class Utils
 		return str;
 	}
 
-	static public Boolean getBooleanSession(
-			HttpSession session,
-			String attribute) throws NumberFormatException
-	{
-		Boolean temp = (Boolean)session.getAttribute(attribute);
-		if (temp == null)
-		{
-			temp = new Boolean(false);
-		}
-		return temp;
-	}
 
 	static public String trimRelative(String str)
 	{

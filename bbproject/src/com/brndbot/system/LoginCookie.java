@@ -22,7 +22,7 @@ public class LoginCookie
 	public static String USE_COOKIE_CB = "brndbotusecookie";
 	public static String EMAIL_ADDRESS = "brndbotemailcookie";
 	public static String PASSWORD = "brndbotpassword";
-	public static String ERROR = "brndboterror";
+	//public static String ERROR = "brndboterror";
 
 	public LoginCookie(HttpServletRequest request, HttpServletResponse response)
 	{

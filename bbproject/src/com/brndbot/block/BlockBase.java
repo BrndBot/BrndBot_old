@@ -43,7 +43,7 @@ public class BlockBase
 			String short_description,
 			String img_url)
 	{
-		_channel_type = ChannelEnum.create(channel_type.getValue().intValue());
+		_channel_type = ChannelEnum.create(channel_type.getValue());
 //		_block_type = BlockType.create(block_type.getValue().intValue());
 		_block_type_name = block_type_name;
 		Assert.that(database_id > 0, "Database ID is zero for the block.");
@@ -59,7 +59,7 @@ public class BlockBase
 
 	public BlockBase(BlockBase b)
 	{
-		_channel_type = ChannelEnum.create(b._channel_type.getValue().intValue());
+		_channel_type = ChannelEnum.create(b._channel_type.getValue());
 //		_block_type = BlockType.create(b._block_type.getValue().intValue());
 		_block_type_name = b._block_type_name;
 		Assert.that(b._database_id.intValue() > 0, "Database ID is zero for the block.");
@@ -80,10 +80,8 @@ public class BlockBase
 	    if (object != null && object instanceof BlockBase)
 	    {
 	    	BlockBase b = ((BlockBase)object);
-	        isEqual = (this._channel_type.getValue().intValue() == 
-	        		b._channel_type.getValue().intValue()) &&
-//	        	(this._block_type.getValue().intValue() == 
-//	        		b._block_type.getValue().intValue()) &&
+	        isEqual = (this._channel_type.getValue() == 
+	        		b._channel_type.getValue()) &&
 	        	(this._database_id.intValue() == b._database_id.intValue());
 	    }
 	    return isEqual;
@@ -92,7 +90,7 @@ public class BlockBase
 	public int hashCode() 
 	{
 		return ((this._database_id.intValue() * 100) + 
-				(this._channel_type.getValue().intValue() * 10)); 
+				(this._channel_type.getValue() * 10)); 
 //				(this._block_type.getValue().intValue()));
 	}
 

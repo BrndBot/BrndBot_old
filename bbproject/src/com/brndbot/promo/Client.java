@@ -1,21 +1,32 @@
 package com.brndbot.promo;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.ModelCollection;
+import com.brndbot.client.PromotionPrototype;
 import com.brndbot.client.StyleSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- *  The OrganizationDescriptor is a class that holds the
+ *  Client is a class that holds the
  *  models and styles referring to an organization.
  *  This information drives everything.
  *  
+ *  A Client object needs to be stored as a session attribute.
+ *  
  */
-public class Client {
+public class Client implements Serializable {
 
+	final static Logger logger = LoggerFactory.getLogger(Client.class);
+	
 	/** An instance of the ClientInterface subclass which feeds 
 	 *  us data 
 	 */
@@ -30,12 +41,28 @@ public class Client {
 	/** The StyleSets available to us. */
 	private List<StyleSet> styleSets;
 	
-	public static Client getOrganizationDescriptor () {
+	/** The PromotionPrototypes available to us. */
+	private List<PromotionPrototype> promotionPrototypes;
+	
+	/** FIXME ****HACK*** doesn't work with more than one user  */
+	private static transient Client client;
+	
+	public static Client getClient (HttpSession session) {
 		// **** TOTALLY TEMPORARY CODE ******
 		// Just create a small set of Models here. Can use the 
 		// parser to build them from XML.
 
-		return null;
+		// FIXME temporary hack
+		if (client != null)
+			return client;
+		try {
+			client = new Client ("com.brndbot.dummymodule.DummyClient");
+			return client;
+		} catch (Exception e) {
+			return null;
+		}
+		
+		// TODO save it in the session and get it back from there
 	}
 	
 	/** Constructor. This creates an instance of the ClientInterface implementation
@@ -50,8 +77,17 @@ public class Client {
 			Constructor<ClientInterface> ctor = clazz.getConstructor ();
 			clientInterface = ctor.newInstance ();
 		} catch (Exception e) {
+			logger.error("Could not load client interface {}", clientInterfaceClass);
+			logger.error(e.getClass().getName());
+			logger.error("Message: {}", e.getMessage());
 			throw new ClientException (e);
 		}
+	}
+	
+	/** Pull in the data from the module */
+	public void acquireData () {
+		modelCollection = clientInterface.getModels ();
+		promotionPrototypes = clientInterface.getPromotionPrototypes ();
 	}
 
 }

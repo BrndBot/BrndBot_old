@@ -69,7 +69,7 @@ public class SaveImageServlet extends HttpServlet
 			}
 	
 			HttpSession session = request.getSession();
-			int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
+			int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 			if (user_id == 0)
 			{
 				logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
@@ -79,7 +79,7 @@ public class SaveImageServlet extends HttpServlet
 			logger.debug("User ID: " + user_id);
 	
 			// Make sure the image type is passed
-			int type = Utils.getIntSession(session, SessionUtils.IMAGE_ID_KEY);
+			int type = SessionUtils.getIntSession(session, SessionUtils.IMAGE_ID_KEY);
 			if (type == 0)
 			{
 				logger.error("No IMAGE TYPE passed (type=" + type + "). Programming error.");

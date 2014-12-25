@@ -24,6 +24,9 @@ import com.brndbot.db.ImageType;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
 
+/** How does managing the session from a servlet and serializing everything
+ *  as JDOM make sense?  Probably should delete this and replace it with
+ *  sane session management. */
 public class SetSessionServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -49,7 +52,7 @@ public class SetSessionServlet extends HttpServlet
 		HttpSession session = request.getSession();
 		String action = Utils.getStringParameter(request, "action").toLowerCase();
 
-		System.out.println("Session ACTION: " + action);
+		logger.debug("Session ACTION: " + action);
 		if (action.equals(SessionUtils.IMAGE))
 		{
 			// Set the image type into the session
@@ -91,7 +94,7 @@ public class SetSessionServlet extends HttpServlet
 			return;
 		}
 
-		int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
+		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 		if (user_id == 0)
 		{
 			logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
@@ -163,9 +166,9 @@ public class SetSessionServlet extends HttpServlet
 			{
 				ChannelEnum ch_enum = ChannelEnum.create(channel);
 				System.out.println("Set non-zero channel to: " + channel + ", " + ch_enum.getItemText());
-				if (channel != ChannelEnum.EMAIL.getValue().intValue() &&
-					channel != ChannelEnum.FACEBOOK.getValue().intValue() &&
-					channel != ChannelEnum.TWITTER.getValue().intValue())
+				if (channel != ChannelEnum.EMAIL.getValue() &&
+					channel != ChannelEnum.FACEBOOK.getValue() &&
+					channel != ChannelEnum.TWITTER.getValue())
 				{
 					System.out.println("Unexpected channel: " + channel);
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -176,7 +179,7 @@ public class SetSessionServlet extends HttpServlet
 			}
 			else
 			{
-				channel = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
+				channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 			}
 
 			// Check content type. In the new world, this is a model name.
@@ -203,7 +206,7 @@ public class SetSessionServlet extends HttpServlet
 			else
 			{
 //				System.out.println("Not going to happen Joe, neg_one on the db id");
-				database_id = Utils.getIntSession(session, SessionUtils.DATABASE_ID_KEY);
+				database_id = SessionUtils.getIntSession(session, SessionUtils.DATABASE_ID_KEY);
 			}
 		}
 
@@ -212,9 +215,9 @@ public class SetSessionServlet extends HttpServlet
 			logger.error("Bad args*********\n   channel: " + channel + ", content: " + content + ", database_id: " + database_id);
 		}
 
-		channel = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
+		channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 //		content = Utils.getIntSession(session, SessionUtils.CONTENT_KEY);
-		database_id = Utils.getIntSession(session, SessionUtils.DATABASE_ID_KEY);
+		database_id = SessionUtils.getIntSession(session, SessionUtils.DATABASE_ID_KEY);
 		logger.debug("Get channel: " + channel);
 		logger.debug("Get content: " + content);
 		logger.debug("Get database_id: " + database_id);

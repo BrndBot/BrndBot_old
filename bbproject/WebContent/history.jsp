@@ -41,7 +41,7 @@
 	int max_logo_height = 130;
 	int max_logo_width = 200;
 
-	int user_id = Utils.getIntSession(session, SystemProp.USER_ID);
+	int user_id = SessionUtils.getIntSession(session, SystemProp.USER_ID);
 	if (user_id == 0)
 	{
 		System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");

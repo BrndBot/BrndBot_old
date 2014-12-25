@@ -1,3 +1,6 @@
+/*  It appears that the session gets managed from JavaScript, which is insane.
+ *  Throw this entirely away.
+ */
 var SESSION_UNDEFINED = -1;
 var SESSION_CHANNEL = SESSION_UNDEFINED;
 var SESSION_CONTENT = SESSION_UNDEFINED;

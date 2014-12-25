@@ -7,24 +7,34 @@ package com.brndbot.block;
 
 import java.util.ArrayList;
 
+
 public class ChannelEnum
 {
+	public final static int CH_NONE = -1;
+	public final static int CH_EMAIL = 1;
+	public final static int CH_FACEBOOK = 2;
+	public final static int CH_TWITTER = 3;
+	public final static int CH_POSTER = 4;
+	
 	final static ChannelEnum[] _ENUMS;
 
+	/* This is the most contorted way to define a constant I've seen.
+	 * I've added actual integer constants above.
+	 */
 	public final static ChannelEnum UNDEFINED = 
-			new ChannelEnum(new Integer(-1), "Undefined", 100);
+			new ChannelEnum(new Integer(CH_NONE), "Undefined", 100);
 
 	public final static ChannelEnum EMAIL = 
-			new ChannelEnum(new Integer(1), "Email", 280);
+			new ChannelEnum(new Integer(CH_EMAIL), "Email", 280);
 
 	public final static ChannelEnum FACEBOOK = 
-			new ChannelEnum(new Integer(2), "Facebook", 600);
+			new ChannelEnum(new Integer(CH_FACEBOOK), "Facebook", 600);
 
 	public final static ChannelEnum TWITTER = 
-			new ChannelEnum(new Integer(3), "Twitter", -1);
+			new ChannelEnum(new Integer(CH_TWITTER), "Twitter", -1);
 
 	public final static ChannelEnum POSTER = 
-			new ChannelEnum(new Integer(4), "Poster", 400);
+			new ChannelEnum(new Integer(CH_POSTER), "Poster", 400);
 	
 	static
     {
@@ -56,9 +66,9 @@ public class ChannelEnum
     
     public String getItemTextLowerCase() { return _item_text.toLowerCase(); }    
 
-    public Integer getValue() { return _item_number; }
+    public int getValue() { return _item_number; }
     
-    public Integer getDefaultImgWidth() { return _default_img_width; }
+    public int getDefaultImgWidth() { return _default_img_width; }
 
     static public ChannelEnum create(int type)
     {
@@ -79,7 +89,6 @@ public class ChannelEnum
     	{
     		return POSTER;
     	}
-    	System.out.println("**************Unknown ChannelEnum: " + type);
     	return UNDEFINED;
     }
 
@@ -95,6 +104,6 @@ public class ChannelEnum
 
     public int hashCode()
     {
-    	return getValue().intValue();
+    	return getValue();
     }
 }

@@ -4,7 +4,6 @@
 
 <%@ page import="com.brndbot.block.Block" %>
 <%@ page import="com.brndbot.block.BlockStack" %>
-<%@ page import="com.brndbot.block.BlockType" %>
 <%@ page import="com.brndbot.block.ChannelEnum" %>
 <%@ page import="com.brndbot.block.FBStyleType" %>
 <%@ page import="com.brndbot.db.DbConnection" %>
@@ -15,6 +14,8 @@
 <%@ page import="com.brndbot.user.Palette" %>
 <%@ page import="com.brndbot.user.User" %>
 <%@ page import="com.brndbot.user.UserLogo" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@ page import="java.util.ArrayList" %>
 
@@ -37,62 +38,62 @@
 	<script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
+<c:set var="tmp_channel" 
+			value="<%= SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY) %>"
+			scope="page" />
+<c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %> scope="page">
+<c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %> scope="page">
+<c:if test="${tmp_channel <= 0"}">
+	<c:redirect url="index.jsp">
 <%
-	// Use this session variable to morph the bench for a particular channel
-	int tmp_channel = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
-	if (tmp_channel == -1)
-	{
-		System.out.println("Channel is undefined, exiting bench.");
-		response.sendRedirect("index.jsp");
-		return;
-	}
-	// CHANNEL indicates the type of editor needed (i.e. email, Facebook, Twitter, etc.)
-	ChannelEnum CHANNEL = ChannelEnum.create(tmp_channel);
-	System.out.println("Channel in the bench: " + CHANNEL.getItemText() + " - " + CHANNEL.getValue().intValue());
+	// any way to exit here without a scriptlet? Is return even a good idea?
+	// Should I "otherwise" the whole rest of the page?
+	return;
 %>
+</c:if>
 
     <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="js/kendo.all.min.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
-    <script type="text/javascript" src="js/session.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
     <script type="text/javascript" src="js/bench.js"></script>
 
-    <%   // Include the "editor-specific" javascript.  Each editor shares the javascript logic above,
+    <%	 // tmp_channel indicates the type of editor needed (i.e. email, Facebook, Twitter, etc.)
+         // Include the "editor-specific" javascript.  Each editor shares the javascript logic above,
     	 // but has it's own code in the respective javascript below.  There is an assumption in the shared
     	 // javascript above that certain functions will be implemented in each of the editor-specific files.
-         if (CHANNEL.equals(ChannelEnum.EMAIL)) { 
     %>
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
     <script type="text/javascript" src="js/emailbench.js"></script>
-	<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
+  </c:when>
+  <c:when test="${tmp_channel == channel_facebook}">
     <script type="text/javascript" src="js/fbbench.js"></script>
-	<% } %>
+  </c:when>
+</c:choose>
 
 	<script type="text/javascript">
 		// To share the enumerated values used on the server, we define local variables using the 
 		//  same enumerated class variables.
-		var EMAIL_CHANNEL = <%=ChannelEnum.EMAIL.getValue().intValue() %>;
-		var FACEBOOK_CHANNEL = <%=ChannelEnum.FACEBOOK.getValue().intValue() %>;
-		var TWITTER_CHANNEL = <%=ChannelEnum.TWITTER.getValue().intValue() %>;
+		var EMAIL_CHANNEL = <jsp:text>${channel_email}</jsp:text>;
+		var FACEBOOK_CHANNEL = <jsp:text>${channel_facebook}</jsp:text>;
 		var CHANNEL = <%=tmp_channel %>;
 	</script>
 
 </head>
 <body>
 <%
-	System.out.println("-------------Entering bench.jsp---------------");
 
 	// Originally, there was one-and-only-one content object selected by the 
 	//  user before entering the editor.  The type of object is CONTENT_KEY,
 	//  and the ID for that type of object is DATABASE_ID_KEY.
-	int btype = Utils.getIntSession(session, SessionUtils.CONTENT_KEY);
+	int btype = SessionUtils.getIntSession(session, SessionUtils.CONTENT_KEY);
 	Assert.that(btype != 0 ,"No block type passed to bench.jsp.");
-//	int id = Utils.getIntSession(session, SessionUtils.DATABASE_ID_KEY);
 	int id = Utils.getIntParameter(request, SessionUtils.DATABASE_ID_KEY);
 	Assert.that(id > 0 ,"No database id passed to bench.jsp.");
 
 	// UserID.  This needs to become an OAUTH2 process for security's sake
-	int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
+	int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 	if (user_id == 0)
 	{
 		System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
@@ -209,6 +210,13 @@
 						</ul>
 						<div>
 							<!-- The images for each choice come from the styles. -->
+							<!-- ****** REPLACE THIS WITH A SERIES OF LINKS BASED ON 
+							     THE AVAILABLE PROMOTION PROTOTYPES
+							     SO, how do we do it? We need to get the
+							     Client object from the session and have it fill in
+							     the divs based on those. Is this a good place
+							     to start a tag library? YES.
+							-->
 							<div class="linkText" style="padding-left:0.1rem;">
 								<div id="newWorkshopLink" class="formSpacerLite addLink">
 									Workshops

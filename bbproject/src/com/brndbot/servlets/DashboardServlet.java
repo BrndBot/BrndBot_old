@@ -52,7 +52,7 @@ public class DashboardServlet extends HttpServlet
 		 * and so a name rather than a number. */
 		String typeOfData = Utils.getStringParameter(request, "type");
 		HttpSession session = request.getSession();
-		int channel = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
+		int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		Assert.that(channel != 0, "Channel is zero in DashboardServlet!");
 
 		int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth().intValue();

@@ -47,7 +47,7 @@ public class SavePaletteServlet extends HttpServlet
 		DbConnection con = DbConnection.GetDb();
 
 		HttpSession session = request.getSession();
-		int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
+		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 		if (user_id == 0)
 		{
 			logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");

@@ -36,8 +36,7 @@
 </head>
 <body>
 <% 
-	System.out.println("-------------Entering facebookfull.jsp---------------");
-	int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
+	int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 	if (user_id == 0)
 	{
 		System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
@@ -45,9 +44,9 @@
 		return;
 	}
 
-	int CHANNEL = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
+	int CHANNEL = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 	Assert.that(CHANNEL == ChannelEnum.FACEBOOK.getValue().intValue(), "Channel is not Facebook, value: " + CHANNEL);
-	int image_id = Utils.getIntSession(session, SessionUtils.FUSED_IMAGE_ID_KEY);
+	int image_id = SessionUtils.getIntSession(session, SessionUtils.FUSED_IMAGE_ID_KEY);
 	System.out.println("FUSED_IMAGE_ID: " + image_id);
 	DbConnection con = DbConnection.GetDb();
 	Image image = Image.makeThisImage(image_id, user_id, con);

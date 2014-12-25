@@ -28,8 +28,8 @@
 <body>
 <% 
 	System.out.println("-------------Entering facebookfull.jsp---------------");
-	int CHANNEL = Utils.getIntSession(session, SessionUtils.CHANNEL_KEY);
-	int FUSED_IMAGE_ID = Utils.getIntSession(session, SessionUtils.FUSED_IMAGE_ID_KEY);
+	int CHANNEL = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
+	int FUSED_IMAGE_ID = SessionUtils.getIntSession(session, SessionUtils.FUSED_IMAGE_ID_KEY);
 	System.out.println("CHANNEL: " + CHANNEL);
 	System.out.println("FUSED_IMAGE_ID: " + FUSED_IMAGE_ID);
 %>

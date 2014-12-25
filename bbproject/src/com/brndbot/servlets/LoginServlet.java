@@ -59,7 +59,7 @@ public class LoginServlet extends HttpServlet
 
 		if (missing_str.length() > 0)
 		{
-			session.setAttribute(LoginCookie.ERROR, missing_str);
+			session.setAttribute(SessionUtils.LOGIN_ERROR, missing_str);
 			response.sendRedirect("index.jsp");
 			return;
 		}
@@ -94,7 +94,7 @@ public class LoginServlet extends HttpServlet
 		// Success!
 //		session.setAttribute(ParamConstants.EMPLOYER_TYPE, RecruiterTable.fetchEmployerType(user_id));
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
-		session.removeAttribute(LoginCookie.ERROR);
+		session.removeAttribute(SessionUtils.LOGIN_ERROR);
 
 		response.sendRedirect("home.jsp");
 		return;

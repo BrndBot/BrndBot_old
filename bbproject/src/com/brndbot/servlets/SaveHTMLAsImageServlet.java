@@ -50,7 +50,7 @@ public class SaveHTMLAsImageServlet extends HttpServlet
 		System.out.println("--------Entering new SaveHTMLAsImageServlet----------");
 
 		HttpSession session = request.getSession();
-		int user_id = Utils.getIntSession(session, SessionUtils.USER_ID);
+		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 		if (user_id == 0)
 		{
 			System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
@@ -60,7 +60,7 @@ public class SaveHTMLAsImageServlet extends HttpServlet
 		System.out.println("User ID: " + user_id);
 
 		// Make sure the image type is passed
-		int type = Utils.getIntSession(session, SessionUtils.IMAGE_ID_KEY);
+		int type = SessionUtils.getIntSession(session, SessionUtils.IMAGE_ID_KEY);
 		if (type == 0)
 		{
 			System.out.println("No IMAGE TYPE passed (type=" + type + "). Programming error.");
