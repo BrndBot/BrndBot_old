@@ -26,6 +26,7 @@ public class SessionUtils
 	public static String IMAGE_ID_KEY = "brndbotimageid"; 
 	public static String FUSED_IMAGE_ID_KEY = "brndbotfusedid";
 	public static String LOGIN_ERROR = "brndboterror";
+	public static String CLIENT = "brndbotclient";
 	
 	// Simple system-wide constants
 	static final public String USER_ID = "brndbotuser_id";

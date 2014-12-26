@@ -5,11 +5,18 @@
  */
 package com.brndbot.block;
 
-/** What is the relationship of Block to BlockBase?
- *  With the MindBody stuff stripped out, Block doesn't
- *  seem to do anything special. */
+import com.brndbot.promo.Promotion;
+
+/** Block should probably have been called PromotionBlock to
+ *  distinguish it from blocks not generated from the promotion.
+ *  It gets a reference to a Prototype Promotion and constructs
+ *  its fields from that. Other subclasses of BlockBase (e.g.,
+ *  SocialBlock) are constructed in a different way. */
 public class Block extends BlockBase
 {
+	private String blockTypeName;
+	Promotion promo;
+	
 	public Block(
 			ChannelEnum channel_type,
 			//BlockType block_type,
@@ -25,19 +32,23 @@ public class Block extends BlockBase
 	{
 		super(channel_type,
 		//block_type,
-		block_type_name,
 		database_id,
 		name,
-		full_name,
-		starting_date,
-		schedule_reference,
 		description,
 		short_description,
 		img_url);
+		
+		blockTypeName = block_type_name;
 	}
 
 	public Block(Block b)
 	{
 		super(b);
+	}
+	
+	/** The name of the block type (promotion prototype) 
+	 */
+	public String getBlockTypeName () {
+		return blockTypeName;
 	}
 }

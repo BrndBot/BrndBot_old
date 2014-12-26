@@ -37,9 +37,9 @@ public class User implements TableModel
 	private Integer _personality_id;
 	private String _facebook;
 	private String _twitter;
-	private String _linked_in;
-	private String _you_tube;
-	private String _instagram;
+//	private String _linked_in;
+//	private String _you_tube;
+//	private String _instagram;
 	
 	public User () {
 		
@@ -79,17 +79,17 @@ public class User implements TableModel
 		_twitter = twitter;
 	}
 	
-	public void setYouTube (String you_tube) {
-		_you_tube = you_tube;
-	}
+//	public void setYouTube (String you_tube) {
+//		_you_tube = you_tube;
+//	}
+//	
+//	public void setLinkedIn (String linked_in) {
+//		_linked_in = linked_in;
+//	}
 	
-	public void setLinkedIn (String linked_in) {
-		_linked_in = linked_in;
-	}
-	
-	public void setInstagram (String instagram) {
-		_instagram = instagram;
-	}
+//	public void setInstagram (String instagram) {
+//		_instagram = instagram;
+//	}
 	
 	public Integer getOrganizationID() {
 		return _org_id;
@@ -139,8 +139,8 @@ public class User implements TableModel
 		try
 		{
 			String sql = "INSERT INTO user " +
-					" (EmailAddress, Password, Company, CompanyAddress, URL, FacebookURL, TwitterHandle, LinkedIn, YouTube, Instagram, orgid) " +
-					" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+					" (EmailAddress, Password, Company, CompanyAddress, URL, FacebookURL, TwitterHandle, orgid) " +
+					" VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setString(1, _email);
 			pstmt.setString(2, _hashed_password);
@@ -149,9 +149,9 @@ public class User implements TableModel
 			pstmt.setString(5, _company_url);
 			pstmt.setString(6, _facebook);
 			pstmt.setString(7, _twitter);
-			pstmt.setString(8, _linked_in);
-			pstmt.setString(9, _you_tube);
-			pstmt.setString(10, _instagram);
+//			pstmt.setString(8, _linked_in);
+//			pstmt.setString(9, _you_tube);
+//			pstmt.setString(10, _instagram);
 			pstmt.setInt(11, _org_id);
 			pstmt.executeUpdate();
 			// Get the new user ID
@@ -170,13 +170,11 @@ public class User implements TableModel
 			rs.close();
 			stmt.close();
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			logger.error("Exception in saveUser: {}    {}", e.getClass().getName(), e.getMessage());
 			return;
 		}
-		finally
-		{
+		finally {
 			pstmt = null;
 			con.close();
 		}

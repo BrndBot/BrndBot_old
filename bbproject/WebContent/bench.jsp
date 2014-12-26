@@ -6,6 +6,7 @@
 <%@ page import="com.brndbot.block.BlockStack" %>
 <%@ page import="com.brndbot.block.ChannelEnum" %>
 <%@ page import="com.brndbot.block.FBStyleType" %>
+<%@ page import="com.brndbot.glock.BenchHelper" %>
 <%@ page import="com.brndbot.db.DbConnection" %>
 <%@ page import="com.brndbot.system.Assert" %>
 <%@ page import="com.brndbot.system.SessionUtils" %>
@@ -38,19 +39,36 @@
 	<script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
+<c:set var="sessionOK" value="1" scope="page"/>
+
+<c:if test="${sessionScope.brndbotuser_id} <= 0}">
+	<c:set var="sessionOK" value="0" scope="page"/>
+	<c:redirect url="index.jsp">
+</c:if>
 <c:set var="tmp_channel" 
 			value="<%= SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY) %>"
 			scope="page" />
 <c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %> scope="page">
 <c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %> scope="page">
 <c:if test="${tmp_channel <= 0"}">
+	<c:set var="sessionOK" value="0" scope="page"/>
 	<c:redirect url="index.jsp">
-<%
-	// any way to exit here without a scriptlet? Is return even a good idea?
-	// Should I "otherwise" the whole rest of the page?
-	return;
-%>
 </c:if>
+
+<c:if test-"${sessionOK != 0">	<!-- encompasses whole rest of body -->
+
+<!-- Where do these session attributes get set originally?
+     brndbotorg and brndbotpromo are new, need to set them somewhere -->
+<c:useBean id="benchHelper" 
+		class="com.brndbot.block.BenchHelper" 
+		scope="page">
+	<jsp:setProperty name="benchHelper" property="userId" value="${sessionScope.brndbotuser_id}"/>
+	<jsp:setProperty name="benchHelper" property="channel" value="${tmp_channel}"/>
+	<jsp:setProperty name="benchHelper" property="btype" value="${sessionScope.brndbotcontent}"/>
+	<jsp:setProperty name="benchHelper" property="organization" value="${sessionScope.brndbotorg}"/>
+	<jsp:setProperty name="benchHelper" property="promoProto" value="${sessionScope.brndbotpromo}"/>
+</c:useBean>
+<%	benchHelper.setSession (session);	// Need Java to set binary values %>
 
     <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="js/kendo.all.min.js"></script>
@@ -84,39 +102,12 @@
 <body>
 <%
 
-	// Originally, there was one-and-only-one content object selected by the 
-	//  user before entering the editor.  The type of object is CONTENT_KEY,
-	//  and the ID for that type of object is DATABASE_ID_KEY.
-	int btype = SessionUtils.getIntSession(session, SessionUtils.CONTENT_KEY);
-	Assert.that(btype != 0 ,"No block type passed to bench.jsp.");
-	int id = Utils.getIntParameter(request, SessionUtils.DATABASE_ID_KEY);
-	Assert.that(id > 0 ,"No database id passed to bench.jsp.");
-
-	// UserID.  This needs to become an OAUTH2 process for security's sake
-	int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
-	if (user_id == 0)
-	{
-		System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
-		response.sendRedirect("index.jsp");
-		return;
-	}
-
-	// The database uses a connection pool
-	DbConnection con = DbConnection.GetDb();
-
-//	System.out.println(ChannelEnum.EMAIL + ", user: " + user_id + ", content: " + btype + ", db: " + id);
-
-	// These are the bounding max width and height for sizing images.  This whole mechanism needs better requirements
-	//  and a more substantial commitment in terms of a class or set of classes that house all the image resizing
-	//  logic.  Requirements are needed before that class can be implemented.
-	int header_max_logo_width = CHANNEL.getDefaultImgWidth().intValue();
-	int header_max_logo_height = CHANNEL.getDefaultImgWidth().intValue();  // same for now
 
 	// Fill in the block for the content object chosen by the user on the dashboard.  See the JS below
 	// for how the block JS object is used.
-	Block starting_block = (Block)Block.getAsBlock(ChannelEnum.EMAIL, user_id, btype, id, header_max_logo_width);
-
+	Block starting_block = benchHelper.getStartingBlock();
 %>
+<jsp:useBean id="starting_block" class="com.brndbot.block.Block"/>
 	<div id="brndbotMain" style="background-color:#f4f4f4;">
 		<div id="brndbotHeader">
 			&nbsp;
@@ -153,22 +144,12 @@
 
 									</div>
 								</div>
-								<!--  These get hidden or shown depending on the button selections made. -->
+								<!--  These get hidden or shown depending on the button selections made.
+								      Actually, we won't use these at all, but leave one around
+								      as an example to work from. -->
 								<div id="toClassID" style="float:left;display:none">
 									<button id="toNonClassButton" style="font-size: 1rem;width:7.5rem" 
 										class="greenButton rounded" >non-feature</button>
-								</div>
-								<div id="toNonClassID" style="float:left;display:none">
-									<button id="toClassButton" style="font-size: 1rem;width:7.5rem" 
-										class="greenButton rounded" >featured</button>
-								</div>
-								<div id="toWorkshopID" style="float:left;display:none">
-									<button id="toNonWorkshopButton" style="font-size: 1rem;width:7.5rem" 
-										class="greenButton rounded" >non-feature</button>
-								</div>
-								<div id="toNonWorkshopID" style="float:none;display:none">
-									<button id="toWorkshopButton" style="font-size: 1rem;width:7.5rem" 
-										class="greenButton rounded" >featured</button>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>							
@@ -309,36 +290,39 @@
 
 			<div class="rounded benchHeader">
 
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
 				<div class="emailBenchHeader">
 					<span style="padding-left:1.5rem">
 						<img src="images/bench/emailIcon.png" alt="" />
 					</span>
 					&nbsp;Email Message Builder
 				</div>
-		<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
+  </c:when>
+  <c:when test="${tmp_channel == channel_facebook}">
 				<div class="emailBenchHeader">
 					<span style="padding-left:1.5rem">
 						<img src="images/bench/emailIcon.png" alt="" />
 					</span>
 					&nbsp;Facebook Message Builder
 				</div>
-		<% } %>
-
+  </c:when>
+</c:choose>
  		<%
 			// Options anticipated by the templates.  The templates are separate JSPs and expect thse variables
 			//  to be instantiated.  So you'll see Eclipse think the templates have errors, but that's because
 			//  the variables are defined here, in the main JSP.
+
+			// AARGH. The Java logic is not only embedded in the JSP, but split across
+			// multiple JSPs!! MUST replace with a helper class!!
 			boolean templateVisible = true;
 			boolean isPreview = true;
 			// Must have the palette array, too.  Retrieves the palette set by the user when signed-up.
 			ArrayList<Palette> paletteArray = User.getUserPalette(user_id, con);
-//			Palette new1 = new Palette("#e67a1e");
-//			Palette new2 = new Palette("#86cde5");
-//		paletteArray.set(0, new1);
-//			paletteArray.set(1, new2);
 			String chosenImg = "";
-			if (CHANNEL.equals(ChannelEnum.EMAIL)) 
+		%>
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
 			{
 				// Args 2 and 3 are part of the mess regarding image bounding.  All these functions for 
 				//  "getImage, getBoundLogo" etc should be assembled into a new class that does a great
@@ -389,60 +373,68 @@
 
 	    <%  // Whatever is included here defines what type of data can be displayed in this particular slot
 	    	//  of the editor.  Currently, each slow may contain all types of data/templates, but it doesn't 
-	    	//  have to be that way.
-	    	if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
-			<%@include file="templates/email/template-set.jsp" %>
-		<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
-			<%@include file="templates/facebook/template-set.jsp" %>
-		<% } %>
+	    	//  have to be that way. 
 
-<%
-			templateEnum = 2;
-%>
+			// template-set.jsp is ALSO totally client-dependent, so throw it out.
+			// Is there ANY useful code in this hellhole??
+		%>
+<c:set var="templateEnum" value="1" scope="page"/> 
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
+			<%@include file="templates/email/template-set.jsp" %>
+  </c:when>
+  <c:when test="${tmp_channel == channel_facebook}">
+			<%@include file="templates/facebook/template-set.jsp" %>
+  </c:when>
+</c:choose>
+
 		<div id="finishedImage">
 
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
+<c:set var="templateEnum" value="2" scope="page"/> 
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
 			<%@include file="templates/email/template-set.jsp" %>
-		<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
+  </c:when>
+  <c:when test="${tmp_channel == channel_facebook}">
 			<%@include file="templates/facebook/template-set.jsp" %>
-		<% } %>
+  </c:when>
+</c:choose>
 
-<%
-			templateEnum = 3;
-%>
-
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
+<c:set var="templateEnum" value="3" scope="page"/> 
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
 			<%@include file="templates/email/template-set.jsp" %>
-		<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
+  </c:when>
+  <c:when test="${tmp_channel == channel_facebook}">
 			<%@include file="templates/facebook/template-set.jsp" %>
-		<% } %>
+  </c:when>
+</c:choose>
 
-<%
-			templateEnum = 4;
+<%  // Currently, only email has more than 3 slots in the editor.
 %>
-
-	    <%  // Currently, only email has more than 3 slots in the editor.
-	    	if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
+<c:set var="templateEnum" value="4" scope="page"/> 
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
 			<%@include file="templates/email/template-set.jsp" %>
-		<% } %>
+  </c:when>
+</c:choose>
 
-<%
-			templateEnum = 5;
-%>
 
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
+<c:set var="templateEnum" value="5" scope="page"/> 
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
 			<%@include file="templates/email/template-set.jsp" %>
-		<% } %>
+  </c:when>
+</c:choose>
 
-<% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
-<%
-			templateEnum = 6;
-%>
+<c:set var="templateEnum" value="6" scope="page"/> 
+<c:choose>
+  <c:when test="${tmp_channel == channel_email}">
 			<%@include file="templates/email/template-set.jsp" %>
-<%
-}  // end of if block for email editor-only template-set.jsp inclusion
-	templateVisible = true;
-	con.close();
+  </c:when>
+</c:choose>
+
+<%  // end of if block for email editor-only template-set.jsp inclusion
 %>
 			</div><!-- id="finishedImage">  -->
 
@@ -573,7 +565,6 @@
 
 		</div>
 
-<%@include file="mbListFormats.jsp" %>
 
 		<script type="text/x-kendo-template" id="imageTemplate">
 			<div class="photoBlock">
@@ -593,93 +584,9 @@
 // This is the naiscent "style" implementation.  The design and implementation of the "style" (aka "layout variation")
 //  needs requirements before it can be done correctly.  At the time the implementation of this editor was halted,
 //  "styles" was all over the map.
-<% if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
-	var IMAGE_AND_BANNER_OBJ = <%=FBStyleType.FB_IMAGE_AND_BANNER.getValue().intValue()%>;
-	var TEXT_OVER_IMAGE_OBJ = <%=FBStyleType.FB_TEXT_OVER_IMAGE.getValue().intValue()%>;
-	var LOGO_ONLY_OBJ = <%=FBStyleType.FB_LOGO_ONLY.getValue().intValue()%>;
-<% } %>
 
-	// What channel are we editing
-	var EMAIL_CHANNEL = <%=ChannelEnum.EMAIL.getValue().intValue() %>;
-	var FACEBOOK_CHANNEL = <%=ChannelEnum.FACEBOOK.getValue().intValue() %>;
-	var CURRENT_CHANNEL = <%=CHANNEL.getValue().intValue() %>;
-	
-	// Types of objects (data)
-	var CLASS_OBJ = <%=BlockType.CLASS.getValue().intValue() %>;
-	var WORKSHOP_OBJ = <%=BlockType.WORKSHOP.getValue().intValue() %>;
-	var STAFF_OBJ = <%=BlockType.STAFF.getValue().intValue() %>;
-	var SALE_OBJ = <%=BlockType.SALE.getValue().intValue() %>;
-	var SCHEDULE_OBJ = <%=BlockType.SCHEDULE.getValue().intValue() %>;
+// It's probably all wrong, so rip it all out!! -- GDM
 
-	var CLIENT_OBJ = <%=BlockType.CLIENT.getValue() %>;
-	var FINDER_OBJ = <%=BlockType.FINDER.getValue() %>;
-	var SITE_OBJ = <%=BlockType.SITE.getValue() %>;
-	var APPOINTMENT_OBJ = <%=BlockType.APPOINTMENT.getValue() %>;
-	var TEXT_OBJ = <%=BlockType.TEXT.getValue() %>;
-	var FOOTER_OBJ = <%=BlockType.FOOTER.getValue() %>;
-	var SOCIAL_OBJ = <%=BlockType.SOCIAL.getValue() %>;
-	var GRAPHIC_OBJ = <%=BlockType.GRAPHIC.getValue() %>;
-	var NON_CLASS_OBJ = <%=BlockType.NONCLASS.getValue() %>;
-	var NON_WORKSHOP_OBJ = <%=BlockType.NONWORKSHOP.getValue() %>;
-	var WEB_LINK_OBJ = <%=BlockType.WEB_LINK.getValue() %>;
-	var VIDEO_OBJ = <%=BlockType.VIDEO.getValue() %>;
-
-	// These are for the lists of objects that popup when you click on
-	//  an icon on the right pane.  These prefices are the key differentiator
-	//  in the naming scheme for IDs in the templates and related editory and 
-	//  layout/style design.  The Java class BlockType needs to enumerate
-	//  these values in an ascending order.  The hardcoded 17 for array size
-	//  could be derived from the Java class as an improvement.
-	var idPrefix = new Array(17);
-	idPrefix[CLASS_OBJ - 1] = '<%=BlockType.CLASS.getItemTextLowerCase()%>';
-	idPrefix[WORKSHOP_OBJ - 1] = '<%=BlockType.WORKSHOP.getItemTextLowerCase()%>';
-	idPrefix[STAFF_OBJ - 1] = '<%=BlockType.STAFF.getItemTextLowerCase()%>';
-	idPrefix[CLIENT_OBJ - 1] = '<%=BlockType.CLIENT.getItemTextLowerCase()%>';
-	idPrefix[FINDER_OBJ - 1] = '<%=BlockType.FINDER.getItemTextLowerCase()%>';
-	idPrefix[SALE_OBJ - 1] = '<%=BlockType.SALE.getItemTextLowerCase()%>';
-	idPrefix[SITE_OBJ - 1] = '<%=BlockType.SITE.getItemTextLowerCase()%>';
-	idPrefix[APPOINTMENT_OBJ - 1] = '<%=BlockType.APPOINTMENT.getItemTextLowerCase()%>';
-	idPrefix[SCHEDULE_OBJ - 1] = '<%=BlockType.SCHEDULE.getItemTextLowerCase()%>';
-	idPrefix[TEXT_OBJ - 1] = '<%=BlockType.TEXT.getItemTextLowerCase()%>';
-	idPrefix[FOOTER_OBJ - 1] = '<%=BlockType.FOOTER.getItemTextLowerCase()%>';
-	idPrefix[SOCIAL_OBJ - 1] = '<%=BlockType.SOCIAL.getItemTextLowerCase()%>';
-	idPrefix[GRAPHIC_OBJ - 1] = '<%=BlockType.GRAPHIC.getItemTextLowerCase()%>';
-	idPrefix[NON_CLASS_OBJ - 1] = '<%=BlockType.NONCLASS.getItemTextLowerCase()%>';
-	idPrefix[NON_WORKSHOP_OBJ - 1] = '<%=BlockType.NONWORKSHOP.getItemTextLowerCase()%>';
-	idPrefix[WEB_LINK_OBJ - 1] = '<%=BlockType.NONWORKSHOP.getItemTextLowerCase()%>';
-	idPrefix[VIDEO_OBJ - 1] = '<%=BlockType.NONWORKSHOP.getItemTextLowerCase()%>';
-
-	// Variable content in the stack.  Assumes that VIDEO_OBJ is the last enumerated value in
-	//  the Java class BlockType (highest enumerated value).  Again, could be improved upon.
-	var masterFields = new Array(VIDEO_OBJ);
-
-	// Depending on channel type, set the max # of templates that can be edited and set the 
-	//  variable to be stored in the session to that channel.
-    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
-	var MAX_BLOCK_STACK_SIZE = 6;
-	SESSION_CHANNEL = EMAIL_CHANNEL;
-	<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
-	var MAX_BLOCK_STACK_SIZE = 3;
-	SESSION_CHANNEL = FACEBOOK_CHANNEL;
-	<% } %>
-
-	// This is the array that keeps the data for each template being edited.  blockStack[0] is the top
-	//  template, blockStack[1] is 2nd, etc.
-	var blockStack = new Array();
-
-	// Image types
-	var IMAGE_TYPE_USER = <%=ImageType.USER_UPLOAD.getValue() %>;
-	var IMAGE_TYPE_LOGO = <%=ImageType.DEFAULT_LOGO.getValue() %>;
-	var IMAGE_TYPE_TEACHER = <%=ImageType.TEACHER_PHOTO.getValue() %>;
-	var IMAGE_TYPE_STOCK = <%=ImageType.STOCK.getValue() %>;
-	var IMAGE_TYPE_FUSED = <%=ImageType.FUSED_IMAGE.getValue() %>;
-
-	// The ID of the form used to post the blockStack array to the server to store in the session
-	var blockForm = $('#blockForm');
-
-	// Singleton class for client-side session management
-	var session_mgr = new Session();
-	session_mgr.setImageID(IMAGE_TYPE_USER);
 
 	// This function is called when all of page including HTML, JS and CSS are fully loaded.
 	$(document).ready(function() 
@@ -687,15 +594,14 @@
 		// If we were able to retrieve user's starting choice, run with it.  Should toss an error if not defined.
 		//  There is a Java class Block and a JS class Block (block.js) that are synched in design. 
 		<% if (starting_block != null) { %>
+			// Now this is a JavaScript Block, which looks a lot like a Java Block
+			// but lives in a completely different world.
 			var the_starting_block = new Block(
 			<%=starting_block.get_channel_type().getValue().intValue() %>,
 			<%=starting_block.get_block_type().getValue().intValue() %>,
 			'<%=Utils.jsSafeStr(starting_block.get_block_type_name()) %>',
 			<%=starting_block.get_database_id().intValue() %>,
 			'<%=Utils.jsSafeStr(starting_block.get_name()) %>',
-			'<%=Utils.jsSafeStr(starting_block.get_full_name()) %>',
-			'<%=starting_block.get_starting_date() %>',
-			'<%=starting_block.get_schedule_reference() %>',
 			'<%=Utils.jsSafeStr(starting_block.get_description()) %>',
 			'<%=Utils.jsSafeStr(starting_block.get_short_description()) %>',
 			'<%=starting_block.get_img_url() %>'
@@ -713,5 +619,12 @@
 	});
 </script>
 
+</c:if>		<!-- sessionOK -->
+<%
+	// Necessary cleanup to avoid leakage
+	if (benchHelper != null) {
+		benchHelper.dismiss ();
+	}
+%>
 </body>
 </html>

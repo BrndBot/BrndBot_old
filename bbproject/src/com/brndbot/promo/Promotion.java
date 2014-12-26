@@ -1,15 +1,20 @@
 package com.brndbot.promo;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.brndbot.client.Model;
+import com.brndbot.client.ModelCollection;
 import com.brndbot.client.ModelField;
 import com.brndbot.client.PromotionPrototype;
 import com.brndbot.client.StyleSet;
+import com.brndbot.system.SessionUtils;
 
 /** This class defines a Promotion, which includes a model, style,
  *  and content.
@@ -19,17 +24,32 @@ public class Promotion extends PromotionPrototype {
 	private List<ModelField> content;
 	
 	/** Factory method to create a Promotion from a specified
-	 *  model name. 
+	 *  model name. *** DO we ever want to do this, rather than 
+	 *  creating it from a PromotionPrototype?
 	 */
-	public static Promotion createPromotion (String modelName) {
-		// Here we need access somewhere to the set of available
-		// Models so we can grab the model with the specified name.
-		return null;		// TODO stub
+	public static Promotion createPromotion (String protoName, HttpServletRequest request) {
+		// We somehow need access to the ModelCollection. That should
+		// be a session attribute, so the session has to be an
+		// argument.
+		Client client = (Client) SessionUtils.getSessionData
+					(request, SessionUtils.CLIENT);
+		PromotionPrototype proto = client.getPromotionPrototype(protoName);
+		return new Promotion (proto);
 	}
 	
-	public Promotion(Model m, StyleSet ss) {
-		super(m, ss);
-		// TODO Auto-generated constructor stub
+	/** Create a promotion from a PromotionPrototype. */
+	public Promotion (PromotionPrototype proto) {
+		super(proto.getName(), proto.getModel(), proto.getStyleSet());
+		// copy all fields from model
+		List<ModelField> modelFields = proto.getModel().getFields();
+		content = new ArrayList<>(modelFields.size());
+		for (ModelField field : modelFields) {
+			content.add (field.replicate ());
+		}
+	}
+	
+	public Promotion(String name, Model m, StyleSet ss) {
+		super(name, m, ss);
 	}
 
 	public List<ModelField> getContent () {

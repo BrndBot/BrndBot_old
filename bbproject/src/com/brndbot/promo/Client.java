@@ -2,7 +2,9 @@ package com.brndbot.promo;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -42,7 +44,8 @@ public class Client implements Serializable {
 	private List<StyleSet> styleSets;
 	
 	/** The PromotionPrototypes available to us. */
-	private List<PromotionPrototype> promotionPrototypes;
+	/** TODO this should really be a map. */
+	private Map<String,PromotionPrototype> promotionPrototypes;
 	
 	/** FIXME ****HACK*** doesn't work with more than one user  */
 	private static transient Client client;
@@ -84,10 +87,18 @@ public class Client implements Serializable {
 		}
 	}
 	
+	public PromotionPrototype getPromotionPrototype (String name) {
+		return promotionPrototypes.get(name);
+	}
+	
 	/** Pull in the data from the module */
 	public void acquireData () {
 		modelCollection = clientInterface.getModels ();
-		promotionPrototypes = clientInterface.getPromotionPrototypes ();
+		List<PromotionPrototype> promos = clientInterface.getPromotionPrototypes ();
+		promotionPrototypes = new HashMap<>();
+		for (PromotionPrototype promo : promos) {
+			promotionPrototypes.put (promo.getName(), promo);
+		}
 	}
 
 }

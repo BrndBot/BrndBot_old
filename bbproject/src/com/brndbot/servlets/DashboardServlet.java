@@ -48,17 +48,17 @@ public class DashboardServlet extends HttpServlet
 	{
 		logger.debug("--------Entering DashboardServlet----------");
 
-		/* In this new world, the type parameter will be the name of a Model,
+		/* In this new world, the type parameter will be the name of a PromotionPrototype,
 		 * and so a name rather than a number. */
 		String typeOfData = Utils.getStringParameter(request, "type");
 		HttpSession session = request.getSession();
 		int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		Assert.that(channel != 0, "Channel is zero in DashboardServlet!");
 
-		int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth().intValue();
+		int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth();
 		System.out.println("Channel is: " + channel);
 		ChannelEnum channel_enum = ChannelEnum.create(channel);
-		max_width = channel_enum.getDefaultImgWidth().intValue();
+		max_width = channel_enum.getDefaultImgWidth();
 /*		else
 		{
 			throw new RuntimeException("Unexpected channel in DashboardServlet, channel id: " + channel);
@@ -67,7 +67,7 @@ public class DashboardServlet extends HttpServlet
 		String jsonStr = "";
 		System.out.println("BlockType new: " + typeOfData);
 		// **** Get rid of specific BlockTypes. Maybe even of Blocks.
-		Promotion promo = Promotion.createPromotion (typeOfData);
+		Promotion promo = Promotion.createPromotion (typeOfData, request);
 		// TODO convert promo to JSON ***
 
 		if (jsonStr.length() > 0)

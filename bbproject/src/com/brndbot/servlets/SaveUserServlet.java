@@ -75,9 +75,6 @@ public class SaveUserServlet extends HttpServlet
 		user.setCompanyURL(companyURL);
 		user.setFacebook(facebookURL);
 		user.setTwitter(twitterHandle);
-		user.setLinkedIn(linkedIn);
-		user.setYouTube(youTube);
-		user.setInstagram(instagram);
 		user.setOrganizationID(Integer.parseInt(orgId));
 		user.saveUser (con);
 		int user_id = user.getUserID();

@@ -9,9 +9,6 @@ function Block (
 	block_type_desc,
 	database_id,
 	name,
-	full_name,
-	starting_date,
-	schedule_reference,
 	description,
 	short_description,
 	imgURL)
@@ -21,9 +18,6 @@ function Block (
 	this.block_type_desc = block_type_desc;
 	this.database_id = database_id;
 	this.name = name;
-	this.full_name = full_name;
-	this.starting_date = starting_date;
-	this.schedule_reference = schedule_reference;
 	this.description = description;
 	this.short_description = short_description;
 	this.imgURL = imgURL;
@@ -38,51 +32,25 @@ function Block (
 // Calculate the IDs for a given template number "i"
 Block.prototype.getBlockElementIDs = function(i) 
 {
-	var base = '';
-	if (this.block_type == 1)
-		base = 'class';
-	else if (this.block_type == 2)
-		base = 'workshop';
-	else if (this.block_type == 3)
-		base = 'staff';
-	else if (this.block_type == 4)
-		base = 'client';
-	else if (this.block_type == 5)
-		base = 'finder';
-	else if (this.block_type == 6)
-		base = 'sale';
-	else if (this.block_type == 7)
-		base = 'site';
-	else if (this.block_type == 8)
-		base = 'appointment';
-	else if (this.block_type == 9)
-		base = 'schedule';
-	else if (this.block_type == 10)
-		base = 'text';
-	else if (this.block_type == 11)
-		base = 'footer';
-	else if (this.block_type == 12)
-		base = 'social';
-	else if (this.block_type == 13)
-		base = 'graphic';
-	else if (this.block_type == 14)
-		base = 'nonclass';
-	else if (this.block_type == 15)
-		base = 'nonworkshop';
-	else
-	{
-		alert('Unknown block_type, error: ' + this.block_type);
+	// *** In this new world, we use promo_proto instead of the
+	// *** client-specific block_type. This will be the JSON
+	//     rendition of the promotion prototype, and its fields
+	//     will be used to create an array of elements.
+	for (i = 0; i < this.promo_proto.fields.length; i++) {
+		var field = this.promo_proto.fields[i];
+		// So what exactly does this JavaScript do with a block?
+		// fillValue does ... something.
 	}
-
+	
 	// If the template is not enumerated (meaning it's a singleton and cannot be moved
 	//  up or down), then the IDs don't have the "i" suffix.
 	if (i > 0)
 	{
+		//*** Replace this with an array of objects based on the
+		//*** promotion prototype instead of these specific items.
 		this.blockID = base + 'Block-' + i;
 		this.buttonID = base + 'Button-' + i;
 		this.nameID = base + 'Name-' + i;
-		this.fullNameID = base + 'FullName-' + i;
-		this.descriptionID = base + 'Description-' + i;
 		this.imgUrlID = base + 'ImgURL-' + i;
 	}
 	else
@@ -92,8 +60,6 @@ Block.prototype.getBlockElementIDs = function(i)
 		this.blockID = base + 'Block';
 		this.buttonID = base + 'Button';
 		this.nameID = base + 'Name';
-		this.fullNameID = base + 'FullName';
-		this.descriptionID = base + 'Description';
 		this.imgUrlID = base + 'ImgURL';
 	}
 };
