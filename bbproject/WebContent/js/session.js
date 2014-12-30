@@ -1,5 +1,5 @@
-/*  It appears that the session gets managed from JavaScript, which is insane.
- *  Throw this entirely away.
+/*  Be very careful what information gets set in the session from here.
+ *  Setting the database ID with no security sounds scary.
  */
 var SESSION_UNDEFINED = -1;
 var SESSION_CHANNEL = SESSION_UNDEFINED;

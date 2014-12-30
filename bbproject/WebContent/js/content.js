@@ -13,97 +13,10 @@ var currentListID = new Array(0, 0, 0);
 function initDashboard() 
 {
 	// Currently selected List items
-	var currentType = WORKSHOP_OBJ; // default is list of workshops
+	var currentType = "";
 	var currentChannel = EMAIL_CHANNEL;
 	
-	var currentButtonID = 'viewWorkshops';
 
-	this.classDataSource  = new kendo.data.DataSource({
-		transport: 
-		{
-			read:
-			{
-				url: "DashboardServlet?type=" + CLASS_OBJ,
-				dataType: "json"
-			}
-		},
-		pageSize: 10
-	});
-
-	var workshopDataSource  = new kendo.data.DataSource({
-		transport: 
-		{
-			read:
-			{
-				url: "DashboardServlet?type=" + WORKSHOP_OBJ,
-				dataType: "json"
-			}
-		},
-		pageSize: 10
-	});
-
-	this.staffDataSource  = new kendo.data.DataSource({
-		transport: 
-		{
-			read:
-			{
-				url: "DashboardServlet?type=" + STAFF_OBJ,
-				dataType: "json"
-			}
-		},
-		pageSize: 10
-	});
-
-	$("#" + idPrefix[CLASS_OBJ - 1] + "Here").kendoListView({
-		dataSource: this.classDataSource,
-	    selectable: true,
-        template: kendo.template($("#" + idPrefix[CLASS_OBJ - 1] + "Template").html()),
-	    change: selectClassListItem,
-	    dataBound: onClassListSuccess
-    });
-
-    $("#classPager").kendoPager({
-        dataSource: classDataSource
-    });
-
-	$("#" + idPrefix[STAFF_OBJ - 1] + "Here").kendoListView({
-		dataSource: this.staffDataSource,
-	    selectable: true,
-        template: kendo.template($("#" + idPrefix[STAFF_OBJ - 1] + "Template").html()),
-	    change: selectStaffListItem,
-	    dataBound: onStaffListSuccess
-    });
-
-    $("#staffPager").kendoPager({
-        dataSource: staffDataSource
-    });
-
-	$("#" + idPrefix[WORKSHOP_OBJ - 1] + "Here").kendoListView({
-		dataSource: workshopDataSource,
-	    selectable: true,
-        template: kendo.template($("#" + idPrefix[WORKSHOP_OBJ - 1] + "Template").html()),
-	    change: selectWorkshopListItem,
-	    dataBound: onWorkshopListSuccess
-    });
-
-    $("#workshopPager").kendoPager({
-        dataSource: workshopDataSource
-    });
-
-	$("#viewClasses").kendoButton({
-		click: viewClassList,
-		spriteCssClass: "k-icon viewClassesIcon"
-	});
-
-	$("#viewTeachers").kendoButton({
-		click: viewStaffList,
-		spriteCssClass: "k-icon viewTeachersIcon"
-	});
-
-	$("#viewWorkshops").kendoButton({
-		click: viewWorkshopList,
-		spriteCssClass: "k-icon viewWorkshopsIcon"
-	});
 
 /*
 	function turnOffActiveChannel(nextChannel)

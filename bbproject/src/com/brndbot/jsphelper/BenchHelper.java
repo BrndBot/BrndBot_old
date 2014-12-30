@@ -1,10 +1,21 @@
-package com.brndbot.block;
+/**
+ *  CONFIDENTIAL
+ *  
+ *  All rights reserved by Brndbot, Ltd. 2014
+ *
+*/
+package com.brndbot.jsphelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.brndbot.block.Block;
+import com.brndbot.block.ChannelEnum;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Palette;
 import com.brndbot.db.User;
@@ -16,6 +27,8 @@ import com.brndbot.db.User;
  */
 public class BenchHelper {
 
+	final static Logger logger = LoggerFactory.getLogger(BenchHelper.class);
+	
 	private DbConnection con;
 	
 	private HttpSession session;

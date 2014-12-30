@@ -4,9 +4,9 @@
 <%@ page import="com.brndbot.system.SessionUtils" %>
 <%@ page import="com.brndbot.system.SystemProp" %>
 <%@ page import="com.brndbot.system.Utils" %>
-<%@ page import="com.brndbot.user.ImageType" %>
-<%@ page import="com.brndbot.user.User" %>
-<%@ page import="com.brndbot.user.UserLogo" %>
+<%@ page import="com.brndbot.db.ImageType" %>
+<%@ page import="com.brndbot.db.User" %>
+<%@ page import="com.brndbot.db.UserLogo" %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
@@ -27,6 +27,7 @@
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="js/kendo.all.min.js"></script>
     <script type="text/javascript" src="js/signup.js"></script>
+	<script type="text/javascript" src="js/session.js"></script>
 
 <script type="text/javascript">
 
@@ -359,7 +360,7 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 				</div>
 				<div>
 					<div class="unit size1of3">
-						<button id="unforkToPos" class="greenButton rounded" style="width:9.375rem">continue</button>
+						<button id="unforkToLook" class="greenButton rounded" style="width:9.375rem">continue</button>
 					</div>
 					<div class="lastUnit" style="clear:both">&nbsp;</div>
 				</div>
@@ -367,54 +368,7 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 		</div>
 		<!-- End of palette pane -->
 
-		<!-- Start POS Select Pane -->
-		<div id="posSelectPane" style="display:none;padding-top:2rem;">
-			<div class="unit size1of5" style="min-height:21.875rem">
-				&nbsp;
-			</div>
-			<div class="unit lastUnit">
-				<div style="text-align:center">
-					<div style="unit">
-						<div id="posTitle" class="formHeader formSpacer">
-							Choose your POS system.
-						</div>
-						<div class="lastUnit" style="clear:both">
-							&nbsp;
-						</div>
-					</div>
- 				</div>
- 			</div>
-			<div style="padding-top:3rem;">
-				<div id="mindBodyPos" class="unit size1of4 posSystem">
-					<img src="images/mindbody-logo.png" width="180" alt="" />
-				</div>
-				<div id="ncrPos" class="unit size1of4 posSystem" style="visibility:hidden">
-					<img src="images/NCR-pos.png" alt="" width="140" />
-				</div>
-				<div id="ebayPos" class="unit lastUnit posSystem" style="visibility:hidden">
-					<img src="images/ebay-pos.png" alt="" width="140" />
-				</div>
-				<div class="lastUnit" style="clear:both">&nbsp;</div>
-			</div>
-			<div style="padding-top:.5rem">&nbsp;</div>
-			<div id="mindBodySpecific" style="display:none">
-				<div style="padding-top:2rem">
-					<div class="formHeader formSpacer">
-						Input your MindBody studio ID.
-					</div>
-			       	<div class="formSpacer">
-			       		<span class="urlSpan">clients.mindbody.com/studioid/?=</span>
-			        	<span>
-				        	<input type="text" class="k-textbox editWidthShort" autocomplete="off" id="mindbodyStudioID" />
-			        	</span>
-			       	</div>
-					<div style="padding-left:17%">
-						<button id="posContinue" class="greenButton rounded" style="width:9.375rem">continue</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End of POS Select pane -->
+
 
 		<!-- Start Look Pane -->
 		<div id="lookPane" style="display:none;padding-top:2rem;">
@@ -497,6 +451,9 @@ var signUpUserKey = '<%=SessionUtils.USER_ID %>';
 var PHP_SERVER_PAGE = '<%=SystemProp.get(SystemProp.PHP_SERVER_PAGE) %>';
 var IMAGE_TYPE_LOGO = <%=ImageType.DEFAULT_LOGO.getValue().intValue() %>;
 
+// Singleton class for client-side session management
+var session_mgr = new Session();
+session_mgr.setImageID(IMAGE_TYPE_LOGO);
 
 </script>
 

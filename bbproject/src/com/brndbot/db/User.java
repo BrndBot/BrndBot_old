@@ -26,17 +26,17 @@ public class User implements TableModel
 	final static Logger logger = LoggerFactory.getLogger(User.class);
 	final static String tableName = "user";
 	
-	private Integer _user_id;
+	private Integer userId;
 	private String _email;
-	private String _hashed_password;
-	private String _company_name;
-	private String _company_address;
-	private String _company_url;
-	private String _logo_name;
-	private Integer _org_id;
-	private Integer _personality_id;
-	private String _facebook;
-	private String _twitter;
+	private String hashedPassword;
+	private String companyName;
+	private String companyAddress;
+	private String companyUrl;
+	private String logoName;
+	private Integer orgId;
+	private Integer personalityId;
+	private String facebook;
+	private String twitter;
 //	private String _linked_in;
 //	private String _you_tube;
 //	private String _instagram;
@@ -47,7 +47,7 @@ public class User implements TableModel
 	
 	public User(int user_id)
 	{
-		_user_id = new Integer(user_id);
+		userId = new Integer(user_id);
 	}
 	
 	public String getTableName () {
@@ -55,11 +55,11 @@ public class User implements TableModel
 	}
 
 	public Integer getUserID() {
-		return _user_id;
+		return userId;
 	}
 
 	public void setUserID(int user_id) {
-		this._user_id = new Integer(user_id);
+		this.userId = new Integer(user_id);
 	}
 
 	
@@ -68,15 +68,15 @@ public class User implements TableModel
 	}
 	
 	public void setHashedPassword (String hashed_pw) {
-		_hashed_password = hashed_pw;
+		hashedPassword = hashed_pw;
 	}
 	
-	public void setFacebook (String facebook) {
-		_facebook = facebook;
+	public void setFacebook (String fbook) {
+		facebook = fbook;
 	}
 	
-	public void setTwitter (String twitter) {
-		_twitter = twitter;
+	public void setTwitter (String twt) {
+		twitter = twt;
 	}
 	
 //	public void setYouTube (String you_tube) {
@@ -92,44 +92,44 @@ public class User implements TableModel
 //	}
 	
 	public Integer getOrganizationID() {
-		return _org_id;
+		return orgId;
 	}
 	
 	public void setOrganizationID(int org_id) {
-		this._org_id = new Integer(org_id);
+		this.orgId = new Integer(org_id);
 	}
 	
 	public void setPersonalityID(int pers_id) {
-		this._personality_id = pers_id;
+		this.personalityId = pers_id;
 	}
 	
 	public Integer getPersonalityID() {
-		return _personality_id;
+		return personalityId;
 	}
 	
 
 	public String getCompanyName() {
-		return _company_name;
+		return companyName;
 	}
 
 	public void setCompanyName(String company_name) {
-		this._company_name = company_name;
+		this.companyName = company_name;
 	}
 	
 	public void setCompanyAddress(String company_address) {
-		this._company_address = company_address;
+		this.companyAddress = company_address;
 	}
 	
 	public void setCompanyURL (String company_url) {
-		this._company_url = company_url;
+		this.companyUrl = company_url;
 	}
 
 	public String getLogoName() {
-		return _logo_name;
+		return logoName;
 	}
 
 	public void setLogoName(String logo_name) {
-		this._logo_name = logo_name;
+		this.logoName = logo_name;
 	}
 
 	public void saveUser (DbConnection con) {
@@ -143,16 +143,16 @@ public class User implements TableModel
 					" VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setString(1, _email);
-			pstmt.setString(2, _hashed_password);
-			pstmt.setString(3, _company_name);
-			pstmt.setString(4, _company_address);
-			pstmt.setString(5, _company_url);
-			pstmt.setString(6, _facebook);
-			pstmt.setString(7, _twitter);
+			pstmt.setString(2, hashedPassword);
+			pstmt.setString(3, companyName);
+			pstmt.setString(4, companyAddress);
+			pstmt.setString(5, companyUrl);
+			pstmt.setString(6, facebook);
+			pstmt.setString(7, twitter);
 //			pstmt.setString(8, _linked_in);
 //			pstmt.setString(9, _you_tube);
 //			pstmt.setString(10, _instagram);
-			pstmt.setInt(11, _org_id);
+			pstmt.setInt(8, orgId);
 			pstmt.executeUpdate();
 			// Get the new user ID
 			sql = "select LAST_INSERT_ID() FROM user;";
@@ -160,10 +160,10 @@ public class User implements TableModel
 			ResultSet rs = con.QueryDB(sql, stmt);
 			if (rs.next())
 			{
-				_user_id = rs.getInt(1);
+				userId = rs.getInt(1);
 			}
-			logger.debug("USER_ID: " + _user_id);
-			if (_user_id == 0)
+			logger.debug("USER_ID: " + userId);
+			if (userId == 0)
 			{
 				throw new RuntimeException("User ID is zero after save!!");
 			}

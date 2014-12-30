@@ -49,11 +49,7 @@ $(document).ready(function()
 		click: viewPalette
 	});
 	
-	$("#unforkToPos").kendoButton({
-		click: unforkToPos
-	});
-
-	$("#posContinue").kendoButton({
+	$("#lookContinue").kendoButton({
 		click: posSelected
 	});
 
@@ -406,7 +402,8 @@ function skipPalette()
 {
 	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#paletteForkPane').hide();
-	$('#posSelectPane').show();
+	$('#lookPane').show();
+	$('#lookPane2').show();
 	savePalette();
 }
 
@@ -417,11 +414,13 @@ function viewPalette()
 	$('#palettePane').show();
 }
 
-function unforkToPos()
+function unforkToLook()
 {
 	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#palettePane').hide();
-	$('#posSelectPane').show();
+//	$('#posSelectPane').show();
+	$('#lookPane').show();
+	$('#lookPane2').show();
 	savePalette();
 }
 

@@ -42,7 +42,7 @@ public class Promotion extends PromotionPrototype {
 		super(proto.getName(), proto.getModel(), proto.getStyleSet());
 		// copy all fields from model
 		List<ModelField> modelFields = proto.getModel().getFields();
-		content = new ArrayList<>(modelFields.size());
+		content = new ArrayList<ModelField>(modelFields.size());
 		for (ModelField field : modelFields) {
 			content.add (field.replicate ());
 		}

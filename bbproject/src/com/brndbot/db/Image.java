@@ -468,7 +468,7 @@ public class Image implements TableModel
 				json_array.put(json_obj);
 			}
 		}
-		catch (SQLException | JSONException e) 
+		catch (Exception e) 
 		{
 			e.printStackTrace();
 			throw new RuntimeException("Error processing image library.\n" + e.getMessage());

@@ -2,19 +2,44 @@
 <html>
 <%@ page session="true"%>
 
-<%@ page import="com.brndbot.block.BlockType" %>
+
 <%@ page import="com.brndbot.block.ChannelEnum" %>
 <%@ page import="com.brndbot.db.DbConnection" %>
+<%@ page import="com.brndbot.jsphelper.HomeHelper" %>
 <%@ page import="com.brndbot.system.SessionUtils" %>
 <%@ page import="com.brndbot.system.SystemProp" %>
 <%@ page import="com.brndbot.system.Utils" %>
-<%@ page import="com.brndbot.user.Palette" %>
-<%@ page import="com.brndbot.user.User" %>
-<%@ page import="com.brndbot.user.UserLogo" %>
-
+<%@ page import="com.brndbot.db.Palette" %>
+<%@ page import="com.brndbot.db.User" %>
+<%@ page import="com.brndbot.db.UserLogo" %>
+<%@ page import="org.slf4j.Logger" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="java.util.ArrayList" %>
 
+
+<%
+	final Logger logger = LoggerFactory.getLogger(this.getClass());
+%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %>" scope="page"/>
+<c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %>" scope="page"/>
+
+<script type="text/javascript">
+	var EMAIL_CHANNEL = ${channel_email};
+	var FACEBOOK_CHANNEL = ${channel_facebook};
+</script>
+<% /*
+
+This page presents the promotion categories that are available and lets the user choose one
+for processing in the editor (bench).
+
+*/
+%>
 
 <head>
     <title>Brndbot</title>
@@ -38,37 +63,51 @@
     <script type="text/javascript" src="js/kendo.all.min.js"></script>
 	<script type="text/javascript" src="js/modernizr.custom.63321.js"></script>
     <script type="text/javascript" src="js/sidebar.js"></script>
+	<script type="text/javascript" src="js/session.js"></script>
     <script type="text/javascript" src="js/home.js"></script>
 	<script type="text/javascript" src="js/content.js"></script>
 
 </head>
 <body>
-<% 
-	System.out.println("-------------Entering home.jsp---------------");
+Server info: <%= application.getServerInfo() %><br>
+Servlet version: <%= application.getMajorVersion() %>.<%= application.getMinorVersion() %><br>
+JSP version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion() %><br>
+Java version: <%= System.getProperty("java.version") %><br>
 
-	int max_logo_height = 130;
-	int max_logo_width = 200;
+<c:if test="${sessionScope.brndbotuser_id <= 0}">
+	<c:set var="sessionOK" value="0" scope="page"/>
+	<c:redirect url="index.jsp"/>
+</c:if>
 
-	int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
-	if (user_id == 0)
-	{
-		System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
-		response.sendRedirect("index.jsp");
-		return;
-	}
-	DbConnection con = DbConnection.GetDb();
-	User user = User.getUserNameAndLogo(user_id, con);
-	con.close();
-	if (user == null)
-	{
-		System.out.println("User returned null, something is wrong.  Userid: " + user_id);
-		// Assume the problem is that no logo was uploaded.
-		response.sendRedirect("signup.jsp?toLogo=1");
-		return;
-	}
-	System.out.println("UserID: " + user.getUserID().intValue());
-
+<%
+	logger.debug ("User ID = {}", session.getAttribute("brndbotuser_id"));
+	logger.debug ("Org = {}", session.getAttribute("brndbotorg"));
 %>
+
+<jsp:useBean id="homeHelper" 
+		class="com.brndbot.jsphelper.HomeHelper" 
+		scope="page">
+	<jsp:setProperty name="homeHelper" property="userId" value="${sessionScope.brndbotuser_id}"/>
+	<jsp:setProperty name="homeHelper" property="organization" value="${sessionScope.brndbotorg}"/>
+</jsp:useBean>
+
+<%
+	logger.debug ("Logo name = {}", homeHelper.getLogoName());
+%>
+
+<p>Logo name: <c:out value="${homeHelper.logoName}"/></p>
+
+<c:if test="${homeHelper.logoName == null}">
+	<c:redirect url="signup.jsp?toLogo=1"/>
+	<c:set var="sessionOK" value="0" scope="page"/>
+</c:if>
+
+<p>Final SessionOK: <c:out value="${sessionOK}"/> <br>
+
+
+<c:if test="${sessionOK != 0}">	<!-- encompasses whole rest of body -->
+
+
 <div id="brndbotMain">
 	<div id="brndbotHeader">
 		&nbsp;
@@ -81,7 +120,7 @@
 				<table id="imageWrapper2" class="super-centered">
 					<tr>
 			    		<td align="center" valign="middle">
-							<%=UserLogo.getBoundLogo(user_id, max_logo_height, max_logo_width)%>
+							<c:out escapeXml="false" value="${homeHelper.boundLogo}"/>
 						</td>
 					</tr>
 				</table>
@@ -94,7 +133,6 @@
 		<div class="unit size1of2" style="padding-left:9.4375rem;padding-top:3rem">
 			<div style="width:100%">
 
-				<!--  BEGINNING HOME.JSP -->
 				<div id="homeJsp">
 					<div class="spaceMe">
 						<div style="text-align:left;">
@@ -108,52 +146,10 @@
 						</div>
 					</div>
 					<div class="spaceMe">
-						<div id="saleBadge" class="homeBadge">
-							<div>
-								<img src="images/home/sale.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Sale
-							</div>
-						</div>
-						<div id="classBadge" class="homeBadge">
-							<div>
-								<img src="images/home/classes.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Class
-							</div>
-						</div>
-						<div id="workshopBadge" class="homeBadge lastUnit">
-							<div>
-								<img src="images/home/workshops.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Workshop
-							</div>
-						</div>
+<c:out escapeXml="false" value="${homeHelper.renderDoToday}"/>
 					</div>
 					<div style="clear:both">&nbsp;</div>
-					<div style="text-align:center;">
-						<div id="teacherBadge" class="homeBadge">
-							<div>
-								<img src="images/home/teacher.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Teacher
-							</div>
-						</div>
-						<div id="scheduleBadge" class="homeBadge lastUnit">
-							<div>
-								<img src="images/home/schedule.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Promote Schedule
-							</div>
-						</div>
-					</div>
 				</div>
-				<!--  END HOME.JSP -->
 
 
 				<!--  BEGINNING DASHBOARD.JSP -->
@@ -174,26 +170,14 @@
 				    <div class="listBackground">
 				    	<div id="viewButtonPanel" class="viewButtonPanel">
 				    		<div style="padding-top:1.25rem">
-					    		<div class="unit eachButton">
-					    			<button id="viewWorkshops" class="greenNoHoverButton">workshops</button>
-					    		</div>
-					    		<div class="unit eachButton">
-					    			<button id="viewClasses" class="grayNoHoverButton">classes</button>
-					    		</div>
-					    		<div class="unit eachButton">
-					    			<button id="viewTeachers" class="grayNoHoverButton">teachers</button>
-					    		</div>
+<c:out escapeXml="false" value="${homeHelper.renderModelListButtons}"/>
 					    		<div class="lastUnit">
 									&nbsp;
 					    		</div>
 					    	</div>
 						</div>
-<!-- 					<div id="wait">
-							<div style="padding-top:0.625rem;">
-								<img src="images/loader.gif" alt="" />
-							</div>
-						</div>
--->
+
+						<!-- WHAT exactly do these do? -->
 		 				<div id="classHere" style="display:none;border-color:#ffffff"></div>
 		 				<div id="classPager" style="display:none;"></div>
 						<div id="workshopHere" style="display:none;border-color:#ffffff"></div>
@@ -202,9 +186,7 @@
 		 				<div id="staffPager" style="display:none;"></div>
 					</div>  <!-- end listBackground -->
 				</div>
-				<!--  END DASHBOARD.JSP -->
 
-				<!--  BEGINNING channelJsp -->
 				<div id="channelJsp" style="display:none;">
 					<div class="spaceMe">
 						<div style="text-align:left;">
@@ -227,13 +209,14 @@
 							</div>
 						</div>
 					
-						<div id="chanTwitterBadge" class="homeBadge">
+<!--						<div id="chanTwitterBadge" class="homeBadge">
 							<div>
 								<img src="images/home/twitter.png" alt="" />
 							</div>
 							<div class="badgePrompt">
 								Create Tweet
 							</div>
+-->
 						</div>
 						<div id="chanFacebookBadge" class="homeBadge">
 							<div>
@@ -257,14 +240,12 @@
 	// Init the left-side panel
 	clickSideBar('homeLine');
 
-	var EMAIL_CHANNEL = <%=ChannelEnum.EMAIL.getValue().intValue() %>;
-	var FACEBOOK_CHANNEL = <%=ChannelEnum.FACEBOOK.getValue().intValue() %>;
-	var TWITTER_CHANNEL = <%=ChannelEnum.TWITTER.getValue().intValue() %>;
-	
 
 	// Singleton class for client-side session management
+	// There's something dumb about defining globals in the JSP, but Javascript doesn't have an include!
 	var session_mgr = new Session();
 </script>
 
+</c:if>		<!-- whole of body -->
 </body>
 </html>

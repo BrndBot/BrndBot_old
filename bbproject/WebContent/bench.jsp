@@ -6,15 +6,15 @@
 <%@ page import="com.brndbot.block.BlockStack" %>
 <%@ page import="com.brndbot.block.ChannelEnum" %>
 <%@ page import="com.brndbot.block.FBStyleType" %>
-<%@ page import="com.brndbot.glock.BenchHelper" %>
+<%@ page import="com.brndbot.jsphelper.BenchHelper" %>
 <%@ page import="com.brndbot.db.DbConnection" %>
 <%@ page import="com.brndbot.system.Assert" %>
 <%@ page import="com.brndbot.system.SessionUtils" %>
 <%@ page import="com.brndbot.system.Utils" %>
-<%@ page import="com.brndbot.user.ImageType" %>
-<%@ page import="com.brndbot.user.Palette" %>
-<%@ page import="com.brndbot.user.User" %>
-<%@ page import="com.brndbot.user.UserLogo" %>
+<%@ page import="com.brndbot.db.ImageType" %>
+<%@ page import="com.brndbot.db.Palette" %>
+<%@ page import="com.brndbot.db.User" %>
+<%@ page import="com.brndbot.db.UserLogo" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -43,24 +43,23 @@
 
 <c:if test="${sessionScope.brndbotuser_id} <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
-	<c:redirect url="index.jsp">
+	<c:redirect url="index.jsp"/>
 </c:if>
 <c:set var="tmp_channel" 
 			value="<%= SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY) %>"
 			scope="page" />
-<c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %> scope="page">
-<c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %> scope="page">
+<c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %>" scope="page"/>
+<c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %>" scope="page"/>
 <c:if test="${tmp_channel <= 0"}">
 	<c:set var="sessionOK" value="0" scope="page"/>
-	<c:redirect url="index.jsp">
+	<c:redirect url="index.jsp"/>
 </c:if>
 
 <c:if test-"${sessionOK != 0">	<!-- encompasses whole rest of body -->
 
-<!-- Where do these session attributes get set originally?
-     brndbotorg and brndbotpromo are new, need to set them somewhere -->
+
 <c:useBean id="benchHelper" 
-		class="com.brndbot.block.BenchHelper" 
+		class="com.brndbot.jsphelper.BenchHelper" 
 		scope="page">
 	<jsp:setProperty name="benchHelper" property="userId" value="${sessionScope.brndbotuser_id}"/>
 	<jsp:setProperty name="benchHelper" property="channel" value="${tmp_channel}"/>

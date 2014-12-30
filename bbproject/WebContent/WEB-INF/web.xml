@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!DOCTYPE web-app 
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
 
-<web-app>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+   version="2.5">
 
 
     <!-- General description of your web application -->
@@ -37,10 +39,6 @@
     <context-param>
       <param-name>webmaster</param-name>
       <param-value>webmaster@brndbot.com</param-value>
-      <description>
-        The EMAIL address of the administrator to whom questions
-        and comments about this application should be addressed.
-      </description>
     </context-param>
 
 
@@ -71,9 +69,6 @@
 
     <servlet>
       <servlet-name>DashboardServlet</servlet-name>
-      <description>
-        The user dashboard
-      </description>
       <servlet-class>com.brndbot.servlets.DashboardServlet</servlet-class>
       <!-- Load this servlet at server startup time -->
       <load-on-startup>5</load-on-startup>
@@ -81,9 +76,6 @@
     
     <servlet>
       <servlet-name>LoginServlet</servlet-name>
-      <description>
-        Log the user in
-      </description>
       <servlet-class>com.brndbot.servlets.LoginServlet</servlet-class>
       <!-- Load this servlet at server startup time -->
       <load-on-startup>4</load-on-startup>
@@ -91,73 +83,46 @@
     
     <servlet>
       <servlet-name>SetSessionServlet</servlet-name>
-      <description>
-        Set session
-      </description>
       <servlet-class>com.brndbot.servlets.SetSessionServlet</servlet-class>
     </servlet>
     
     <servlet>
       <servlet-name>EmailExistServlet</servlet-name>
-      <description>
-        Email checker?
-      </description>
       <servlet-class>com.brndbot.servlets.EmailExistServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>SaveImageServlet</servlet-name>
-      <description>
-        Handles image uploads
-      </description>
       <servlet-class>com.brndbot.servlets.SaveImageServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>SaveHTMLAsImageServlet</servlet-name>
-      <description>
-        Save HTML as image
-      </description>
       <servlet-class>com.brndbot.servlets.SaveHTMLAsImageServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>SavePaletteServlet</servlet-name>
-      <description>
-        Save palette
-      </description>
       <servlet-class>com.brndbot.servlets.SavePaletteServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>SaveUserServlet</servlet-name>
-      <description>
-        Save user
-      </description>
       <servlet-class>com.brndbot.servlets.SaveUserServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>RemoveLogoServlet</servlet-name>
-      <description>
-        Remove logo
-      </description>
       <servlet-class>com.brndbot.servlets.RemoveLogoServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>GetFacilitiesServlet</servlet-name>
-      <description>
-        Get facilities (whatever that is)
-      </description>
       <servlet-class>com.brndbot.servlets.Get FacilitiesServlet</servlet-class>
     </servlet>
 
     <servlet>
       <servlet-name>GetImagesServlet</servlet-name>
-      <description>
-        Get images
-      </description>
       <servlet-class>com.brndbot.servlets.GetImagesServlet</servlet-class>
     </servlet>
 

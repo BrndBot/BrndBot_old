@@ -238,7 +238,7 @@ public class UserLogo implements TableModel
 				name = SystemProp.get(SystemProp.ASSETS) + "//" + local_image_file_name;
 			}
 		}
-		System.out.println("FQDN: " + name);
+		logger.debug("FQDN: " + name);
 		String s = String.format("<img src=\"%s\" alt=\"\"></img>",
 				name);
 
@@ -267,7 +267,6 @@ public class UserLogo implements TableModel
 				int w = ((int)(width * scale));
 				s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
 						name, h, w);
-	//				System.out.println("Img: " + s);
 			}
 		}
 		return s;
@@ -277,7 +276,7 @@ public class UserLogo implements TableModel
 	{
 		Statement stmt = con.createStatement();
 		String sql = "SELECT * FROM userlogo WHERE UserID = " + user_id + ";";
-		System.out.println(sql);
+		logger.debug(sql);
 		ResultSet rs = con.QueryDB(sql, stmt);
 		UserLogo logo = null;
 		try 
@@ -294,7 +293,7 @@ public class UserLogo implements TableModel
 		}
 		catch (SQLException e) 
 		{
-			System.out.println("Exception in getLogoByUserID(): " + e.getMessage());
+			logger.error("Exception in getLogoByUserID(): " + e.getMessage());
 			e.printStackTrace();
 		}
 		finally 

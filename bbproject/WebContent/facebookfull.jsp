@@ -3,7 +3,7 @@
 <%@ page session="true"%>
 <%@ page import="com.brndbot.block.ChannelEnum" %>
 <%@ page import="com.brndbot.db.DbConnection" %>
-<%@ page import="com.brndbot.user.Image" %>
+<%@ page import="com.brndbot.db.Image" %>
 <%@ page import="com.brndbot.system.Assert" %>
 <%@ page import="com.brndbot.system.SessionUtils" %>
 <%@ page import="com.brndbot.system.SystemProp" %>

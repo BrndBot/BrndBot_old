@@ -1,4 +1,4 @@
-package com.brndbot.block;
+package com.brndbot.jsphelper;
 
 /* This class creates a CSS string from a bunch of settings */
 public class CSSBuilder {

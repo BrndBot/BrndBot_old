@@ -100,9 +100,9 @@ public class DbConnection
 			
 			if (_driver != null)
 			{
-				// TODO replace hard-coding with configuration file.
-				System.out.println ("getting connection pool");
-				_pool = new ConnectionPool("gpConnections",
+				logger.debug ("getting connection pool, URL = {}", SystemProp.get(SystemProp.DB_URL));
+				try {
+					_pool = new ConnectionPool("gpConnections",
 			            3,
 			            10,
 			            20,
@@ -110,12 +110,15 @@ public class DbConnection
 			            "jdbc:mysql://" + SystemProp.get(SystemProp.DB_URL),
 			            SystemProp.get(SystemProp.DB_USER),
 			            SystemProp.get(SystemProp.DB_PW));
-//			            "brndbot",
-//			            "wiahdihb");
+				} catch (Exception e) {
+					logger.error (e.getClass().getName());
+				} catch (Error ee) {
+					logger.error ("ERROR: {}", ee.getClass().getName());
+				}
 				if (_pool == null) {
-					System.out.println("_pool is null");
+					logger.error("_pool is null");
 				} else {
-					System.out.println("Got _pool");
+					logger.debug("Got _pool");
 				}
 				con = createViableDbConnection();
 /*				int db_schema = SysConfig.isDbSchemaHappy(con); 

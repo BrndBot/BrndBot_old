@@ -11,9 +11,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.brndbot.db.DbConnection;
+
 public class SystemProp
 {
-	//static private SystemProp _sys_props = null;
+	final static Logger logger = LoggerFactory.getLogger(SystemProp.class);
 
 	static final private String PROPERTY_FILENAME_BASE = "\\webapps\\brndbot\\WEB-INF\\system.properties";
 	static private String PROPERTY_FILENAME;
@@ -88,17 +93,19 @@ public class SystemProp
 	{
 		if (_properties == null)
 			loadProperties();
+		if (_properties == null)
+			logger.error("FATAL: Could not load system properties");
 		//SystemProp props = SystemProp.create();
 		SystemProp._properties.setProperty(property_name, val);
 	}
 
 	static public String get(String property_name)
 	{
-		System.out.println ("SystemProp.get, property = " + property_name);
-		System.out.println (_properties == null ? "_properties is _null" : "_properties is not null");
+		logger.debug ("SystemProp.get, property = {}", property_name);
 		if (_properties == null)
 			loadProperties();
-		//SystemProp props = SystemProp.create();
+		if (_properties == null)
+			logger.error("FATAL: Could not load system properties");
 		String val = (String)SystemProp._properties.getProperty(property_name); 
 		return val;
 	}

@@ -194,13 +194,12 @@ public class SetSessionServlet extends HttpServlet
 //			}
 
 			// Check database id
+			/**** THIS SOUNDS SERIOUSLY UNSAFE. DISABLE IT AND SEE WHAT HAPPENS. *****/
 			database_id = Utils.getIntParameter(request, SessionUtils.DATABASE_ID_KEY);
-//			System.out.println("RAW DB ID: " + database_id);
 			if (database_id > 0)
 			{
-//				System.out.println("Set non-zero database_id to: " + database_id);
 
-				session.setAttribute(SessionUtils.DATABASE_ID_KEY, "" + database_id);
+//				session.setAttribute(SessionUtils.DATABASE_ID_KEY, "" + database_id);
 				foundOne = true;
 			}
 			else
@@ -227,7 +226,7 @@ public class SetSessionServlet extends HttpServlet
 		{
 			json_obj.put(SessionUtils.CHANNEL_KEY, "" + channel);
 			json_obj.put(SessionUtils.CONTENT_KEY, "" + content);
-			json_obj.put(SessionUtils.DATABASE_ID_KEY, "" + database_id);
+//			json_obj.put(SessionUtils.DATABASE_ID_KEY, "" + database_id);
 		}
 		catch (JSONException e) 
 		{

@@ -53,29 +53,5 @@ public class ContentBase
 		}
 	}
 
-	/** Huh???? There IS no ltcontenttypes table!! */
-//	static public ArrayList<ContentBase> getContentTypes(DbConnection con)
-//	{
-//		Statement stmt = con.createStatement();
-//		ArrayList<ContentBase> lst = new ArrayList<ContentBase>();
-//		String sql = "SELECT * FROM ltcontenttypes;";
-//		ResultSet rs = con.QueryDB(sql, stmt);
-//		try 
-//		{
-//			if (rs.next())
-//			{
-//				lst.add(new ContentBase(rs));
-//			}
-//		}
-//		catch (SQLException e) 
-//		{
-//			System.out.println("Exception in getContentTypes(): " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		finally 
-//		{
-//			DbUtils.close(stmt, rs);
-//		}
-//		return lst;
-//	}
+
 }

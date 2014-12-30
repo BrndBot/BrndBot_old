@@ -7,9 +7,9 @@
 <%@ page import="com.brndbot.history.HistoryType" %>
 <%@ page import="com.brndbot.system.SystemProp" %>
 <%@ page import="com.brndbot.system.Utils" %>
-<%@ page import="com.brndbot.user.Palette" %>
-<%@ page import="com.brndbot.user.User" %>
-<%@ page import="com.brndbot.user.UserLogo" %>
+<%@ page import="com.brndbot.db.Palette" %>
+<%@ page import="com.brndbot.db.User" %>
+<%@ page import="com.brndbot.db.UserLogo" %>
 
 <%@ page import="java.util.ArrayList" %>
 

@@ -27,6 +27,9 @@ import org.slf4j.LoggerFactory;
  */
 public class Client implements Serializable {
 
+
+	private static final long serialVersionUID = 1L;
+
 	final static Logger logger = LoggerFactory.getLogger(Client.class);
 	
 	/** An instance of the ClientInterface subclass which feeds 
@@ -95,7 +98,7 @@ public class Client implements Serializable {
 	public void acquireData () {
 		modelCollection = clientInterface.getModels ();
 		List<PromotionPrototype> promos = clientInterface.getPromotionPrototypes ();
-		promotionPrototypes = new HashMap<>();
+		promotionPrototypes = new HashMap<String,PromotionPrototype>();
 		for (PromotionPrototype promo : promos) {
 			promotionPrototypes.put (promo.getName(), promo);
 		}

@@ -7,6 +7,8 @@ var CHANNEL_JSP = "#channelJsp";
 
 var current_jsp = "undefined";
 
+var session_mgr = "";
+
 $(document).ready(function() 
 {
 /*
@@ -14,7 +16,7 @@ $(document).ready(function()
 	{
 		emailBadge();
 	});
-*/
+
 	$('#classBadge').on('click', function(e)
 	{
 		classBadge();
@@ -29,7 +31,8 @@ $(document).ready(function()
 	{
 		saleBadge();
 	});
-/*
+*/
+	/*
 	$('#twitterBadge').on('click', function(e)
 	{
 		twitterBadge();
@@ -39,7 +42,7 @@ $(document).ready(function()
 	{
 		facebookBadge();
 	});
-*/
+
 	$('#teacherBadge').on('click', function(e)
 	{
 		teacherBadge();
@@ -49,7 +52,7 @@ $(document).ready(function()
 	{
 		scheduleBadge();
 	});
-/*
+
 	$('#classContentBadge').on('click', function(e)
 	{
 		$('#viewClasses').click();
@@ -91,6 +94,14 @@ $(document).ready(function()
 		// set channel to FB
 		session_mgr.setSession(SESSION_SET, FACEBOOK_CHANNEL, 0, 0, routeViaChannel);
 	});
+	
+	/* This sets the function for all the badge buttons in one fell swoop */
+	$('.homeBadgeButton').on('click', function(e)
+	{
+		session_mgr.setSession(SESSION_SET, 0, $(this).attr("data-model"), 0, 0);
+		console.log ("set data model " + $(this).attr("data-model"));
+		//TODO need to set a refresh callback
+	});
 
 	// init dashboard
 	initDashboard();
@@ -128,11 +139,10 @@ $(document).ready(function()
 		});
 	}
 */
-	function classBadge()
+/*	function classBadge()
 	{
 		session_mgr.setSession(SESSION_SET, 0, CLASS_OBJ, -1, clickClassView);
 	}
-
 	function clickClassView()
 	{
 		$('#viewClasses').click();
@@ -166,7 +176,8 @@ $(document).ready(function()
 		alert('Sale/promotion template set is not yet installed on this server.');
 //uncomment when fixed		session_mgr.setSession(SESSION_SET, 0, SALE_OBJ, -1);
 	}
-
+*/
+/*
 	function scheduleBadge()
 	{
 		session_mgr.setSession(SESSION_SET, 0, SCHEDULE_OBJ, -1);
@@ -182,6 +193,7 @@ $(document).ready(function()
 			$('#schedulContentBadge').click();  
 		}
 	}
+*/
 });
 
 function viewChannels()

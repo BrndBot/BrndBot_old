@@ -1,4 +1,4 @@
-package com.brndbot.block;
+package com.brndbot.jsphelper;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -22,15 +22,13 @@ import com.brndbot.promo.Promotion;
  * A BlockRenderer takes the information in a Promotion and generates a
  * div which will display it. Each field type has its own renderer.
  */
-public class BlockRenderer {
+public class BlockRenderer extends Renderer {
 
-	XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-	StringWriter writer;
 	String promoName;
 
 	public BlockRenderer(Promotion promo) {
+		super ();
 		promoName = promo.getName ();
-		writer = new StringWriter();
 		try {
 			for (ModelField field : promo.getContent()) {
 				Element div = new Element("div");
@@ -59,12 +57,6 @@ public class BlockRenderer {
 		} catch (Exception e) {}
 	}
 
-	/** Returns the constructed block as an HTML fragment */
-	public String getFragment () {
-		return writer.toString ();
-	}
-	
-	
 	/** Do I really want to do all the messy rendering here, where I have to
 	 *  deal with HTML as raw text? Or is there a way to feed the block to
 	 *  the JavaScript, where it can use all the power of JQuery?
