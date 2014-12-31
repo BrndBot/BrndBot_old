@@ -37,6 +37,8 @@ public class Client implements Serializable {
 	 */
 	private ClientInterface clientInterface;
 	
+	private int userId;
+	
 	/** The name of the organization */
 	private String name;
 	
@@ -45,10 +47,6 @@ public class Client implements Serializable {
 	
 	/** The StyleSets available to us. */
 	private List<StyleSet> styleSets;
-	
-	/** The PromotionPrototypes available to us. */
-	/** TODO this should really be a map. */
-	private Map<String,PromotionPrototype> promotionPrototypes;
 	
 	/** FIXME ****HACK*** doesn't work with more than one user  */
 	private static transient Client client;
@@ -90,18 +88,14 @@ public class Client implements Serializable {
 		}
 	}
 	
-	public PromotionPrototype getPromotionPrototype (String name) {
-		return promotionPrototypes.get(name);
+	public List<PromotionPrototype> getPromotionPrototypes (String modelName) {
+		return ClientDataHolder.getPromotionPrototypes(userId, modelName, clientInterface);
 	}
 	
-	/** Pull in the data from the module */
-	public void acquireData () {
-		modelCollection = clientInterface.getModels ();
-		List<PromotionPrototype> promos = clientInterface.getPromotionPrototypes ();
-		promotionPrototypes = new HashMap<String,PromotionPrototype>();
-		for (PromotionPrototype promo : promos) {
-			promotionPrototypes.put (promo.getName(), promo);
-		}
+	public ClientInterface getClientInterface () {
+		return clientInterface;
 	}
+	
+
 
 }

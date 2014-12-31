@@ -1,5 +1,6 @@
 package com.brndbot.dummyclient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.brndbot.client.ClientInterface;
@@ -27,9 +28,18 @@ public class DummyClientInterface implements ClientInterface {
 	}
 
 	@Override
-	public List<PromotionPrototype> getPromotionPrototypes(Model m) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PromotionPrototype> getPromotionPrototypes(String modelName) {
+		Model m = mCollection.getModelByName (modelName);
+		List<PromotionPrototype> plist = new ArrayList<>();
+		if ("Coaches".equals (modelName)) {
+			PromotionPrototype coach1 = 
+					new PromotionPrototype ("Knute Rockne", m, null);
+			plist.add (coach1);
+			PromotionPrototype coach2 =
+					new PromotionPrototype ("Vince Lombardi", m, null);
+			plist.add (coach2);
+		}
+		return plist;
 	}
 
 	/* Hard-code some models */

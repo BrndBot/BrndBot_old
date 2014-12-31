@@ -25,7 +25,7 @@
   <target name="compile" depends="init"
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${classes} -->
-    <javac source="1.6" target="1.6" srcdir="${src}" destdir="${classes}" debug="true" includeantruntime="false">
+    <javac source="1.7" target="1.7" srcdir="${src}" destdir="${classes}" debug="true" includeantruntime="false">
       <classpath refid="alljars"/>
     </javac>
   </target>

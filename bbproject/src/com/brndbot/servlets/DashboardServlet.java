@@ -7,6 +7,7 @@ package com.brndbot.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,15 +15,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 
 
+
+
+
+
+
 import com.brndbot.block.ChannelEnum;
-import com.brndbot.client.ClientException;
-import com.brndbot.promo.Promotion;
+//import com.brndbot.client.ClientException;
+import com.brndbot.client.ClientInterface;
+import com.brndbot.client.PromotionPrototype;
+import com.brndbot.promo.Client;
+//import com.brndbot.promo.Promotion;
 import com.brndbot.system.Assert;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
@@ -44,31 +55,45 @@ public class DashboardServlet extends HttpServlet
 		doPost(request, response);
 	}
 
+	/**
+	 *  The value returned is a JSON array of the promotion prototypes for the model
+	 *  specified by the "type" parameter.
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering DashboardServlet----------");
 
 		/* In this new world, the type parameter will be the name of a PromotionPrototype,
 		 * and so a name rather than a number. */
-		String typeOfData = Utils.getStringParameter(request, "type");
+		String modelName = Utils.getStringParameter(request, "type");
 		HttpSession session = request.getSession();
 		int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
+		Client client = (Client) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
+		
 		Assert.that(channel != 0, "Channel is zero in DashboardServlet!");
 
-		int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth();
-		System.out.println("Channel is: " + channel);
-		ChannelEnum channel_enum = ChannelEnum.create(channel);
-		max_width = channel_enum.getDefaultImgWidth();
+		//int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth();
+		logger.debug("Channel is: {}", channel);
+		//ChannelEnum channel_enum = ChannelEnum.create(channel);
+		//max_width = channel_enum.getDefaultImgWidth();
 /*		else
 		{
 			throw new RuntimeException("Unexpected channel in DashboardServlet, channel id: " + channel);
 		}
 */
-		String jsonStr = "";
-		System.out.println("BlockType new: " + typeOfData);
-		// **** Get rid of specific BlockTypes. Maybe even of Blocks.
-		Promotion promo = Promotion.createPromotion (typeOfData, request);
-		// TODO convert promo to JSON ***
+		System.out.println("BlockType new: " + modelName);
+		// Make a JSON array of the promotion prototypes under this model
+		ClientInterface ci = client.getClientInterface();
+		List<PromotionPrototype> protos = ci.getPromotionPrototypes(modelName);
+		JSONArray jsonProtos = new JSONArray();
+		try {
+			for (PromotionPrototype proto : protos) {
+				jsonProtos.put (proto.toJSON());
+			}
+		} catch (JSONException e) {
+			logger.error ("Error getting promo prototypes: {}", e.getClass().getName());
+		}
+		String jsonStr = jsonProtos.toString();
 
 		if (jsonStr.length() > 0)
 		{
@@ -80,9 +105,8 @@ public class DashboardServlet extends HttpServlet
 		}
 		else
 		{
-			System.out.println("Unknown BlockType: " + typeOfData);
-//			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			throw new RuntimeException("Unknown BlockType: " + typeOfData);
+			System.out.println("Unknown BlockType: " + modelName);
+			throw new RuntimeException("Unknown BlockType: " + modelName);
 		}
 		return;
 	}

@@ -91,19 +91,10 @@ Java version: <%= System.getProperty("java.version") %><br>
 	<jsp:setProperty name="homeHelper" property="organization" value="${sessionScope.brndbotorg}"/>
 </jsp:useBean>
 
-<%
-	logger.debug ("Logo name = {}", homeHelper.getLogoName());
-%>
-
-<p>Logo name: <c:out value="${homeHelper.logoName}"/></p>
-
 <c:if test="${homeHelper.logoName == null}">
 	<c:redirect url="signup.jsp?toLogo=1"/>
 	<c:set var="sessionOK" value="0" scope="page"/>
 </c:if>
-
-<p>Final SessionOK: <c:out value="${sessionOK}"/> <br>
-
 
 <c:if test="${sessionOK != 0}">	<!-- encompasses whole rest of body -->
 
@@ -177,13 +168,15 @@ Java version: <%= System.getProperty("java.version") %><br>
 					    	</div>
 						</div>
 
-						<!-- WHAT exactly do these do? -->
+						<!-- This probably replaces all of the ones below  -->
+						<div id="promoProtosHere" style="display:none;border-color:#ffffff"></div>
+						<!-- Old style
 		 				<div id="classHere" style="display:none;border-color:#ffffff"></div>
 		 				<div id="classPager" style="display:none;"></div>
 						<div id="workshopHere" style="display:none;border-color:#ffffff"></div>
 		 				<div id="workshopPager" style="display:none;"></div>
 						<div id="staffHere" style="display:none;border-color:#ffffff"></div>
-		 				<div id="staffPager" style="display:none;"></div>
+		 				<div id="staffPager" style="display:none;"></div>    -->
 					</div>  <!-- end listBackground -->
 				</div>
 
@@ -238,7 +231,7 @@ Java version: <%= System.getProperty("java.version") %><br>
 
 <script type="text/javascript">
 	// Init the left-side panel
-	clickSideBar('homeLine');
+//	clickSideBar('homeLine');
 
 
 	// Singleton class for client-side session management

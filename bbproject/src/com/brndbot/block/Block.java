@@ -5,7 +5,8 @@
  */
 package com.brndbot.block;
 
-import com.brndbot.promo.Promotion;
+import com.brndbot.client.PromotionPrototype;
+//import com.brndbot.promo.Promotion;
 
 /** Block should probably have been called PromotionBlock to
  *  distinguish it from blocks not generated from the promotion.
@@ -15,7 +16,7 @@ import com.brndbot.promo.Promotion;
 public class Block extends BlockBase
 {
 	private String blockTypeName;
-	Promotion promo;
+	PromotionPrototype promo;
 	
 	public Block(
 			ChannelEnum channel_type,

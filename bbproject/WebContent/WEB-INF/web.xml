@@ -4,8 +4,8 @@
 
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
-http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+   http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
    version="2.5">
 
 
@@ -41,7 +41,11 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
       <param-value>webmaster@brndbot.com</param-value>
     </context-param>
 
-
+	<error-page>
+		<exception-type>java.lang.throwable</exception-type>
+		<location>/error.html</location>
+	</error-page>
+	
     <!-- Servlet definitions for the servlets that make up
          your web application, including initialization
          parameters.  With Tomcat, you can also send requests
@@ -192,7 +196,67 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
       <url-pattern>/GetImagesServlet</url-pattern>
     </servlet-mapping>
 
+	<filter>
+		<filter-name>AuthenticationFilter</filter-name>
+		<filter-class>com.brndbot.servlets.AuthenticationFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<servlet-name>DashboardServlet</servlet-name>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<servlet-name>LoginServlet</servlet-name>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<servlet-name>SetSessionServlet</servlet-name>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<servlet-name>EmailExistServlet</servlet-name>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<servlet-name>SaveImageServlet</servlet-name>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<servlet-name>SaveHTMLAsImageServlet</servlet-name>
+	</filter-mapping>
 
+    <filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+    	<servlet-name>SavePaletteServlet</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+    	<servlet-name>SaveUserServlet</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+    	<servlet-name>RemoveLogoServlet</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+    	<servlet-name>GetFacilitiesServlet</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+    	<servlet-name>GetImagesServlet</servlet-name>
+    </filter-mapping>
+
+	
     <!-- Define the default session timeout for your application,
          in minutes.  From a servlet or JSP page, you can modify
          the timeout for a particular session dynamically by using

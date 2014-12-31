@@ -6,6 +6,7 @@ var SOCIAL_JSP = "#socialJsp";
 var CHANNEL_JSP = "#channelJsp";
 
 var current_jsp = "undefined";
+var model_name = "";
 
 var session_mgr = "";
 
@@ -98,7 +99,7 @@ $(document).ready(function()
 	/* This sets the function for all the badge buttons in one fell swoop */
 	$('.homeBadgeButton').on('click', function(e)
 	{
-		session_mgr.setSession(SESSION_SET, 0, $(this).attr("data-model"), 0, 0);
+		session_mgr.setSession(SESSION_SET, 0, $(this).attr("data-model"), 0, showPrototypes);
 		console.log ("set data model " + $(this).attr("data-model"));
 		//TODO need to set a refresh callback
 	});
@@ -228,4 +229,39 @@ function hideOrShow(show_id)
 	}
 }
 
+// Kendo data source used to get list data for promotion Prototypes
+var protosDataSource  = new kendo.data.DataSource({
+	transport: 
+	{
+		read:
+		{
+			url: "DashboardServlet?type=" + model_name,
+			dataType: "json"
+		}
+	}
+})
+
+/* Display the prototypes for the selected model */
+function showPrototypes() 
+	// First question: Where do I GET the prototypes?
+	// Two possible approaches:
+	// (1) The prototypes are fed to us as a JSON object.
+	// (2) We do an Ajax callback to get them.
+	// The JSON object is the simpler approach, though it could bloat
+	// the memory used in the browser. Would have to POST the whole
+	// big thing.
+	// 10 MB seems to be a practical limit; that's enough for a whole Bible.
+	// But Kendo callbacks fit the existing paradigm. 
+	// Next question: Where do I get a value for badge??
+{
+	var badge = "";		// TODO placeholder
+	model_name = $(badge).attr('data-model');
+	$("promoProtosHere").kendoListView({
+			dataSource: protosDataSource,
+		    selectable: true,
+	        template: kendo.template($("#" + idPrefix[CLASS_OBJ - 1] + "Template").html()),
+		    change: selectPromoProtoItem,
+		    dataBound: onPromoProtoSuccess
+    });
+}
 
