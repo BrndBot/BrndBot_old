@@ -239,6 +239,13 @@ Java version: <%= System.getProperty("java.version") %><br>
 	var session_mgr = new Session();
 </script>
 
+<!-- Template for listing promotion prototypes -->
+<script type="text/x-kendo-template" id="imageTemplate">
+	<div class="listPromoProto">
+	#:modelName#
+	</div>
+</script>
+		
 </c:if>		<!-- whole of body -->
 </body>
 </html>

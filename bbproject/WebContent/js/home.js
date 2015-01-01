@@ -84,11 +84,6 @@ $(document).ready(function()
 		session_mgr.setSession(SESSION_SET, EMAIL_CHANNEL, 0, 0, routeViaChannel);
 	});
 
-	$('#chanTwitterBadge').on('click', function(e)
-	{
-		// change to the content (dash)
-		session_mgr.setSession(SESSION_SET, TWITTER_CHANNEL, 0, 0, routeViaChannel);
-	});
 
 	$('#chanFacebookBadge').on('click', function(e)
 	{
@@ -99,6 +94,7 @@ $(document).ready(function()
 	/* This sets the function for all the badge buttons in one fell swoop */
 	$('.homeBadgeButton').on('click', function(e)
 	{
+		model_name = $(this).attr('data-model');	// set the value for the callback
 		session_mgr.setSession(SESSION_SET, 0, $(this).attr("data-model"), 0, showPrototypes);
 		console.log ("set data model " + $(this).attr("data-model"));
 		//TODO need to set a refresh callback
@@ -243,22 +239,13 @@ var protosDataSource  = new kendo.data.DataSource({
 
 /* Display the prototypes for the selected model */
 function showPrototypes() 
-	// First question: Where do I GET the prototypes?
-	// Two possible approaches:
-	// (1) The prototypes are fed to us as a JSON object.
-	// (2) We do an Ajax callback to get them.
-	// The JSON object is the simpler approach, though it could bloat
-	// the memory used in the browser. Would have to POST the whole
-	// big thing.
-	// 10 MB seems to be a practical limit; that's enough for a whole Bible.
-	// But Kendo callbacks fit the existing paradigm. 
-	// Next question: Where do I get a value for badge??
+	// We use DashboardServlet to get the prototypes. 
+	// model_name was set when the button was clicked.
 {
-	var badge = "";		// TODO placeholder
-	model_name = $(badge).attr('data-model');
 	$("promoProtosHere").kendoListView({
 			dataSource: protosDataSource,
 		    selectable: true,
+		    // NEED LAYOUT
 	        template: kendo.template($("#" + idPrefix[CLASS_OBJ - 1] + "Template").html()),
 		    change: selectPromoProtoItem,
 		    dataBound: onPromoProtoSuccess
