@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.User;
 import com.brndbot.system.LoginCookie;
@@ -23,6 +26,8 @@ public class LoginServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
+	final static Logger logger = LoggerFactory.getLogger(LoginServlet.class);
+	
 	public LoginServlet ()
     {
         super();
@@ -35,7 +40,7 @@ public class LoginServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("----------Entering LoginServlet----------");
+		logger.debug("----------Entering LoginServlet----------");
 
 		HttpSession session = request.getSession();
 
@@ -45,7 +50,7 @@ public class LoginServlet extends HttpServlet
 		String email_address = (String)request.getParameter(LoginCookie.EMAIL_ADDRESS); 
 		if (email_address == null || email_address.length() == 0)
 		{
-			System.out.println("Email address missing");
+			logger.info("Email address missing");
 			missing_str = "Email Address is required.";
 		}
 
@@ -53,7 +58,7 @@ public class LoginServlet extends HttpServlet
 		String password = (String)request.getParameter(LoginCookie.PASSWORD); 
 		if (password == null || password.length() == 0)
 		{
-			System.out.println("Password missing");
+			logger.info("Password missing");
 			missing_str += "Password is required.";
 		}
 
@@ -68,25 +73,26 @@ public class LoginServlet extends HttpServlet
 		int user_id = User.Login(email_address, password, con);
 		if (user_id == 0)
 		{
-			System.out.println("Failed login em: " + email_address /* + ", pw: " + password*/);
+			logger.info("Failed login em: " + email_address /* + ", pw: " + password*/);
 			con.close();
 			response.sendRedirect("index.jsp");
 			return;
 		}
 
 		// See if we should save values to cookies
-		String cookie_cb = Utils.getStringParameter(request, LoginCookie.USE_COOKIE_CB);
-		LoginCookie cookie = new LoginCookie(request, response);
-		if (cookie_cb.length() > 0)
-		{
-			cookie.saveToCookie(true, email_address, password);
-		}
-		else
-		{
-			cookie.deleteCookie(LoginCookie.USE_COOKIE);
-			cookie.deleteCookie(LoginCookie.EMAIL_ADDRESS);
-			cookie.deleteCookie(LoginCookie.PASSWORD);
-		}
+		// INSANELY INSECURE. DISABLE.
+//		String cookie_cb = Utils.getStringParameter(request, LoginCookie.USE_COOKIE_CB);
+//		LoginCookie cookie = new LoginCookie(request, response);
+//		if (cookie_cb.length() > 0)
+//		{
+//			cookie.saveToCookie(true, email_address, password);
+//		}
+//		else
+//		{
+//			cookie.deleteCookie(LoginCookie.USE_COOKIE);
+//			cookie.deleteCookie(LoginCookie.EMAIL_ADDRESS);
+//			cookie.deleteCookie(LoginCookie.PASSWORD);
+//		}
 
 		session.setAttribute(SessionUtils.IS_PRIV, User.isPrivileged(user_id, con));
 		con.close();

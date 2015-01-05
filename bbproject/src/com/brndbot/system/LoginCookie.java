@@ -9,6 +9,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** I don't know what this is for. It puts passwords into cookies,
+ *  which is insane.
+ */
 public class LoginCookie 
 {
 	HttpServletRequest _request;
@@ -63,7 +66,7 @@ public class LoginCookie
 		{
 			addCookie(USE_COOKIE, "yes");
 			addCookie(COOKIE_EMAIL_ADDRESS, email);
-			addCookie(COOKIE_PASSWORD, pw);
+			//addCookie(COOKIE_PASSWORD, pw);
 		}
 	}
 
@@ -104,7 +107,7 @@ public class LoginCookie
 		String pw = "";
 		if (useCookie())
 		{
-			pw = findCookie(COOKIE_PASSWORD);
+			//pw = findCookie(COOKIE_PASSWORD);
 			if (pw == null)
 			{
 				pw = "";

@@ -20,15 +20,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
-
-
-
-
-
-
-import com.brndbot.block.ChannelEnum;
+//import com.brndbot.block.ChannelEnum;
 //import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.PromotionPrototype;
@@ -36,7 +28,7 @@ import com.brndbot.promo.Client;
 //import com.brndbot.promo.Promotion;
 import com.brndbot.system.Assert;
 import com.brndbot.system.SessionUtils;
-import com.brndbot.system.Utils;
+//import com.brndbot.system.Utils;
 
 public class DashboardServlet extends HttpServlet
 {
@@ -65,15 +57,21 @@ public class DashboardServlet extends HttpServlet
 
 		/* In this new world, the type parameter will be the name of a PromotionPrototype,
 		 * and so a name rather than a number. */
-		String modelName = Utils.getStringParameter(request, "type");
+		//String modelName = Utils.getStringParameter(request, "type");
 		HttpSession session = request.getSession();
 		int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
+		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
 		Client client = (Client) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
+		if (client == null) {
+			client = Client.getClient (session);
+			SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client);
+		}
 		
 		Assert.that(channel != 0, "Channel is zero in DashboardServlet!");
 
 		//int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth();
 		logger.debug("Channel is: {}", channel);
+		logger.debug("Model name is: {}", modelName);
 		//ChannelEnum channel_enum = ChannelEnum.create(channel);
 		//max_width = channel_enum.getDefaultImgWidth();
 /*		else
@@ -81,19 +79,30 @@ public class DashboardServlet extends HttpServlet
 			throw new RuntimeException("Unexpected channel in DashboardServlet, channel id: " + channel);
 		}
 */
-		System.out.println("BlockType new: " + modelName);
 		// Make a JSON array of the promotion prototypes under this model
-		ClientInterface ci = client.getClientInterface();
+		ClientInterface ci = null;
+		try {
+			ci = client.getClientInterface();
+			if (ci == null)
+				logger.debug ("Couldn't get ClientInterface");
+			else
+				logger.debug ("Got ClientInterface {}", ci.getClass().getName());
+		} catch (Throwable t) {
+			logger.error (t.getClass().getName());
+		}
 		List<PromotionPrototype> protos = ci.getPromotionPrototypes(modelName);
+		logger.debug ("Got {} promotion prototypes", protos.size());
 		JSONArray jsonProtos = new JSONArray();
 		try {
 			for (PromotionPrototype proto : protos) {
+				logger.debug ("Converting a proto to JSON");
 				jsonProtos.put (proto.toJSON());
 			}
 		} catch (JSONException e) {
 			logger.error ("Error getting promo prototypes: {}", e.getClass().getName());
 		}
 		String jsonStr = jsonProtos.toString();
+		System.out.println ("JSON = " + jsonStr);
 
 		if (jsonStr.length() > 0)
 		{
@@ -105,7 +114,7 @@ public class DashboardServlet extends HttpServlet
 		}
 		else
 		{
-			System.out.println("Unknown BlockType: " + modelName);
+			logger.error("Unknown BlockType: " + modelName);
 			throw new RuntimeException("Unknown BlockType: " + modelName);
 		}
 		return;

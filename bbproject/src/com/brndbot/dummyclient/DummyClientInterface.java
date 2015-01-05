@@ -3,10 +3,12 @@ package com.brndbot.dummyclient;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Model;
 import com.brndbot.client.ModelCollection;
-import com.brndbot.client.ModelField;
 import com.brndbot.client.ModelField.StyleType;
 import com.brndbot.client.PromotionPrototype;
 import com.brndbot.client.TextField;
@@ -16,6 +18,8 @@ import com.brndbot.client.TextField;
  */
 public class DummyClientInterface implements ClientInterface {
 
+	final static Logger logger = LoggerFactory.getLogger(DummyClientInterface.class);
+	
 	ModelCollection mCollection;
 	
 	public DummyClientInterface() {
@@ -29,16 +33,30 @@ public class DummyClientInterface implements ClientInterface {
 
 	@Override
 	public List<PromotionPrototype> getPromotionPrototypes(String modelName) {
+		logger.debug ("getPromotionPrototypes, modelName = {}", modelName);
 		Model m = mCollection.getModelByName (modelName);
 		List<PromotionPrototype> plist = new ArrayList<>();
-		if ("Coaches".equals (modelName)) {
-			PromotionPrototype coach1 = 
-					new PromotionPrototype ("Knute Rockne", m, null);
-			plist.add (coach1);
-			PromotionPrototype coach2 =
-					new PromotionPrototype ("Vince Lombardi", m, null);
-			plist.add (coach2);
+		try {
+			if ("Coaches".equals (modelName)) {
+				logger.debug ("Adding coaches");
+				PromotionPrototype coach1 = 
+						new PromotionPrototype ("Knute Rockne", m, null);
+				logger.debug ("Created coach1");
+				TextField nameField = (TextField) coach1.getNamedField ("Name");
+				if (nameField == null)
+					logger.error ("Name field is null!");
+				nameField.setText ("Knute Rockne");
+				plist.add (coach1);
+				PromotionPrototype coach2 =
+						new PromotionPrototype ("Vince Lombardi", m, null);
+				nameField = (TextField) coach2.getNamedField ("Name");
+				nameField.setText ("Vince Lombardi");
+				plist.add (coach2);
+			}
+		} catch (Exception e) {
+			logger.error ("Error creating prototypes: {}", e.getClass().getName());
 		}
+		logger.debug ("Returning list");
 		return plist;
 	}
 

@@ -7,76 +7,20 @@ var CHANNEL_JSP = "#channelJsp";
 
 var current_jsp = "undefined";
 var model_name = "";
-
+var protosDataSource = null;
 var session_mgr = "";
 
 $(document).ready(function() 
 {
-/*
-	$('#emailBadge').on('click', function(e)
-	{
-		emailBadge();
-	});
 
-	$('#classBadge').on('click', function(e)
-	{
-		classBadge();
-	});
-
-	$('#workshopBadge').on('click', function(e)
-	{
-		workshopBadge();
-	});
-
-	$('#saleBadge').on('click', function(e)
-	{
-		saleBadge();
-	});
-*/
 	/*
-	$('#twitterBadge').on('click', function(e)
-	{
-		twitterBadge();
-	});
+
 
 	$('#facebookBadge').on('click', function(e)
 	{
 		facebookBadge();
 	});
 
-	$('#teacherBadge').on('click', function(e)
-	{
-		teacherBadge();
-	});
-
-	$('#scheduleBadge').on('click', function(e)
-	{
-		scheduleBadge();
-	});
-
-	$('#classContentBadge').on('click', function(e)
-	{
-		$('#viewClasses').click();
-		hideOrShow(DASHBOARD_JSP);
-	});
-
-	$('#workshopContentBadge').on('click', function(e)
-	{
-		$('#viewWorkshops').click();
-		hideOrShow(DASHBOARD_JSP);
-	});
-
-	$('#teacherContentBadge').on('click', function(e)
-	{
-		$('#viewTeachers').click();
-		hideOrShow(DASHBOARD_JSP);
-	});
-
-	$('#scheduleContentBadge').on('click', function(e)
-	{
-		session_mgr.setSession(SESSION_SET, 0, SCHEDULE_OBJ,
-				routeViaChannel);
-	});
 */	
 	$('#chanEmailBadge').on('click', function(e)
 	{
@@ -91,19 +35,31 @@ $(document).ready(function()
 		session_mgr.setSession(SESSION_SET, FACEBOOK_CHANNEL, 0, 0, routeViaChannel);
 	});
 	
-	/* This sets the function for all the badge buttons in one fell swoop */
+	/* This sets the function for all the content badge buttons in one fell swoop */
 	$('.homeBadgeButton').on('click', function(e)
 	{
 		model_name = $(this).attr('data-model');	// set the value for the callback
-		session_mgr.setSession(SESSION_SET, 0, $(this).attr("data-model"), 0, showPrototypes);
-		console.log ("set data model " + $(this).attr("data-model"));
-		//TODO need to set a refresh callback
+
+		// Kendo data source used to get list data for promotion Prototypes
+		protosDataSource  = new kendo.data.DataSource({
+			transport: 
+			{
+				read:
+				{
+					url: "DashboardServlet",
+					dataType: "json"
+				}
+			}
+		});
+		session_mgr.setSession(SESSION_SET, 0, model_name, 0, showPrototypes);
+		console.log ("set data model " + model_name);
+		$('#contentType').setText (model_name);
 	});
 
 	// init dashboard
 	initDashboard();
 
-	hideOrShow(HOME_JSP);
+	fancyShow(HOME_JSP);
 	session_mgr.setSession(SESSION_CLEAR);
 /*
 	function emailBadge()
@@ -112,7 +68,7 @@ $(document).ready(function()
 		session_mgr.setSession(SESSION_SET, EMAIL_CHANNEL, 0, 0, function()
 		{
 			$('#channelAction').html('Send by email');
-			hideOrShow(CONTENT_JSP);
+			fancyShow(CONTENT_JSP);
 		});
 	}
 
@@ -122,7 +78,7 @@ $(document).ready(function()
 		session_mgr.setSession(SESSION_SET, TWITTER_CHANNEL, 0, 0, function()
 		{
 			$('#channelAction').html('Tweet on Twitter');
-			hideOrShow(CONTENT_JSP);
+			fancyShow(CONTENT_JSP);
 		});
 	}
 
@@ -132,7 +88,7 @@ $(document).ready(function()
 		session_mgr.setSession(SESSION_SET, FACEBOOK_CHANNEL, 0, 0, function()
 		{
 			$('#channelAction').html('Post to Facebook');
-			hideOrShow(CONTENT_JSP);
+			fancyShow(CONTENT_JSP);
 		});
 	}
 */
@@ -143,7 +99,7 @@ $(document).ready(function()
 	function clickClassView()
 	{
 		$('#viewClasses').click();
-		hideOrShow(DASHBOARD_JSP);
+		fancyShow(DASHBOARD_JSP);
 	}
 
 	function workshopBadge()
@@ -154,7 +110,7 @@ $(document).ready(function()
 	function clickWorkshopView()
 	{
 		$('#viewWorkshops').click();
-		hideOrShow(DASHBOARD_JSP);
+		fancyShow(DASHBOARD_JSP);
 	}
 
 	function teacherBadge()
@@ -165,7 +121,7 @@ $(document).ready(function()
 	function clickTeacherView()
 	{
 		$('#viewTeachers').click();
-		hideOrShow(DASHBOARD_JSP);
+		fancyShow(DASHBOARD_JSP);
 	}
 
 	function saleBadge()
@@ -195,7 +151,7 @@ $(document).ready(function()
 
 function viewChannels()
 {
-	hideOrShow(CHANNEL_JSP);
+	fancyShow(CHANNEL_JSP);
 }
 
 function routeViaChannel(db_id)
@@ -208,7 +164,7 @@ function routeViaChannel(db_id)
 	window.location = 'bench.jsp?' + SESSION_DATABASE_ID_KEY + '=' + db_id;
 }
 
-function hideOrShow(show_id)
+function fancyShow(show_id)
 {
 	if (show_id !== current_jsp)
 	{
@@ -225,30 +181,29 @@ function hideOrShow(show_id)
 	}
 }
 
-// Kendo data source used to get list data for promotion Prototypes
-var protosDataSource  = new kendo.data.DataSource({
-	transport: 
-	{
-		read:
-		{
-			url: "DashboardServlet?type=" + model_name,
-			dataType: "json"
-		}
-	}
-})
+
 
 /* Display the prototypes for the selected model */
 function showPrototypes() 
 	// We use DashboardServlet to get the prototypes. 
 	// model_name was set when the button was clicked.
 {
-	$("promoProtosHere").kendoListView({
+	console.log ("showPrototypes");
+	$("#promoProtosHere").kendoListView({
 			dataSource: protosDataSource,
 		    selectable: true,
-		    // NEED LAYOUT
-	        template: kendo.template($("#" + idPrefix[CLASS_OBJ - 1] + "Template").html()),
+	        template: kendo.template($('#imageTemplate').html()),
 		    change: selectPromoProtoItem,
 		    dataBound: onPromoProtoSuccess
     });
+	$('#dashboardJsp').show();
+	$('#promoProtosHere').show();
 }
 
+/* TODO stub */
+function selectPromoProtoItem () {
+}
+
+/* TODO stub */
+function onPromoProtoSuccess () {
+}

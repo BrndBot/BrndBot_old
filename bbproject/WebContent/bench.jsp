@@ -41,7 +41,7 @@
 
 <c:set var="sessionOK" value="1" scope="page"/>
 
-<c:if test="${sessionScope.brndbotuser_id} <= 0}">
+<c:if test="${empty sessionScope.brndbotuser_id || sessionScope.brndbotuser_id <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
 	<c:redirect url="index.jsp"/>
 </c:if>

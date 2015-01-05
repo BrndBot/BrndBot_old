@@ -25,6 +25,10 @@ import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
 import com.brndbot.util.PWHash;
 
+/**
+ *  TODO This seems like a security hole. What's to stop a visitor from creating a 
+ *  user here? At least we should re-check the authorization code.
+ */
 public class SaveUserServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;

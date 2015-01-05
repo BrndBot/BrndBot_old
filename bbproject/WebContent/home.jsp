@@ -74,7 +74,7 @@ Servlet version: <%= application.getMajorVersion() %>.<%= application.getMinorVe
 JSP version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion() %><br>
 Java version: <%= System.getProperty("java.version") %><br>
 
-<c:if test="${sessionScope.brndbotuser_id <= 0}">
+<c:if test="${empty sessionScope.brndbotuser_id || sessionScope.brndbotuser_id <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
 	<c:redirect url="index.jsp"/>
 </c:if>
@@ -149,7 +149,7 @@ Java version: <%= System.getProperty("java.version") %><br>
 				    	<div class="subContentHeader">
 				    		<div style="padding-bottom:1.25rem">
 								<div class="unit size2of3" style="font-size: 2.25rem;font-weight: strong;">
-							    	Your MindBody <span id="contentType">Content</span>
+							    	Your <span id="contentType">Content</span>
 								</div>
 						    	<div class="unit lastUnit">
 						        	<input id="contentSearch" type="text" class="k-textbox editWidth" placeholder="search..." />
@@ -242,7 +242,7 @@ Java version: <%= System.getProperty("java.version") %><br>
 <!-- Template for listing promotion prototypes -->
 <script type="text/x-kendo-template" id="imageTemplate">
 	<div class="listPromoProto">
-	#:modelName#
+	#:fieldName.text#
 	</div>
 </script>
 		

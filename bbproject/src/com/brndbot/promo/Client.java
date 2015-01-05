@@ -56,13 +56,19 @@ public class Client implements Serializable {
 		// Just create a small set of Models here. Can use the 
 		// parser to build them from XML.
 
+		logger.debug ("Entering getClient");
 		// FIXME temporary hack
-		if (client != null)
+		if (client != null) {
+			logger.debug ("returning existing client");
 			return client;
+		}
 		try {
-			client = new Client ("com.brndbot.dummymodule.DummyClient");
+			client = new Client ("com.brndbot.dummyclient.DummyClientInterface");
+			logger.debug ("Got client");
 			return client;
 		} catch (Exception e) {
+			logger.error ("Error creating client: {}", e.getClass().getName());
+			logger.error ("Message: {}", e.getMessage());
 			return null;
 		}
 		

@@ -10,9 +10,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.brndbot.system.SessionUtils;
 
 /** This filter needs to be put in front of every AJAX servlet so that
  *  it can't be used by someone who isn't logged in.
@@ -52,8 +55,9 @@ public class AuthenticationFilter implements Filter {
 	}
 	
 	private boolean authenticationOK (HttpServletRequest hReq) {
-		// TODO stub for testing
-		return true;
+		HttpSession session = hReq.getSession();
+		int userId = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
+		return (userId != 0);
 	}
 
 }

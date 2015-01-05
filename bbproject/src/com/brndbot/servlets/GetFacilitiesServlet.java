@@ -20,6 +20,8 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.DbUtils;
@@ -27,11 +29,13 @@ import com.brndbot.db.Facility;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
 
-/** What ARE facilities??? */
+/** What ARE facilities??? Does anyone use this servlet?? */
 public class GetFacilitiesServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
+	final static Logger logger = LoggerFactory.getLogger(GetFacilitiesServlet.class);
+	
 	public GetFacilitiesServlet ()
     {
         super();
@@ -44,13 +48,15 @@ public class GetFacilitiesServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("--------Entering GetFacilitiesServlet----------");
+		logger.debug("--------Entering GetFacilitiesServlet----------");
 
 		HttpSession session = request.getSession();
 		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 		if (user_id == 0)
 		{
 			System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
+			// Is this even USEFUL? This is called at the AJAX level, not the login level.
+			// In any case, the filter should be taking care of this, but isn't yet.
 			response.sendRedirect("index.jsp");
 			return;
 		}

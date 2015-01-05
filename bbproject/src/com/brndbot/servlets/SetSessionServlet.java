@@ -31,6 +31,8 @@ public class SetSessionServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	
+	private static final int TIMEOUT_PERIOD = 30 * 60;	// 30 minutes, given in seconds
+	
 	final static Logger logger = LoggerFactory.getLogger(SetSessionServlet.class);
 	
 	private static int NEG_ONE = -1;
@@ -50,6 +52,13 @@ public class SetSessionServlet extends HttpServlet
 		logger.debug("--------Entering SetSessionServlet----------");
 
 		HttpSession session = request.getSession();
+		
+		// Check if the duration has been set from the default. If not, set it. 
+		int timeout = session.getMaxInactiveInterval();
+		if (timeout < TIMEOUT_PERIOD) {
+			session.setMaxInactiveInterval (TIMEOUT_PERIOD);
+		}
+		
 		String action = Utils.getStringParameter(request, "action").toLowerCase();
 
 		logger.debug("Session ACTION: " + action);
@@ -97,8 +106,9 @@ public class SetSessionServlet extends HttpServlet
 		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 		if (user_id == 0)
 		{
-			logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
-			response.sendRedirect("index.jsp");
+			//logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
+			//response.sendRedirect("index.jsp");
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 

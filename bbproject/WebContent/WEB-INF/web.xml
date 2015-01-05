@@ -208,11 +208,6 @@
 	
 	<filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
-		<servlet-name>LoginServlet</servlet-name>
-	</filter-mapping>
-	
-	<filter-mapping>
-		<filter-name>AuthenticationFilter</filter-name>
 		<servlet-name>SetSessionServlet</servlet-name>
 	</filter-mapping>
 	
@@ -234,11 +229,6 @@
     <filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
     	<servlet-name>SavePaletteServlet</servlet-name>
-    </filter-mapping>
-
-    <filter-mapping>
-		<filter-name>AuthenticationFilter</filter-name>
-    	<servlet-name>SaveUserServlet</servlet-name>
     </filter-mapping>
 
     <filter-mapping>

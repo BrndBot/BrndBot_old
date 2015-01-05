@@ -81,6 +81,9 @@ public class HomeHelper {
 	}
 
 	public String getLogoName () {
+		if (user == null) {
+			return "";
+		}
 		logger.debug ("Logo name is {}", user.getLogoName());
 		return user.getLogoName ();
 	}
