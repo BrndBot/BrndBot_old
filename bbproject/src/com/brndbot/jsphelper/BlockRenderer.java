@@ -13,11 +13,10 @@ import com.brndbot.client.ImageField;
 import com.brndbot.client.LogoField;
 //import com.brndbot.client.Model;
 import com.brndbot.client.ModelField;
-import com.brndbot.client.PromotionPrototype;
+import com.brndbot.client.Promotion;
 import com.brndbot.client.SVGField;
 import com.brndbot.client.TextField;
 //import com.brndbot.client.ModelField.StyleType;
-import com.brndbot.promo.Promotion;
 
 /**
  * A BlockRenderer takes the information in a Promotion and generates a
@@ -27,7 +26,7 @@ public class BlockRenderer extends Renderer {
 
 	String promoName;
 
-	public BlockRenderer(PromotionPrototype promo) {
+	public BlockRenderer(Promotion promo) {
 		super ();
 		promoName = promo.getName ();
 		try {

@@ -13,12 +13,16 @@
 
     <display-name>Brndbot application</display-name>
     <description>
-      This is version zero or so of an application to perform
-      a wild and wonderful task, based on servlets and
-      JSP pages.  
+      Brndbot application  
     </description>
 
-
+	<!-- Listener to clean up when servlet context is destroyed -->
+	<listener>
+		<listener-class>
+	  		com.brndbot.servlets.MyServletContextListener
+		</listener-class>
+	</listener>
+  
     <!-- Context initialization parameters that define shared
          String constants used within your application, which
          can be customized by the system administrator who is

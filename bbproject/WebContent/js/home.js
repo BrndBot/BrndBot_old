@@ -53,7 +53,7 @@ $(document).ready(function()
 		});
 		session_mgr.setSession(SESSION_SET, 0, model_name, 0, showPrototypes);
 		console.log ("set data model " + model_name);
-		$('#contentType').setText (model_name);
+		$('#contentType').text (model_name);
 	});
 
 	// init dashboard

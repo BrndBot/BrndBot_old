@@ -69,10 +69,10 @@ for processing in the editor (bench).
 
 </head>
 <body>
-Server info: <%= application.getServerInfo() %><br>
+<!-- Server info: <%= application.getServerInfo() %><br>
 Servlet version: <%= application.getMajorVersion() %>.<%= application.getMinorVersion() %><br>
 JSP version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion() %><br>
-Java version: <%= System.getProperty("java.version") %><br>
+Java version: <%= System.getProperty("java.version") %><br> -->
 
 <c:if test="${empty sessionScope.brndbotuser_id || sessionScope.brndbotuser_id <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
@@ -242,7 +242,12 @@ Java version: <%= System.getProperty("java.version") %><br>
 <!-- Template for listing promotion prototypes -->
 <script type="text/x-kendo-template" id="imageTemplate">
 	<div class="listPromoProto">
-	#:fieldName.text#
+		<div class="listTitle">
+		#:name#
+		</div>
+		<div class="listDescription">
+		#:fieldDescription.text#
+		</div>
 	</div>
 </script>
 		

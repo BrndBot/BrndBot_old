@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.ModelCollection;
-import com.brndbot.client.PromotionPrototype;
+import com.brndbot.client.Promotion;
 import com.brndbot.client.StyleSet;
 
 import org.slf4j.Logger;
@@ -35,7 +35,9 @@ public class Client implements Serializable {
 	/** An instance of the ClientInterface subclass which feeds 
 	 *  us data 
 	 */
-	private ClientInterface clientInterface;
+	private transient ClientInterface clientInterface;
+	
+	private String clientInterfaceClass;
 	
 	private int userId;
 	
@@ -81,6 +83,13 @@ public class Client implements Serializable {
 	 *  @throws ClientException  if ClientInterface can't be instantiated
 	 */
 	private Client(String clientInterfaceClass) throws ClientException {
+		this.clientInterfaceClass = clientInterfaceClass;
+		createClientInterface();
+	}
+	
+	/** Since ClientInterface is transient, we may have to re-create it
+	 *  at any time. */
+	private void createClientInterface () throws ClientException {
 		try {
 			@SuppressWarnings("unchecked")
 			Class<ClientInterface> clazz = (Class<ClientInterface>) Class.forName(clientInterfaceClass);
@@ -94,11 +103,13 @@ public class Client implements Serializable {
 		}
 	}
 	
-	public List<PromotionPrototype> getPromotionPrototypes (String modelName) {
+	public List<Promotion> getPromotionPrototypes (String modelName) {
 		return ClientDataHolder.getPromotionPrototypes(userId, modelName, clientInterface);
 	}
 	
-	public ClientInterface getClientInterface () {
+	public ClientInterface getClientInterface () throws ClientException {
+		if (clientInterface == null)
+			createClientInterface();
 		return clientInterface;
 	}
 	

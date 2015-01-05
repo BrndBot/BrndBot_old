@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 //import com.brndbot.block.ChannelEnum;
 //import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
-import com.brndbot.client.PromotionPrototype;
+import com.brndbot.client.Promotion;
 import com.brndbot.promo.Client;
 //import com.brndbot.promo.Promotion;
 import com.brndbot.system.Assert;
@@ -55,7 +55,7 @@ public class DashboardServlet extends HttpServlet
 	{
 		logger.debug("--------Entering DashboardServlet----------");
 
-		/* In this new world, the type parameter will be the name of a PromotionPrototype,
+		/* In this new world, the type parameter will be the name of a Promotion,
 		 * and so a name rather than a number. */
 		//String modelName = Utils.getStringParameter(request, "type");
 		HttpSession session = request.getSession();
@@ -84,17 +84,17 @@ public class DashboardServlet extends HttpServlet
 		try {
 			ci = client.getClientInterface();
 			if (ci == null)
-				logger.debug ("Couldn't get ClientInterface");
+				logger.error ("Couldn't get ClientInterface");
 			else
 				logger.debug ("Got ClientInterface {}", ci.getClass().getName());
 		} catch (Throwable t) {
 			logger.error (t.getClass().getName());
 		}
-		List<PromotionPrototype> protos = ci.getPromotionPrototypes(modelName);
+		List<Promotion> protos = ci.getPromotionPrototypes(modelName);
 		logger.debug ("Got {} promotion prototypes", protos.size());
 		JSONArray jsonProtos = new JSONArray();
 		try {
-			for (PromotionPrototype proto : protos) {
+			for (Promotion proto : protos) {
 				logger.debug ("Converting a proto to JSON");
 				jsonProtos.put (proto.toJSON());
 			}
