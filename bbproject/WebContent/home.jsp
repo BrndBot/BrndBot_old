@@ -248,6 +248,7 @@ Java version: <%= System.getProperty("java.version") %><br> -->
 		<div class="listDescription">
 		#:fieldDescription.text#
 		</div>
+		<button id="button#:ID#" data-proto="#:protoName#" onclick="selectProto(this);">Promote</button>
 	</div>
 </script>
 		

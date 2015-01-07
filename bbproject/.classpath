@@ -37,5 +37,6 @@
 	<classpathentry kind="lib" path="lib/taglibs-standard-jstlel-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/taglibs-standard-spec-1.2.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/brndbotclient.jar" sourcepath="/brndbotclient/src"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

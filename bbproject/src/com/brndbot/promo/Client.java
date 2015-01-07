@@ -2,12 +2,15 @@ package com.brndbot.promo;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.List;
+//import java.util.Map;
+
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.brndbot.client.BrandIdentity;
 import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.ModelCollection;
@@ -23,6 +26,13 @@ import org.slf4j.LoggerFactory;
  *  This information drives everything.
  *  
  *  A Client object needs to be stored as a session attribute.
+ *  However, we don't want this to become a huge amount of data,
+ *  since in a clustering environment this can result in a lot
+ *  of disk activity. Reference the promotion prototypes and
+ *  models through a cache, not through the Client.
+ *  
+ *  Classes we should NOT incorporate into the Client:
+ *  
  *  
  */
 public class Client implements Serializable {
@@ -36,6 +46,8 @@ public class Client implements Serializable {
 	 *  us data 
 	 */
 	private transient ClientInterface clientInterface;
+	
+	private BrandIdentity brandIdentity;
 	
 	private String clientInterfaceClass;
 	
@@ -103,7 +115,12 @@ public class Client implements Serializable {
 		}
 	}
 	
-	public List<Promotion> getPromotionPrototypes (String modelName) {
+	/** Specify the active brand identity */
+	public void setBrandIdentity (BrandIdentity bi) {
+		brandIdentity = bi;
+	}
+	
+	public Map<String,Promotion> getPromotionPrototypes (String modelName) {
 		return ClientDataHolder.getPromotionPrototypes(userId, modelName, clientInterface);
 	}
 	

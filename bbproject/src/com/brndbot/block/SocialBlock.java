@@ -24,8 +24,7 @@ public class SocialBlock extends BlockBase
 		database_id,
 		name,
 		description,
-		short_description,
-		img_url);
+		short_description);
 	}
 
 	public SocialBlock(SocialBlock b)

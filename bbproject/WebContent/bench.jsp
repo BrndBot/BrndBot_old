@@ -7,6 +7,7 @@
 <%@ page import="com.brndbot.block.ChannelEnum" %>
 <%@ page import="com.brndbot.block.FBStyleType" %>
 <%@ page import="com.brndbot.jsphelper.BenchHelper" %>
+<%@ page import="com.brndbot.jsphelper.BlockRenderer" %>
 <%@ page import="com.brndbot.db.DbConnection" %>
 <%@ page import="com.brndbot.system.Assert" %>
 <%@ page import="com.brndbot.system.SessionUtils" %>
@@ -46,27 +47,29 @@
 	<c:redirect url="index.jsp"/>
 </c:if>
 <c:set var="tmp_channel" 
-			value="<%= SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY) %>"
+			value='<%= request.getParameter("channel") %>'
+			scope="page" />
+<c:set var="proto_name"
+			value='<%= request.getParameter("proto") %>'
 			scope="page" />
 <c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %>" scope="page"/>
 <c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %>" scope="page"/>
-<c:if test="${tmp_channel <= 0"}">
+<c:if test="${tmp_channel <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
-	<c:redirect url="index.jsp"/>
+	<c:redirect url="home.jsp"/>
 </c:if>
 
-<c:if test-"${sessionOK != 0">	<!-- encompasses whole rest of body -->
+<c:if test="${sessionOK != 0}">	<!-- encompasses whole rest of body -->
 
 
-<c:useBean id="benchHelper" 
+<jsp:useBean id="benchHelper" 
 		class="com.brndbot.jsphelper.BenchHelper" 
 		scope="page">
 	<jsp:setProperty name="benchHelper" property="userId" value="${sessionScope.brndbotuser_id}"/>
 	<jsp:setProperty name="benchHelper" property="channel" value="${tmp_channel}"/>
-	<jsp:setProperty name="benchHelper" property="btype" value="${sessionScope.brndbotcontent}"/>
 	<jsp:setProperty name="benchHelper" property="organization" value="${sessionScope.brndbotorg}"/>
 	<jsp:setProperty name="benchHelper" property="promoProto" value="${sessionScope.brndbotpromo}"/>
-</c:useBean>
+</jsp:useBean>
 <%	benchHelper.setSession (session);	// Need Java to set binary values %>
 
     <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
@@ -94,7 +97,7 @@
 		//  same enumerated class variables.
 		var EMAIL_CHANNEL = <jsp:text>${channel_email}</jsp:text>;
 		var FACEBOOK_CHANNEL = <jsp:text>${channel_facebook}</jsp:text>;
-		var CHANNEL = <%=tmp_channel %>;
+		var CHANNEL = ${tmp_channel};
 	</script>
 
 </head>
@@ -104,9 +107,12 @@
 
 	// Fill in the block for the content object chosen by the user on the dashboard.  See the JS below
 	// for how the block JS object is used.
-	Block starting_block = benchHelper.getStartingBlock();
+	//request.setAttribute ("starting_block", benchHelper.getStartingBlock());
 %>
-<jsp:useBean id="starting_block" class="com.brndbot.block.Block"/>
+<jsp:useBean id="starting_block" class="com.brndbot.block.Block" scope="page" >
+	<jsp:setProperty name="starting_block" property="channelType" value="${tmp_channel}"/>
+	<jsp:setProperty name="starting_block" property="name" value="${proto_name}"/>
+</jsp:useBean>
 	<div id="brndbotMain" style="background-color:#f4f4f4;">
 		<div id="brndbotHeader">
 			&nbsp;
@@ -135,11 +141,14 @@
 								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
 									<div id="workArea">
 
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
-			<%@include file="templates/email/content.jsp" %>
-		<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
-			<%@include file="templates/facebook/content.jsp" %>
-		<% } %>
+		<c:choose>
+			<c:when test="${tmp_channel == channel_email}">
+				<%@include file="templates/email/content.jsp" %>
+			</c:when>
+			<c:when test="${tmp_channel == channel_facebook}">
+				<%@include file="templates/facebook/content.jsp" %>
+			</c:when>
+		</c:choose>
 
 									</div>
 								</div>
@@ -155,22 +164,28 @@
 							<div> <!-- Design tab -->
 								<div style="padding-top: 3rem;height: 32rem;">
 
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
-			<%@include file="templates/email/design.jsp" %>
-		<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
-			<%@include file="templates/facebook/design.jsp" %>
-		<% } %>
+		<c:choose>
+			<c:when test="${tmp_channel == channel_email}">
+				<%@include file="templates/email/design.jsp" %>
+			</c:when>
+			<c:when test="${tmp_channel == channel_facebook}">
+				<%@include file="templates/facebook/design.jsp" %>
+			</c:when>
+		</c:choose>
 
 								</div>
 							</div>
 							<div> <!-- Layout tab -->
 								<div style="padding-top: 3rem;height: 32rem;">
 
-	    <% if (CHANNEL.equals(ChannelEnum.EMAIL)) { %>
-			<%@include file="templates/email/layout.jsp" %>
-		<% } else if (CHANNEL.equals(ChannelEnum.FACEBOOK)) { %>
-			<%@include file="templates/facebook/layout.jsp" %>
-		<% } %>
+		<c:choose>
+			<c:when test="${tmp_channel == channel_email}">
+				<%@include file="templates/email/layout.jsp" %>
+			</c:when>
+			<c:when test="${tmp_channel == channel_facebook}">
+				<%@include file="templates/facebook/layout.jsp" %>
+			</c:when>
+		</c:choose>
 
 								</div>
 							</div>
@@ -317,18 +332,14 @@
 			boolean templateVisible = true;
 			boolean isPreview = true;
 			// Must have the palette array, too.  Retrieves the palette set by the user when signed-up.
-			ArrayList<Palette> paletteArray = User.getUserPalette(user_id, con);
+			ArrayList<Palette> paletteArray = User.getUserPalette(benchHelper.getUserId(), benchHelper.getConnection());
 			String chosenImg = "";
-		%>
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
-			{
+
 				// Args 2 and 3 are part of the mess regarding image bounding.  All these functions for 
 				//  "getImage, getBoundLogo" etc should be assembled into a new class that does a great
 				//  job on image resizing.  Future effort for image cropping could use th same class.  This is
 				//  a mess currently.  Needs good requirements!
-				chosenImg = UserLogo.getBoundLogo(user_id, 150, 150);
-			}
+			chosenImg = UserLogo.getBoundLogo(benchHelper.getUserId(), 150, 150);
 /*			else if (CHANNEL.equals(ChannelEnum.FACEBOOK))
 			{
 				static public String getBoundImage(
@@ -590,40 +601,20 @@
 	// This function is called when all of page including HTML, JS and CSS are fully loaded.
 	$(document).ready(function() 
 	{
-		// If we were able to retrieve user's starting choice, run with it.  Should toss an error if not defined.
-		//  There is a Java class Block and a JS class Block (block.js) that are synched in design. 
-		<% if (starting_block != null) { %>
-			// Now this is a JavaScript Block, which looks a lot like a Java Block
-			// but lives in a completely different world.
-			var the_starting_block = new Block(
-			<%=starting_block.get_channel_type().getValue().intValue() %>,
-			<%=starting_block.get_block_type().getValue().intValue() %>,
-			'<%=Utils.jsSafeStr(starting_block.get_block_type_name()) %>',
-			<%=starting_block.get_database_id().intValue() %>,
-			'<%=Utils.jsSafeStr(starting_block.get_name()) %>',
-			'<%=Utils.jsSafeStr(starting_block.get_description()) %>',
-			'<%=Utils.jsSafeStr(starting_block.get_short_description()) %>',
-			'<%=starting_block.get_img_url() %>'
-			);
+		// doc.ready init for the bench, in bench.js
+		initTheBench();
 
-			// doc.ready init for the bench, in bench.js
-			initTheBench();
-
-			// Display the editor-specific starting appearance.			
-			initialBlockDisplay(the_starting_block);
-
-			// ensure the top of the page is shown
-			document.getElementById("brndbotMain").scrollIntoView();
-		<% } %>
+		// ensure the top of the page is shown
+		document.getElementById("brndbotMain").scrollIntoView();
 	});
 </script>
-
-</c:if>		<!-- sessionOK -->
 <%
 	// Necessary cleanup to avoid leakage
 	if (benchHelper != null) {
 		benchHelper.dismiss ();
 	}
 %>
+</c:if>		<!-- sessionOK -->
+
 </body>
 </html>

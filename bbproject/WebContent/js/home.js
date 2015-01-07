@@ -10,6 +10,9 @@ var model_name = "";
 var protosDataSource = null;
 var session_mgr = "";
 
+/* Current selection in prototype list */
+var currentItemID = -1;
+
 $(document).ready(function() 
 {
 
@@ -154,6 +157,14 @@ function viewChannels()
 	fancyShow(CHANNEL_JSP);
 }
 
+/* This is called when the "promote" button for a prototype is clicked. */
+function selectProto (btn) {	
+	var protoName = $(btn).attr("data-proto");
+	// TODO temp hard-code channel to 1
+	window.location.assign ("bench.jsp?channel=1&proto=" + protoName);
+	// TODO really should select channel next, but take a shortcut for now.
+}
+
 function routeViaChannel(db_id)
 {
 	if (SESSION_CHANNEL == SESSION_UNDEFINED)
@@ -189,6 +200,7 @@ function showPrototypes()
 	// model_name was set when the button was clicked.
 {
 	console.log ("showPrototypes");
+	currentItemID = -1;
 	$("#promoProtosHere").kendoListView({
 			dataSource: protosDataSource,
 		    selectable: true,
@@ -200,10 +212,29 @@ function showPrototypes()
 	$('#promoProtosHere').show();
 }
 
-/* TODO stub */
-function selectPromoProtoItem () {
+/* Called on selection of a promotion prototype.
+ * The variable "this" is the Kendo list item. */
+function selectPromoProtoItem (e) {
+	setListState (this);
 }
 
 /* TODO stub */
 function onPromoProtoSuccess () {
+}
+
+/* Update the promotion prototype list so the currently
+   selected item is highlighted and its dispatch button visible. */
+function setListState (kendoList) {
+	// Get the selected item
+    var index = kendoList.select().index();
+    var item = kendoList.dataSource.view()[index];
+    // item is an item from the dataSource. We gave them sequential ID values.
+    var itemID = item.ID;
+    console.log ("itemID = " + itemID);
+	if (currentItemID == itemID) {
+		return;
+	}
+	// TODO hide old button, hide new one.
+	// Need to figure out how to set ID.
+	currentItemID = itemID;
 }

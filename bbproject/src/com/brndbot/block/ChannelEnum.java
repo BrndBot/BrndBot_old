@@ -51,24 +51,24 @@ public class ChannelEnum
     }
 
     // Data
-    final Integer _item_number;
-    final String _item_text;
-    final Integer _default_img_width;
+    final Integer itemNumber;
+    final String itemText;
+    final Integer defaultImgWidth;
     
     public ChannelEnum(Integer value, String sent_txt, int default_img_width)
     {
-    	_item_number = value;
-    	_item_text = sent_txt;
-    	_default_img_width = default_img_width;
+    	itemNumber = value;
+    	itemText = sent_txt;
+    	defaultImgWidth = default_img_width;
     }
     
-    public String getItemText() { return _item_text; }
+    public String getItemText() { return itemText; }
     
-    public String getItemTextLowerCase() { return _item_text.toLowerCase(); }    
+    public String getItemTextLowerCase() { return itemText.toLowerCase(); }    
 
-    public int getValue() { return _item_number; }
+    public int getValue() { return itemNumber; }
     
-    public int getDefaultImgWidth() { return _default_img_width; }
+    public int getDefaultImgWidth() { return defaultImgWidth; }
 
     static public ChannelEnum create(int type)
     {
@@ -90,6 +90,24 @@ public class ChannelEnum
     		return POSTER;
     	}
     	return UNDEFINED;
+    }
+    
+    /** The addition of this function pretty much proves that the idea
+     *  of this class was nonsensical to begin with */
+    public static ChannelEnum getByValue (int value) {
+    	switch (value) {
+    	case CH_NONE:
+   		default:
+    		return UNDEFINED;
+    	case CH_EMAIL:
+    		return EMAIL;
+    	case CH_FACEBOOK:
+    		return FACEBOOK;
+    	case CH_TWITTER:
+    		return TWITTER;
+    	case CH_POSTER:
+    		return POSTER;
+    	}
     }
 
     public boolean equals(Object obj)

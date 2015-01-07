@@ -27,20 +27,30 @@ public class Block extends BlockBase
 			String starting_date,
 			String schedule_reference,
 			String description,
-			String short_description,
-			String img_url)
+			String short_description)
 	{
 		super(channel_type,
 		//block_type,
 		database_id,
 		name,
 		description,
-		short_description,
-		img_url);
+		short_description);
 		
 		blockTypeName = block_type_name;
 	}
 
+	/** We need a zero-argument constructor to permit useBean in JSP.
+	 *  Since we're using it that way, the heavily-loaded constructor
+	 *  may become obsolete.
+	 */
+	public Block () {
+		super (ChannelEnum.UNDEFINED,
+				-1,
+				"",
+				"",
+				"");
+	}
+	
 	public Block(Block b)
 	{
 		super(b);

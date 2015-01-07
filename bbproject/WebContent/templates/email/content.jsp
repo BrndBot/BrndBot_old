@@ -8,6 +8,9 @@ event handler looks for this id and shows it, hiding the previously shown editor
 
 The editor is one tab on the right-hand side.  There are other files used in the same manner for the other tabs.
 -->
+<%
+	// How do I get the Promotion from its name?
+%>
 <div id="classBlockEdit" style="display:none">
 	<div class="blockEdit">
 		<div style="float:none">
@@ -50,23 +53,6 @@ The editor is one tab on the right-hand side.  There are other files used in the
 	</div>
 </div>
 
-<!-- placeholder for the nonclass block edit form -->
-<div id="nonclassBlockEdit" style="display:none">
-	<div class="blockEdit">
-		<div style="float:none">
-			non featured class header
-		</div>
-		<div>
-			<input id="nonclassEditHeader" class="k-textbox" type="text" />
-		</div>
-		<div>
-			class name
-		</div>
-		<div>
-			<input id="nonclassEditName" class="k-textbox" type="text" />
-		</div>
-	</div>
-</div>
 
 <!-- placeholder for the workshop block edit form -->
 <div id="workshopBlockEdit" style="display:none">

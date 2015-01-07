@@ -8,6 +8,7 @@ package com.brndbot.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,8 +18,11 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 
 //import com.brndbot.block.ChannelEnum;
 //import com.brndbot.client.ClientException;
@@ -90,13 +94,18 @@ public class DashboardServlet extends HttpServlet
 		} catch (Throwable t) {
 			logger.error (t.getClass().getName());
 		}
-		List<Promotion> protos = ci.getPromotionPrototypes(modelName);
+		Map<String,Promotion> protos = ci.getPromotionPrototypes(modelName);
 		logger.debug ("Got {} promotion prototypes", protos.size());
 		JSONArray jsonProtos = new JSONArray();
+		
+		// Assemble JSONized prototypes into a list, giving each a unique ID
+		int id = 1;
 		try {
-			for (Promotion proto : protos) {
-				logger.debug ("Converting a proto to JSON");
-				jsonProtos.put (proto.toJSON());
+			for (Promotion proto : protos.values()) {
+				JSONObject jproto = proto.toJSON();
+				jproto.put ("ID", id++);
+				jproto.put ("protoName", proto.getName());
+				jsonProtos.put (jproto);
 			}
 		} catch (JSONException e) {
 			logger.error ("Error getting promo prototypes: {}", e.getClass().getName());

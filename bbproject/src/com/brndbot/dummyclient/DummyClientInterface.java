@@ -2,7 +2,9 @@ package com.brndbot.dummyclient;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,14 +18,23 @@ import com.brndbot.client.TextField;
 
 /**
  * A super-simple client interface for testing and illustrative purposes.
+ * 
+ * NOTE: This implementation piles a lot of data into the session attributes.
+ * This should be AVOIDED in real modules, since it can slow down performance,
+ * as well as running into problems where shared references to an object turn
+ * into distinct objects. It's done this way here just to be quick and dirty.
  */
 public class DummyClientInterface implements ClientInterface, Serializable {
 
-
+	private static final String CLIENT_INTERFACE_NAME = "DummyClient";
+	
 	private static final long serialVersionUID = 1L;
 
 	final static Logger logger = LoggerFactory.getLogger(DummyClientInterface.class);
 	
+	/** For a robust module, the ModelCollection should not be part of the
+	 *  serializable data. 
+	 */
 	ModelCollection mCollection;
 	
 	public DummyClientInterface() {
@@ -34,54 +45,64 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 	public ModelCollection getModels() {
 		return mCollection;
 	}
+	
+	@Override
+	public String getName() {
+		return CLIENT_INTERFACE_NAME;
+	}
 
 	@Override
-	public List<Promotion> getPromotionPrototypes(String modelName) {
+	public Map<String,Promotion> getPromotionPrototypes(String modelName) {
 		logger.debug ("getPromotionPrototypes, modelName = {}", modelName);
 		Model m = mCollection.getModelByName (modelName);
-		List<Promotion> plist = new ArrayList<>();
+		Map<String,Promotion> pmap = new HashMap<>();
 		try {
 			if ("Coaches".equals (modelName)) {
 				logger.debug ("Adding coaches");
+				String coachName = "KnuteRockne";
 				Promotion coach1 = 
-						new Promotion ("Knute Rockne", m, null);
+						new Promotion (coachName, m, null);
 				TextField nameField = (TextField) coach1.getNamedField ("Name");
 				nameField.setText ("Knute Rockne");
 				TextField descField = (TextField) coach1.getNamedField ("Description");
 				descField.setText ("Knute Kenneth Rockne (March 4, 1888 – March 31, 1931) was an American football player and coach, both at the University of Notre Dame.");
-				plist.add (coach1);
+				pmap.put (coachName, coach1);
+				coachName = "VinceLombardi";
 				Promotion coach2 =
-						new Promotion ("Vince Lombardi", m, null);
+						new Promotion (coachName, m, null);
 				nameField = (TextField) coach2.getNamedField ("Name");
 				nameField.setText ("Vince Lombardi");
 				descField = (TextField) coach2.getNamedField ("Description");
 				descField.setText ("Vincent Thomas \"Vince\" Lombardi (June 11, 1913– September 3, 1970) was an American football player, coach, and executive. He is best known as the head coach of the Green Bay Packers during the 1960s.");
-				plist.add (coach2);
+				pmap.put (coachName, coach2);
 			}
 			if ("Athlete Spotlight".equals (modelName)) {
+				String athName = "TedWilliams";
 				Promotion athlete1 =
-						new Promotion ("Ted Williams", m, null);
+						new Promotion (athName, m, null);
 				TextField nameField = (TextField) athlete1.getNamedField ("Name");
 				nameField.setText ("Ted Williams");
-				plist.add (athlete1);
+				pmap.put (athName, athlete1);
 			}
 			if ("WOD".equals (modelName)) {
-				Promotion wod1 = new Promotion ("Extreme workout", m, null);
+				String wName = "Extreme";
+				Promotion wod1 = new Promotion (wName, m, null);
 				TextField titleField = (TextField) wod1.getNamedField ("Title");
 				titleField.setText ("Extreme workout");
-				plist.add (wod1);
+				pmap.put (wName, wod1);
 			}
 			if ("Testimonials".equals (modelName)) {
-				Promotion tst1 = new Promotion ("Hall of Fame", m, null);
+				String tName = "HallOfFame";
+				Promotion tst1 = new Promotion (tName, m, null);
 				TextField nameField = (TextField) tst1.getNamedField ("Name");
 				nameField.setText("Hall of Fame");
-				plist.add (tst1);
+				pmap.put (tName, tst1);
 			}
 		} catch (Exception e) {
 			logger.error ("Error creating prototypes: {}", e.getClass().getName());
 		}
 		logger.debug ("Returning list");
-		return plist;
+		return pmap;
 	}
 
 	/* Hard-code some models */

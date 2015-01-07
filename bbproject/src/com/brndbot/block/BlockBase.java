@@ -24,7 +24,6 @@ public class BlockBase
 	private String name; // main name of the content
 	private String description;  // content description
 	private String shortDescription;  // no html short version of the description
-	private String imgUrl;  // img tag for workshops and classes (for now)
 
 	public BlockBase(
 			ChannelEnum channel_type,
@@ -32,17 +31,14 @@ public class BlockBase
 			int database_id,
 			String nam,
 			String desc,
-			String short_description,
-			String img_url)
+			String short_description)
 	{
 		channelType = ChannelEnum.create(channel_type.getValue());
 //		_block_type = BlockType.create(block_type.getValue().intValue());
-		Assert.that(database_id > 0, "Database ID is zero for the block.");
 		_database_id = new Integer(database_id);
 		name = nam;
 		description = desc;
 		shortDescription = short_description;
-		imgUrl = img_url;
 	}
 
 	public BlockBase(BlockBase b)
@@ -54,7 +50,6 @@ public class BlockBase
 		name = b.name;
 		description = b.description;
 		shortDescription = b.shortDescription;
-		imgUrl = b.imgUrl;
 	}
 
 	public boolean equals(Object object)
@@ -76,8 +71,12 @@ public class BlockBase
 				(this.channelType.getValue() * 10)); 
 	}
 
-	public ChannelEnum getChannelType() {
-		return channelType;
+	public int getChannelType() {
+		return channelType.getValue();
+	}
+	
+	public void setChannelType (int chType) {
+		channelType = ChannelEnum.getByValue(chType);
 	}
 
 	public void setChannelType(ChannelEnum _channel_type) {
@@ -93,6 +92,7 @@ public class BlockBase
 		this._database_id = _database_id;
 	}
 
+	/** Get the name of the Promotion being used */
 	public String getName() {
 		return name;
 	}
@@ -144,14 +144,6 @@ public class BlockBase
 		this.shortDescription = _short_description;
 	}
 
-	public String getImgUrl() {
-		return imgUrl;
-	}
-
-	public void setImgUrl(String _img_url) {
-		this.imgUrl = _img_url;
-	}
-
 	static public BlockBase getAsBlock(
 		ChannelEnum channelType, int user_id, int btype, int id, int max_width)
 	{
@@ -160,6 +152,8 @@ public class BlockBase
 		// The old code used MindBody-specific methods to create a block.
 		// It seems to do this based just on the channel type, user ID,
 		// and a mysterious constant of 450.
+		//
+		// May not be needed. Use bean-type operations instead.
 		return block;
 	}
 }

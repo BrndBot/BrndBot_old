@@ -65,6 +65,10 @@ public class BenchHelper {
 		userId = u;
 	}
 	
+	public DbConnection getConnection () {
+		return con;
+	}
+	
 	public String getOrganization () {
 		return organization;
 	}
@@ -121,18 +125,17 @@ public class BenchHelper {
 	}
 	
 	/** Create a starting Block for the promotion. */
-	public Block getStartingBlock () {
-		// TODO largely fake
-		return new Block (chEnum,
-				"DummyBlock",
-				databaseId,
-				"dummyName",
-				"dummyFullName",
-				"dummyStartingDate",
-				"dummyRef",
-				"dummyDesc",
-				"dummyShortDesc",
-				"http://www.example.com/"
-				);
-	}
+//	public Block getStartingBlock () {
+//		// TODO largely fake
+//		return new Block (chEnum,
+//				"DummyBlock",
+//				databaseId,
+//				"dummyName",
+//				"dummyFullName",
+//				"dummyStartingDate",
+//				"dummyRef",
+//				"dummyDesc",
+//				"dummyShortDesc"
+//				);
+//	}
 }
