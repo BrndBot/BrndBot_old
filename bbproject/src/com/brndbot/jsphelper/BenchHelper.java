@@ -8,6 +8,7 @@ package com.brndbot.jsphelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,9 +17,13 @@ import org.slf4j.LoggerFactory;
 
 import com.brndbot.block.Block;
 import com.brndbot.block.ChannelEnum;
+import com.brndbot.client.ClientInterface;
+import com.brndbot.client.Model;
+import com.brndbot.client.Promotion;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Palette;
 import com.brndbot.db.User;
+import com.brndbot.promo.Client;
 
 /** BenchHelper provides Java logic for the editor (bench.jsp).
  *  It's designed so it can (at least mostly) be accessed with
@@ -37,6 +42,7 @@ public class BenchHelper {
 	private int databaseId;
 	private ChannelEnum chEnum;
 	private String organization;
+	private String modelName;
 	private String promoProto;		// promotion prototype name
 	private ArrayList<Palette> paletteArray;
 	
@@ -48,6 +54,44 @@ public class BenchHelper {
 	public void dismiss () {
 		if (con != null) {
 			con.close();
+		}
+	}
+	
+	/** Call this to clone a promotion prototype into a promotion
+	 *  and return its HTML. Uses previously set values for modelName
+	 *  and promoProto.
+	 */
+	public String insertPromotion (Client client) {
+		try {
+			if (client == null) {
+				logger.error ("Client is null!");
+			}
+			ClientInterface ci = client.getClientInterface();
+			if (ci == null) {
+				logger.error ("No client interface!");
+			}
+			//Model model = ci.getModels ().getModelByName (modelName);
+			logger.debug ("Model name = {}", modelName);
+			logger.debug ("promoProto = {}", promoProto);
+			Map<String, Promotion> prototypes = ci.getPromotionPrototypes(modelName);
+			if (prototypes == null) {
+				logger.error ("No prototypes!");
+			}
+			Promotion prototype = prototypes.get (promoProto);
+			if (prototype == null) {
+				logger.error ("Unknown promotion prototype {} for model {}", 
+						promoProto,
+						modelName);
+			}
+			BlockRenderer renderer = new BlockRenderer (prototype);
+			return renderer.render();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error ("Exception inserting promotion {}", promoProto);
+			logger.error ("Exception type: {}, message: {}", 
+					e.getClass().getName(), 
+					e.getMessage());
+			return "";
 		}
 	}
 	
@@ -67,6 +111,14 @@ public class BenchHelper {
 	
 	public DbConnection getConnection () {
 		return con;
+	}
+	
+	public String getModelName () {
+		return modelName;
+	}
+	
+	public void setModelName (String nm) {
+		modelName = nm;
 	}
 	
 	public String getOrganization () {

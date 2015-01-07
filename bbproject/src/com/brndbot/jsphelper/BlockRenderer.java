@@ -1,11 +1,11 @@
 package com.brndbot.jsphelper;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.util.Iterator;
 
 import org.jdom2.Element;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.brndbot.client.BlockField;
 import com.brndbot.client.ButtonField;
@@ -15,7 +15,10 @@ import com.brndbot.client.LogoField;
 import com.brndbot.client.ModelField;
 import com.brndbot.client.Promotion;
 import com.brndbot.client.SVGField;
+import com.brndbot.client.StyleSet;
 import com.brndbot.client.TextField;
+import com.brndbot.client.Style;
+import com.brndbot.client.TextStyle;
 //import com.brndbot.client.ModelField.StyleType;
 
 /**
@@ -24,37 +27,61 @@ import com.brndbot.client.TextField;
  */
 public class BlockRenderer extends Renderer {
 
-	String promoName;
+	final static Logger logger = LoggerFactory.getLogger(BlockRenderer.class);
+	
+	private String promoName;
+	private Promotion promotion;
+	private StyleSet styleSet;
 
 	public BlockRenderer(Promotion promo) {
 		super ();
 		promoName = promo.getName ();
+		promotion = promo;
+		styleSet = promo.getStyleSet();
+		if (styleSet == null)
+			logger.error ("styleSet is null");
+		else if (styleSet.getStyles() == null)
+			logger.error ("styleSet has no style");
+	}
+	
+	public String render () {
 		try {
-			for (ModelField field : promo.getContent()) {
+			logger.debug ("Starting render");
+			// The number of styles needs to equal the number of
+			// model fields. 
+			Iterator<Style> stylIter = styleSet.getStyles().iterator();
+			for (ModelField field : promotion.getContent()) {
+				logger.debug ("Processing field {}", field.getClass().getName());
 				Element div = new Element("div");
 				div.setAttribute ("id", promoName + "-" + field.getName ());
+				Style styl = stylIter.next();
 				switch (field.getStyleType ()) {
 				case TEXT:
-					renderText((TextField)field, div);
+					renderText((TextField)field, div, styl);
 					break;
 				case IMAGE:
-					renderImage((ImageField)field, div);
+					renderImage((ImageField)field, div, styl);
 					break;
 				case LOGO:
-					renderLogo((LogoField)field, div);
+					renderLogo((LogoField)field, div, styl);
 					break;
 				case SVG:
-					renderSVG((SVGField)field, div);
+					renderSVG((SVGField)field, div, styl);
 					break;
 				case BLOCK:
-					renderBlock((BlockField) field, div);
+					renderBlock((BlockField) field, div, styl);
 					break;
 				case BUTTON:
-					renderButton((ButtonField) field, div);
+					renderButton((ButtonField) field, div, styl);
 					break;
 				}
 			}
-		} catch (Exception e) {}
+			return writer.toString ();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error ("Exception in render: {}", e.getClass().getName());
+		}
+		return null;
 	}
 
 	/** Do I really want to do all the messy rendering here, where I have to
@@ -67,38 +94,48 @@ public class BlockRenderer extends Renderer {
 	 *  
 	 *  FOR NOW ... don't worry about where it goes or how it looks. Just render it.
 	 */
-	private void renderText (TextField field, Element div) throws IOException {
+	private void renderText (TextField field, Element div, Style styl) throws IOException {
+		logger.debug ("renderText");
+		TextStyle tStyle = (TextStyle) styl;
+		if (tStyle == null)
+			logger.error ("Null style!");
 		CSSBuilder cssBuilder = new CSSBuilder ();
 		// Set some fixed values for the moment FIXME
 		cssBuilder.setFont ("serif");
-		cssBuilder.setPointSize(12);
+		cssBuilder.setPointSize(tStyle.getPointSize());
+		if (tStyle.isBold())
+			cssBuilder.setBold();
+		if (tStyle.isItalic())
+			cssBuilder.setItalic();
+		logger.debug ("Constructed CSS: {}", cssBuilder.toString());
 		div.setAttribute ("style", cssBuilder.toString ());
 		div.setText (field.getText());
+		logger.debug ("Completed div for text");
 		outputter.output (div, writer);
 	}
 	
-	private void renderImage (ImageField field, Element div) throws IOException {
+	private void renderImage (ImageField field, Element div, Style styl) throws IOException {
 		Element img = new Element("img");
 		img.setAttribute ("src", field.getImagePath());
 		div.addContent(img);
 		outputter.output (div, writer);
 	}
 	
-	private void renderLogo (LogoField field, Element div) throws IOException {
+	private void renderLogo (LogoField field, Element div, Style styl) throws IOException {
 		// TODO stub
 		outputter.output (div, writer);
 	}
 	
-	private void renderSVG (SVGField field, Element div) throws IOException {
+	private void renderSVG (SVGField field, Element div, Style styl) throws IOException {
 		outputter.output (div, writer);
 	}
 	
-	private void renderBlock (BlockField field, Element div) throws IOException {
+	private void renderBlock (BlockField field, Element div, Style styl) throws IOException {
 		// TODO stub
 		outputter.output (div, writer);
 	}
 
-	private void renderButton (ButtonField field, Element div) throws IOException {
+	private void renderButton (ButtonField field, Element div, Style styl) throws IOException {
 		// TODO stub
 		outputter.output (div, writer);
 	}

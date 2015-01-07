@@ -68,6 +68,11 @@ public class LoginServlet extends HttpServlet
 			response.sendRedirect("index.jsp");
 			return;
 		}
+		
+		// Remove old authentication
+		session.removeAttribute (SessionUtils.CLIENT);
+		session.removeAttribute (SessionUtils.USER_ID);
+		
 		DbConnection con = DbConnection.GetDb();
 
 		int user_id = User.Login(email_address, password, con);

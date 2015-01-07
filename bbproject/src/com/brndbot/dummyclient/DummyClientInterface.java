@@ -1,9 +1,9 @@
 package com.brndbot.dummyclient;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+//import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -32,12 +32,16 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 
 	final static Logger logger = LoggerFactory.getLogger(DummyClientInterface.class);
 	
-	/** For a robust module, the ModelCollection should not be part of the
+	/** TODO For a robust module, the ModelCollection should not be part of the
 	 *  serializable data. 
 	 */
-	ModelCollection mCollection;
+	private ModelCollection mCollection;
+	
+	/** Map of model names to maps of promotion names to promotion prototypes */
+	private Map<String, Map<String, Promotion>> promotionPrototypes;
 	
 	public DummyClientInterface() {
+		promotionPrototypes = new HashMap<>();
 		initModelCollection ();
 	}
 
@@ -53,6 +57,9 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 
 	@Override
 	public Map<String,Promotion> getPromotionPrototypes(String modelName) {
+		if (promotionPrototypes.get(modelName) != null)
+				return promotionPrototypes.get(modelName);
+		
 		logger.debug ("getPromotionPrototypes, modelName = {}", modelName);
 		Model m = mCollection.getModelByName (modelName);
 		Map<String,Promotion> pmap = new HashMap<>();
@@ -101,7 +108,7 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 		} catch (Exception e) {
 			logger.error ("Error creating prototypes: {}", e.getClass().getName());
 		}
-		logger.debug ("Returning list");
+		promotionPrototypes.put (modelName, pmap);
 		return pmap;
 	}
 

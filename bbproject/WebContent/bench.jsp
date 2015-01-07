@@ -9,6 +9,8 @@
 <%@ page import="com.brndbot.jsphelper.BenchHelper" %>
 <%@ page import="com.brndbot.jsphelper.BlockRenderer" %>
 <%@ page import="com.brndbot.db.DbConnection" %>
+<%@ page import="com.brndbot.promo.Client" %>
+<%@ page import="com.brndbot.client.ClientInterface" %>
 <%@ page import="com.brndbot.system.Assert" %>
 <%@ page import="com.brndbot.system.SessionUtils" %>
 <%@ page import="com.brndbot.system.Utils" %>
@@ -46,12 +48,13 @@
 	<c:set var="sessionOK" value="0" scope="page"/>
 	<c:redirect url="index.jsp"/>
 </c:if>
-<c:set var="tmp_channel" 
-			value='<%= request.getParameter("channel") %>'
-			scope="page" />
-<c:set var="proto_name"
-			value='<%= request.getParameter("proto") %>'
-			scope="page" />
+<% 
+/* Get parameters */
+%>
+<c:set var="tmp_channel" value='${param.channel}' scope="page" />
+<c:set var="proto_name" value='${param.proto}' scope="page" />
+<c:set var="model_name" value='${param.model}' scope="page" />
+
 <c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %>" scope="page"/>
 <c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %>" scope="page"/>
 <c:if test="${tmp_channel <= 0}">
@@ -68,7 +71,8 @@
 	<jsp:setProperty name="benchHelper" property="userId" value="${sessionScope.brndbotuser_id}"/>
 	<jsp:setProperty name="benchHelper" property="channel" value="${tmp_channel}"/>
 	<jsp:setProperty name="benchHelper" property="organization" value="${sessionScope.brndbotorg}"/>
-	<jsp:setProperty name="benchHelper" property="promoProto" value="${sessionScope.brndbotpromo}"/>
+	<jsp:setProperty name="benchHelper" property="promoProto" value="${proto_name}"/>
+	<jsp:setProperty name="benchHelper" property="modelName" value="${model_name}"/>
 </jsp:useBean>
 <%	benchHelper.setSession (session);	// Need Java to set binary values %>
 
@@ -385,16 +389,16 @@
 	    	//  of the editor.  Currently, each slow may contain all types of data/templates, but it doesn't 
 	    	//  have to be that way. 
 
-			// template-set.jsp is ALSO totally client-dependent, so throw it out.
+			// promo.jsp is ALSO totally client-dependent, so throw it out.
 			// Is there ANY useful code in this hellhole??
 		%>
 <c:set var="templateEnum" value="1" scope="page"/> 
 <c:choose>
   <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/template-set.jsp" %>
+			<%@include file="templates/email/promo.jsp" %>
   </c:when>
   <c:when test="${tmp_channel == channel_facebook}">
-			<%@include file="templates/facebook/template-set.jsp" %>
+			<%@include file="templates/facebook/promo.jsp" %>
   </c:when>
 </c:choose>
 
@@ -403,20 +407,20 @@
 <c:set var="templateEnum" value="2" scope="page"/> 
 <c:choose>
   <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/template-set.jsp" %>
+			<%@include file="templates/email/promo.jsp" %>
   </c:when>
   <c:when test="${tmp_channel == channel_facebook}">
-			<%@include file="templates/facebook/template-set.jsp" %>
+			<%@include file="templates/facebook/promo.jsp" %>
   </c:when>
 </c:choose>
 
 <c:set var="templateEnum" value="3" scope="page"/> 
 <c:choose>
   <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/template-set.jsp" %>
+			<%@include file="templates/email/promo.jsp" %>
   </c:when>
   <c:when test="${tmp_channel == channel_facebook}">
-			<%@include file="templates/facebook/template-set.jsp" %>
+			<%@include file="templates/facebook/promo.jsp" %>
   </c:when>
 </c:choose>
 
@@ -425,7 +429,7 @@
 <c:set var="templateEnum" value="4" scope="page"/> 
 <c:choose>
   <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/template-set.jsp" %>
+			<%@include file="templates/email/promo.jsp" %>
   </c:when>
 </c:choose>
 
@@ -433,18 +437,18 @@
 <c:set var="templateEnum" value="5" scope="page"/> 
 <c:choose>
   <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/template-set.jsp" %>
+			<%@include file="templates/email/promo.jsp" %>
   </c:when>
 </c:choose>
 
 <c:set var="templateEnum" value="6" scope="page"/> 
 <c:choose>
   <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/template-set.jsp" %>
+			<%@include file="templates/email/promo.jsp" %>
   </c:when>
 </c:choose>
 
-<%  // end of if block for email editor-only template-set.jsp inclusion
+<%  // end of if block for email editor-only promo.jsp inclusion
 %>
 			</div><!-- id="finishedImage">  -->
 

@@ -161,7 +161,7 @@ function viewChannels()
 function selectProto (btn) {	
 	var protoName = $(btn).attr("data-proto");
 	// TODO temp hard-code channel to 1
-	window.location.assign ("bench.jsp?channel=1&proto=" + protoName);
+	window.location.assign ("bench.jsp?channel=1&proto=" + protoName + "&model=" + model_name);
 	// TODO really should select channel next, but take a shortcut for now.
 }
 
@@ -218,7 +218,7 @@ function selectPromoProtoItem (e) {
 	setListState (this);
 }
 
-/* TODO stub */
+/* May not need to do anything here */
 function onPromoProtoSuccess () {
 }
 
@@ -235,6 +235,5 @@ function setListState (kendoList) {
 		return;
 	}
 	// TODO hide old button, hide new one.
-	// Need to figure out how to set ID.
 	currentItemID = itemID;
 }

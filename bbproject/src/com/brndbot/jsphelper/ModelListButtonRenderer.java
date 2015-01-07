@@ -2,6 +2,7 @@ package com.brndbot.jsphelper;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.jdom2.Element;
 import org.slf4j.Logger;
@@ -23,8 +24,8 @@ public class ModelListButtonRenderer extends Renderer {
 		ModelCollection modelCol = ci.getModels();
 		// TODO Auto-generated constructor stub
 		try {
-			List<Model> models = modelCol.getModels();
-			for (Model m : models) {
+			Map<String,Model> models = modelCol.getAllModels();
+			for (Model m : models.values()) {
 				int idx = 0;
 				renderModel (m, idx);
 			}
