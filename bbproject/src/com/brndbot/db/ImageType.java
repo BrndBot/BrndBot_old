@@ -7,6 +7,10 @@ package com.brndbot.db;
 
 import java.util.ArrayList;
 
+/** This is one of those horrible pseudo-enums, and also has a bunch of
+ *  MindBody-specific content. I'm deleting the MB content as a start.
+ *  The rest still seems excessively targeted.
+ */
 public class ImageType
 {
 	final static ImageType[] _ENUMS;
@@ -21,10 +25,6 @@ public class ImageType
 
 	public final static ImageType STOCK = 
 			new ImageType(new Integer(3), "Stock image", "images\\uploads\\brndbot\\",
-					300000L);
-
-	public final static ImageType TEACHER_PHOTO = 
-			new ImageType(new Integer(4), "Teacher photo", "images\\uploads\\teacher\\",
 					300000L);
 
 	public final static ImageType DEFAULT_LOGO = 
@@ -43,7 +43,6 @@ public class ImageType
         enums.add(ALTERNATE_LOGO);
         enums.add(USER_UPLOAD);
         enums.add(STOCK);
-        enums.add(TEACHER_PHOTO);
         enums.add(DEFAULT_LOGO);
         enums.add(FUSED_IMAGE);
     	_ENUMS = (ImageType[])enums.
@@ -89,10 +88,6 @@ public class ImageType
     	else if (stype.equals(STOCK))
     	{
     		return STOCK;
-    	}
-    	else if (stype.equals(TEACHER_PHOTO))
-    	{
-    		return TEACHER_PHOTO;
     	}
     	else if (stype.equals(DEFAULT_LOGO))
     	{

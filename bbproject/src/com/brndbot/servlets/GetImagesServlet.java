@@ -40,18 +40,15 @@ public class GetImagesServlet extends HttpServlet
 		doPost(request, response);
 	}
 
+	/** This gets a JSON array of references (of some kind) to images 
+	 *  that are listed in the database for the user.
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering GetImagesServlet----------");
 
 		HttpSession session = request.getSession();
 		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
-		if (user_id == 0)
-		{
-			logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
-			response.sendRedirect("index.jsp");
-			return;
-		}
 
 		// Make sure the image type is passed
 		int type = Utils.getIntParameter(request, SessionUtils.IMAGE_ID_KEY);

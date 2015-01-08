@@ -135,7 +135,6 @@ public class SaveImageServlet extends HttpServlet
 						saved_img_id = user_logo.save(con);
 					}
 					else if (image_type.equals(ImageType.USER_UPLOAD) ||
-							image_type.equals(ImageType.TEACHER_PHOTO) ||
 							image_type.equals(ImageType.ALTERNATE_LOGO))
 					{
 						logger.debug("We got a " + image_type.getItemText());

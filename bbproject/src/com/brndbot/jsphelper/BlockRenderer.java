@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.client.BlockField;
+import com.brndbot.client.BlockStyle;
 import com.brndbot.client.ButtonField;
 import com.brndbot.client.ImageField;
 import com.brndbot.client.LogoField;
@@ -132,12 +133,43 @@ public class BlockRenderer extends Renderer {
 	
 	private void renderBlock (BlockField field, Element div, Style styl) throws IOException {
 		// TODO stub
+		// A block is effectively a div with specified dimensions, a background color,
+		// and a Z-index which places it behind other elements.
+		BlockStyle bStyle = (BlockStyle) styl;
+		Element blockDiv = new Element ("div");
+		CSSBuilder cssBuilder = new CSSBuilder ();
+		cssBuilder.setColor (field.getColor());
+		cssBuilder.setZIndex(-1);		// put it behind non-blocks
 		outputter.output (div, writer);
 	}
 
 	private void renderButton (ButtonField field, Element div, Style styl) throws IOException {
 		// TODO stub
 		outputter.output (div, writer);
+	}
+	
+	/** Create the CSS needed to position the element. */
+	private void calcPositionCSS (ModelField field, CSSBuilder cssBuilder) {
+		ModelField.AnchorType anchorType = field.getAnchorType ();
+		if (anchorType == null) {
+			logger.warn ("No anchor type found");
+		}
+		int x = field.getXOffset();
+		int y = field.getYOffset();
+		switch (anchorType) {
+		case TOP_LEFT:
+			cssBuilder.setTopLeftAnchor (x, y);
+			break;
+		case TOP_RIGHT:
+			cssBuilder.setTopRightAnchor (x, y);
+			break;
+		case BOTTOM_LEFT:
+			cssBuilder.setBottomLeftAnchor (x, y);
+			break;
+		case BOTTOM_RIGHT:
+			cssBuilder.setBottomRightAnchor (x, y);
+			break;
+		}
 	}
 		
 }

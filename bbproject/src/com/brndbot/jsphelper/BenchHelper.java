@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.block.Block;
 import com.brndbot.block.ChannelEnum;
 import com.brndbot.client.ClientInterface;
+import com.brndbot.client.ClientInterfaceFactory;
 import com.brndbot.client.Model;
 import com.brndbot.client.Promotion;
 import com.brndbot.db.DbConnection;
@@ -45,7 +46,8 @@ public class BenchHelper {
 	private String modelName;
 	private String promoProto;		// promotion prototype name
 	private ArrayList<Palette> paletteArray;
-	
+	private ClientInterface clientInterface;
+
 	public BenchHelper () {
 		con = DbConnection.GetDb();	
 	}
@@ -55,6 +57,15 @@ public class BenchHelper {
 		if (con != null) {
 			con.close();
 		}
+	}
+	
+	/** Use c:out on this at the point where the buttons for viewing lists of
+	 *  promo protos should be inserted.
+	 */
+	public String getRenderModelLinks () {
+		logger.debug ("getRenderModelLinks");
+		ModelLinkRenderer renderer = new ModelLinkRenderer(clientInterface);
+		return renderer.getFragment ();
 	}
 	
 	/** Call this to clone a promotion prototype into a promotion
@@ -107,6 +118,7 @@ public class BenchHelper {
 	
 	public void setUserId (int u) {
 		userId = u;
+		loadClientInterface();
 	}
 	
 	public DbConnection getConnection () {
@@ -190,4 +202,20 @@ public class BenchHelper {
 //				"dummyShortDesc"
 //				);
 //	}
+	
+	/** This seeks out the appropriate ClientInterface for the user.
+	 *  TODO make it real, getting the class name from the database.
+	 *  For now, uses the dummy client interface
+	 */
+	private void loadClientInterface () {
+		final String className = "com.brndbot.dummyclient.DummyClientInterface";
+		try {
+			clientInterface = ClientInterfaceFactory.getInterfaceForClass(className);
+		} catch (Exception e) {
+			logger.error ("FATAL: {}", e.getClass().getName());
+		}
+		if (clientInterface == null) {
+			logger.error ("FATAL: Could not load client interface {}", className);
+		}
+	}
 }

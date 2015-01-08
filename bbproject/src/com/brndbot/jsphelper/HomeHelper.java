@@ -25,22 +25,27 @@ public class HomeHelper {
 	private int userId;
 	private User user;
 	private String organization;
-	ClientInterface clientInterface;
+	private ClientInterface clientInterface;
 
 
 	public void setUserId (int id) {
 		userId = id;
-		DbConnection con = DbConnection.GetDb();
-		user = User.getUserNameAndLogo(id, con);
-		con.close();
-		getClientInterface ();
+		DbConnection con = null;
+		try {
+			con= DbConnection.GetDb();
+			user = User.getUserNameAndLogo(id, con);
+		} finally {
+			if (con != null)
+				con.close();
+		}
+		loadClientInterface ();
 	}
 	
 	/** This seeks out the appropriate ClientInterface for the user.
 	 *  TODO make it real, getting the class name from the database.
 	 *  For now, uses the dummy client interface
 	 */
-	private void getClientInterface () {
+	private void loadClientInterface () {
 		final String className = "com.brndbot.dummyclient.DummyClientInterface";
 		try {
 			clientInterface = ClientInterfaceFactory.getInterfaceForClass(className);

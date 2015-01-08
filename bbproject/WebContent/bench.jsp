@@ -201,42 +201,22 @@
 					<div id="tabstrip" class="rounded">
 						<ul>
 							<li class="k-state-active">
-								Mindbody
-							</li>
-							<li>
 								Generic
 							</li>
 						</ul>
 						<div>
 							<!-- The images for each choice come from the styles. -->
 							<!-- ****** REPLACE THIS WITH A SERIES OF LINKS BASED ON 
-							     THE AVAILABLE PROMOTION PROTOTYPES
-							     SO, how do we do it? We need to get the
-							     Client object from the session and have it fill in
-							     the divs based on those. Is this a good place
-							     to start a tag library? YES.
+							     THE AVAILABLE MODELS
 							-->
 							<div class="linkText" style="padding-left:0.1rem;">
-								<div id="newWorkshopLink" class="formSpacerLite addLink">
-									Workshops
-								</div>
-								<div id="newClassLink" class="formSpacerLite addLink">
-									Classes
-								</div>
-								<div id="newTeacherLink" class="formSpacerLite addLink">
-									Teachers
-								</div>
-								<div id="newScheduleLink" class="formSpacerLite addLink">
-									Schedule
-								</div>
+<c:out escapeXml="false" value="${benchHelper.renderModelLinks}"/>
+
 								<div id="newSocialLink" class="formSpacerLite addLink">
 									Social Buttons
 								</div>
 								<div id="newTextLink" class="formSpacerLite addLink">
 									Intro Header
-								</div>
-								<div id="newSaleLink" class="formSpacerLite addLink">
-									Promotion / Sale
 								</div>
 								<div id="newGraphicLink" class="formSpacerLite addLink">
 									Logo Header
@@ -253,9 +233,6 @@
 								</div>
 								<div id="genericImageBlockLink" class="formSpacerLite addLink">
 									Pictures / Images
-								</div>
-								<div id="genericVideoBlockLink" class="formSpacerLite addLink">
-									Video link
 								</div>
 								<div id="genericWebBlockLink" class="formSpacerLite addLink">
 									Web site link

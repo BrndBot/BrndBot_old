@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.client.ClientInterface;
+import com.brndbot.client.ImageField;
 import com.brndbot.client.Model;
 import com.brndbot.client.ModelCollection;
 import com.brndbot.client.ModelField.StyleType;
@@ -73,6 +74,8 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 				nameField.setText ("Knute Rockne");
 				TextField descField = (TextField) coach1.getNamedField ("Description");
 				descField.setText ("Knute Kenneth Rockne (March 4, 1888 – March 31, 1931) was an American football player and coach, both at the University of Notre Dame.");
+				ImageField imgField = (ImageField) coach1.getNamedField ("Picture");
+				imgField.setImagePath("images/Knute_Rockne.jpg");
 				pmap.put (coachName, coach1);
 				coachName = "VinceLombardi";
 				Promotion coach2 =
@@ -81,6 +84,8 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 				nameField.setText ("Vince Lombardi");
 				descField = (TextField) coach2.getNamedField ("Description");
 				descField.setText ("Vincent Thomas \"Vince\" Lombardi (June 11, 1913– September 3, 1970) was an American football player, coach, and executive. He is best known as the head coach of the Green Bay Packers during the 1960s.");
+				imgField = (ImageField) coach2.getNamedField ("Picture");
+				imgField.setImagePath("images/Vince_Lombardi.png");
 				pmap.put (coachName, coach2);
 			}
 			if ("Athlete Spotlight".equals (modelName)) {
@@ -131,6 +136,7 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 		model2.setButtonImage("home/teacher.png");
 		model2.addField ("Name", StyleType.TEXT);
 		model2.addField ("Description", StyleType.TEXT);
+		model2.addField ("Picture", StyleType.IMAGE);
 		mCollection.addModel(model2);
 
 		Model model3 = new Model("Athlete Spotlight", "Athlete Spotlight");
