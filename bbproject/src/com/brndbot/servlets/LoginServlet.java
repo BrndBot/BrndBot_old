@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.User;
+import com.brndbot.promo.Client;
 import com.brndbot.system.LoginCookie;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
@@ -72,6 +73,9 @@ public class LoginServlet extends HttpServlet
 		// Remove old authentication
 		session.removeAttribute (SessionUtils.CLIENT);
 		session.removeAttribute (SessionUtils.USER_ID);
+		
+		// FIXME Ugly hack***
+		Client.reset ();
 		
 		DbConnection con = DbConnection.GetDb();
 

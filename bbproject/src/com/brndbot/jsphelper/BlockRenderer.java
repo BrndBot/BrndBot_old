@@ -2,29 +2,38 @@ package com.brndbot.jsphelper;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jdom2.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.client.BlockField;
-import com.brndbot.client.BlockStyle;
+import com.brndbot.client.style.BlockStyle;
 import com.brndbot.client.ButtonField;
 import com.brndbot.client.ImageField;
+import com.brndbot.client.style.ImageStyle;
 import com.brndbot.client.LogoField;
+import com.brndbot.client.style.LogoStyle;
 //import com.brndbot.client.Model;
 import com.brndbot.client.ModelField;
 import com.brndbot.client.Promotion;
 import com.brndbot.client.SVGField;
-import com.brndbot.client.StyleSet;
+import com.brndbot.client.style.SVGStyle;
+import com.brndbot.client.style.StyleSet;
 import com.brndbot.client.TextField;
-import com.brndbot.client.Style;
-import com.brndbot.client.TextStyle;
+import com.brndbot.client.style.Style;
+import com.brndbot.client.style.TextStyle;
+import com.brndbot.client.style.TextStyle.Alignment;
 //import com.brndbot.client.ModelField.StyleType;
+import com.brndbot.db.Palette;
 
 /**
  * A BlockRenderer takes the information in a Promotion and generates a
  * div which will display it. Each field type has its own renderer.
+ * 
+ * We use explicit CSS rather than class attributes, since we want the
+ * promotion to be exportable to another environment.
  */
 public class BlockRenderer extends Renderer {
 
@@ -33,6 +42,7 @@ public class BlockRenderer extends Renderer {
 	private String promoName;
 	private Promotion promotion;
 	private StyleSet styleSet;
+	private List<Palette> palettes;
 
 	public BlockRenderer(Promotion promo) {
 		super ();
@@ -43,6 +53,10 @@ public class BlockRenderer extends Renderer {
 			logger.error ("styleSet is null");
 		else if (styleSet.getStyles() == null)
 			logger.error ("styleSet has no style");
+	}
+	
+	public void setPaletteArray (List<Palette> pa) {
+		palettes = pa;
 	}
 	
 	public String render () {
@@ -56,24 +70,28 @@ public class BlockRenderer extends Renderer {
 				Element div = new Element("div");
 				div.setAttribute ("id", promoName + "-" + field.getName ());
 				Style styl = stylIter.next();
+				CSSBuilder cssBuilder = new CSSBuilder ();
+				calcPositionCSS(field, styl, cssBuilder);
+				cssBuilder.setWidth (styl.getWidth());
+				cssBuilder.setHeight (styl.getHeight());
 				switch (field.getStyleType ()) {
 				case TEXT:
-					renderText((TextField)field, div, styl);
+					renderText((TextField)field, div, styl, cssBuilder);
 					break;
 				case IMAGE:
-					renderImage((ImageField)field, div, styl);
+					renderImage((ImageField)field, div, styl, cssBuilder);
 					break;
 				case LOGO:
-					renderLogo((LogoField)field, div, styl);
+					renderLogo((LogoField)field, div, styl, cssBuilder);
 					break;
 				case SVG:
-					renderSVG((SVGField)field, div, styl);
+					renderSVG((SVGField)field, div, styl, cssBuilder);
 					break;
 				case BLOCK:
-					renderBlock((BlockField) field, div, styl);
+					renderBlock((BlockField) field, div, styl, cssBuilder);
 					break;
 				case BUTTON:
-					renderButton((ButtonField) field, div, styl);
+					renderButton((ButtonField) field, div, styl, cssBuilder);
 					break;
 				}
 			}
@@ -95,12 +113,12 @@ public class BlockRenderer extends Renderer {
 	 *  
 	 *  FOR NOW ... don't worry about where it goes or how it looks. Just render it.
 	 */
-	private void renderText (TextField field, Element div, Style styl) throws IOException {
+	private void renderText (TextField field, Element div, Style styl, CSSBuilder cssBuilder) 
+			throws IOException {
 		logger.debug ("renderText");
 		TextStyle tStyle = (TextStyle) styl;
 		if (tStyle == null)
-			logger.error ("Null style!");
-		CSSBuilder cssBuilder = new CSSBuilder ();
+			logger.error ("Null text style");
 		// Set some fixed values for the moment FIXME
 		cssBuilder.setFont ("serif");
 		cssBuilder.setPointSize(tStyle.getPointSize());
@@ -108,55 +126,91 @@ public class BlockRenderer extends Renderer {
 			cssBuilder.setBold();
 		if (tStyle.isItalic())
 			cssBuilder.setItalic();
+		String color = tStyle.getTextColor();
+		if (color != null)
+			cssBuilder.setColor (color);
+		Alignment align = tStyle.getAlignment();
+		if (align != null)
+			cssBuilder.setTextAlign(align);
 		logger.debug ("Constructed CSS: {}", cssBuilder.toString());
-		div.setAttribute ("style", cssBuilder.toString ());
 		div.setText (field.getText());
 		logger.debug ("Completed div for text");
+		div.setAttribute ("style", cssBuilder.toString ());
 		outputter.output (div, writer);
 	}
 	
-	private void renderImage (ImageField field, Element div, Style styl) throws IOException {
+	private void renderImage (ImageField field, Element div, Style styl, CSSBuilder cssBuilder) 
+			throws IOException {
 		Element img = new Element("img");
+		CSSBuilder imgCSSBuilder = new CSSBuilder();
+		imgCSSBuilder.setOpacity (styl.getOpacity());
+		imgCSSBuilder.limitScaling();
+		img.setAttribute ("style", imgCSSBuilder.toString());
+//		ImageStyle imgStyle = (ImageStyle) styl;
 		img.setAttribute ("src", field.getImagePath());
 		div.addContent(img);
+		div.setAttribute ("style", cssBuilder.toString ());
 		outputter.output (div, writer);
 	}
 	
-	private void renderLogo (LogoField field, Element div, Style styl) throws IOException {
-		// TODO stub
+	private void renderLogo (LogoField field, Element div, Style styl, CSSBuilder cssBuilder) 
+			throws IOException {
+		LogoStyle logoStyle = (LogoStyle) styl;
+		if (logoStyle == null)
+			logger.error ("Null logo style");
+		// TODO more stuff
+		div.setAttribute ("style", cssBuilder.toString ());
 		outputter.output (div, writer);
 	}
 	
-	private void renderSVG (SVGField field, Element div, Style styl) throws IOException {
+	private void renderSVG (SVGField field, Element div, Style styl, CSSBuilder cssBuilder) 
+			throws IOException {
+		SVGStyle svgStyle = (SVGStyle) styl;
+		if (svgStyle == null)
+			logger.error ("Null SVG style");
+		div.addContent (field.getSVG());
+		div.setAttribute ("style", cssBuilder.toString ());
 		outputter.output (div, writer);
 	}
 	
-	private void renderBlock (BlockField field, Element div, Style styl) throws IOException {
-		// TODO stub
-		// A block is effectively a div with specified dimensions, a background color,
-		// and a Z-index which places it behind other elements.
+	private void renderBlock (BlockField field, Element div, Style styl, CSSBuilder cssBuilder) 
+			throws IOException {
+		// A block is effectively a div with specified dimensions and a background color.
 		BlockStyle bStyle = (BlockStyle) styl;
-		Element blockDiv = new Element ("div");
-		CSSBuilder cssBuilder = new CSSBuilder ();
-		cssBuilder.setColor (field.getColor());
-		cssBuilder.setZIndex(-1);		// put it behind non-blocks
+		int paletteSel = bStyle.getPaletteSelection ();
+		String color = null;
+		if (paletteSel < 0) {
+			color = bStyle.getColor();
+		}
+		else {
+			color = paletteColor (paletteSel);
+		}
+		if (color != null)
+			cssBuilder.setBackgroundColor (color);
+		div.setAttribute ("style", cssBuilder.toString ());
 		outputter.output (div, writer);
 	}
 
-	private void renderButton (ButtonField field, Element div, Style styl) throws IOException {
+	private void renderButton (ButtonField field, Element div, Style styl, CSSBuilder cssBuilder) 
+			throws IOException {
 		// TODO stub
+		div.setAttribute ("style", cssBuilder.toString ());
+		Element btn = new Element ("button");
+		btn.setAttribute ("type", "submit");
+		div.addContent (btn);
 		outputter.output (div, writer);
 	}
 	
 	/** Create the CSS needed to position the element. */
-	private void calcPositionCSS (ModelField field, CSSBuilder cssBuilder) {
-		ModelField.AnchorType anchorType = field.getAnchorType ();
-		if (anchorType == null) {
+	private void calcPositionCSS (ModelField field, Style styl, CSSBuilder cssBuilder) {
+		Style.Anchor anchor = styl.getAnchor ();
+		if (anchor == null) {
 			logger.warn ("No anchor type found");
+			return;
 		}
-		int x = field.getXOffset();
-		int y = field.getYOffset();
-		switch (anchorType) {
+		int x = styl.getOffsetX();
+		int y = styl.getOffsetY();
+		switch (anchor) {
 		case TOP_LEFT:
 			cssBuilder.setTopLeftAnchor (x, y);
 			break;
@@ -171,5 +225,14 @@ public class BlockRenderer extends Renderer {
 			break;
 		}
 	}
-		
+	
+	/* Get a palette color from the style selection. May return null. */
+	private String paletteColor (int pidx) {
+		if (pidx > 0 && palettes != null && pidx <= palettes.size()) {
+			// We have to convert 1-based to 0-based here.
+			return palettes.get(pidx - 1).getColor();
+		}
+		return null;
+	}
+	
 }

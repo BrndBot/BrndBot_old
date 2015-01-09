@@ -9,11 +9,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//import com.brndbot.client.BlockField;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.ImageField;
 import com.brndbot.client.Model;
 import com.brndbot.client.ModelCollection;
-import com.brndbot.client.ModelField.StyleType;
+import com.brndbot.client.style.Style.StyleType;
 import com.brndbot.client.Promotion;
 import com.brndbot.client.TextField;
 
@@ -76,6 +77,7 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 				descField.setText ("Knute Kenneth Rockne (March 4, 1888 – March 31, 1931) was an American football player and coach, both at the University of Notre Dame.");
 				ImageField imgField = (ImageField) coach1.getNamedField ("Picture");
 				imgField.setImagePath("images/Knute_Rockne.jpg");
+				//BlockField blkField = (BlockField) coach1.getNamedField ("Block");
 				pmap.put (coachName, coach1);
 				coachName = "VinceLombardi";
 				Promotion coach2 =
@@ -112,11 +114,13 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 			}
 		} catch (Exception e) {
 			logger.error ("Error creating prototypes: {}", e.getClass().getName());
+			e.printStackTrace ();
 		}
 		promotionPrototypes.put (modelName, pmap);
 		return pmap;
 	}
 
+	
 	/* Hard-code some models */
 	private void initModelCollection () {
 		mCollection = new ModelCollection ();
@@ -137,6 +141,7 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 		model2.addField ("Name", StyleType.TEXT);
 		model2.addField ("Description", StyleType.TEXT);
 		model2.addField ("Picture", StyleType.IMAGE);
+		model2.addField ("Block", StyleType.BLOCK);
 		mCollection.addModel(model2);
 
 		Model model3 = new Model("Athlete Spotlight", "Athlete Spotlight");

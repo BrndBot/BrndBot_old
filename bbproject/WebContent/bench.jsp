@@ -285,31 +285,30 @@
 
 			<div class="rounded benchHeader">
 
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
+			<c:choose>
+			  <c:when test="${tmp_channel == channel_email}">
 				<div class="emailBenchHeader">
 					<span style="padding-left:1.5rem">
 						<img src="images/bench/emailIcon.png" alt="" />
 					</span>
 					&nbsp;Email Message Builder
 				</div>
-  </c:when>
-  <c:when test="${tmp_channel == channel_facebook}">
+			  </c:when>
+			  <c:when test="${tmp_channel == channel_facebook}">
 				<div class="emailBenchHeader">
 					<span style="padding-left:1.5rem">
 						<img src="images/bench/emailIcon.png" alt="" />
 					</span>
 					&nbsp;Facebook Message Builder
 				</div>
-  </c:when>
-</c:choose>
+			  </c:when>
+			</c:choose>
+			  <div style="position:relative">
  		<%
 			// Options anticipated by the templates.  The templates are separate JSPs and expect thse variables
 			//  to be instantiated.  So you'll see Eclipse think the templates have errors, but that's because
 			//  the variables are defined here, in the main JSP.
 
-			// AARGH. The Java logic is not only embedded in the JSP, but split across
-			// multiple JSPs!! MUST replace with a helper class!!
 			boolean templateVisible = true;
 			boolean isPreview = true;
 			// Must have the palette array, too.  Retrieves the palette set by the user when signed-up.
@@ -366,40 +365,38 @@
 	    	//  of the editor.  Currently, each slow may contain all types of data/templates, but it doesn't 
 	    	//  have to be that way. 
 
-			// promo.jsp is ALSO totally client-dependent, so throw it out.
-			// Is there ANY useful code in this hellhole??
 		%>
-<c:set var="templateEnum" value="1" scope="page"/> 
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/promo.jsp" %>
-  </c:when>
-  <c:when test="${tmp_channel == channel_facebook}">
-			<%@include file="templates/facebook/promo.jsp" %>
-  </c:when>
-</c:choose>
+			<c:set var="templateEnum" value="1" scope="page"/> 
+			  <c:choose>
+				<c:when test="${tmp_channel == channel_email}">
+					<%@include file="templates/email/promo.jsp" %>
+				</c:when>
+				<c:when test="${tmp_channel == channel_facebook}">
+					<%@include file="templates/facebook/promo.jsp" %>
+				</c:when>
+			  </c:choose>
 
-		<div id="finishedImage">
+			  <div id="finishedImage">
 
-<c:set var="templateEnum" value="2" scope="page"/> 
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/promo.jsp" %>
-  </c:when>
-  <c:when test="${tmp_channel == channel_facebook}">
-			<%@include file="templates/facebook/promo.jsp" %>
-  </c:when>
-</c:choose>
+				<c:set var="templateEnum" value="2" scope="page"/> 
+				  <c:choose>
+					<c:when test="${tmp_channel == channel_email}">
+						<%@include file="templates/email/promo.jsp" %>
+					</c:when>
+					<c:when test="${tmp_channel == channel_facebook}">
+						<%@include file="templates/facebook/promo.jsp" %>
+					</c:when>
+				  </c:choose>
 
-<c:set var="templateEnum" value="3" scope="page"/> 
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/promo.jsp" %>
-  </c:when>
-  <c:when test="${tmp_channel == channel_facebook}">
-			<%@include file="templates/facebook/promo.jsp" %>
-  </c:when>
-</c:choose>
+				  <c:set var="templateEnum" value="3" scope="page"/> 
+				  <c:choose>
+					<c:when test="${tmp_channel == channel_email}">
+						<%@include file="templates/email/promo.jsp" %>
+					</c:when>
+					<c:when test="${tmp_channel == channel_facebook}">
+						<%@include file="templates/facebook/promo.jsp" %>
+					</c:when>
+				  </c:choose>
 
 <%  // Currently, only email has more than 3 slots in the editor.
 %>

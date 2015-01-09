@@ -15,7 +15,7 @@ import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Model;
 import com.brndbot.client.Promotion;
-import com.brndbot.client.StyleSet;
+import com.brndbot.client.style.StyleSet;
 import com.brndbot.client.parser.StyleSetParser;
 
 import org.slf4j.Logger;
@@ -85,6 +85,11 @@ public class Client implements Serializable {
 		}
 		
 		// TODO save it in the session and get it back from there
+	}
+	
+	/** TODO a worse hack. Call this on logout/login to clear the session. */
+	public static void reset () {
+		client = null;
 	}
 	
 	/** Constructor. This creates an instance of the ClientInterface implementation

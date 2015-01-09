@@ -82,8 +82,6 @@ public class BenchHelper {
 				logger.error ("No client interface!");
 			}
 			//Model model = ci.getModels ().getModelByName (modelName);
-			logger.debug ("Model name = {}", modelName);
-			logger.debug ("promoProto = {}", promoProto);
 			Map<String, Promotion> prototypes = ci.getPromotionPrototypes(modelName);
 			if (prototypes == null) {
 				logger.error ("No prototypes!");
@@ -95,6 +93,7 @@ public class BenchHelper {
 						modelName);
 			}
 			BlockRenderer renderer = new BlockRenderer (prototype);
+			renderer.setPaletteArray(getPaletteArray());
 			return renderer.render();
 		} catch (Exception e) {
 			e.printStackTrace();
