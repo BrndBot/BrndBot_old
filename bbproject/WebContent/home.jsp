@@ -65,7 +65,7 @@ for processing in the editor (bench).
     <script type="text/javascript" src="js/sidebar.js"></script>
 	<script type="text/javascript" src="js/session.js"></script>
     <script type="text/javascript" src="js/home.js"></script>
-	<script type="text/javascript" src="js/content.js"></script>
+	<script type="text/javascript" src="js/homecontent.js"></script>
 
 </head>
 <body>

@@ -47,6 +47,7 @@ public class BenchHelper {
 	private String promoProto;		// promotion prototype name
 	private ArrayList<Palette> paletteArray;
 	private ClientInterface clientInterface;
+	private Promotion activePromotion;
 
 	public BenchHelper () {
 		con = DbConnection.GetDb();	
@@ -68,9 +69,13 @@ public class BenchHelper {
 		return renderer.getFragment ();
 	}
 	
-	/** Call this to clone a promotion prototype into a promotion
+	/** Call this to get a promotion prototype
 	 *  and return its HTML. Uses previously set values for modelName
 	 *  and promoProto.
+	 *  
+	 *  Currently it isn't cloning it to a promotion. It probably has
+	 *  to, since we want to edit the promotion and not the prototype.
+	 *  
 	 */
 	public String insertPromotion (Client client) {
 		try {
@@ -81,7 +86,6 @@ public class BenchHelper {
 			if (ci == null) {
 				logger.error ("No client interface!");
 			}
-			//Model model = ci.getModels ().getModelByName (modelName);
 			Map<String, Promotion> prototypes = ci.getPromotionPrototypes(modelName);
 			if (prototypes == null) {
 				logger.error ("No prototypes!");
@@ -92,7 +96,9 @@ public class BenchHelper {
 						promoProto,
 						modelName);
 			}
-			BlockRenderer renderer = new BlockRenderer (prototype);
+			// Clone a promotion from the prototype.
+			activePromotion = new Promotion (prototype);
+			BlockRenderer renderer = new BlockRenderer (activePromotion);
 			renderer.setPaletteArray(getPaletteArray());
 			return renderer.render();
 		} catch (Exception e) {
@@ -104,6 +110,7 @@ public class BenchHelper {
 			return "";
 		}
 	}
+
 	
 	/** We have to set the session with a scriptlet, not
 	 *  setProperty */
@@ -187,20 +194,7 @@ public class BenchHelper {
 		return paletteArray;
 	}
 	
-	/** Create a starting Block for the promotion. */
-//	public Block getStartingBlock () {
-//		// TODO largely fake
-//		return new Block (chEnum,
-//				"DummyBlock",
-//				databaseId,
-//				"dummyName",
-//				"dummyFullName",
-//				"dummyStartingDate",
-//				"dummyRef",
-//				"dummyDesc",
-//				"dummyShortDesc"
-//				);
-//	}
+
 	
 	/** This seeks out the appropriate ClientInterface for the user.
 	 *  TODO make it real, getting the class name from the database.

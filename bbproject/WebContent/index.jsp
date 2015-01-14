@@ -1,9 +1,15 @@
 <%@ page import="com.brndbot.system.SessionUtils" %>
 <%@ page import="com.brndbot.system.SystemProp" %>
 <%@ page import="com.brndbot.system.LoginCookie" %>
+<%@ page import="org.slf4j.Logger" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
 
 <!DOCTYPE html>
 <html class="html" lang="en-US">
+<%
+	final Logger logger = LoggerFactory.getLogger(this.getClass());
+%>
+
  <head>
 
   <script type="text/javascript">
@@ -27,10 +33,10 @@
 
 <script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
 <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-<!-- 
+
 <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
 <script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
--->
+
 <script type="text/javascript" src="js/kendo.all.min.js"></script>
 
   <script type="text/javascript">
@@ -43,7 +49,7 @@ var __adobewebfontsappname__ = "muse";
 </script>
 
 <%
-	System.out.println("\n\n------------Entering index.jsp The True Homepage-----------------\n");
+	logger.debug("Entering index.jsp ");
 
 	// Log out the user
 	session.removeAttribute(SessionUtils.USER_ID); 
@@ -261,26 +267,65 @@ var __adobewebfontsappname__ = "muse";
   <script src="scripts/webpro.js?221070874" type="text/javascript"></script>
   <!-- Other scripts -->
   <script type="text/javascript">
-   $(document).ready(function() { try {
-(function(){var a={},b=function(a){if(a.match(/^rgb/))return a=a.replace(/\s+/g,"").match(/([\d\,]+)/gi)[0].split(","),(parseInt(a[0])<<16)+(parseInt(a[1])<<8)+parseInt(a[2]);if(a.match(/^\#/))return parseInt(a.substr(1),16);return 0};(function(){$('link[type="text/css"]').each(function(){var b=($(this).attr("href")||"").match(/\/?css\/([\w\-]+\.css)\?(\d+)/);b&&b[1]&&b[2]&&(a[b[1]]=b[2])})})();(function(){$("body").append('<div class="version" style="display:none; width:1px; height:1px;"></div>');
-for(var c=$(".version"),d=0;d<Muse.assets.required.length;){var f=Muse.assets.required[d],g=f.match(/([\w\-\.]+)\.(\w+)$/),k=g&&g[1]?g[1]:null,g=g&&g[2]?g[2]:null;switch(g.toLowerCase()){case "css":k=k.replace(/\W/gi,"_").replace(/^([^a-z])/gi,"_$1");c.addClass(k);var g=b(c.css("color")),h=b(c.css("background-color"));g!=0||h!=0?(Muse.assets.required.splice(d,1),"undefined"!=typeof a[f]&&(g!=a[f]>>>24||h!=(a[f]&16777215))&&Muse.assets.outOfDate.push(f)):d++;c.removeClass(k);break;case "js":k.match(/^jquery-[\d\.]+/gi)&&
-typeof $!="undefined"?Muse.assets.required.splice(d,1):d++;break;default:throw Error("Unsupported file type: "+g);}}c.remove();if(Muse.assets.outOfDate.length||Muse.assets.required.length)c="Some files on the server may be missing or incorrect. Clear browser cache and try again. If the problem persists please contact website author.",(d=location&&location.search&&location.search.match&&location.search.match(/muse_debug/gi))&&Muse.assets.outOfDate.length&&(c+="\nOut of date: "+Muse.assets.outOfDate.join(",")),d&&Muse.assets.required.length&&(c+="\nMissing: "+Muse.assets.required.join(",")),alert(c)})()})();/* body */
-Muse.Utils.transformMarkupToFixBrowserProblemsPreInit();/* body */
-Muse.Utils.prepHyperlinks(true);/* body */
-Muse.Utils.resizeHeight()/* resize height */
-Muse.Utils.initWidget('#widgetu176', function(elem) { new WebPro.Widget.Form(elem, {validationEvent:'submit',errorStateSensitivity:'high',fieldWrapperClass:'fld-grp',formSubmittedClass:'frm-sub-st',formErrorClass:'frm-subm-err-st',formDeliveredClass:'frm-subm-ok-st',notEmptyClass:'non-empty-st',focusClass:'focus-st',invalidClass:'fld-err-st',requiredClass:'fld-err-st',ajaxSubmit:true}); });/* #widgetu176 */
-Muse.Utils.fullPage('#page');/* 100% height page */
-Muse.Utils.showWidgetsWhenReady();/* body */
-Muse.Utils.transformMarkupToFixBrowserProblems();/* body */
-} catch(e) { if (e && 'function' == typeof e.notify) e.notify(); else Muse.Assert.fail('Error calling selector function:' + e); }
+   $(document).ready(function() { 
+	try {
+	(function(){
+		var a={},b=function(a){
+			if(a.match(/^rgb/))
+				return a=a.replace(/\s+/g,"").match(/([\d\,]+)/gi)[0].split(","),(parseInt(a[0])<<16)+(parseInt(a[1])<<8)+parseInt(a[2]);
+			if(a.match(/^\#/))
+				return parseInt(a.substr(1),16);return 0
+		};
+		(function(){
+			$('link[type="text/css"]').each(function(){
+				var b=($(this).attr("href")||"").match(/\/?css\/([\w\-]+\.css)\?(\d+)/);
+				b&&b[1]&&b[2]&&(a[b[1]]=b[2])})})();
+		(function(){
+			$("body").append('<div class="version" style="display:none; width:1px; height:1px;"></div>');
+		// WHAT IN THE LOWEST HELL OF DANTE'S IS THIS?????!!!!!!!!!
+		for(var c=$(".version"),d=0;d<Muse.assets.required.length;){
+			var f=Muse.assets.required[d],g=f.match(/([\w\-\.]+)\.(\w+)$/),k=g&&g[1]?g[1]:null,g=g&&g[2]?g[2]:null;
+			switch(g.toLowerCase()){
+				case "css":
+					k=k.replace(/\W/gi,"_").replace(/^([^a-z])/gi,"_$1");
+					c.addClass(k);
+					var g=b(c.css("color")),h=b(c.css("background-color"));
+					g!=0||h!=0?(Muse.assets.required.splice(d,1),"undefined"!=typeof a[f]&&(g!=a[f]>>>24||h!=(a[f]&16777215))&&Muse.assets.outOfDate.push(f)):d++;
+					c.removeClass(k);
+					break;
+				case "js":
+					k.match(/^jquery-[\d\.]+/gi)&&
+						typeof $!="undefined"?Muse.assets.required.splice(d,1):d++;
+						break;
+				default:
+					throw Error("Unsupported file type: "+g);
+			}
+		}
+		c.remove();
+		if(Muse.assets.outOfDate.length||Muse.assets.required.length)
+			c="Some files on the server may be missing or incorrect. Clear browser cache and try again. If the problem persists please contact website author.",(d=location&&location.search&&location.search.match&&location.search.match(/muse_debug/gi))&&Muse.assets.outOfDate.length&&(c+="\nOut of date: "+Muse.assets.outOfDate.join(",")),d&&Muse.assets.required.length&&(c+="\nMissing: "+Muse.assets.required.join(",")),alert(c)})()})();		/* body */
+		Muse.Utils.transformMarkupToFixBrowserProblemsPreInit();/* body */
+		Muse.Utils.prepHyperlinks(true);/* body */
+		Muse.Utils.resizeHeight()/* resize height */
+		Muse.Utils.initWidget('#widgetu176', function(elem) { new WebPro.Widget.Form(elem, {validationEvent:'submit',errorStateSensitivity:'high',fieldWrapperClass:'fld-grp',formSubmittedClass:'frm-sub-st',formErrorClass:'frm-subm-err-st',formDeliveredClass:'frm-subm-ok-st',notEmptyClass:'non-empty-st',focusClass:'focus-st',invalidClass:'fld-err-st',requiredClass:'fld-err-st',ajaxSubmit:true}); });/* #widgetu176 */
+		Muse.Utils.fullPage('#page');/* 100% height page */
+		Muse.Utils.showWidgetsWhenReady();/* body */
+		Muse.Utils.transformMarkupToFixBrowserProblems();/* body */
+	} catch(e) { 
+		if (e && 'function' == typeof e.notify) 
+			e.notify(); 
+		else 
+			Muse.Assert.fail('Error calling selector function:' + e); 
+	}
 
+	$("#forceLoginStyle").attr();	// TEST***** if JQuery is available
 	$("#signInGo").kendoButton({
 		click: signInGoClick
 	});
 	
 });
 
-	function signInGoClick()
+	function signInGoClick(arg)
 	{
 		var form_val = 'loginForm';
 		var post_to = 'LoginServlet';

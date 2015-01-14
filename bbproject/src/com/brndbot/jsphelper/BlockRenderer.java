@@ -119,6 +119,7 @@ public class BlockRenderer extends Renderer {
 		TextStyle tStyle = (TextStyle) styl;
 		if (tStyle == null)
 			logger.error ("Null text style");
+		div.setAttribute("class", "prmf_text");
 		// Set some fixed values for the moment FIXME
 		cssBuilder.setFont ("serif");
 		cssBuilder.setPointSize(tStyle.getPointSize());
@@ -141,6 +142,7 @@ public class BlockRenderer extends Renderer {
 	
 	private void renderImage (ImageField field, Element div, Style styl, CSSBuilder cssBuilder) 
 			throws IOException {
+		div.setAttribute("class", "prmf_image");
 		Element img = new Element("img");
 		CSSBuilder imgCSSBuilder = new CSSBuilder();
 		imgCSSBuilder.setOpacity (styl.getOpacity());
@@ -155,6 +157,7 @@ public class BlockRenderer extends Renderer {
 	
 	private void renderLogo (LogoField field, Element div, Style styl, CSSBuilder cssBuilder) 
 			throws IOException {
+		div.setAttribute("class", "prmf_logo");
 		LogoStyle logoStyle = (LogoStyle) styl;
 		if (logoStyle == null)
 			logger.error ("Null logo style");
@@ -165,6 +168,7 @@ public class BlockRenderer extends Renderer {
 	
 	private void renderSVG (SVGField field, Element div, Style styl, CSSBuilder cssBuilder) 
 			throws IOException {
+		div.setAttribute("class", "prmf_svg");
 		SVGStyle svgStyle = (SVGStyle) styl;
 		if (svgStyle == null)
 			logger.error ("Null SVG style");
@@ -176,6 +180,7 @@ public class BlockRenderer extends Renderer {
 	private void renderBlock (BlockField field, Element div, Style styl, CSSBuilder cssBuilder) 
 			throws IOException {
 		// A block is effectively a div with specified dimensions and a background color.
+		div.setAttribute("class", "prmf_block");
 		BlockStyle bStyle = (BlockStyle) styl;
 		int paletteSel = bStyle.getPaletteSelection ();
 		String color = null;
@@ -194,6 +199,7 @@ public class BlockRenderer extends Renderer {
 	private void renderButton (ButtonField field, Element div, Style styl, CSSBuilder cssBuilder) 
 			throws IOException {
 		// TODO stub
+		div.setAttribute("class", "prmf_button");
 		div.setAttribute ("style", cssBuilder.toString ());
 		Element btn = new Element ("button");
 		btn.setAttribute ("type", "submit");

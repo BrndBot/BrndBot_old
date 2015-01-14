@@ -16,70 +16,7 @@ function initTheBench()
 {
 	// Create enough room for all the field arrays and define the map that correlates data fields 
 	//  to editor HTML fields by ID.
-	initFieldMap();
-
-	// Kendo data source used to get list data for classes
-	var classDataSource  = new kendo.data.DataSource({
-		transport: 
-		{
-			read:
-			{
-				url: "DashboardServlet?type=" + CLASS_OBJ,
-				dataType: "json"
-			}
-		}
-	});
-
-	// Initialize the list widget in the popup for classes
-	$("#" + idPrefix[CLASS_OBJ - 1] + "Here").kendoListView({
-		dataSource: classDataSource,
-	    selectable: true,
-        template: kendo.template($("#" + idPrefix[CLASS_OBJ - 1] + "Template").html()),
-	    change: selectClassListItem,
-	    dataBound: onClassListSuccess
-    });
-
-	// Kendo data source used to get list data for workshops
-	var workshopDataSource  = new kendo.data.DataSource({
-		transport: 
-		{
-			read:
-			{
-				url: "DashboardServlet?type=" + WORKSHOP_OBJ,
-				dataType: "json"
-			}
-		}
-	});
-
-	// Initialize the list widget in the popup for workshops
-	$("#" + idPrefix[WORKSHOP_OBJ - 1] + "Here").kendoListView({
-		dataSource: workshopDataSource,
-	    selectable: true,
-        template: kendo.template($("#" + idPrefix[WORKSHOP_OBJ - 1] + "Template").html()),
-	    change: selectWorkshopListItem,
-	    dataBound: onWorkshopListSuccess
-    });
-
-	// Kendo data source used to get list data for teachers
-	var staffDataSource  = new kendo.data.DataSource({
-		transport: 
-		{
-			read:
-			{
-				url: "DashboardServlet?type=" + STAFF_OBJ,
-				dataType: "json"
-			}
-		}
-	});
-
-	// Initialize the list widget in the popup for teachers/staff
-	$("#" + idPrefix[STAFF_OBJ - 1] + "Here").kendoListView({
-		dataSource: staffDataSource,
-	    selectable: true,
-        template: kendo.template($("#" + idPrefix[STAFF_OBJ - 1] + "Template").html()),
-	    change: selectStaffListItem,
-	    dataBound: onStaffListSuccess
-    });
+	// initFieldMap();
 
 // left side tab control
 	$("#tabstrip").kendoTabStrip({
@@ -107,7 +44,7 @@ function initTheBench()
 		{
 			read:
 			{
-				url: "GetImagesServlet?" + SESSION_IMAGE_ID_KEY + "=" + IMAGE_TYPE_USER,
+				url: "GetImagesServlet?brndbotimageid=0",	// 0 is placeholder FIXME
 				dataType: "json"
 			}
 		},
@@ -146,17 +83,17 @@ function initTheBench()
 			var image_type = -1;
 			if (str.indexOf("image") != -1)
 			{
-				image_type = IMAGE_TYPE_USER;
+				image_type = 0;		// placeholder FIXME
 				CURRENT_GALLERY_TAB = 0;
 			}
 			else if (str.indexOf("teacher") != -1)
 			{
-				image_type = IMAGE_TYPE_TEACHER;
+				image_type = 0;
 				CURRENT_GALLERY_TAB = 1;
 			}
 			else if (str.indexOf("logo") != -1)
 			{
-				image_type = IMAGE_TYPE_LOGO;
+				image_type = 0;
 				CURRENT_GALLERY_TAB = 2;
 			}
 			session_mgr.setImageID(image_type);
@@ -170,7 +107,7 @@ function initTheBench()
 	    $("#files").kendoUpload({
 	        async: 
 	        {
-	            saveUrl: "SaveImageServlet?" + SESSION_IMAGE_ID_KEY + "=" + SESSION_IMAGE_ID,
+	            saveUrl: "SaveImageServlet?brndbotimageid=0",
 	//            saveUrl: "http://pictaculous.com/api/1.0/",
 //	            removeUrl: "RemoveLogoServlet",
 	            autoUpload: true
@@ -254,7 +191,7 @@ function initTheBench()
 		{
 			read:
 			{
-				url: "GetImagesServlet?" + SESSION_IMAGE_ID_KEY + "=" +  IMAGE_TYPE_TEACHER,
+				url: "GetImagesServlet?brndbotimageid=0",
 				dataType: "json"
 			}
 		},
@@ -539,26 +476,6 @@ function initTheBench()
 
 				// lastSelectedBlock is the block that is being clicked on
 				var type = getBlockType(lastSelectedBlock);
-				if (type > 0)
-				{
-					if (type == CLASS_OBJ)
-						$('#toClassID').show();
-					if (type == NON_CLASS_OBJ)
-						$('#toNonClassID').show();
-					if (type == WORKSHOP_OBJ)
-						$('#toWorkshopID').show();
-					if (type == NON_WORKSHOP_OBJ)
-						$('#toNonWorkshopID').show();
-
-					// Fill in the data in the editor on the right-hand side
-					var fields = masterFields[type - 1];
-					for (var x = 0; x < fields.length; x++)
-					{
-						var field = fields[x];
-						var html = $(field.getDisplayID(stackIdx)).html();
-						field.setEditValue(html, stackIdx);
-					}
-				}
 			}
 
 			// Put the highlight border on the template
@@ -638,7 +555,7 @@ function initTheBench()
 
 	    $.ajax({
 	        type: 'POST',
-	        url: 'SaveHTMLAsImageServlet?' + SESSION_IMAGE_ID_KEY + '=' + SESSION_FUSED_IMAGE_ID_KEY,
+	        url: 'SaveHTMLAsImageServlet?brndbotimageid=0',
 	        data: $('#htmlForm').serialize(), // serializes the form's elements.
 	        success: function(data)
 	        {

@@ -64,6 +64,10 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 		
 		logger.debug ("getPromotionPrototypes, modelName = {}", modelName);
 		Model m = mCollection.getModelByName (modelName);
+		if (m == null) {
+			logger.error ("Model {} not found", modelName);
+			return null;
+		}
 		Map<String,Promotion> pmap = new HashMap<>();
 		try {
 			if ("Coaches".equals (modelName)) {

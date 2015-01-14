@@ -180,7 +180,7 @@ function addFooterBlock(suppress_click, display_edit_type)
 	//  assign the results to a javascript variable and reference it globally.
 	var block = new Block(
 			EMAIL_CHANNEL,
-			FOOTER_OBJ,
+			null,
 			' Company Footer',
 			0,
 			'Yoga Sakti &nbsp;29 Bridge St, Salem, MA 01970 &nbsp;&nbsp;(978) 744-9642',
@@ -205,7 +205,7 @@ function addScheduleLink(suppress_click, display_edit_type)
 	var id = '#' + idPrefix[SCHEDULE_OBJ - 1] + 'Block-' + (blockStack.length + 1);
 	var block = new Block(
 			EMAIL_CHANNEL,
-			SCHEDULE_OBJ,
+			null,
 			' Upcoming Schedule',
 			0,
 			'Schedule for September and October',
@@ -227,7 +227,7 @@ function addSocialBlock(suppress_click, display_edit_type)
 {
 	var block = new Block(
 			EMAIL_CHANNEL,
-			SOCIAL_OBJ,
+			null,
 			' Social Buttons',
 			0,
 			'Join Us on Social for Exclusive Updates!',
@@ -251,7 +251,7 @@ function addGraphicBlock(suppress_click, display_edit_type)
 {
 	var block = new Block(
 			EMAIL_CHANNEL,
-			GRAPHIC_OBJ,
+			null,
 			' Image or Graphic',
 			0,
 			'name',
@@ -283,29 +283,6 @@ function initFieldMap()
 
 	// GRAPHIC BLOCK
 	var hdr_arr = new Array();
-	masterFields[GRAPHIC_OBJ - 1] = hdr_arr;
-
-	// CLASS BLOCK
-	var class_arr = new Array();
-	class_arr.push(new FieldMap('classHeader', 'classEditHeader', true, INPUT_TEXT_FLD));
-	class_arr.push(new FieldMap('className', 'classEditName', true, INPUT_TEXT_FLD));
-	class_arr.push(new FieldMap('classDescription', 'classEditDescription', true, TEXT_AREA_FLD));
-	class_arr.push(new FieldMap('classImgURL', 'classEditImgURL', true, IMAGE_FLD));
-	masterFields[CLASS_OBJ - 1] = class_arr;
-
-	// WORKSHOP BLOCK
-	var wrk_arr = new Array();
-	wrk_arr.push(new FieldMap('workshopHeader', 'workshopEditHeader', true, INPUT_TEXT_FLD));
-	wrk_arr.push(new FieldMap('workshopName', 'workshopEditName', true, INPUT_TEXT_FLD));
-	wrk_arr.push(new FieldMap('workshopDescription', 'workshopEditDescription', true, TEXT_AREA_FLD));
-	wrk_arr.push(new FieldMap('workshopImgURL', 'workshopEditImgURL', true, IMAGE_FLD));
-	masterFields[WORKSHOP_OBJ - 1] = wrk_arr;
-
-	// STAFF BLOCK
-	var st_arr = new Array();
-	st_arr.push(new FieldMap('staffName', 'staffEditName', true, INPUT_TEXT_FLD));
-	st_arr.push(new FieldMap('staffDescription', 'staffEditDescription', true, TEXT_AREA_FLD));
-	masterFields[STAFF_OBJ - 1] = st_arr;
 
 	// TEXT BLOCK
 	var arr = new Array();
@@ -324,18 +301,6 @@ function initFieldMap()
 	var soc_arr = new Array();
 	soc_arr.push(new FieldMap('socialName', 'socialEditName', true, INPUT_TEXT_FLD));
 	masterFields[SOCIAL_OBJ - 1] = soc_arr;
-
-	// NONCLASS BLOCK
-	var nonclass_arr = new Array();
-	nonclass_arr.push(new FieldMap('nonclassHeader', 'nonclassEditHeader', true, INPUT_TEXT_FLD));
-	nonclass_arr.push(new FieldMap('nonclassName', 'nonclassEditName', true, INPUT_TEXT_FLD));
-	masterFields[NON_CLASS_OBJ - 1] = nonclass_arr;
-
-	// NON WORKSHOP BLOCK
-	var nonwrk_arr = new Array();
-	nonwrk_arr.push(new FieldMap('nonworkshopHeader', 'nonworkshopEditHeader', true, INPUT_TEXT_FLD));
-	nonwrk_arr.push(new FieldMap('nonworkshopName', 'nonworkshopEditName', true, INPUT_TEXT_FLD));
-	masterFields[NON_WORKSHOP_OBJ - 1] = nonwrk_arr;
 
 	// FOOTER BLOCK
 	var foot_arr = new Array();

@@ -18,12 +18,18 @@
 <%@ page import="com.brndbot.db.Palette" %>
 <%@ page import="com.brndbot.db.User" %>
 <%@ page import="com.brndbot.db.UserLogo" %>
+<%@ page import="org.slf4j.Logger" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@ page import="java.util.ArrayList" %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<%
+	final Logger logger = LoggerFactory.getLogger(this.getClass());
+%>
 
 <head>
     <title>Brndbot Builder</title>
@@ -130,7 +136,7 @@
 					-->
 					<div class="editorDiv">
 						<div id="tabstrip2" class="rounded">
-							<ul>
+							<ul class="tabs">
 								<li class="k-state-active">
 									Content
 								</li>
@@ -145,14 +151,14 @@
 								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
 									<div id="workArea">
 
-		<c:choose>
-			<c:when test="${tmp_channel == channel_email}">
-				<%@include file="templates/email/content.jsp" %>
-			</c:when>
-			<c:when test="${tmp_channel == channel_facebook}">
-				<%@include file="templates/facebook/content.jsp" %>
-			</c:when>
-		</c:choose>
+									  <c:choose>
+										<c:when test="${tmp_channel == channel_email}">
+											<%@include file="templates/email/content.jsp" %>
+										</c:when>
+										<c:when test="${tmp_channel == channel_facebook}">
+											<%@include file="templates/facebook/content.jsp" %>
+										</c:when>
+									  </c:choose>
 
 									</div>
 								</div>
@@ -168,33 +174,33 @@
 							<div> <!-- Design tab -->
 								<div style="padding-top: 3rem;height: 32rem;">
 
-		<c:choose>
-			<c:when test="${tmp_channel == channel_email}">
-				<%@include file="templates/email/design.jsp" %>
-			</c:when>
-			<c:when test="${tmp_channel == channel_facebook}">
-				<%@include file="templates/facebook/design.jsp" %>
-			</c:when>
-		</c:choose>
+								  <c:choose>
+									<c:when test="${tmp_channel == channel_email}">
+										<%@include file="templates/email/design.jsp" %>
+									</c:when>
+									<c:when test="${tmp_channel == channel_facebook}">
+										<%@include file="templates/facebook/design.jsp" %>
+									</c:when>
+								  </c:choose>
 
 								</div>
 							</div>
 							<div> <!-- Layout tab -->
 								<div style="padding-top: 3rem;height: 32rem;">
 
-		<c:choose>
-			<c:when test="${tmp_channel == channel_email}">
-				<%@include file="templates/email/layout.jsp" %>
-			</c:when>
-			<c:when test="${tmp_channel == channel_facebook}">
-				<%@include file="templates/facebook/layout.jsp" %>
-			</c:when>
-		</c:choose>
+								  <c:choose>
+									<c:when test="${tmp_channel == channel_email}">
+										<%@include file="templates/email/layout.jsp" %>
+									</c:when>
+									<c:when test="${tmp_channel == channel_facebook}">
+										<%@include file="templates/facebook/layout.jsp" %>
+									</c:when>
+								  </c:choose>
 
 								</div>
 							</div>
-						</div>
-					</div>
+						</div>		<!-- tabstrip2 -->
+					</div>			<!-- editorDiv -->
 					<!-- Add new blocks menu.  This is another Kendo widget, so the structure is required to
 					     initialize the widget correctly.
 					 -->
@@ -210,7 +216,7 @@
 							     THE AVAILABLE MODELS
 							-->
 							<div class="linkText" style="padding-left:0.1rem;">
-<c:out escapeXml="false" value="${benchHelper.renderModelLinks}"/>
+								<c:out escapeXml="false" value="${benchHelper.renderModelLinks}"/>
 
 								<div id="newSocialLink" class="formSpacerLite addLink">
 									Social Buttons
@@ -223,8 +229,8 @@
 								</div>
 								<div id="newFooterLink" class="formSpacerLite addLink">
 									Footer
-							</div>
-							</div>
+								</div>
+							</div>		<!-- linkText -->
 						</div>
 						<div>
 							<div class="linkText" style="padding-left:0.1rem;">
@@ -303,7 +309,7 @@
 				</div>
 			  </c:when>
 			</c:choose>
-			  <div style="position:relative">
+			  <div style="position:relative;"><div style="position:absolute;top:36px;"><div style="position:relative;" id="promoview">
  		<%
 			// Options anticipated by the templates.  The templates are separate JSPs and expect thse variables
 			//  to be instantiated.  So you'll see Eclipse think the templates have errors, but that's because
@@ -328,7 +334,7 @@
 						int max_img_width)
 
 				chosenImg = UserLogo.getBoundImage("images/barre-1.jpg", 500, 500, true);
-				System.out.println("CHOSEN IMAGE: " + chosenImg);
+				logger.debug("chosenImg: {}", chosenImg);
 			}
 */
 			templateVisible = false;
@@ -367,16 +373,16 @@
 
 		%>
 			<c:set var="templateEnum" value="1" scope="page"/> 
-			  <c:choose>
+			<c:choose>
 				<c:when test="${tmp_channel == channel_email}">
 					<%@include file="templates/email/promo.jsp" %>
 				</c:when>
 				<c:when test="${tmp_channel == channel_facebook}">
 					<%@include file="templates/facebook/promo.jsp" %>
 				</c:when>
-			  </c:choose>
+			</c:choose>
 
-			  <div id="finishedImage">
+			<div id="finishedImage">
 
 				<c:set var="templateEnum" value="2" scope="page"/> 
 				  <c:choose>
@@ -398,35 +404,35 @@
 					</c:when>
 				  </c:choose>
 
-<%  // Currently, only email has more than 3 slots in the editor.
-%>
-<c:set var="templateEnum" value="4" scope="page"/> 
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/promo.jsp" %>
-  </c:when>
-</c:choose>
+					<%  // Currently, only email has more than 3 slots in the editor.
+					%>
+				  <c:set var="templateEnum" value="4" scope="page"/> 
+				  <c:choose>
+					<c:when test="${tmp_channel == channel_email}">
+						<%@include file="templates/email/promo.jsp" %>
+			  		</c:when>
+				  </c:choose>
 
 
-<c:set var="templateEnum" value="5" scope="page"/> 
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/promo.jsp" %>
-  </c:when>
-</c:choose>
+				  <c:set var="templateEnum" value="5" scope="page"/> 
+				  <c:choose>
+					<c:when test="${tmp_channel == channel_email}">
+						<%@include file="templates/email/promo.jsp" %>
+					</c:when>
+				  </c:choose>
 
-<c:set var="templateEnum" value="6" scope="page"/> 
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
-			<%@include file="templates/email/promo.jsp" %>
-  </c:when>
-</c:choose>
+				  <c:set var="templateEnum" value="6" scope="page"/> 
+				  <c:choose>
+					<c:when test="${tmp_channel == channel_email}">
+						<%@include file="templates/email/promo.jsp" %>
+					</c:when>
+				  </c:choose>
 
-<%  // end of if block for email editor-only promo.jsp inclusion
-%>
+					<%  // end of if block for email editor-only promo.jsp inclusion
+					%>
 			</div><!-- id="finishedImage">  -->
 
-			</div>
+			</div></div></div>	<!-- relative --> 
 			<div class="unit lastUnit">
 				&nbsp;
 			</div>
@@ -568,6 +574,7 @@
 
 	
 	</div> <!-- brndbotMain -->
+	<script type="text/javascript" src="js/benchcontent.js"></script>
 <script type="text/javascript">
 // This is the naiscent "style" implementation.  The design and implementation of the "style" (aka "layout variation")
 //  needs requirements before it can be done correctly.  At the time the implementation of this editor was halted,
@@ -584,6 +591,9 @@
 
 		// ensure the top of the page is shown
 		document.getElementById("brndbotMain").scrollIntoView();
+
+		// Set up the editor for the initial pane 
+		insertEditFields ($('#promoview'), $('#workArea'));
 	});
 </script>
 <%
