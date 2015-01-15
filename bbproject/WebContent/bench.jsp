@@ -149,18 +149,7 @@
 							</ul>
 							<div>
 								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
-									<div id="workArea">
-
-									  <c:choose>
-										<c:when test="${tmp_channel == channel_email}">
-											<%@include file="templates/email/content.jsp" %>
-										</c:when>
-										<c:when test="${tmp_channel == channel_facebook}">
-											<%@include file="templates/facebook/content.jsp" %>
-										</c:when>
-									  </c:choose>
-
-									</div>
+									<div id="workArea"><!--edit fields go here--></div>
 								</div>
 								<!--  These get hidden or shown depending on the button selections made.
 								      Actually, we won't use these at all, but leave one around
@@ -595,6 +584,21 @@
 		// Set up the editor for the initial pane 
 		insertEditFields ($('#promoview'), $('#workArea'));
 	});
+</script>
+
+<!-- Script for generating the data to populate the editor pane. 
+     Big, but apparently you can't put a Kendo template in a separate file. -->
+<script type="text/x-kendo-template" id="editFieldsTemplate">
+	<div>
+		# if (clazz == 'prmf_text') {   #
+                <div class="editTextArea" >
+                        <textarea data-linkedfield="#:fieldid#"
+							onfocus="updatePrototypeText(this)" rows="4" 
+							style="width:100%">#:content#
+						</textarea>
+                </div>
+		# } #
+	</div>
 </script>
 <%
 	// Necessary cleanup to avoid leakage
