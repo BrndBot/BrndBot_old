@@ -71,7 +71,7 @@ public class Client implements Serializable {
 			return client;
 		}
 		try {
-			client = new Client ("com.brndbot.dummyclient.DummyClientInterface");
+			client = new Client ("com.brndbot.client.dummy.DummyClientInterface");
 			client.organizationName = "LevelOne";		// TODO hackhackhack
 			client.brandIdentity = new BrandIdentity ("default");
 			client.loadStyleSets();

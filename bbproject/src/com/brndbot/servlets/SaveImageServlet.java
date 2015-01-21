@@ -32,6 +32,7 @@ import com.brndbot.db.UserLogo;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
+import com.brndbot.util.AppEnvironment;
 
 public class SaveImageServlet extends HttpServlet
 {
@@ -49,6 +50,15 @@ public class SaveImageServlet extends HttpServlet
 		doPost(request, response);
 	}
 
+	/**
+	 *  POST request to initiate an upload.
+	 *  
+	 *  Uses Javazoom components
+	 *  
+	 *  @see http://www.javazoom.net/jzservlets/uploadbean/documentation/api/javazoom/upload/UploadFile.html
+	 *  @see http://www.javazoom.net/jzservlets/uploadbean/documentation/api/javazoom/upload/MultipartFormDataRequest.html
+	 *  
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering new SaveImageServlet----------");
@@ -84,6 +94,7 @@ public class SaveImageServlet extends HttpServlet
 			{
 				logger.error("No IMAGE TYPE passed (type=" + type + "). Programming error.");
 				responseString = "Internal error: No image type passed";
+				response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 				return;
 			}
 			logger.debug("Image ID Key: " + type);
@@ -92,6 +103,7 @@ public class SaveImageServlet extends HttpServlet
 			{
 				//throw new RuntimeException("Unexpected image type: " + type);
 				responseString = "The image type (" + type + ") is not supported";
+				response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 				return;
 			}
 	
@@ -120,9 +132,10 @@ public class SaveImageServlet extends HttpServlet
 				}
 				if (image != null)
 				{
-					String assets = SystemProp.get(SystemProp.ASSETS);
-					return_name = Utils.Slashies(assets + "\\" + image.getImageName());
-					logger.debug("JSON RETURN NAME: " + return_name);
+					// Build the URL for the image
+					String urlBase = SystemProp.get(SystemProp.ASSETS);
+					return_name = Utils.Slashies(urlBase + "\\" + image.getImageName());
+					logger.debug("JSON return name: " + return_name);
 					int bounding_height = 0;
 					int bounding_width = 0;
 					int saved_img_id = 0;
@@ -189,6 +202,7 @@ public class SaveImageServlet extends HttpServlet
 				
 				responseString = json_obj.toString();
 				logger.debug("returning serialized json_obj");
+				response.setStatus(HttpServletResponse.SC_OK);
 			}
 			catch (JSONException e) 
 			{
@@ -201,7 +215,6 @@ public class SaveImageServlet extends HttpServlet
 				PrintWriter out = response.getWriter();
 				out.print(responseString);
 				out.flush();
-				response.setStatus(HttpServletResponse.SC_OK);
 			}
 		}
 	}

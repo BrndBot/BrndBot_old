@@ -42,10 +42,12 @@ public class GetImagesServlet extends HttpServlet
 
 	/** This gets a JSON array of references (of some kind) to images 
 	 *  that are listed in the database for the user.
+	 *  
+	 *  The URL parameter is a small integer representing the kind of image.
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		logger.debug("--------Entering GetImagesServlet----------");
+		logger.debug("Entering GetImagesServlet");
 
 		HttpSession session = request.getSession();
 		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
@@ -55,12 +57,15 @@ public class GetImagesServlet extends HttpServlet
 		if (type == 0)
 		{
 			logger.error("No IMAGE TYPE passed (type=" + type + "). Programming error.");
+			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
 		ImageType image_type = ImageType.create(type);
 		if (image_type == null)
 		{
-			throw new RuntimeException("Unexpected image type: " + type);
+			//throw new RuntimeException("Unexpected image type: " + type);
+			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);
+			return;
 		}
 
 		DbConnection con = DbConnection.GetDb();

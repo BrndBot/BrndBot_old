@@ -239,6 +239,7 @@ public class Image implements TableModel
 		}
 		catch (SQLException e)
 		{
+			logger.error ("SQLException getting image: {}", e.getMessage());
 			e.printStackTrace();
 		}
 		finally 
@@ -251,7 +252,7 @@ public class Image implements TableModel
 	static public String getBoundImage(int image_id, int user_id,
 			int max_image_height, int max_image_width)
 	{
-		logger.debug("----entering getBoundImage----");
+		logger.debug("entering getBoundImage");
 		DbConnection con = DbConnection.GetDb();
 		Image image = getImageByID(image_id, user_id, con);
 		String s = "<div style=\"padding:0.625rem;\">Invalid image</div>";
@@ -354,7 +355,7 @@ public class Image implements TableModel
 				logger.debug("FOUNDLOGO IMAGE");
 			}
 			else
-				logger.error("Image not found!");
+				logger.error("Image not found, image ID = {}", image_id);
 		}
 		catch (SQLException e) 
 		{
@@ -386,6 +387,7 @@ public class Image implements TableModel
 	{
 		Image return_image = null;
 		FileOutputStream fos = null;
+		logger.debug ("uploadFile");
 
 		if (files.size() > 0)
 		{
@@ -427,7 +429,7 @@ public class Image implements TableModel
 					return_image.setImageBytes(bytes);
 					String url_file_name = Utils.Slashies(image_type.getFolder() + user_id + "-" + count + "-" +
 							image_file.getFileName());
-					System.out.println("Relative URL file name: " + url_file_name);
+					logger.debug("Relative URL file name: " + url_file_name);
 					return_image.setImageName(url_file_name);
 					return_image.setImageSize((int)image_file.getFileSize());
 
@@ -435,6 +437,7 @@ public class Image implements TableModel
 					//String tomcat_base = SystemProp.get(SystemProp.TOMCAT_BASE);
 					//image_file.setFileName(Utils.Slashies(tomcat_base + "\\" + url_file_name));
 					image_file.setFileName(AppEnvironment.baseInAppDirectory(url_file_name));
+					logger.debug ("Saving image to {}", image_file.getFileName());
 					fos = new FileOutputStream(image_file.getFileName());
 					fos.write(bytes);
 					fos.close();

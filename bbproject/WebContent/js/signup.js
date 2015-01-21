@@ -701,7 +701,7 @@ function savePalette()
         },
         error: function (xhr, ajaxOptions, thrownError)
         {
-        	alert('Temp debug output: ' + xhr.status);
+        	console.log (thrownError);
 //        	alert(thrownError);
         }
 	});

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.system.Assert;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
+import com.brndbot.util.AppEnvironment;
 
 public class UserLogo implements TableModel
 {
@@ -228,31 +229,33 @@ public class UserLogo implements TableModel
 			int max_img_width,
 			boolean use_FQDN)
 	{
-		String name = local_image_file_name;
+		String url = local_image_file_name;
 		if (use_FQDN)
 		{
 			// Make sure we have a FQDN
 			String tmp = local_image_file_name.toLowerCase();
 			if (local_image_file_name.indexOf("http:") == -1)
 			{
-				name = SystemProp.get(SystemProp.ASSETS) + "//" + local_image_file_name;
+				url = SystemProp.get(SystemProp.ASSETS) + "//" + local_image_file_name;
 			}
 		}
-		logger.debug("FQDN: " + name);
+		logger.debug("FQDN: " + url);
 		String s = String.format("<img src=\"%s\" alt=\"\"></img>",
-				name);
+				url);
 
 		// local_image_file_name should be something like 'images/file
 		if (max_img_height > 0 || max_img_width > 0)
 		{
 			String tomcat_base = SystemProp.get(SystemProp.TOMCAT_BASE);
 			String image_file = Utils.Slashies(tomcat_base + "\\" + local_image_file_name);
+			logger.debug ("image_file = {}", image_file);
 			BufferedImage bimg = null;
 			try {
 				bimg = ImageIO.read(new File(image_file));
 			} 
 			catch (IOException e) 
 			{
+				logger.error ("Exception in getBoundImage: {}", e.getClass().getName());
 				e.printStackTrace();
 			}
 			if (bimg != null)
@@ -266,7 +269,7 @@ public class UserLogo implements TableModel
 				int h = ((int)(height * scale));
 				int w = ((int)(width * scale));
 				s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
-						name, h, w);
+						url, h, w);
 			}
 		}
 		return s;

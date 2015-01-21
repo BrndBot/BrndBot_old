@@ -46,7 +46,7 @@ public class HomeHelper {
 	 *  For now, uses the dummy client interface
 	 */
 	private void loadClientInterface () {
-		final String className = "com.brndbot.dummyclient.DummyClientInterface";
+		final String className = "com.brndbot.client.dummy.DummyClientInterface";
 		try {
 			clientInterface = ClientInterfaceFactory.getInterfaceForClass(className);
 		} catch (Exception e) {

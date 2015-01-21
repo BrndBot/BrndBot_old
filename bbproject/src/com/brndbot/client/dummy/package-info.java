@@ -9,4 +9,4 @@
  * @author Gary McGath
  *
  */
-package com.brndbot.dummyclient;
+package com.brndbot.client.dummy;

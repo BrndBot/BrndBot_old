@@ -44,7 +44,7 @@ function initTheBench()
 		{
 			read:
 			{
-				url: "GetImagesServlet?brndbotimageid=0",	// 0 is placeholder FIXME
+				url: "GetImagesServlet?brndbotimageid=2",	// param 2 is uploaded images
 				dataType: "json"
 			}
 		},
@@ -163,21 +163,7 @@ function initTheBench()
 		var dialog = $("#imageGalleryPopup").data("kendoWindow");
 		if (dialog)
 			dialog.close();
-		if (CURRENT_GALLERY_TAB == 0)  // user images
-		{
-			$('#gallery').kendoTabStrip({}).data('kendoTabStrip').select(0);
-			yourImagesDataSource.read();
-		}
-		else if (CURRENT_GALLERY_TAB == 1) // teacher
-		{
-			$('#gallery').kendoTabStrip({}).data('kendoTabStrip').select(1);
-			yourTeachersDataSource.read();
-		}
-		else if (CURRENT_GALLERY_TAB == 1) // teacher
-		{
-			$('#gallery').kendoTabStrip({}).data('kendoTabStrip').select(2);
-//			yourImagesDataSource.read();
-		}
+
     }
 
     function selectYourImage(e)
@@ -185,42 +171,6 @@ function initTheBench()
     	alert('hello your image');
     }
 
-    // Kendo data source for accessing teacher/staff data
-    var yourTeachersDataSource = new kendo.data.DataSource({
-		transport: 
-		{
-			read:
-			{
-				url: "GetImagesServlet?brndbotimageid=0",
-				dataType: "json"
-			}
-		},
-        pageSize: 6
-    });
-
-    $("#yourTeachersPager").kendoPager({
-        dataSource: yourTeachersDataSource
-    });
-
-	// Init the Kendo teachers list widget
-    $("#yourTeachersView").kendoListView({
-        dataSource: yourTeachersDataSource,
-        template: kendo.template($("#imageTemplate").html()),
-	    selectable: true,
-	    change: selectTeacherPhoto
-//	    ,
-//	    dataBound: teachersViewSuccess,
-//	    complete: teachersViewSuccess
-    });
-    
-    function teachersViewSuccess(e)
-    {
-    }
-
-    function selectTeacherPhoto(e)
-    {
-    	alert('select teacher photo!');
-    }
 
 	// Convert from element id to an index in an array
 	function getGalleryIdx(id)

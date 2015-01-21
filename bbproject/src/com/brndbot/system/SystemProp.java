@@ -29,6 +29,7 @@ public class SystemProp
 	static final public String DB_USER = "db.user";
 	static final public String DB_PW = "db.pw";
 	static final public String DB_URL = "db.url";
+	/* The URL base of the brndbot application, usually ending in /brndbot */
 	static final public String ASSETS = "assets";
 	static final public String MINDBODY_NAME = "mindbody.name";
 	static final public String MINDBODY_KEY = "mindbody.key";

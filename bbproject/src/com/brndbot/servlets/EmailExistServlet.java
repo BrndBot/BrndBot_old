@@ -62,7 +62,6 @@ public class EmailExistServlet extends HttpServlet
 		JSONObject json_obj = new JSONObject();
 		String status = "ok";
 		int orgID = 0;
-		// Add record to database (lie)
 		if (User.doesEmailExist(userEmail, con))
 		{
 			status = "email_exists";

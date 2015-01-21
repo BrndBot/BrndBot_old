@@ -47,6 +47,11 @@ public class SetSessionServlet extends HttpServlet
 		doPost(request, response);
 	}
 
+	/**
+	 *  Security cautions here. To avoid a bootstrapping issue, this can't use AuthenticationFilter.
+	 *  It's written so you can set only the image type without being logged in. I don't
+	 *  understand why, but I'll leave it that way.
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering SetSessionServlet----------");

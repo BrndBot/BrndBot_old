@@ -37,6 +37,7 @@ public class User implements TableModel
 	private Integer personalityId;
 	private String facebook;
 	private String twitter;
+	private String clientClass;
 //	private String _linked_in;
 //	private String _you_tube;
 //	private String _instagram;
@@ -90,6 +91,18 @@ public class User implements TableModel
 //	public void setInstagram (String instagram) {
 //		_instagram = instagram;
 //	}
+	
+	/** Returns the full name of the class, which must be 
+	 *  an implementation of ClientInterface, that the user's
+	 *  organization gets its data from
+	 */
+	public String getClientClass () {
+		if (clientClass != null) {
+			return clientClass;
+		} else {
+			return null;		// TODO stub need to query organization
+		}
+	}
 	
 	public Integer getOrganizationID() {
 		return orgId;

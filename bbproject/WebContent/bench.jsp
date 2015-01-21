@@ -3,7 +3,6 @@
 <%@ page session="true" %>
 
 <%@ page import="com.brndbot.block.Block" %>
-<%@ page import="com.brndbot.block.BlockStack" %>
 <%@ page import="com.brndbot.block.ChannelEnum" %>
 <%@ page import="com.brndbot.block.FBStyleType" %>
 <%@ page import="com.brndbot.jsphelper.BenchHelper" %>
@@ -470,9 +469,6 @@
 						<li id="images" class="k-state-active">
 							Your images
 						</li>
-						<li id="teachers">
-							Your teachers
-						</li>
 						<li id ="logos">
 							Your logos
 						</li>
@@ -487,12 +483,6 @@
 						<div class="galleryPane"> <!-- Your images -->
 	 						<div id="yourImagesView"></div>
 	 						<div id="yourImagesPager" class="k-pager-wrap"></div>
-						</div>
-					</div>
-					<div>
-						<div class="galleryPane"> <!-- Teacher photos -->
-	 						<div id="yourTeachersView"></div>
-							<div id="yourTeachersPager" class="k-pager-wrap"></div>
 						</div>
 					</div>
 					<div>

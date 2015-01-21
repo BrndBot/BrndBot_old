@@ -296,7 +296,7 @@ var __adobewebfontsappname__ = "muse";
 				case "js":
 					k.match(/^jquery-[\d\.]+/gi)&&
 						typeof $!="undefined"?Muse.assets.required.splice(d,1):d++;
-						break;
+					break;
 				default:
 					throw Error("Unsupported file type: "+g);
 			}
@@ -318,7 +318,6 @@ var __adobewebfontsappname__ = "muse";
 			Muse.Assert.fail('Error calling selector function:' + e); 
 	}
 
-	$("#forceLoginStyle").attr();	// TEST***** if JQuery is available
 	$("#signInGo").kendoButton({
 		click: signInGoClick
 	});

@@ -1,4 +1,4 @@
-package com.brndbot.dummyclient;
+package com.brndbot.client.dummy;
 
 import java.io.Serializable;
 //import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 //import com.brndbot.client.BlockField;
 import com.brndbot.client.ClientInterface;
