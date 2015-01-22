@@ -50,7 +50,7 @@ public class GetImagesServlet extends HttpServlet
 		logger.debug("Entering GetImagesServlet");
 
 		HttpSession session = request.getSession();
-		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
+		int user_id = SessionUtils.getUserId(session);
 
 		// Make sure the image type is passed
 		int type = Utils.getIntParameter(request, SessionUtils.IMAGE_ID_KEY);

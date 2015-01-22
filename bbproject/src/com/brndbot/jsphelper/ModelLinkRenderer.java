@@ -7,9 +7,9 @@ import org.jdom2.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Model;
 import com.brndbot.client.ModelCollection;
+import com.brndbot.promo.Client;
 
 /** This class inserts divs for each model in the right sidebar
  *  of the editor */
@@ -17,10 +17,10 @@ public class ModelLinkRenderer extends Renderer {
 
 	final static Logger logger = LoggerFactory.getLogger(ModelLinkRenderer.class);
 	
-	public ModelLinkRenderer(ClientInterface ci) {
+	public ModelLinkRenderer(Client c) {
 		super ();
 		logger.debug ("ModelLinkRenderer constructor");
-		ModelCollection modelCol = ci.getModels();
+		ModelCollection modelCol = c.getModels();
 		try {
 			Map<String,Model> models = modelCol.getAllModels();
 			logger.debug ("Starting model loop");

@@ -16,15 +16,7 @@ var currentItemID = -1;
 $(document).ready(function() 
 {
 
-	/*
-
-
-	$('#facebookBadge').on('click', function(e)
-	{
-		facebookBadge();
-	});
-
-*/	
+	
 	$('#chanEmailBadge').on('click', function(e)
 	{
 		// change to the content (dash)
@@ -38,7 +30,10 @@ $(document).ready(function()
 		session_mgr.setSession(SESSION_SET, FACEBOOK_CHANNEL, 0, 0, routeViaChannel);
 	});
 	
-	/* This sets the function for all the content badge buttons in one fell swoop */
+	/* This sets the function for all the content badge buttons in one fell swoop.
+	 * Clicking on a content badge button will bring up the prototypes for
+	 * that model.
+	 */
 	$('.homeBadgeButton').on('click', function(e)
 	{
 		model_name = $(this).attr('data-model');	// set the value for the callback
@@ -133,23 +128,7 @@ $(document).ready(function()
 //uncomment when fixed		session_mgr.setSession(SESSION_SET, 0, SALE_OBJ, -1);
 	}
 */
-/*
-	function scheduleBadge()
-	{
-		session_mgr.setSession(SESSION_SET, 0, SCHEDULE_OBJ, -1);
-		if (SESSION_CHANNEL == SESSION_UNDEFINED)
-		{
-			// No channel, go get it
-			viewChannels();
-			return;
-		}
-		else
-		{
-			// We know the channel, get which class
-			$('#schedulContentBadge').click();  
-		}
-	}
-*/
+
 });
 
 function viewChannels()

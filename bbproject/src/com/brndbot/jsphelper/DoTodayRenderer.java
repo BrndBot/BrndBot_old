@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Model;
 import com.brndbot.client.ModelCollection;
+import com.brndbot.promo.Client;
 import com.brndbot.system.SystemProp;
 
 /** This renderer populates the "what do you want to
@@ -25,9 +26,9 @@ public class DoTodayRenderer extends Renderer {
 	final static Logger logger = LoggerFactory.getLogger(DoTodayRenderer.class);
 
 	
-	public DoTodayRenderer(ClientInterface ci) {
+	public DoTodayRenderer(Client c) {
 		super ();
-		ModelCollection modelCol = ci.getModels ();
+		ModelCollection modelCol = c.getModels ();
 		try {
 			Map<String, Model> models = modelCol.getAllModels();
 			for (Model m : models.values()) {

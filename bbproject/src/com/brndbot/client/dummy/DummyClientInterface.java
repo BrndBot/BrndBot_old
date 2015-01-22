@@ -48,10 +48,10 @@ public class DummyClientInterface implements ClientInterface, Serializable {
 		initModelCollection ();
 	}
 
-	@Override
-	public ModelCollection getModels() {
-		return mCollection;
-	}
+	
+//	public ModelCollection getModels() {
+//		return mCollection;
+//	}
 	
 	@Override
 	public String getName() {

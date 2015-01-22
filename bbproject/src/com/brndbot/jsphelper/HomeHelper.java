@@ -14,6 +14,7 @@ import com.brndbot.client.ClientInterfaceFactory;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.User;
 import com.brndbot.db.UserLogo;
+import com.brndbot.promo.Client;
 
 public class HomeHelper {
 
@@ -25,10 +26,11 @@ public class HomeHelper {
 	private int userId;
 	private User user;
 	private String organization;
-	private ClientInterface clientInterface;
+	private Client client;
 
 
 	public void setUserId (int id) {
+		logger.debug ("setUserId: {}", id);
 		userId = id;
 		DbConnection con = null;
 		try {
@@ -38,24 +40,26 @@ public class HomeHelper {
 			if (con != null)
 				con.close();
 		}
-		loadClientInterface ();
+		client = Client.getByUserId(id);
+		if (client == null)
+			logger.error ("No client for ID {}", id);
 	}
 	
 	/** This seeks out the appropriate ClientInterface for the user.
 	 *  TODO make it real, getting the class name from the database.
 	 *  For now, uses the dummy client interface
 	 */
-	private void loadClientInterface () {
-		final String className = "com.brndbot.client.dummy.DummyClientInterface";
-		try {
-			clientInterface = ClientInterfaceFactory.getInterfaceForClass(className);
-		} catch (Exception e) {
-			logger.error ("FATAL: {}", e.getClass().getName());
-		}
-		if (clientInterface == null) {
-			logger.error ("FATAL: Could not load client interface {}", className);
-		}
-	}
+//	private void loadClientInterface () {
+//		final String className = "com.brndbot.client.dummy.DummyClientInterface";
+//		try {
+//			clientInterface = ClientInterfaceFactory.getInterfaceForClass(className);
+//		} catch (Exception e) {
+//			logger.error ("FATAL: {}", e.getClass().getName());
+//		}
+//		if (clientInterface == null) {
+//			logger.error ("FATAL: Could not load client interface {}", className);
+//		}
+//	}
 	
 	/** This loads up, if necessary, and returns the list of StyleSets for the
 	 *  client. It needs to get into the session somewhere, but probably not here. */
@@ -65,7 +69,7 @@ public class HomeHelper {
 	 *  be inserted.
 	 */
 	public String getRenderDoToday () {
-		DoTodayRenderer renderer = new DoTodayRenderer (clientInterface);
+		DoTodayRenderer renderer = new DoTodayRenderer (client);
 		return renderer.getFragment();
 	}
 
@@ -73,7 +77,7 @@ public class HomeHelper {
 	 *  promo protos should be inserted.
 	 */
 	public String getRenderModelListButtons () {
-		ModelListButtonRenderer renderer = new ModelListButtonRenderer(clientInterface);
+		ModelListButtonRenderer renderer = new ModelListButtonRenderer(client);
 		return renderer.getFragment ();
 	}
 	

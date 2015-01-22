@@ -323,32 +323,32 @@ function initTheBench()
 	});
 
 	// Make the popup window for the 3 main content types appear
-	function showPopup(e, listID)
-	{
-		// Show the correct list, hide the others
-		(listID == 'classHere') ? $('#classHere').show() : $('#classHere').hide(); 
-		(listID == 'staffHere') ? $('#staffHere').show() : $('#staffHere').hide(); 
-		(listID == 'workshopHere') ? $('#workshopHere').show() : $('#workshopHere').hide(); 
-
-		var myWin = $("#contentPopup");
-		// If not initalized, init and show
-		if (!myWin.data("kendoWindow"))
-		{
-			var dialog = myWin.kendoWindow({
-				title: false,
-				visible: false,
-				modal: true
-			}).data("kendoWindow");
-		    dialog.center().open();
-		    $('body').blur();
-		} 
-		else 
-	    {
-	        // reopening window
-			myWin.data("kendoWindow").center().open(); // open the window
-		    $('body').blur();
-	    }
-	}
+//	function showPopup(e, listID)
+//	{
+//		// Show the correct list, hide the others
+//		(listID == 'classHere') ? $('#classHere').show() : $('#classHere').hide(); 
+//		(listID == 'staffHere') ? $('#staffHere').show() : $('#staffHere').hide(); 
+//		(listID == 'workshopHere') ? $('#workshopHere').show() : $('#workshopHere').hide(); 
+//
+//		var myWin = $("#contentPopup");
+//		// If not initalized, init and show
+//		if (!myWin.data("kendoWindow"))
+//		{
+//			var dialog = myWin.kendoWindow({
+//				title: false,
+//				visible: false,
+//				modal: true
+//			}).data("kendoWindow");
+//		    dialog.center().open();
+//		    $('body').blur();
+//		} 
+//		else 
+//	    {
+//	        // reopening window
+//			myWin.data("kendoWindow").center().open(); // open the window
+//		    $('body').blur();
+//	    }
+//	}
 
 	// Button to popup the image gallery
 	$('.viewImageGallery').each(function ()

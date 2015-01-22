@@ -31,9 +31,11 @@ public class Organization implements TableModel {
 	final static Logger logger = LoggerFactory.getLogger(Organization.class);
 	final static String tableName = "user";
 
-	private Integer _id;
-	private String _name;
-	private String _authCode;
+	private Integer id;
+	private String name;
+	private String directoryName;
+	private String authCode;
+	private String moduleClass;
 	
 	public String getTableName () {
 		return tableName;
@@ -42,7 +44,7 @@ public class Organization implements TableModel {
 	public static Organization getByAuthCode(String authCode) {
 		Organization org = null;
 		DbConnection con = DbConnection.GetDb();
-		String sql = "SELECT id, Name FROM organization WHERE Authcode = ?;";
+		String sql = "SELECT id, Name, Directory FROM organization WHERE Authcode = ?;";
 		PreparedStatement pstmt = con.createPreparedStatement(sql);
 		ResultSet rs = null;
 		try
@@ -52,9 +54,10 @@ public class Organization implements TableModel {
 			if (rs.next())
 			{
 				org = new Organization();
-				org.setAuthCode(authCode);
-				org.setOrganizationID(rs.getInt(1));
-				org.setName(rs.getString(2));
+				org.authCode = authCode;
+				org.id = rs.getInt(1);
+				org.name = rs.getString(2);
+				org.directoryName = rs.getString(3);
 			}
 		} 
 		catch (SQLException e) 
@@ -70,28 +73,74 @@ public class Organization implements TableModel {
 		return org;
 	}
 	
-	public void setOrganizationID (int id) {
-		_id = id;
+	public static Organization getById (int orgId) {
+		Organization org = null;
+		DbConnection con = DbConnection.GetDb();
+		String sql = "SELECT Name, moduleclass, Directory FROM organization WHERE id = ?;";
+		PreparedStatement pstmt = con.createPreparedStatement(sql);
+		ResultSet rs = null;
+		try
+		{
+			pstmt.setInt (1, orgId);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				org = new Organization();
+				org.id = orgId;
+				org.name = rs.getString(1);
+				org.moduleClass = rs.getString(2);
+				org.directoryName = rs.getString(3);
+			} else {
+				logger.error ("No organization found for ID {}", orgId);
+			}
+		} 
+		catch (SQLException e) 
+		{
+			logger.error ("Error in getByid query, id = {}", orgId);
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+		finally
+		{
+			DbUtils.close(pstmt, rs);
+		}
+		return org;
+	}
+	
+	public void setOrganizationID (int orgid) {
+		id = orgid;
 	}
 	
 	public Integer getOrganizationID () {
-		return _id;
+		return id;
 	}
 	
-	public void setName (String name) {
-		_name = name;
+	public void setName (String nam) {
+		name = nam;
 	}
 	
+	/** Returns the human-readable organization name */
 	public String getName () {
-		return _name;
+		return name;
+	}
+
+	/** Returns the name used for organization directories */
+	public String getDirectoryName () {
+		return directoryName;
+	}
+
+	/** getModuleClass should return the name of an implementation
+	 *  of ClientInterface */
+	public String getModuleClass () {
+		return moduleClass;
 	}
 	
-	public void setAuthCode (String authCode) {
-		_authCode = authCode;
+	public void setAuthCode (String code) {
+		authCode = code;
 	}
 	
 	public String getAuthCode () {
-		return _authCode;
+		return authCode;
 	}
 	
 	/* Create an Organization in the database. Both the name and authcode
@@ -103,8 +152,8 @@ public class Organization implements TableModel {
 		PreparedStatement pstmt = con.createPreparedStatement("INSERT INTO organization (" +
 				"Name, Authcode) " +
 				"VALUES (?, ?);");
-		pstmt.setString (1, _name);
-		pstmt.setString (2, _authCode);
+		pstmt.setString (1, name);
+		pstmt.setString (2, authCode);
 		pstmt.executeUpdate();
 		pstmt.close();
 		logger.debug ("returning from save");

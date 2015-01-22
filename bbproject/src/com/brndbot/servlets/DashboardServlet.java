@@ -24,9 +24,11 @@ import org.slf4j.LoggerFactory;
 
 
 
+
 //import com.brndbot.block.ChannelEnum;
 //import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
+import com.brndbot.client.Model;
 import com.brndbot.client.Promotion;
 import com.brndbot.promo.Client;
 //import com.brndbot.promo.Promotion;
@@ -61,7 +63,6 @@ public class DashboardServlet extends HttpServlet
 
 		/* In this new world, the type parameter will be the name of a Promotion,
 		 * and so a name rather than a number. */
-		//String modelName = Utils.getStringParameter(request, "type");
 		HttpSession session = request.getSession();
 		int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
@@ -71,30 +72,34 @@ public class DashboardServlet extends HttpServlet
 			SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client);
 		}
 		
-		Assert.that(channel != 0, "Channel is zero in DashboardServlet!");
+		if (channel == 0) {
+			logger.error ("Channel is zero in DashboardServlet!");
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
 
 		//int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth();
 		logger.debug("Channel is: {}", channel);
 		logger.debug("Model name is: {}", modelName);
-		//ChannelEnum channel_enum = ChannelEnum.create(channel);
-		//max_width = channel_enum.getDefaultImgWidth();
-/*		else
-		{
-			throw new RuntimeException("Unexpected channel in DashboardServlet, channel id: " + channel);
-		}
-*/
+
 		// Make a JSON array of the promotion prototypes under this model
 		ClientInterface ci = null;
 		try {
 			ci = client.getClientInterface();
-			if (ci == null)
+			if (ci == null) {
 				logger.error ("Couldn't get ClientInterface");
+				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				return;
+			}
 			else
 				logger.debug ("Got ClientInterface {}", ci.getClass().getName());
 		} catch (Throwable t) {
 			logger.error (t.getClass().getName());
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
-		Map<String,Promotion> protos = ci.getPromotionPrototypes(modelName);
+		Model model = client.getModelCollection().getModelByName(modelName);
+		Map<String,Promotion> protos = client.getPromotionPrototypes(model);
 		logger.debug ("Got {} promotion prototypes", protos.size());
 		JSONArray jsonProtos = new JSONArray();
 		
@@ -124,8 +129,7 @@ public class DashboardServlet extends HttpServlet
 		else
 		{
 			logger.error("Unknown BlockType: " + modelName);
-			throw new RuntimeException("Unknown BlockType: " + modelName);
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		return;
 	}
 }

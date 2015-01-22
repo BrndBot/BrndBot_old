@@ -306,7 +306,8 @@
 			boolean templateVisible = true;
 			boolean isPreview = true;
 			// Must have the palette array, too.  Retrieves the palette set by the user when signed-up.
-			ArrayList<Palette> paletteArray = User.getUserPalette(benchHelper.getUserId(), benchHelper.getConnection());
+			//ArrayList<Palette> paletteArray = User.getUserPalette(benchHelper.getUserId(), benchHelper.getConnection());
+			ArrayList<Palette> paletteArray = benchHelper.getUserPalette ();
 			String chosenImg = "";
 
 				// Args 2 and 3 are part of the mess regarding image bounding.  All these functions for 
@@ -590,12 +591,6 @@
 		# } #
 	</div>
 </script>
-<%
-	// Necessary cleanup to avoid leakage
-	if (benchHelper != null) {
-		benchHelper.dismiss ();
-	}
-%>
 </c:if>		<!-- sessionOK -->
 
 </body>

@@ -88,21 +88,6 @@ public class LoginServlet extends HttpServlet
 			return;
 		}
 
-		// See if we should save values to cookies
-		// INSANELY INSECURE. DISABLE.
-//		String cookie_cb = Utils.getStringParameter(request, LoginCookie.USE_COOKIE_CB);
-//		LoginCookie cookie = new LoginCookie(request, response);
-//		if (cookie_cb.length() > 0)
-//		{
-//			cookie.saveToCookie(true, email_address, password);
-//		}
-//		else
-//		{
-//			cookie.deleteCookie(LoginCookie.USE_COOKIE);
-//			cookie.deleteCookie(LoginCookie.EMAIL_ADDRESS);
-//			cookie.deleteCookie(LoginCookie.PASSWORD);
-//		}
-
 		session.setAttribute(SessionUtils.IS_PRIV, User.isPrivileged(user_id, con));
 		con.close();
 
@@ -110,6 +95,7 @@ public class LoginServlet extends HttpServlet
 //		session.setAttribute(ParamConstants.EMPLOYER_TYPE, RecruiterTable.fetchEmployerType(user_id));
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
 		session.removeAttribute(SessionUtils.LOGIN_ERROR);
+		Client.getClient (session);		// Load up the client
 
 		response.sendRedirect("home.jsp");
 		return;
