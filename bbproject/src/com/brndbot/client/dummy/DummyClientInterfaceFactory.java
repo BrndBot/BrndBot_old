@@ -1,6 +1,6 @@
 package com.brndbot.client.dummy;
 
-import com.brndbot.dummyclient.DummyClientInterface;
+import com.brndbot.client.dummy.DummyClientInterface;
 
 public class DummyClientInterfaceFactory {
 
