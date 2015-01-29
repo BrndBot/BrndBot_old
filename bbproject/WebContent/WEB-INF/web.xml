@@ -134,7 +134,10 @@
       <servlet-class>com.brndbot.servlets.GetImagesServlet</servlet-class>
     </servlet>
 
-
+    <servlet>
+      <servlet-name>StyleServlet</servlet-name>
+      <servlet-class>com.brndbot.servlets.StyleServlet</servlet-class>
+    </servlet>
 
     <!-- Define mappings that are used by the servlet container to
          translate a particular request URI (context-relative) to a
@@ -200,6 +203,11 @@
       <url-pattern>/GetImagesServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+      <servlet-name>StyleServlet</servlet-name>
+      <url-pattern>/StyleServlet</url-pattern>
+    </servlet-mapping>
+
 	<filter>
 		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>com.brndbot.servlets.AuthenticationFilter</filter-class>
@@ -238,6 +246,11 @@
     <filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
     	<servlet-name>GetImagesServlet</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+    	<servlet-name>StyleServlet</servlet-name>
     </filter-mapping>
 
 	

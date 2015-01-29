@@ -6,4 +6,3 @@
 	}
 %>
 
-<%= 	benchHelper.insertPromotion (client) %>

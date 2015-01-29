@@ -10,6 +10,11 @@ var currentListID = new Array(0, 0, 0);
 //  sort up/down, it's the last selected.
 var lastSelectedBlock = null;
 
+// The JSON representation of the promotion to draw, with the top
+// level being an ObservableArray.
+// Gets set from a Kendo datasource.
+var promotion = null;
+
 // One-time initialization called after the page fully loads.  These are initializations common
 //  to all editor.  The functions called are typically editor-specific.
 function initTheBench() 
@@ -171,20 +176,6 @@ function initTheBench()
     	alert('hello your image');
     }
 
-
-	// Convert from element id to an index in an array
-	function getGalleryIdx(id)
-	{
-		if (id == "images")
-			return 0;
-		else if (id == "teachers")
-			return 1;
-		else if (id == "logos")
-			return 2;
-		else if (id == "stock")
-			return 3;
-		return 4; //upload
-	}
 
 	// The tab control in the image gallery popup
 	$("#galleryTabs").kendoTabStrip({
@@ -418,11 +409,6 @@ function initTheBench()
 				// Yes it does, so show it and hide unnecessary stuff
 				form.show();
 				showOtherTabs(lastSelectedBlock);
-				$('#toClassID').hide();
-				$('#toNonClassID').hide();
-				$('#toWorkshopID').hide();
-				$('#toNonWorkshopID').hide();
-//				$('#applyDiv').hide();
 
 				// lastSelectedBlock is the block that is being clicked on
 				var type = getBlockType(lastSelectedBlock);
@@ -732,42 +718,8 @@ function isolateEnum(id)
 
 function getBlockType(idarg) 
 {
-	var id = idarg.toLowerCase();
-	if (id.substr(0,1) == '#')
-		id = id.substr(1,id.length);
+	// Is this anything useful?
 	var type = -1;
-	if (id.substr(0,5) == 'class')
-		type = CLASS_OBJ;
-	else if (id.substr(0,5) == 'works')
-		type = WORKSHOP_OBJ;
-	else if (id.substr(0,5) == 'staff')
-		type = STAFF_OBJ;
-	else if (id.substr(0,5) == 'clien')
-		type = CLIENT_OBJ;
-	else if (id.substr(0,5) == 'finde')
-		type = FINDER_OBJ;
-	else if (id.substr(0,4) == 'sale')
-		type = SALE_OBJ;
-	else if (id.substr(0,4) == 'site')
-		type = SITE_OBJ;
-	else if (id.substr(0,5) == 'appoi')
-		type = APPOINTMENT_OBJ;
-	else if (id.substr(0,5) == 'sched')
-		type = SCHEDULE_OBJ;
-	else if (id.substr(0,4) == 'text')
-		type = TEXT_OBJ;
-	else if (id.substr(0,5) == 'foote')
-		type = FOOTER_OBJ;
-	else if (id.substr(0,5) == 'socia')
-		type = SOCIAL_OBJ;
-	else if (id.substr(0,5) == 'graph')
-		type = GRAPHIC_OBJ;
-	else if (id.substr(0,5) == 'noncl')
-		type = NON_CLASS_OBJ;
-	else if (id.substr(0,5) == 'nonwo')
-		type = NON_WORKSHOP_OBJ;
-	else alert('Unknown block_id, error: ' + id);
-
 	return type;
 }
 
@@ -815,3 +767,27 @@ function hideOtherTabs(id)
 	var design = prepDesignID(id);
 	if (design) design.hide();
 }
+
+/* Load up the styles for the user. */
+function loadStyles () {
+	
+}
+
+/* Load up the promotion for drawing. */
+function loadPromotion (promoName) {
+	var promotionDataSource = new kendo.data.DataSource({
+		transport: 
+		{
+			read:
+			{
+				url: "DashboardServlet?promo=" + promoName,
+				dataType: "json"
+			}
+		}
+	});	
+	promotionDataSource.read ().then (function () {
+		promotion = dataSource.data();
+		drawPromotion (promotion, someDiv);	// TODO what is someDiv?
+	});
+}
+

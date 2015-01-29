@@ -362,63 +362,31 @@
 
 		%>
 			<c:set var="templateEnum" value="1" scope="page"/> 
-			<c:choose>
-				<c:when test="${tmp_channel == channel_email}">
-					<%@include file="templates/email/promo.jsp" %>
-				</c:when>
-				<c:when test="${tmp_channel == channel_facebook}">
-					<%@include file="templates/facebook/promo.jsp" %>
-				</c:when>
-			</c:choose>
+			<%@include file="promo.jsp" %>
 
 			<div id="finishedImage">
 
 				<c:set var="templateEnum" value="2" scope="page"/> 
-				  <c:choose>
+				<%@include file="templates/email/promo.jsp" %>
+
+				<c:set var="templateEnum" value="3" scope="page"/> 
+				<%@include file="templates/email/promo.jsp" %>
+
+				<%  // Currently, only email has more than 3 slots in the editor.
+				%>
+				<c:choose>
 					<c:when test="${tmp_channel == channel_email}">
+						<c:set var="templateEnum" value="4" scope="page"/> 
+						<%@include file="templates/email/promo.jsp" %>
+
+						<c:set var="templateEnum" value="5" scope="page"/> 
+						<%@include file="templates/email/promo.jsp" %>
+
+						<c:set var="templateEnum" value="6" scope="page"/> 
 						<%@include file="templates/email/promo.jsp" %>
 					</c:when>
-					<c:when test="${tmp_channel == channel_facebook}">
-						<%@include file="templates/facebook/promo.jsp" %>
-					</c:when>
-				  </c:choose>
+				</c:choose>
 
-				  <c:set var="templateEnum" value="3" scope="page"/> 
-				  <c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
-					</c:when>
-					<c:when test="${tmp_channel == channel_facebook}">
-						<%@include file="templates/facebook/promo.jsp" %>
-					</c:when>
-				  </c:choose>
-
-					<%  // Currently, only email has more than 3 slots in the editor.
-					%>
-				  <c:set var="templateEnum" value="4" scope="page"/> 
-				  <c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
-			  		</c:when>
-				  </c:choose>
-
-
-				  <c:set var="templateEnum" value="5" scope="page"/> 
-				  <c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
-					</c:when>
-				  </c:choose>
-
-				  <c:set var="templateEnum" value="6" scope="page"/> 
-				  <c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
-					</c:when>
-				  </c:choose>
-
-					<%  // end of if block for email editor-only promo.jsp inclusion
-					%>
 			</div><!-- id="finishedImage">  -->
 
 			</div></div></div>	<!-- relative --> 
@@ -568,6 +536,10 @@
 	{
 		// doc.ready init for the bench, in bench.js
 		initTheBench();
+
+		// load the promotion and all the styles in bench.js
+		loadStyles ();
+		loadPromotion ("${proto_name}");
 
 		// ensure the top of the page is shown
 		document.getElementById("brndbotMain").scrollIntoView();

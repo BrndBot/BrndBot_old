@@ -26,7 +26,7 @@ import com.brndbot.db.Palette;
 import com.brndbot.db.User;
 import com.brndbot.promo.Client;
 
-/** BenchHelper provides Java logic for the editor (bench.jsp).
+/** BenchHelper provides Java logic for the editor (edit.jsp).
  *  It's designed so it can (at least mostly) be accessed with
  *  the useBean tag. Therefore, it conforms closely to the Java Bean
  *  pattern. 

@@ -7,7 +7,7 @@ package com.brndbot.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+//import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -32,10 +32,17 @@ import com.brndbot.client.Model;
 import com.brndbot.client.Promotion;
 import com.brndbot.promo.Client;
 //import com.brndbot.promo.Promotion;
-import com.brndbot.system.Assert;
+//import com.brndbot.system.Assert;
 import com.brndbot.system.SessionUtils;
 //import com.brndbot.system.Utils;
 
+/** The purpose of DashboardServlet (which has nothing to do with
+ *  any known sense of "dashboard") is to get all the promotion 
+ *  prototypes for a given model; in other words, all the instantiations
+ *  of the model with promotion-specific data.
+ *  
+ *  This is called as a Kendo DataSource URL.
+ */
 public class DashboardServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -45,9 +52,9 @@ public class DashboardServlet extends HttpServlet
 	public DashboardServlet ()
     {
         super();
-        logger.info ("Testing logger");
     }
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		doPost(request, response);
@@ -57,6 +64,7 @@ public class DashboardServlet extends HttpServlet
 	 *  The value returned is a JSON array of the promotion prototypes for the model
 	 *  specified by the "type" parameter.
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering DashboardServlet----------");
@@ -116,7 +124,7 @@ public class DashboardServlet extends HttpServlet
 			logger.error ("Error getting promo prototypes: {}", e.getClass().getName());
 		}
 		String jsonStr = jsonProtos.toString();
-		System.out.println ("JSON = " + jsonStr);
+		//System.out.println ("JSON = " + jsonStr);
 
 		if (jsonStr.length() > 0)
 		{
