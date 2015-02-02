@@ -83,9 +83,11 @@
 
     <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="js/kendo.all.min.js"></script>
+    <script type="text/javascript" src="js/fabric.min.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
     <script type="text/javascript" src="js/bench.js"></script>
+	<script type="text/javascript" src="js/drawpromo.js"></script>
 
     <%	 // tmp_channel indicates the type of editor needed (i.e. email, Facebook, Twitter, etc.)
          // Include the "editor-specific" javascript.  Each editor shares the javascript logic above,
@@ -362,28 +364,24 @@
 
 		%>
 			<c:set var="templateEnum" value="1" scope="page"/> 
-			<%@include file="promo.jsp" %>
+			<!-- include file="promo.jsp" -->
 
 			<div id="finishedImage">
 
 				<c:set var="templateEnum" value="2" scope="page"/> 
-				<%@include file="templates/email/promo.jsp" %>
+				<canvas id="finishedImage1"></div>
 
 				<c:set var="templateEnum" value="3" scope="page"/> 
-				<%@include file="templates/email/promo.jsp" %>
 
 				<%  // Currently, only email has more than 3 slots in the editor.
 				%>
 				<c:choose>
 					<c:when test="${tmp_channel == channel_email}">
 						<c:set var="templateEnum" value="4" scope="page"/> 
-						<%@include file="templates/email/promo.jsp" %>
 
 						<c:set var="templateEnum" value="5" scope="page"/> 
-						<%@include file="templates/email/promo.jsp" %>
 
 						<c:set var="templateEnum" value="6" scope="page"/> 
-						<%@include file="templates/email/promo.jsp" %>
 					</c:when>
 				</c:choose>
 
@@ -545,7 +543,7 @@
 		document.getElementById("brndbotMain").scrollIntoView();
 
 		// Set up the editor for the initial pane 
-		insertEditFields ($('#promoview'), $('#workArea'));
+		//insertEditFields ($('#promoview'), $('#workArea'));
 	});
 </script>
 

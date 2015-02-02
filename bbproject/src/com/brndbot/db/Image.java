@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +33,9 @@ import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
 import com.brndbot.util.AppEnvironment;
 
+/** TODO Need to add MIME type to Image table.
+ *  ImageType is the usage type, not the MIME type.
+ */
 public class Image implements TableModel 
 {
 	
@@ -47,6 +51,7 @@ public class Image implements TableModel
 	private Integer _image_width;
 	private Blob _image;
 	private byte[] _image_bytes; // to store to db
+	private String mime_type;
 
 	// Max file size for a image
 	public static long MAX_IMAGE_SIZE = 500000L;
@@ -153,6 +158,9 @@ public class Image implements TableModel
 		}
 	}
 
+	/** save assumes that the image is always defined by "name" (really
+	 *  path) rather than blob. This whole scheme is wonky.
+	 */
 	public int save(DbConnection con) throws SQLException
 	{
 		logger.debug("IMAGE SAVE SAVE SAVE**************");
@@ -481,5 +489,44 @@ public class Image implements TableModel
 			DbUtils.close(stmt, rs);
 		}
 		return json_array;
+	}
+	
+	/** Returns an OutputStream width the content of the image. Returns
+	 *  null if the image isn't available, or if the database entry
+	 *  references the image by "name" rather than having a blob.
+	 *  
+	 */
+	static public MimeTypedInputStream getImageStream (int user_id, int image_id, DbConnection con) {
+		PreparedStatement pstmt = con.createPreparedStatement
+				("SELECT Image, MimeType FROM images WHERE UserID = ? AND ImageID = ?");
+		ResultSet rs = null;
+		try {
+			pstmt.setInt (1, user_id);
+			pstmt.setInt (2, image_id);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				Blob imageBlob = rs.getBlob (1);
+				if (imageBlob == null) {
+					logger.warn ("getImageStream reading row with null blob");
+					return null;
+				}
+				String mimeType = rs.getString(2);
+				InputStream blobStream = imageBlob.getBinaryStream ();
+				return new MimeTypedInputStream (blobStream, mimeType);
+			}
+		}
+		catch (SQLException e) {
+			logger.error ("Exception in getImageStream: {}", e.getClass().getName());
+			return null;
+		}
+		finally {
+			try {
+				// Is it safe to close these before the InputStream has been read?
+				pstmt.close ();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {}
+		}
+		return null;	
 	}
 }

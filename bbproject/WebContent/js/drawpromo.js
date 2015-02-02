@@ -7,12 +7,14 @@
 
 /* Takes an ObservableArray and draws it to a specified div.
  * location is a DOM (not JQuery object). */
-function drawPromotion (promotionArray, location) {
-	var canvas = new fabric.canvas (location);
+function drawPromotion (promotion, location) {
+	console.log ("drawPromotion");
+	var canvas = new fabric.StaticCanvas (location);
 	// Where do I set its size?
 	// Does Kendo add an array level?
-	for (var i = 0, len = promotionArray.length; i < len; i++) {
-		var elem = promotionArray[i];
+	for (var i = 0, len = promotion.fields.length; i < len; i++) {
+		var elem = promotion.fields[i];
+		console.log ("Got a field, if its name is " + elem.name);
 		if (elem.name == "field") {
 			console.log ("Got a field");
 			var field = elem.field;
@@ -40,6 +42,17 @@ function drawPromotion (promotionArray, location) {
 
 function fabricateText (field) {
 	var font = field.font();
+	var x = field.offset.x;
+	var y = field.offset.y;
+	var wid = field.dimensions.x;
+	var ht = field.dimensions.y;
+	var content = field.text;
+	var text = new fabric.Text(content, {
+		fontSize: 12,		// just to get something
+		left: x,
+		top: y
+	});
+	canvas.add(text);
 }
 
 function fabricateImage (field) {

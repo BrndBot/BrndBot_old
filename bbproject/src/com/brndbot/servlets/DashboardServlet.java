@@ -124,10 +124,10 @@ public class DashboardServlet extends HttpServlet
 			logger.error ("Error getting promo prototypes: {}", e.getClass().getName());
 		}
 		String jsonStr = jsonProtos.toString();
-		//System.out.println ("JSON = " + jsonStr);
 
 		if (jsonStr.length() > 0)
 		{
+			logger.debug ("Returning JSON: " + jsonStr);
 	        response.setContentType("application/json; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.println(jsonStr);

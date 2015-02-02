@@ -36,7 +36,6 @@ $(document).ready(function()
 		// So how should I do this? Best way is probably to have a template
 		// for each available row and copy the appropriate one here.
 		// Time to get HTML5 templates working right.
-		console.log("Click!");
 		var dataCat = $(this).attr("data-category");
 		var template = $('template[data-category="' + dataCat + '"]');
 		$('#modelRow').empty();

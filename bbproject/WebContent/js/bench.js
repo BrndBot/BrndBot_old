@@ -783,11 +783,22 @@ function loadPromotion (promoName) {
 				url: "DashboardServlet?promo=" + promoName,
 				dataType: "json"
 			}
+		},
+		change: function (e) {
+			promotion = promotionDataSource.data()[0];
+			var canvas = $('finishedImage1');
+			canvas.attr("width", promotion.width);
+			canvas.attr("height", promotion.height);
+			drawPromotion (promotion, 'finishedImage1');
 		}
 	});	
-	promotionDataSource.read ().then (function () {
-		promotion = dataSource.data();
-		drawPromotion (promotion, someDiv);	// TODO what is someDiv?
-	});
+	var promise = promotionDataSource.read ();
+//	promise.then (function () {
+//		promotion = dataSource.data();
+//		var canvas = $('finishedImage1');
+//		canvas.attr("width", promotion.width);
+//		canvas.attr("height", promotion.height);
+//		drawPromotion (promotion, 'finishedImage1');
+//	});
 }
 

@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.UserLogo;
 import com.brndbot.system.SessionUtils;
@@ -22,6 +25,8 @@ public class RemoveLogoServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
+	final static Logger logger = LoggerFactory.getLogger(RemoveLogoServlet.class);
+	
 	public RemoveLogoServlet ()
     {
         super();
@@ -34,19 +39,13 @@ public class RemoveLogoServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		System.out.println("--------Entering RemoveLogoServlet----------");
+		logger.debug("--------Entering RemoveLogoServlet----------");
 
 		// Get rid of previous values
 		DbConnection con = DbConnection.GetDb();
 
 		HttpSession session = request.getSession();
 		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
-		if (user_id == 0)
-		{
-			System.out.println("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
-			response.sendRedirect("index.jsp");
-			return;
-		}
 
 		// Check for attachment
 		UserLogo existing_logo = UserLogo.getLogoByUserID(user_id, con);
