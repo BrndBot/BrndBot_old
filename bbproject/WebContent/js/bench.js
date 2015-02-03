@@ -15,6 +15,9 @@ var lastSelectedBlock = null;
 // Gets set from a Kendo datasource.
 var promotion = null;
 
+// The JSON representation of the stylesets applicable to the promotion.
+var styleSets = null;
+
 // One-time initialization called after the page fully loads.  These are initializations common
 //  to all editor.  The functions called are typically editor-specific.
 function initTheBench() 
@@ -768,10 +771,7 @@ function hideOtherTabs(id)
 	if (design) design.hide();
 }
 
-/* Load up the styles for the user. */
-function loadStyles () {
-	
-}
+
 
 /* Load up the promotion for drawing. */
 function loadPromotion (promoName) {
@@ -784,21 +784,42 @@ function loadPromotion (promoName) {
 				dataType: "json"
 			}
 		},
-		change: function (e) {
+		change: 
+		function (e) {
+			console.log ("got promotion data");
 			promotion = promotionDataSource.data()[0];
 			var canvas = $('finishedImage1');
 			canvas.attr("width", promotion.width);
 			canvas.attr("height", promotion.height);
+			applyStyle.applyDefaultStyle (promotion);
 			drawPromotion (promotion, 'finishedImage1');
 		}
 	});	
-	var promise = promotionDataSource.read ();
-//	promise.then (function () {
-//		promotion = dataSource.data();
-//		var canvas = $('finishedImage1');
-//		canvas.attr("width", promotion.width);
-//		canvas.attr("height", promotion.height);
-//		drawPromotion (promotion, 'finishedImage1');
-//	});
+	loadStyles (promotionDataSource);
+}
+
+/* Load up the styles for the user. */
+function loadStyles (dataSource) {
+	console.log ("loadStyles");
+	var styleDataSource = new kendo.data.DataSource({
+		transport:
+		{
+			read:
+			{
+				url: "StyleServlet",
+				// TODO figure out what it will need as a parameter
+				dataType: "json"
+			}
+		},
+		change: 
+		function (e) {
+			console.log ("got style data");
+			styleSets = styleDataSource.data();
+			console.log (styleSets);
+			// This guarantees both styles and promotion are available for drawing.
+			dataSource.read ();
+		}
+	});
+	styleDataSource.read();
 }
 

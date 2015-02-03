@@ -1,14 +1,20 @@
 package com.brndbot.servlets;
 
+import com.brndbot.client.ClientInterface;
+import com.brndbot.client.Model;
 import com.brndbot.client.style.StyleSet;
+import com.brndbot.promo.Client;
+import com.brndbot.system.SessionUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,23 +41,64 @@ public class StyleServlet extends HttpServlet {
 		doPost(request, response);
 	}
 
-	@Override
+	/**
+	 *  The value returned is a JSON array of the stylesets for the model
+	 *  specified by the "brndbotcontent" session attribute.
+	 */	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		logger.debug ("Entering StyleServlet");
 		
+		HttpSession session = request.getSession();
+		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
+		Client client = (Client) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
 		/* TODO Generalize to all styles 
 		 * This version will deliver just one styleset from a fixed location
 		 * for initial testing.
 		 */
-		StyleSet styleSet = new StyleSet ("dummy");
+		//StyleSet styleSet = new StyleSet ("dummy");
 		
-		String jsonStr = null;
+		// Make a JSON array of the promotion prototypes under this model
+		ClientInterface ci = null;
+		try {
+			ci = client.getClientInterface();
+			if (ci == null) {
+				logger.error ("Couldn't get ClientInterface");
+				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				return;
+			}
+			else
+				logger.debug ("Got ClientInterface {}", ci.getClass().getName());
+		} catch (Throwable t) {
+			logger.error (t.getClass().getName());
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
+		Map<String, StyleSet> styleSetMap = null;
+		try {
+			styleSetMap = client.getStyleSets(modelName);
+		} catch (Exception e) {
+			logger.error ("Exception getting style sets: {}", e.getClass().getName());
+			e.printStackTrace();
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
+		if (styleSetMap == null || styleSetMap.isEmpty()) {
+			logger.error ("No stylesets found for model {}", modelName);
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
+		logger.debug ("Returned from getStyleSets, got {} stylesets", styleSetMap.size());
+
+		String jsonStr = "";
 		try {
 			JSONArray jsonStyles = new JSONArray();
-			JSONObject jstyle = styleSet.toJSON();
-			jsonStyles.put (jstyle);		
-			jsonStr = jsonStyles.toString ();
+			for (StyleSet styleSet : styleSetMap.values()) {
+				logger.debug ("Converting styleset to JSON");
+				JSONObject jstyle = styleSet.toJSON();
+				jsonStyles.put (jstyle);		
+				jsonStr = jsonStyles.toString ();
+			}
 		}
 		catch (JSONException e) {
 			logger.error ("JSONException in StyleServlet: {}", e.getMessage ());

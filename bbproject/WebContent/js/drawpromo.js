@@ -9,43 +9,44 @@
  * location is a DOM (not JQuery object). */
 function drawPromotion (promotion, location) {
 	console.log ("drawPromotion");
-	var canvas = new fabric.StaticCanvas (location);
+	var canvas = new fabric.Canvas (location);
 	// Where do I set its size?
 	// Does Kendo add an array level?
 	for (var i = 0, len = promotion.fields.length; i < len; i++) {
-		var elem = promotion.fields[i];
-		console.log ("Got a field, if its name is " + elem.name);
-		if (elem.name == "field") {
-			console.log ("Got a field");
-			var field = elem.field;
-			//var fieldType = field.type;
-			switch (field.type) {
+		var field = promotion.fields[i];
+		console.log ("Got a field, its name is " + field.name);
+		// Draw only if there's a style for this field
+		if (field.style) {
+			switch (field.style.styleType) {
 			case "text":
-				fabricateText (field);
+				fabricateText (field, canvas);
 				break;
 			case "image":
-				fabricateImage (field);
+				fabricateImage (field, canvas);
 				break;
 			case "logo":
-				fabricateLogo (field);
+				fabricateLogo (field, canvas);
 				break;
 			case "block":
-				fabricateBlock (field);
+				fabricateBlock (field, canvas);
 				break;
 			case "svg":
-				fabricateSVG (field);
+				fabricateSVG (field, canvas);
+				break;
+			default:
+				console.log ("Unknown field type " + field.styleType);
 				break;
 			}
 		}
 	}	
 }
 
-function fabricateText (field) {
-	var font = field.font();
-	var x = field.offset.x;
-	var y = field.offset.y;
-	var wid = field.dimensions.x;
-	var ht = field.dimensions.y;
+function fabricateText (field, canvas) {
+	var font = field.font;
+	var x = field.offsetX;
+	var y = field.offsetY;
+	var wid = field.width;
+	var ht = field.height;
 	var content = field.text;
 	var text = new fabric.Text(content, {
 		fontSize: 12,		// just to get something
@@ -55,13 +56,13 @@ function fabricateText (field) {
 	canvas.add(text);
 }
 
-function fabricateImage (field) {
+function fabricateImage (field, canvas) {
 }
 
-function fabricateLogo (field) {
+function fabricateLogo (field, canvas) {
 }
 
-function fabricateBlock (field) {
+function fabricateBlock (field, canvas) {
 	var x = field.offset.x;
 	var y = field.offset.y;
 	var wid = field.dimensions.x;
@@ -75,6 +76,6 @@ function fabricateBlock (field) {
 	canvas.add(rect);
 }
 
-function fabricateSVG (field) {
+function fabricateSVG (field, canvas) {
 }
 

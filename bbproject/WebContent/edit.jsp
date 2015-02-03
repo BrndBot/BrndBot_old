@@ -86,6 +86,7 @@
     <script type="text/javascript" src="js/fabric.min.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
+    <script type="text/javascript" src="js/applystyle.js"></script>
     <script type="text/javascript" src="js/bench.js"></script>
 	<script type="text/javascript" src="js/drawpromo.js"></script>
 
@@ -536,7 +537,6 @@
 		initTheBench();
 
 		// load the promotion and all the styles in bench.js
-		loadStyles ();
 		loadPromotion ("${proto_name}");
 
 		// ensure the top of the page is shown

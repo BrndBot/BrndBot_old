@@ -236,20 +236,24 @@ public class Client implements Serializable {
 		Map<String, Model> models = modelCollection.getAllModels();
 		for (String modelName : models.keySet()) {
 			logger.debug ("Model name = {}", modelName);
-			File modelDir = new File (path + modelName);
-			if (!modelDir.exists() || !modelDir.isDirectory()) {
-				logger.warn ("No styleset directory {}", modelDir.getPath());
-				continue;
-			}
-			File [] styleSetFiles = modelDir.listFiles();
+//			File modelDir = new File (path + modelName);
+//			if (!modelDir.exists() || !modelDir.isDirectory()) {
+//				logger.warn ("No styleset directory {}", modelDir.getPath());
+//				continue;
+//			}
+			File styleSetDir = new File (path);
+			File [] styleSetFiles = styleSetDir.listFiles();
 			
-			// parse all the style set files for this model
+			// parse all the style set files for all models
 			for (File ssfile : styleSetFiles) {
+				if (ssfile.isDirectory())
+					continue;
+				logger.debug ("Calling StyleSetParser on {}", ssfile.getPath ());
 				StyleSetParser ssp = new StyleSetParser (ssfile);
 				try {
 					StyleSet ss = ssp.parse();
 					logger.debug ("Adding style set {}", ss.getName());
-					brandIdentity.addStyleSet(modelName, ss);
+					brandIdentity.addStyleSet(ss.getModel(), ss);
 				} catch (Exception e) {
 					logger.error ("Exception parsing styleset {}", ssfile.getPath());
 					logger.error (e.getClass().getName());
@@ -259,7 +263,13 @@ public class Client implements Serializable {
 		}
 	}
 	
-	/* Apply the BrandIdentity's styles to the promotion prototypes. */
+	/** Return the stylesets for the current brand identity */
+	public Map<String,StyleSet> getStyleSets (String modelName) {
+		return brandIdentity.getStyleSetsForModel(modelName);
+	}
+	
+	/* Apply the BrandIdentity's styles to the promotion prototypes.
+	 * TODO is this really useful for anything? */
 	private void applyBrandStyles () {
 		Map<String, Model> models = modelCollection.getAllModels();
 		logger.debug ("applyBrandStyles");

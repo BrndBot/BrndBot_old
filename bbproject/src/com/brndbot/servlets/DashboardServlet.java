@@ -62,15 +62,13 @@ public class DashboardServlet extends HttpServlet
 
 	/**
 	 *  The value returned is a JSON array of the promotion prototypes for the model
-	 *  specified by the "type" parameter.
+	 *  specified by the "brndbotcontent" session attribute.
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering DashboardServlet----------");
 
-		/* In this new world, the type parameter will be the name of a Promotion,
-		 * and so a name rather than a number. */
 		HttpSession session = request.getSession();
 		int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
@@ -99,8 +97,6 @@ public class DashboardServlet extends HttpServlet
 				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;
 			}
-			else
-				logger.debug ("Got ClientInterface {}", ci.getClass().getName());
 		} catch (Throwable t) {
 			logger.error (t.getClass().getName());
 			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
