@@ -164,7 +164,7 @@ public class SetSessionServlet extends HttpServlet
 		{
 //			System.out.println("CLEARING THE SESSION!");
 			session.setAttribute(SessionUtils.CHANNEL_KEY, "" + NEG_ONE);
-			session.setAttribute(SessionUtils.CONTENT_KEY, "" + NEG_ONE);
+			session.setAttribute(SessionUtils.CONTENT_KEY, "");
 			session.setAttribute(SessionUtils.DATABASE_ID_KEY, "" + NEG_ONE);
 			// FUSED_IMAGE_ID_KEY is cleared here, but set directly to session in servlets
 			session.setAttribute(SessionUtils.FUSED_IMAGE_ID_KEY, "" + NEG_ONE);
@@ -185,7 +185,7 @@ public class SetSessionServlet extends HttpServlet
 					channel != ChannelEnum.FACEBOOK.getValue() &&
 					channel != ChannelEnum.TWITTER.getValue())
 				{
-					System.out.println("Unexpected channel: " + channel);
+					logger.debug("Unexpected channel: " + channel);
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					return;
 				}

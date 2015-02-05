@@ -79,7 +79,8 @@
 	<jsp:setProperty name="benchHelper" property="promoProto" value="${proto_name}"/>
 	<jsp:setProperty name="benchHelper" property="modelName" value="${model_name}"/>
 </jsp:useBean>
-<%	benchHelper.setSession (session);	// Need Java to set binary values %>
+<%	benchHelper.setSession (session);	// Need Java to set binary values 
+%>
 
     <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="js/kendo.all.min.js"></script>

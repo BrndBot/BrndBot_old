@@ -25,29 +25,7 @@ var applyStyle = {
 			var style = applyStyle.findApplicableStyle (field, ss);
 			if (style != null) {
 				console.log ("Applying style");
-				promotion.style = style;
-//				applyStyle.applyCommon (field, style);
-//				switch (field.styleType) {
-//				case "text":
-//					applyStyle.applyTextStyle (field, style);
-//					break;
-//				case "image":
-//					applyStyle.applyImageStyle (field, style);
-//					break;
-//				case "logo":
-//					applyStyle.applyLogoStyle (field, style);
-//					break;
-//				case "block":
-//					applyStyle.applyBlockStyle (field, style);
-//					break;
-//				case "svg":
-//					applyStyle.applySVGStyle (field, style);
-//					break;
-//				default:
-//					console.log ("Unknown field type " + field.styleType);
-//					break;
-//				}
-
+				field.style = style;
 			}
 		}
 	},

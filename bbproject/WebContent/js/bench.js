@@ -259,7 +259,7 @@ function initTheBench()
 	}
 
 	// Initialize controls specific to the type of bench
-	benchSpecificInits();
+	//benchSpecificInits();
 
 	$('#genericTextLink').on('click', function(e)
 	{
@@ -792,7 +792,7 @@ function loadPromotion (promoName) {
 			canvas.attr("width", promotion.width);
 			canvas.attr("height", promotion.height);
 			applyStyle.applyDefaultStyle (promotion);
-			drawPromotion (promotion, 'finishedImage1');
+			drawPromo.drawPromotion (promotion, 'finishedImage1');
 		}
 	});	
 	loadStyles (promotionDataSource);

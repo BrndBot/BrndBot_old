@@ -206,10 +206,11 @@ public class Client implements Serializable {
 		String modelName = m.getName();
 		Promotion promo = defaultPromotionPrototypes.get(modelName);
 		if (promo == null) {
-			logger.debug ("No promotion prototypes for model, creating default");
+			logger.debug ("getPromotionPrototypes: No promotion prototypes for model, creating default");
 			promo = new Promotion ("Default", m, null);
 			promo.populateFromModel ();
-			logger.debug ("Created prototype {} and populated it from model", promo.getName());
+			logger.debug ("Created prototype {} and populated it from model {}", promo.getName(), modelName);
+			logger.debug (promo.toString());
 			defaultPromotionPrototypes.put (modelName, promo);
 		}
 		pmap = new HashMap<>();

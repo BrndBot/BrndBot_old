@@ -103,6 +103,10 @@ public class DashboardServlet extends HttpServlet
 			return;
 		}
 		Model model = client.getModelCollection().getModelByName(modelName);
+		if (model != null)
+			logger.debug ("getModelByName got model with name {}", model.getName());
+		else
+			logger.error ("getModelByName returned null model");
 		Map<String,Promotion> protos = client.getPromotionPrototypes(model);
 		logger.debug ("Got {} promotion prototypes", protos.size());
 		JSONArray jsonProtos = new JSONArray();
@@ -111,6 +115,7 @@ public class DashboardServlet extends HttpServlet
 		int id = 1;
 		try {
 			for (Promotion proto : protos.values()) {
+				logger.debug (proto.toString ());
 				JSONObject jproto = proto.toJSON();
 				jproto.put ("ID", id++);
 				jproto.put ("protoName", proto.getName());
@@ -132,7 +137,7 @@ public class DashboardServlet extends HttpServlet
 		}
 		else
 		{
-			logger.error("Unknown BlockType: " + modelName);
+			logger.error("Error creating JSON from prototype: " + modelName);
 			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
