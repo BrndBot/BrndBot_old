@@ -10,13 +10,12 @@ var currentListID = new Array(0, 0, 0);
 //  sort up/down, it's the last selected.
 var lastSelectedBlock = null;
 
-// The JSON representation of the promotion to draw, with the top
-// level being an ObservableArray.
-// Gets set from a Kendo datasource.
-var promotion = null;
+// The Promotion object representing the promotion to draw.
+var currentPromotion = null;
 
-// The JSON representation of the stylesets applicable to the promotion.
+// An array of StyleSet objects applicable to the promotion.
 var styleSets = null;
+
 
 // One-time initialization called after the page fully loads.  These are initializations common
 //  to all editor.  The functions called are typically editor-specific.
@@ -286,24 +285,6 @@ function initTheBench()
 //		addFooterBlock();
 	});
 
-	$('#newClassLink').on('click', function(e)
-	{
-		$('#promoteThisTxt').html('&nbsp;class');
-		showPopup(e, 'classHere');
-	});
-
-	$('#newTeacherLink').on('click', function(e)
-	{
-		$('#promoteThisTxt').html('&nbsp;teacher');
-		showPopup(e, 'staffHere');
-	});
-
-	$('#newWorkshopLink').on('click', function(e)
-	{
-		$('#promoteThisTxt').html('&nbsp;workshop');
-		showPopup(e, 'workshopHere');
-	});
-
 	$('#closeContentPopup').on('click', function(event)
 	{
 		var dialog = $("#contentPopup").data("kendoWindow");
@@ -554,25 +535,6 @@ function initTheBench()
 		currentListID[bType- 1] = listID;
 	}
 
-	function selectClassListItem(e)
-	{
-        setListState(this, CLASS_OBJ);
-	}
-
-	function selectWorkshopListItem(e)
-	{
-        setListState(this, WORKSHOP_OBJ);
-	}
-
-	function selectStaffListItem(e)
-	{
-        setListState(this, STAFF_OBJ);
-	}
-
-	function onClassListSuccess(e)
-	{
-		doListSuccess(CLASS_OBJ);
-	}
 
 	// When you select an item from the popup list, and you are adding it to 
 	//  the stack in the editor, this is the routine that handles that.
@@ -595,17 +557,7 @@ function initTheBench()
 		}
 	}
 
-	function onWorkshopListSuccess(e)
-	{
-		doListSuccess(WORKSHOP_OBJ);
-		$('#contentType').html("Workshops");
-		$('#wait').hide();
-	}
 
-	function onStaffListSuccess(e)
-	{
-		doListSuccess(STAFF_OBJ);
-	}
 
 	// Show the popup window.  Initialize it if necessary.
 	function openPopup(e)
@@ -775,6 +727,7 @@ function hideOtherTabs(id)
 
 /* Load up the promotion for drawing. */
 function loadPromotion (promoName) {
+	console.log ("loadPromotion");
 	var promotionDataSource = new kendo.data.DataSource({
 		transport: 
 		{
@@ -787,18 +740,27 @@ function loadPromotion (promoName) {
 		change: 
 		function (e) {
 			console.log ("got promotion data");
-			promotion = promotionDataSource.data()[0];
+			promotionData = promotionDataSource.data()[0];
+			promotionModel = new Model ();
+			promotionModel.populateFromJSON (promotionData);
 			var canvas = $('finishedImage1');
-			canvas.attr("width", promotion.width);
-			canvas.attr("height", promotion.height);
-			applyStyle.applyDefaultStyle (promotion);
-			drawPromo.drawPromotion (promotion, 'finishedImage1');
+			// Because of the way completion routines are hooked up,
+			// styleSets will now be available.
+			var defaultStyleSet = styleSets[0];		// TODO find the one named "default" by preference
+			currentPromotion = new Promotion (promotionModel, defaultStyleSet);
+			canvas.attr("width", defaultStyleSet.width);
+			canvas.attr("height", defaultStyleSet.height);
+
+			currentPromotion.draw ('finishedImage1');
+			benchcontent.insertEditFields ( $('#workArea'));
 		}
 	});	
 	loadStyles (promotionDataSource);
 }
 
-/* Load up the styles for the user. */
+/* Load up the styles for the user. This is called from the completion routine
+ * of loadPromotion so that reading of style is initated first, and loading
+ * of the promotion happens only after the styles are loaded. */
 function loadStyles (dataSource) {
 	console.log ("loadStyles");
 	var styleDataSource = new kendo.data.DataSource({
@@ -814,7 +776,15 @@ function loadStyles (dataSource) {
 		change: 
 		function (e) {
 			console.log ("got style data");
-			styleSets = styleDataSource.data();
+			jsonStyleSets = styleDataSource.data();
+			// styleSets is a global array of StyleSet objects
+			styleSets = [];
+			for (var i = 0; i < jsonStyleSets.length; i++) {
+				var jsonStyleSet = jsonStyleSets[i];
+				var styleSet = new StyleSet();
+				styleSet.populateFromJSON(jsonStyleSets[i]);
+				styleSets[i] = styleSet;
+			}
 			console.log (styleSets);
 			// This guarantees both styles and promotion are available for drawing.
 			dataSource.read ();

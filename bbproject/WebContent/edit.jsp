@@ -87,9 +87,8 @@
     <script type="text/javascript" src="js/fabric.min.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
-    <script type="text/javascript" src="js/applystyle.js"></script>
+    <script type="text/javascript" src="js/BBModel.js"></script>
     <script type="text/javascript" src="js/bench.js"></script>
-	<script type="text/javascript" src="js/drawpromo.js"></script>
 
     <%	 // tmp_channel indicates the type of editor needed (i.e. email, Facebook, Twitter, etc.)
          // Include the "editor-specific" javascript.  Each editor shares the javascript logic above,
@@ -524,11 +523,9 @@
 	</div> <!-- brndbotMain -->
 	<script type="text/javascript" src="js/benchcontent.js"></script>
 <script type="text/javascript">
-// This is the naiscent "style" implementation.  The design and implementation of the "style" (aka "layout variation")
+// This is the "style" implementation.  The design and implementation of the "style" (aka "layout variation")
 //  needs requirements before it can be done correctly.  At the time the implementation of this editor was halted,
 //  "styles" was all over the map.
-
-// It's probably all wrong, so rip it all out!! -- GDM
 
 
 	// This function is called when all of page including HTML, JS and CSS are fully loaded.
@@ -544,7 +541,7 @@
 		document.getElementById("brndbotMain").scrollIntoView();
 
 		// Set up the editor for the initial pane 
-		//insertEditFields ($('#promoview'), $('#workArea'));
+		//benchcontent.insertEditFields ( $('#workArea'));
 	});
 </script>
 
@@ -555,7 +552,7 @@
 		# if (clazz == 'prmf_text') {   #
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
-							onfocus="updatePrototypeText(this)" rows="4" 
+							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
 							style="width:100%">#:content#
 						</textarea>
                 </div>

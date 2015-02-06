@@ -2,14 +2,23 @@
  *  The functions to draw a promotion.
  *  For now, just enough to draw a block as proof of concept.
  *  
+ *  DEPRECATED -- keep for a bit in case it's useful for reference.
+ *  
  *  Requires fabric.js
  */
 
 var drawPromo = {
+		
+currentPromotion: null,
+		
 /* Takes an ObservableArray and draws it to a specified div.
- * location is a DOM (not JQuery object). */
+ * location is a DOM (not JQuery object). Fabric drawing objects
+ * are added to the field as field.fabricObject so they
+ * can be updated. */
 drawPromotion: function (promotion, location) {
 	console.log ("drawPromotion");
+	drawPromo.currentPromotion = promotion;
+	
 	var canvas = new fabric.Canvas (location);
 	// Where do I set its size?
 	// Does Kendo add an array level?
@@ -76,7 +85,8 @@ fabricateText: function (field, canvas) {
 		width: wid,
 		height: ht
 	});
-	console.log(text);  
+	console.log(text);
+	field.fabricObject = text;
 	canvas.add(text);
 },
 
@@ -99,6 +109,7 @@ fabricateBlock: function  (field, canvas) {
 		top: y,
 		fill: color
 	});
+	field.fabricObject = rect;
 	canvas.add(rect);
 },
 
