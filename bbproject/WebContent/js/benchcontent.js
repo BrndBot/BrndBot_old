@@ -37,34 +37,9 @@ insertEditFields: function (dest) {
 //			console.log ("Button div");
 //		}
 //	});
-	var fields = currentPromotion.model.fields;
-	for (var i = 0; i < fields.length; i++) {
-		var field = fields[i];
-		switch (field.styleType) {
-		case "text":
-			dest.append ("<div>Text field</div>");
-			break;
-		case "image":
-			dest.append ("<div>Image field</div>");
-			break;
-		case "logo":
-			dest.append ("<div>Logo field</div>");
-			break;
-		case "svg":
-			dest.append ("<div>SVG field</div>");
-			break;
-		case "block":
-			dest.append ("<div>Block field</div>");
-			break;
-		default:
-			console.log ("Unknown styleType " + field.styleType);
-			break;
-		}
-		// Updated to fabric -- but where are this divs actually used?
-	}
 	
 	dest.kendoListView({
-		dataSource: new kendo.data.DataSource({data: fields}),
+		dataSource: new kendo.data.DataSource({data: benchcontent.modelToSourceData(currentPromotion.model)}),
 	    selectable: true,
         template: kendo.template($('#editFieldsTemplate').html())
 	});
@@ -74,11 +49,30 @@ insertEditFields: function (dest) {
 /* This function takes the promotion fields and extracts the
  * essential data as a Java Array suitable for a Kendo data source.
  * 
- * Don't think we need this any more. The promotion fields themselves
- * should be sufficient.
+ * Need to extract the type, and somehow manage a reference to
+ * the model field from the data. There's the trick ... how do
+ * I do that? Put the name in data-linkedfield. Just set the
+ * value fieldid.
+ * in 
  */
-prototypeToSourceData: function (src) {
+
+modelToSourceData: function (model) {
 	var srcdata = [];
+	for (var i = 0; i < model.fields.length; i++) {
+		var field = model.fields[i];
+		if (field.styleType == "text") {
+			var fielddata = {};
+			fielddata.fieldid = field.name;
+			fielddata.content = field.getText();
+			fielddata.styleType = "text";
+			srcdata.push(fielddata);
+		}
+	}
+	return srcdata;
+},
+
+//prototypeToSourceData: function (src) {
+//	var srcdata = [];
 //	src.children(".prmf_text").each ( function (idx) {
 //		var fielddata = {};
 //		// Extract the needed item from one div (field)
@@ -88,13 +82,13 @@ prototypeToSourceData: function (src) {
 //		fielddata.fieldid = dispDiv.attr("id");
 //		srcdata.push (fielddata);
 //	});
-	var fields = drawpromo.currentPromotion.fields;
-	for (var i = 0; i = fields.length; i++) {
-		var field = fields[i];
-		// Whatever. Think we don't need this any more.
-	}
-	return srcdata;
-},
+//	var fields = drawpromo.currentPromotion.fields;
+//	for (var i = 0; i = fields.length; i++) {
+//		var field = fields[i];
+//		// Whatever. Think we don't need this any more.
+//	}
+//	return srcdata;
+//},
 
 
 /* These functions poll the

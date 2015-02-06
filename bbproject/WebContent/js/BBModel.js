@@ -60,6 +60,20 @@ function ModelField () {
 		this.styleType = jsonField.styleType;
 	}
 	
+	/* For text fields only. Would it be cleaner to subclass
+	 * ModelField? 
+	 */
+	this.getText = function () {
+		var content = "";
+		if (this.text)
+			content = this.text;
+		else if (this.style.text)
+			content = this.style.text;
+		else if (this.style.defaultText)
+			content = this.style.defaultText;
+		return content;
+	}
+	
 	this.draw = function (location, canvas ) {
 		// Draw only if there's a style for this field
 		if (this.style) {
@@ -107,13 +121,7 @@ function ModelField () {
 			originy = "bottom";
 			y = -y;
 		}
-		var content = "";
-		if (this.text)
-			content = this.text;
-		else if (this.style.text)
-			content = this.style.text;
-		else if (this.style.defaultText)
-			content = this.style.defaultText;
+		var content = this.getText();
 		
 		var text = new fabric.Text(content, {
 			fontSize: 12,		// just to get something

@@ -549,7 +549,7 @@
      Big, but apparently you can't put a Kendo template in a separate file. -->
 <script type="text/x-kendo-template" id="editFieldsTemplate">
 	<div>
-		# if (clazz == 'prmf_text') {   #
+		# if (styleType == 'text') {   #
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
