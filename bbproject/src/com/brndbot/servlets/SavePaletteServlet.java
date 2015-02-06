@@ -48,12 +48,6 @@ public class SavePaletteServlet extends HttpServlet
 
 		HttpSession session = request.getSession();
 		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
-		if (user_id == 0)
-		{
-			logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
-			response.sendRedirect("index.jsp");
-			return;
-		}
 
 		// For now, just delete any previous palette information with id #1
 		try 

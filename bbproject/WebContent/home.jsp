@@ -35,8 +35,9 @@
 </script>
 <% /*
 
-This page presents the promotion categories that are available and lets the user choose one
-for processing in the editor (bench).
+This page presents the promotion categories that are available and lets the user choose one,
+which then presents the models. When the user chooses a model, it presents the promotion
+prototypes to select, and the user picks one for processing in the editor (bench).
 
 */
 %>
@@ -137,13 +138,18 @@ Java version: <%= System.getProperty("java.version") %><br> -->
 						</div>
 					</div>
 					<div class="spaceMe">
-<c:out escapeXml="false" value="${homeHelper.renderDoToday}"/>
+						<% /* The buttons are inserted here for picking a model */ %>
+						<table><tr>
+						<c:out escapeXml="false" value="${homeHelper.renderDoToday}"/>
+						</tr>
+						<% /* Second row is the buttons for the category */ %>
+						<tr id="modelRow"></tr>
+						</table>
 					</div>
 					<div style="clear:both">&nbsp;</div>
 				</div>
 
 
-				<!--  BEGINNING DASHBOARD.JSP -->
 				<div id="dashboardJsp" style="display:none;">
 				    <div class="mainContentHeader" style="width:60rem">
 				    	<div class="subContentHeader">
@@ -246,7 +252,7 @@ Java version: <%= System.getProperty("java.version") %><br> -->
 		#:name#
 		</div>
 		<div class="listDescription">
-		#:fieldDescription.text#
+		#:description#
 		</div>
 		<button id="button#:ID#" data-proto="#:protoName#" onclick="selectProto(this);">Promote</button>
 	</div>

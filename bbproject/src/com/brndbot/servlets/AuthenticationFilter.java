@@ -56,7 +56,7 @@ public class AuthenticationFilter implements Filter {
 	
 	private boolean authenticationOK (HttpServletRequest hReq) {
 		HttpSession session = hReq.getSession();
-		int userId = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
+		int userId = SessionUtils.getUserId(session);
 		return (userId != 0);
 	}
 

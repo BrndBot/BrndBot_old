@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 //import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +15,15 @@ import com.brndbot.client.BrandIdentity;
 import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Model;
+import com.brndbot.client.ModelCollection;
 import com.brndbot.client.Promotion;
 import com.brndbot.client.style.StyleSet;
 import com.brndbot.client.parser.StyleSetParser;
+import com.brndbot.db.DbConnection;
+import com.brndbot.db.Organization;
+import com.brndbot.db.User;
+import com.brndbot.system.SessionUtils;
+import com.brndbot.system.SystemProp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,34 +55,56 @@ public class Client implements Serializable {
 	
 	private transient ClientInterface clientInterface;
 	private BrandIdentity brandIdentity;
+	private ModelCollection modelCollection;
 	
 	private String clientInterfaceClass;
 	
 	private int userId;
 	
-	/** The name of the organization */
+	/* The human-readable name of the organization */
 	private String organizationName;
 	
-	/** FIXME ****HACK*** doesn't work with more than one user  */
-	private static transient Client client;
+	/* The name used for the organization's directory */
+	private String organizationDirName;
+
+	
+	/* This allows multiple clients. We need to figure out a way to
+	 * remove stale clients who don't explicitly log out.
+	 */
+	private static Map<Integer, Client> clients = new HashMap<>();
+	
+	/* We accumulate default promotion prototypes here as they're 
+	 * created, so we don't keep building new copies.
+	 * The map is from model name to prototype. */
+	Map<String,Promotion> defaultPromotionPrototypes = new HashMap<>();
 	
 	public static Client getClient (HttpSession session) {
-		// **** TOTALLY TEMPORARY CODE ******
-		// Just create a small set of Models here. Can use the 
-		// parser to build them from XML.
+		logger.debug ("starting getClient");
+		int uid = SessionUtils.getUserId(session);
+		Client client = clients.get (uid);
 
-		
-		
-		// FIXME temporary hack
 		if (client != null) {
+			logger.debug ("We already have a client");
 			return client;
 		}
 		try {
-			client = new Client ("com.brndbot.client.dummy.DummyClientInterface");
-			client.organizationName = "LevelOne";		// TODO hackhackhack
-			client.brandIdentity = new BrandIdentity ("default");
+			DbConnection con = DbConnection.GetDb();
+			User user = new User(uid);
+			logger.debug ("Loading client info");
+			user.loadClientInfo(con);
+			int orgId = user.getOrganizationID();
+			logger.debug ("org ID is {}", orgId);
+			Organization org = Organization.getById(orgId);
+			String moduleClass = org.getModuleClass();
+			logger.debug ("Module class is {}", moduleClass);
+			client = new Client (moduleClass);
+			client.organizationName = org.getName();
+			client.organizationDirName = org.getDirectoryName();
+			client.brandIdentity = new BrandIdentity ("default");	// TODO Is this a required value?
+			client.loadModels ();
 			client.loadStyleSets();
 			client.applyBrandStyles();
+			clients.put (uid, client);
 			return client;
 		} catch (Exception e) {
 			logger.error ("Error creating client: {}", e.getClass().getName());
@@ -87,9 +116,32 @@ public class Client implements Serializable {
 		// TODO save it in the session and get it back from there
 	}
 	
+	/** Return the Client matching the user ID. Will return null
+	 *  if there's no such user. */
+	public static Client getByUserId (int id) {
+		Client client = clients.get(id);
+		if (client == null) {
+			logger.error ("No client for ID {}", id);
+		}
+		return client;
+	}
+	
 	/** TODO a worse hack. Call this on logout/login to clear the session. */
 	public static void reset () {
-		client = null;
+		clients.clear();
+	}
+	
+	public ModelCollection getModels () {
+		if (modelCollection == null)
+			loadModels ();
+		return modelCollection;
+	}
+	
+	/** Load up the models. */
+	private void loadModels () {
+		String modelBase = SystemProp.get(SystemProp.LOCAL_ASSETS);
+		ModelLoader loader = new ModelLoader(modelBase + "/models/" + organizationDirName);
+		modelCollection = loader.readModelFiles();
 	}
 	
 	/** Constructor. This creates an instance of the ClientInterface implementation
@@ -132,9 +184,38 @@ public class Client implements Serializable {
 		brandIdentity = bi;
 	}
 	
+	public ModelCollection getModelCollection () {
+		return modelCollection;
+	}
+	
 	public Map<String,Promotion> getPromotionPrototypes (String modelName) {
-		//return ClientDataHolder.getPromotionPrototypes(userId, modelName, clientInterface);
-		return clientInterface.getPromotionPrototypes(modelName);
+		Model model = modelCollection.getModelByName(modelName);
+		return getPromotionPrototypes (model);
+	}
+	
+	
+	public Map<String,Promotion> getPromotionPrototypes (Model m) {
+		Map<String, Promotion> pmap = 
+				clientInterface.getPromotionPrototypes(m.getName());
+		if (!pmap.isEmpty())
+			return pmap;
+
+		// No promotion prototypes for the model. Create a default and put it into
+		// the list.
+		// If we already created one, use it.
+		String modelName = m.getName();
+		Promotion promo = defaultPromotionPrototypes.get(modelName);
+		if (promo == null) {
+			logger.debug ("getPromotionPrototypes: No promotion prototypes for model, creating default");
+			promo = new Promotion ("Default", m, null);
+			promo.populateFromModel ();
+			logger.debug ("Created prototype {} and populated it from model {}", promo.getName(), modelName);
+			logger.debug (promo.toString());
+			defaultPromotionPrototypes.put (modelName, promo);
+		}
+		pmap = new HashMap<>();
+		pmap.put (promo.getName(), promo);
+		return pmap;
 	}
 	
 	public ClientInterface getClientInterface () throws ClientException {
@@ -147,30 +228,33 @@ public class Client implements Serializable {
 	private void loadStyleSets() {
 		logger.debug ("loadStyleSets");
 		StringBuilder pathb = new StringBuilder("/var/brndbot/styles/");		// FIXME more hack
-		pathb.append (organizationName);
+		pathb.append (organizationDirName);
 		pathb.append ("/");
 		pathb.append (brandIdentity.getName());
 		pathb.append ("/");
 		String path = pathb.toString();
 		logger.debug ("Path = {}", path);
-		Map<String, Model> models = clientInterface.getModels ().getAllModels();
+		Map<String, Model> models = modelCollection.getAllModels();
 		for (String modelName : models.keySet()) {
 			logger.debug ("Model name = {}", modelName);
-			File modelDir = new File (path + modelName);
-			if (!modelDir.exists() || !modelDir.isDirectory()) {
-				logger.warn ("No model directory {}", modelDir.getPath());
-				continue;
-			}
-			File [] styleSetFiles = modelDir.listFiles();
+//			File modelDir = new File (path + modelName);
+//			if (!modelDir.exists() || !modelDir.isDirectory()) {
+//				logger.warn ("No styleset directory {}", modelDir.getPath());
+//				continue;
+//			}
+			File styleSetDir = new File (path);
+			File [] styleSetFiles = styleSetDir.listFiles();
 			
-			// parse all the style set files for this model
+			// parse all the style set files for all models
 			for (File ssfile : styleSetFiles) {
+				if (ssfile.isDirectory())
+					continue;
+				logger.debug ("Calling StyleSetParser on {}", ssfile.getPath ());
 				StyleSetParser ssp = new StyleSetParser (ssfile);
 				try {
-					logger.debug ("Starting parser on {}", ssfile.getPath());
 					StyleSet ss = ssp.parse();
 					logger.debug ("Adding style set {}", ss.getName());
-					brandIdentity.addStyleSet(modelName, ss);
+					brandIdentity.addStyleSet(ss.getModel(), ss);
 				} catch (Exception e) {
 					logger.error ("Exception parsing styleset {}", ssfile.getPath());
 					logger.error (e.getClass().getName());
@@ -180,11 +264,19 @@ public class Client implements Serializable {
 		}
 	}
 	
-	/* Apply the BrandIdentity's styles to the promotion prototypes. */
+	/** Return the stylesets for the current brand identity */
+	public Map<String,StyleSet> getStyleSets (String modelName) {
+		return brandIdentity.getStyleSetsForModel(modelName);
+	}
+	
+	/* Apply the BrandIdentity's styles to the promotion prototypes.
+	 * TODO is this really useful for anything? */
 	private void applyBrandStyles () {
-		Map<String, Model> models = clientInterface.getModels ().getAllModels();
+		Map<String, Model> models = modelCollection.getAllModels();
+		logger.debug ("applyBrandStyles");
 		for (String modelName : models.keySet()) {
-			Map<String,Promotion> promoProtos = getPromotionPrototypes(modelName);
+			Model m = models.get (modelName);
+			Map<String,Promotion> promoProtos = getPromotionPrototypes(m);
 			if (promoProtos == null) {
 				logger.error ("promoProtos is null for {}", modelName);
 				continue;

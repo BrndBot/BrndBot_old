@@ -26,7 +26,7 @@ import com.brndbot.db.Palette;
 import com.brndbot.db.User;
 import com.brndbot.promo.Client;
 
-/** BenchHelper provides Java logic for the editor (bench.jsp).
+/** BenchHelper provides Java logic for the editor (edit.jsp).
  *  It's designed so it can (at least mostly) be accessed with
  *  the useBean tag. Therefore, it conforms closely to the Java Bean
  *  pattern. 
@@ -35,7 +35,7 @@ public class BenchHelper {
 
 	final static Logger logger = LoggerFactory.getLogger(BenchHelper.class);
 	
-	private DbConnection con;
+//	private DbConnection con;
 	
 	private HttpSession session;
 	private int userId;
@@ -46,26 +46,20 @@ public class BenchHelper {
 	private String modelName;
 	private String promoProto;		// promotion prototype name
 	private ArrayList<Palette> paletteArray;
-	private ClientInterface clientInterface;
 	private Promotion activePromotion;
+	private Client client;
 
 	public BenchHelper () {
-		con = DbConnection.GetDb();	
+		//con = DbConnection.GetDb();	
 	}
 	
-	/** Must call dismiss to prevent leakage. */
-	public void dismiss () {
-		if (con != null) {
-			con.close();
-		}
-	}
 	
 	/** Use c:out on this at the point where the buttons for viewing lists of
 	 *  promo protos should be inserted.
 	 */
 	public String getRenderModelLinks () {
 		logger.debug ("getRenderModelLinks");
-		ModelLinkRenderer renderer = new ModelLinkRenderer(clientInterface);
+		ModelLinkRenderer renderer = new ModelLinkRenderer(client);
 		return renderer.getFragment ();
 	}
 	
@@ -86,7 +80,7 @@ public class BenchHelper {
 			if (ci == null) {
 				logger.error ("No client interface!");
 			}
-			Map<String, Promotion> prototypes = ci.getPromotionPrototypes(modelName);
+			Map<String, Promotion> prototypes = client.getPromotionPrototypes(modelName);
 			if (prototypes == null) {
 				logger.error ("No prototypes!");
 			}
@@ -111,6 +105,17 @@ public class BenchHelper {
 		}
 	}
 
+	/** Get the user palette */
+	public ArrayList<Palette> getUserPalette () {
+		DbConnection con = DbConnection.GetDb();
+		try {
+			return User.getUserPalette (userId, con);
+		}
+		finally {
+			con.close();
+		}
+	}
+	
 	
 	/** We have to set the session with a scriptlet, not
 	 *  setProperty */
@@ -124,12 +129,12 @@ public class BenchHelper {
 	
 	public void setUserId (int u) {
 		userId = u;
-		loadClientInterface();
+		client = Client.getByUserId(u);
 	}
 	
-	public DbConnection getConnection () {
-		return con;
-	}
+//	public DbConnection getConnection () {
+//		return con;
+//	}
 	
 	public String getModelName () {
 		return modelName;
@@ -188,27 +193,18 @@ public class BenchHelper {
 	}
 	
 	public List<Palette> getPaletteArray () {
-		if (paletteArray == null) {
-			paletteArray = User.getUserPalette(userId, con);
+		DbConnection con = DbConnection.GetDb();
+		try {
+			if (paletteArray == null) {
+				paletteArray = User.getUserPalette(userId, con);
+			}
+		} finally {
+			con.close();
 		}
 		return paletteArray;
 	}
 	
 
 	
-	/** This seeks out the appropriate ClientInterface for the user.
-	 *  TODO make it real, getting the class name from the database.
-	 *  For now, uses the dummy client interface
-	 */
-	private void loadClientInterface () {
-		final String className = "com.brndbot.client.dummy.DummyClientInterface";
-		try {
-			clientInterface = ClientInterfaceFactory.getInterfaceForClass(className);
-		} catch (Exception e) {
-			logger.error ("FATAL: {}", e.getClass().getName());
-		}
-		if (clientInterface == null) {
-			logger.error ("FATAL: Could not load client interface {}", className);
-		}
-	}
+
 }

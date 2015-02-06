@@ -10,6 +10,13 @@ var currentListID = new Array(0, 0, 0);
 //  sort up/down, it's the last selected.
 var lastSelectedBlock = null;
 
+// The Promotion object representing the promotion to draw.
+var currentPromotion = null;
+
+// An array of StyleSet objects applicable to the promotion.
+var styleSets = null;
+
+
 // One-time initialization called after the page fully loads.  These are initializations common
 //  to all editor.  The functions called are typically editor-specific.
 function initTheBench() 
@@ -172,20 +179,6 @@ function initTheBench()
     }
 
 
-	// Convert from element id to an index in an array
-	function getGalleryIdx(id)
-	{
-		if (id == "images")
-			return 0;
-		else if (id == "teachers")
-			return 1;
-		else if (id == "logos")
-			return 2;
-		else if (id == "stock")
-			return 3;
-		return 4; //upload
-	}
-
 	// The tab control in the image gallery popup
 	$("#galleryTabs").kendoTabStrip({
     });
@@ -265,7 +258,7 @@ function initTheBench()
 	}
 
 	// Initialize controls specific to the type of bench
-	benchSpecificInits();
+	//benchSpecificInits();
 
 	$('#genericTextLink').on('click', function(e)
 	{
@@ -292,24 +285,6 @@ function initTheBench()
 //		addFooterBlock();
 	});
 
-	$('#newClassLink').on('click', function(e)
-	{
-		$('#promoteThisTxt').html('&nbsp;class');
-		showPopup(e, 'classHere');
-	});
-
-	$('#newTeacherLink').on('click', function(e)
-	{
-		$('#promoteThisTxt').html('&nbsp;teacher');
-		showPopup(e, 'staffHere');
-	});
-
-	$('#newWorkshopLink').on('click', function(e)
-	{
-		$('#promoteThisTxt').html('&nbsp;workshop');
-		showPopup(e, 'workshopHere');
-	});
-
 	$('#closeContentPopup').on('click', function(event)
 	{
 		var dialog = $("#contentPopup").data("kendoWindow");
@@ -323,32 +298,32 @@ function initTheBench()
 	});
 
 	// Make the popup window for the 3 main content types appear
-	function showPopup(e, listID)
-	{
-		// Show the correct list, hide the others
-		(listID == 'classHere') ? $('#classHere').show() : $('#classHere').hide(); 
-		(listID == 'staffHere') ? $('#staffHere').show() : $('#staffHere').hide(); 
-		(listID == 'workshopHere') ? $('#workshopHere').show() : $('#workshopHere').hide(); 
-
-		var myWin = $("#contentPopup");
-		// If not initalized, init and show
-		if (!myWin.data("kendoWindow"))
-		{
-			var dialog = myWin.kendoWindow({
-				title: false,
-				visible: false,
-				modal: true
-			}).data("kendoWindow");
-		    dialog.center().open();
-		    $('body').blur();
-		} 
-		else 
-	    {
-	        // reopening window
-			myWin.data("kendoWindow").center().open(); // open the window
-		    $('body').blur();
-	    }
-	}
+//	function showPopup(e, listID)
+//	{
+//		// Show the correct list, hide the others
+//		(listID == 'classHere') ? $('#classHere').show() : $('#classHere').hide(); 
+//		(listID == 'staffHere') ? $('#staffHere').show() : $('#staffHere').hide(); 
+//		(listID == 'workshopHere') ? $('#workshopHere').show() : $('#workshopHere').hide(); 
+//
+//		var myWin = $("#contentPopup");
+//		// If not initalized, init and show
+//		if (!myWin.data("kendoWindow"))
+//		{
+//			var dialog = myWin.kendoWindow({
+//				title: false,
+//				visible: false,
+//				modal: true
+//			}).data("kendoWindow");
+//		    dialog.center().open();
+//		    $('body').blur();
+//		} 
+//		else 
+//	    {
+//	        // reopening window
+//			myWin.data("kendoWindow").center().open(); // open the window
+//		    $('body').blur();
+//	    }
+//	}
 
 	// Button to popup the image gallery
 	$('.viewImageGallery').each(function ()
@@ -418,11 +393,6 @@ function initTheBench()
 				// Yes it does, so show it and hide unnecessary stuff
 				form.show();
 				showOtherTabs(lastSelectedBlock);
-				$('#toClassID').hide();
-				$('#toNonClassID').hide();
-				$('#toWorkshopID').hide();
-				$('#toNonWorkshopID').hide();
-//				$('#applyDiv').hide();
 
 				// lastSelectedBlock is the block that is being clicked on
 				var type = getBlockType(lastSelectedBlock);
@@ -565,25 +535,6 @@ function initTheBench()
 		currentListID[bType- 1] = listID;
 	}
 
-	function selectClassListItem(e)
-	{
-        setListState(this, CLASS_OBJ);
-	}
-
-	function selectWorkshopListItem(e)
-	{
-        setListState(this, WORKSHOP_OBJ);
-	}
-
-	function selectStaffListItem(e)
-	{
-        setListState(this, STAFF_OBJ);
-	}
-
-	function onClassListSuccess(e)
-	{
-		doListSuccess(CLASS_OBJ);
-	}
 
 	// When you select an item from the popup list, and you are adding it to 
 	//  the stack in the editor, this is the routine that handles that.
@@ -606,17 +557,7 @@ function initTheBench()
 		}
 	}
 
-	function onWorkshopListSuccess(e)
-	{
-		doListSuccess(WORKSHOP_OBJ);
-		$('#contentType').html("Workshops");
-		$('#wait').hide();
-	}
 
-	function onStaffListSuccess(e)
-	{
-		doListSuccess(STAFF_OBJ);
-	}
 
 	// Show the popup window.  Initialize it if necessary.
 	function openPopup(e)
@@ -732,42 +673,8 @@ function isolateEnum(id)
 
 function getBlockType(idarg) 
 {
-	var id = idarg.toLowerCase();
-	if (id.substr(0,1) == '#')
-		id = id.substr(1,id.length);
+	// Is this anything useful?
 	var type = -1;
-	if (id.substr(0,5) == 'class')
-		type = CLASS_OBJ;
-	else if (id.substr(0,5) == 'works')
-		type = WORKSHOP_OBJ;
-	else if (id.substr(0,5) == 'staff')
-		type = STAFF_OBJ;
-	else if (id.substr(0,5) == 'clien')
-		type = CLIENT_OBJ;
-	else if (id.substr(0,5) == 'finde')
-		type = FINDER_OBJ;
-	else if (id.substr(0,4) == 'sale')
-		type = SALE_OBJ;
-	else if (id.substr(0,4) == 'site')
-		type = SITE_OBJ;
-	else if (id.substr(0,5) == 'appoi')
-		type = APPOINTMENT_OBJ;
-	else if (id.substr(0,5) == 'sched')
-		type = SCHEDULE_OBJ;
-	else if (id.substr(0,4) == 'text')
-		type = TEXT_OBJ;
-	else if (id.substr(0,5) == 'foote')
-		type = FOOTER_OBJ;
-	else if (id.substr(0,5) == 'socia')
-		type = SOCIAL_OBJ;
-	else if (id.substr(0,5) == 'graph')
-		type = GRAPHIC_OBJ;
-	else if (id.substr(0,5) == 'noncl')
-		type = NON_CLASS_OBJ;
-	else if (id.substr(0,5) == 'nonwo')
-		type = NON_WORKSHOP_OBJ;
-	else alert('Unknown block_id, error: ' + id);
-
 	return type;
 }
 
@@ -815,3 +722,74 @@ function hideOtherTabs(id)
 	var design = prepDesignID(id);
 	if (design) design.hide();
 }
+
+
+
+/* Load up the promotion for drawing. */
+function loadPromotion (promoName) {
+	console.log ("loadPromotion");
+	var promotionDataSource = new kendo.data.DataSource({
+		transport: 
+		{
+			read:
+			{
+				url: "DashboardServlet?promo=" + promoName,
+				dataType: "json"
+			}
+		},
+		change: 
+		function (e) {
+			console.log ("got promotion data");
+			promotionData = promotionDataSource.data()[0];
+			promotionModel = new Model ();
+			promotionModel.populateFromJSON (promotionData);
+			var canvas = $('finishedImage1');
+			// Because of the way completion routines are hooked up,
+			// styleSets will now be available.
+			var defaultStyleSet = styleSets[0];		// TODO find the one named "default" by preference
+			currentPromotion = new Promotion (promotionModel, defaultStyleSet);
+			canvas.attr("width", defaultStyleSet.width);
+			canvas.attr("height", defaultStyleSet.height);
+
+			currentPromotion.draw ('finishedImage1');
+			benchcontent.insertEditFields ( $('#workArea'));
+		}
+	});	
+	loadStyles (promotionDataSource);
+}
+
+/* Load up the styles for the user. This is called from the completion routine
+ * of loadPromotion so that reading of style is initated first, and loading
+ * of the promotion happens only after the styles are loaded. */
+function loadStyles (dataSource) {
+	console.log ("loadStyles");
+	var styleDataSource = new kendo.data.DataSource({
+		transport:
+		{
+			read:
+			{
+				url: "StyleServlet",
+				// TODO figure out what it will need as a parameter
+				dataType: "json"
+			}
+		},
+		change: 
+		function (e) {
+			console.log ("got style data");
+			jsonStyleSets = styleDataSource.data();
+			// styleSets is a global array of StyleSet objects
+			styleSets = [];
+			for (var i = 0; i < jsonStyleSets.length; i++) {
+				var jsonStyleSet = jsonStyleSets[i];
+				var styleSet = new StyleSet();
+				styleSet.populateFromJSON(jsonStyleSets[i]);
+				styleSets[i] = styleSet;
+			}
+			console.log (styleSets);
+			// This guarantees both styles and promotion are available for drawing.
+			dataSource.read ();
+		}
+	});
+	styleDataSource.read();
+}
+

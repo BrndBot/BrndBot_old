@@ -17,34 +17,57 @@ public class ModelLoader {
 
 	final static Logger logger = LoggerFactory.getLogger(ModelLoader.class);
 
-	File modelDir;
+	File categoriesDir;
 	
 	/** Constructor. Establishes the directory that holds
-	 *  the model files. */
+	 *  the category directories, which in turn hold the
+	 *  model files. */
 	public ModelLoader(String path) {
-		modelDir = new File (path);
-		if (!modelDir.exists()) {
+		categoriesDir = new File (path);
+		if (!categoriesDir.exists()) {
 			logger.error ("Model directory {} does not exist", path);
-			modelDir = null;
+			categoriesDir = null;
 			return;
 		}
-		if (!modelDir.isDirectory()) {
+		if (!categoriesDir.isDirectory()) {
 			logger.error ("Path {} is not a directory", path);
-			modelDir = null;
+			categoriesDir = null;
 			return;
 		}
 	}
 	
 	public ModelCollection readModelFiles () {
 		ModelCollection mc = new ModelCollection ();
-		File[] files = modelDir.listFiles();
-		for (File f : files) {
-			ModelParser parser = new ModelParser (f);
-			try {
-				Model m = parser.parse();
-				mc.addModel(m);
-			} catch (Exception e) {
-				logger.error ("Error parsing {}", f.getPath());
+		File[] categoryDirs = categoriesDir.listFiles();
+		for (File dir : categoryDirs) {
+			String catName = dir.getName();
+			logger.debug ("Category directory {}", catName);
+			if (!dir.isDirectory()) {
+				logger.warn ("Non-directory file at category level in models directory");
+				continue;
+			}
+			File[] modelFiles = dir.listFiles ();
+			for (File f : modelFiles) {
+				logger.debug ("Model file {}", f.getName());
+				ModelParser parser = new ModelParser (f);
+				try {
+					Model m = parser.parse();
+					// If the model category doesn't match the directory,
+					// is logging the inconsistency sufficient notice?
+					// Should we change the category to match the directory?
+					// Right now the category in the file governs.
+					if (!catName.equals (m.getCategory())) {
+						logger.warn ("Model file category {} does not match category directory {}",
+								m.getCategory (),
+								catName);
+					}
+					mc.addModel(m);
+				} catch (Exception e) {
+					logger.error ("Error parsing {}", f.getPath());
+					if (e.getMessage() != null)
+						logger.error (e.getMessage());
+					e.printStackTrace ();
+				}
 			}
 		}
 		return mc;

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Model;
 import com.brndbot.client.ModelCollection;
+import com.brndbot.promo.Client;
 
 /** This renders the buttons that lead to a list of
  *  Promotion Prototypes for each model for home.jsp
@@ -20,12 +21,12 @@ public class ModelListButtonRenderer extends Renderer {
 	final static Logger logger = LoggerFactory.getLogger(ModelListButtonRenderer.class);
 
 	
-	public ModelListButtonRenderer(ClientInterface ci) {
+	public ModelListButtonRenderer(Client c) {
 		super ();
 		logger.debug ("ModelListButtonRenderer constructor");
-		if (ci == null)
-			logger.error ("ClientInterface is null");
-		ModelCollection modelCol = ci.getModels();
+		if (c == null)
+			logger.error ("Client is null");
+		ModelCollection modelCol = c.getModels();
 		try {
 			Map<String,Model> models = modelCol.getAllModels();
 			for (Model m : models.values()) {

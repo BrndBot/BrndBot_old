@@ -16,15 +16,7 @@ var currentItemID = -1;
 $(document).ready(function() 
 {
 
-	/*
-
-
-	$('#facebookBadge').on('click', function(e)
-	{
-		facebookBadge();
-	});
-
-*/	
+	
 	$('#chanEmailBadge').on('click', function(e)
 	{
 		// change to the content (dash)
@@ -38,8 +30,25 @@ $(document).ready(function()
 		session_mgr.setSession(SESSION_SET, FACEBOOK_CHANNEL, 0, 0, routeViaChannel);
 	});
 	
-	/* This sets the function for all the content badge buttons in one fell swoop */
-	$('.homeBadgeButton').on('click', function(e)
+	/* This sets up the function for all the category buttons. */
+	$('.categoryButton').on('click', function(e)
+	{
+		// So how should I do this? Best way is probably to have a template
+		// for each available row and copy the appropriate one here.
+		// Time to get HTML5 templates working right.
+		var dataCat = $(this).attr("data-category");
+		var template = $('template[data-category="' + dataCat + '"]');
+		$('#modelRow').empty();
+		$('#modelRow').append (template.clone().html());
+		$('#modelRow').find('.modelButton').on ('click', handleModelButton);
+	});
+	
+	/* This sets the function for all the content badge buttons in one fell swoop.
+	 * Clicking on a content badge button will bring up the prototypes for
+	 * that model. Since the buttons change dynamically, we need to assign this
+	 * handler every time the button is loaded from a template.
+	 */
+	var handleModelButton = function (e)
 	{
 		model_name = $(this).attr('data-model');	// set the value for the callback
 
@@ -57,99 +66,14 @@ $(document).ready(function()
 		session_mgr.setSession(SESSION_SET, 0, model_name, 0, showPrototypes);
 		console.log ("set data model " + model_name);
 		$('#contentType').text (model_name);
-	});
+	}
 
 	// init dashboard
 	initDashboard();
 
 	fancyShow(HOME_JSP);
 	session_mgr.setSession(SESSION_CLEAR);
-/*
-	function emailBadge()
-	{
-		// set channel to email
-		session_mgr.setSession(SESSION_SET, EMAIL_CHANNEL, 0, 0, function()
-		{
-			$('#channelAction').html('Send by email');
-			fancyShow(CONTENT_JSP);
-		});
-	}
 
-	function twitterBadge()
-	{
-		// set channel to FB
-		session_mgr.setSession(SESSION_SET, TWITTER_CHANNEL, 0, 0, function()
-		{
-			$('#channelAction').html('Tweet on Twitter');
-			fancyShow(CONTENT_JSP);
-		});
-	}
-
-	function facebookBadge()
-	{
-		// set channel to FB
-		session_mgr.setSession(SESSION_SET, FACEBOOK_CHANNEL, 0, 0, function()
-		{
-			$('#channelAction').html('Post to Facebook');
-			fancyShow(CONTENT_JSP);
-		});
-	}
-*/
-/*	function classBadge()
-	{
-		session_mgr.setSession(SESSION_SET, 0, CLASS_OBJ, -1, clickClassView);
-	}
-	function clickClassView()
-	{
-		$('#viewClasses').click();
-		fancyShow(DASHBOARD_JSP);
-	}
-
-	function workshopBadge()
-	{
-		session_mgr.setSession(SESSION_SET, 0, WORKSHOP_OBJ, -1, clickWorkshopView);
-	}
-
-	function clickWorkshopView()
-	{
-		$('#viewWorkshops').click();
-		fancyShow(DASHBOARD_JSP);
-	}
-
-	function teacherBadge()
-	{
-		session_mgr.setSession(SESSION_SET, 0, STAFF_OBJ, -1, clickTeacherView);
-	}
-
-	function clickTeacherView()
-	{
-		$('#viewTeachers').click();
-		fancyShow(DASHBOARD_JSP);
-	}
-
-	function saleBadge()
-	{
-		alert('Sale/promotion template set is not yet installed on this server.');
-//uncomment when fixed		session_mgr.setSession(SESSION_SET, 0, SALE_OBJ, -1);
-	}
-*/
-/*
-	function scheduleBadge()
-	{
-		session_mgr.setSession(SESSION_SET, 0, SCHEDULE_OBJ, -1);
-		if (SESSION_CHANNEL == SESSION_UNDEFINED)
-		{
-			// No channel, go get it
-			viewChannels();
-			return;
-		}
-		else
-		{
-			// We know the channel, get which class
-			$('#schedulContentBadge').click();  
-		}
-	}
-*/
 });
 
 function viewChannels()
@@ -161,7 +85,7 @@ function viewChannels()
 function selectProto (btn) {	
 	var protoName = $(btn).attr("data-proto");
 	// TODO temp hard-code channel to 1
-	window.location.assign ("bench.jsp?channel=1&proto=" + protoName + "&model=" + model_name);
+	window.location.assign ("edit.jsp?channel=1&proto=" + protoName + "&model=" + model_name);
 	// TODO really should select channel next, but take a shortcut for now.
 }
 
@@ -172,7 +96,7 @@ function routeViaChannel(db_id)
 		alert('The channel is undefined in the function home.js.routeViaChannel().  This is a system error.');
 		return;
 	}
-	window.location = 'bench.jsp?' + SESSION_DATABASE_ID_KEY + '=' + db_id;
+	window.location = 'edit.jsp?' + SESSION_DATABASE_ID_KEY + '=' + db_id;
 }
 
 function fancyShow(show_id)

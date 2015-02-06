@@ -104,6 +104,50 @@ public class User implements TableModel
 		}
 	}
 	
+	/** Loads up information needed by Client. Getters can then
+	 *  be called on organization id and personality id.
+	 */
+	public void loadClientInfo (DbConnection con) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			// Get a Statement object
+			String sql = "SELECT orgid,personalityid FROM user WHERE UserID = ?;";
+			pstmt = con.createPreparedStatement(sql);
+			pstmt.setInt(1, userId);
+
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				orgId = rs.getInt(1);
+				personalityId = rs.getInt (2);
+			} else {
+				logger.error ("loadClientInfo: No result found for user ID {}", userId);
+			}
+		}
+		catch (SQLException e)
+		{
+			logger.error("Exception in loadClientInfo: {}", e.getClass().getName());
+			e.printStackTrace();
+		}
+		finally
+		{
+			if (pstmt != null)
+			{
+				try 
+				{
+					pstmt.close();
+				} catch (SQLException e) {
+					logger.error("Error closing: {}", e.getClass().getName());
+					e.printStackTrace();
+				}
+			}
+			DbUtils.close(rs);
+			con.close();
+		}
+	
+	}
+	
 	public Integer getOrganizationID() {
 		return orgId;
 	}
@@ -352,6 +396,11 @@ public class User implements TableModel
 			list.add(new Palette("#0000ff"));
 			list.add(new Palette("#000000"));
 			list.add(new Palette("#000000"));
+		}
+		if (stmt != null) {
+			try {
+				stmt.close();
+			} catch (SQLException e) {}
 		}
 		return list;
 	}

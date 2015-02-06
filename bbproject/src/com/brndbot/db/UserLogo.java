@@ -38,6 +38,8 @@ public class UserLogo implements TableModel
 	public static int MAX_BOUNDING_HEIGHT = 180;
 	public static int MAX_BOUNDING_WIDTH = 400;
 
+	/** Constructor for a logo, uninitialized except for belonging to
+	 *  the active user */
 	public UserLogo(int user_id)
 	{
 		Assert.that(user_id > 0, "User_ID is zero in the UserLogo constructor!");
@@ -45,6 +47,7 @@ public class UserLogo implements TableModel
 		_image = new Image();
 	}
 
+	/* Constructor for a logo based on an existing Image object */
 	public UserLogo(int user_id, Image image)
 	{
 		Assert.that(user_id > 0, "User_ID is zero in the UserLogo constructor!");
@@ -80,6 +83,10 @@ public class UserLogo implements TableModel
 		_image = img; 
 	}
 
+	/* A constructor based on a ResultSet. Who knows what kind of query
+	 * is expected, but the ResultSet has to contain UserID and ImageID
+	 * columns.
+	 */
 	public UserLogo(ResultSet rs)
 	{
 		try
@@ -223,6 +230,7 @@ public class UserLogo implements TableModel
 						image_name, width);
 	}
 
+	/** Returns the URL for a logo. But you have to know the URL first. */
 	static public String getBoundImage(
 			String local_image_file_name, 
 			int max_img_height, 

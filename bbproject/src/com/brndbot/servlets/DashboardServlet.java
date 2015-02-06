@@ -7,7 +7,7 @@ package com.brndbot.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+//import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -24,16 +24,25 @@ import org.slf4j.LoggerFactory;
 
 
 
+
 //import com.brndbot.block.ChannelEnum;
 //import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
+import com.brndbot.client.Model;
 import com.brndbot.client.Promotion;
 import com.brndbot.promo.Client;
 //import com.brndbot.promo.Promotion;
-import com.brndbot.system.Assert;
+//import com.brndbot.system.Assert;
 import com.brndbot.system.SessionUtils;
 //import com.brndbot.system.Utils;
 
+/** The purpose of DashboardServlet (which has nothing to do with
+ *  any known sense of "dashboard") is to get all the promotion 
+ *  prototypes for a given model; in other words, all the instantiations
+ *  of the model with promotion-specific data.
+ *  
+ *  This is called as a Kendo DataSource URL.
+ */
 public class DashboardServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -43,9 +52,9 @@ public class DashboardServlet extends HttpServlet
 	public DashboardServlet ()
     {
         super();
-        logger.info ("Testing logger");
     }
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		doPost(request, response);
@@ -53,15 +62,13 @@ public class DashboardServlet extends HttpServlet
 
 	/**
 	 *  The value returned is a JSON array of the promotion prototypes for the model
-	 *  specified by the "type" parameter.
+	 *  specified by the "brndbotcontent" session attribute.
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering DashboardServlet----------");
 
-		/* In this new world, the type parameter will be the name of a Promotion,
-		 * and so a name rather than a number. */
-		//String modelName = Utils.getStringParameter(request, "type");
 		HttpSession session = request.getSession();
 		int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
@@ -71,30 +78,36 @@ public class DashboardServlet extends HttpServlet
 			SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client);
 		}
 		
-		Assert.that(channel != 0, "Channel is zero in DashboardServlet!");
+		if (channel == 0) {
+			logger.error ("Channel is zero in DashboardServlet!");
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
 
 		//int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth();
 		logger.debug("Channel is: {}", channel);
 		logger.debug("Model name is: {}", modelName);
-		//ChannelEnum channel_enum = ChannelEnum.create(channel);
-		//max_width = channel_enum.getDefaultImgWidth();
-/*		else
-		{
-			throw new RuntimeException("Unexpected channel in DashboardServlet, channel id: " + channel);
-		}
-*/
+
 		// Make a JSON array of the promotion prototypes under this model
 		ClientInterface ci = null;
 		try {
 			ci = client.getClientInterface();
-			if (ci == null)
+			if (ci == null) {
 				logger.error ("Couldn't get ClientInterface");
-			else
-				logger.debug ("Got ClientInterface {}", ci.getClass().getName());
+				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				return;
+			}
 		} catch (Throwable t) {
 			logger.error (t.getClass().getName());
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
-		Map<String,Promotion> protos = ci.getPromotionPrototypes(modelName);
+		Model model = client.getModelCollection().getModelByName(modelName);
+		if (model != null)
+			logger.debug ("getModelByName got model with name {}", model.getName());
+		else
+			logger.error ("getModelByName returned null model");
+		Map<String,Promotion> protos = client.getPromotionPrototypes(model);
 		logger.debug ("Got {} promotion prototypes", protos.size());
 		JSONArray jsonProtos = new JSONArray();
 		
@@ -102,6 +115,7 @@ public class DashboardServlet extends HttpServlet
 		int id = 1;
 		try {
 			for (Promotion proto : protos.values()) {
+				logger.debug (proto.toString ());
 				JSONObject jproto = proto.toJSON();
 				jproto.put ("ID", id++);
 				jproto.put ("protoName", proto.getName());
@@ -111,10 +125,10 @@ public class DashboardServlet extends HttpServlet
 			logger.error ("Error getting promo prototypes: {}", e.getClass().getName());
 		}
 		String jsonStr = jsonProtos.toString();
-		System.out.println ("JSON = " + jsonStr);
 
 		if (jsonStr.length() > 0)
 		{
+			logger.debug ("Returning JSON: " + jsonStr);
 	        response.setContentType("application/json; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.println(jsonStr);
@@ -123,9 +137,8 @@ public class DashboardServlet extends HttpServlet
 		}
 		else
 		{
-			logger.error("Unknown BlockType: " + modelName);
-			throw new RuntimeException("Unknown BlockType: " + modelName);
+			logger.error("Error creating JSON from prototype: " + modelName);
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		return;
 	}
 }

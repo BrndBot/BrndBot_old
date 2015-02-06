@@ -79,12 +79,15 @@
 	<jsp:setProperty name="benchHelper" property="promoProto" value="${proto_name}"/>
 	<jsp:setProperty name="benchHelper" property="modelName" value="${model_name}"/>
 </jsp:useBean>
-<%	benchHelper.setSession (session);	// Need Java to set binary values %>
+<%	benchHelper.setSession (session);	// Need Java to set binary values 
+%>
 
     <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="js/kendo.all.min.js"></script>
+    <script type="text/javascript" src="js/fabric.min.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
+    <script type="text/javascript" src="js/BBModel.js"></script>
     <script type="text/javascript" src="js/bench.js"></script>
 
     <%	 // tmp_channel indicates the type of editor needed (i.e. email, Facebook, Twitter, etc.)
@@ -306,7 +309,8 @@
 			boolean templateVisible = true;
 			boolean isPreview = true;
 			// Must have the palette array, too.  Retrieves the palette set by the user when signed-up.
-			ArrayList<Palette> paletteArray = User.getUserPalette(benchHelper.getUserId(), benchHelper.getConnection());
+			//ArrayList<Palette> paletteArray = User.getUserPalette(benchHelper.getUserId(), benchHelper.getConnection());
+			ArrayList<Palette> paletteArray = benchHelper.getUserPalette ();
 			String chosenImg = "";
 
 				// Args 2 and 3 are part of the mess regarding image bounding.  All these functions for 
@@ -361,63 +365,27 @@
 
 		%>
 			<c:set var="templateEnum" value="1" scope="page"/> 
-			<c:choose>
-				<c:when test="${tmp_channel == channel_email}">
-					<%@include file="templates/email/promo.jsp" %>
-				</c:when>
-				<c:when test="${tmp_channel == channel_facebook}">
-					<%@include file="templates/facebook/promo.jsp" %>
-				</c:when>
-			</c:choose>
+			<!-- include file="promo.jsp" -->
 
 			<div id="finishedImage">
 
 				<c:set var="templateEnum" value="2" scope="page"/> 
-				  <c:choose>
+				<canvas id="finishedImage1"></div>
+
+				<c:set var="templateEnum" value="3" scope="page"/> 
+
+				<%  // Currently, only email has more than 3 slots in the editor.
+				%>
+				<c:choose>
 					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
-					</c:when>
-					<c:when test="${tmp_channel == channel_facebook}">
-						<%@include file="templates/facebook/promo.jsp" %>
-					</c:when>
-				  </c:choose>
+						<c:set var="templateEnum" value="4" scope="page"/> 
 
-				  <c:set var="templateEnum" value="3" scope="page"/> 
-				  <c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
+						<c:set var="templateEnum" value="5" scope="page"/> 
+
+						<c:set var="templateEnum" value="6" scope="page"/> 
 					</c:when>
-					<c:when test="${tmp_channel == channel_facebook}">
-						<%@include file="templates/facebook/promo.jsp" %>
-					</c:when>
-				  </c:choose>
+				</c:choose>
 
-					<%  // Currently, only email has more than 3 slots in the editor.
-					%>
-				  <c:set var="templateEnum" value="4" scope="page"/> 
-				  <c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
-			  		</c:when>
-				  </c:choose>
-
-
-				  <c:set var="templateEnum" value="5" scope="page"/> 
-				  <c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
-					</c:when>
-				  </c:choose>
-
-				  <c:set var="templateEnum" value="6" scope="page"/> 
-				  <c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<%@include file="templates/email/promo.jsp" %>
-					</c:when>
-				  </c:choose>
-
-					<%  // end of if block for email editor-only promo.jsp inclusion
-					%>
 			</div><!-- id="finishedImage">  -->
 
 			</div></div></div>	<!-- relative --> 
@@ -555,11 +523,9 @@
 	</div> <!-- brndbotMain -->
 	<script type="text/javascript" src="js/benchcontent.js"></script>
 <script type="text/javascript">
-// This is the naiscent "style" implementation.  The design and implementation of the "style" (aka "layout variation")
+// This is the "style" implementation.  The design and implementation of the "style" (aka "layout variation")
 //  needs requirements before it can be done correctly.  At the time the implementation of this editor was halted,
 //  "styles" was all over the map.
-
-// It's probably all wrong, so rip it all out!! -- GDM
 
 
 	// This function is called when all of page including HTML, JS and CSS are fully loaded.
@@ -568,11 +534,14 @@
 		// doc.ready init for the bench, in bench.js
 		initTheBench();
 
+		// load the promotion and all the styles in bench.js
+		loadPromotion ("${proto_name}");
+
 		// ensure the top of the page is shown
 		document.getElementById("brndbotMain").scrollIntoView();
 
 		// Set up the editor for the initial pane 
-		insertEditFields ($('#promoview'), $('#workArea'));
+		//benchcontent.insertEditFields ( $('#workArea'));
 	});
 </script>
 
@@ -583,19 +552,13 @@
 		# if (clazz == 'prmf_text') {   #
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
-							onfocus="updatePrototypeText(this)" rows="4" 
+							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
 							style="width:100%">#:content#
 						</textarea>
                 </div>
 		# } #
 	</div>
 </script>
-<%
-	// Necessary cleanup to avoid leakage
-	if (benchHelper != null) {
-		benchHelper.dismiss ();
-	}
-%>
 </c:if>		<!-- sessionOK -->
 
 </body>

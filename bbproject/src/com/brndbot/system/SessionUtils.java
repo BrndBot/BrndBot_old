@@ -49,6 +49,9 @@ public class SessionUtils
 		return session.getAttribute (name);
 	}
 	
+	public static int getUserId (HttpSession session) {
+		return getIntSession(session, SessionUtils.USER_ID);
+	}
 
 	/** Return a session attribute which was saved as a boolean.
 	 *  Returns false if it's missing. */

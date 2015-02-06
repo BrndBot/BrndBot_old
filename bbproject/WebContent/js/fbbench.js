@@ -1,4 +1,4 @@
-// This source file contains Javascript that is specific to the FB version of bench.jsp
+// This source file contains Javascript that is specific to the FB version of edit.jsp
 
 // Called once to initialize Kendo widgets and controls specific to this version of the editor.
 function benchSpecificInits()

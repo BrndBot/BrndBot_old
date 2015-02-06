@@ -1,4 +1,4 @@
-// This source file contains Javascript that is specific to the email version of bench.jsp
+// This source file contains Javascript that is specific to the email version of edit.jsp
 
 // Called once to initialize Kendo widgets and controls specific to this version of the editor.
 function benchSpecificInits()
@@ -176,7 +176,7 @@ function benchSpecificInits()
 function addFooterBlock(suppress_click, display_edit_type)
 {
 	// define the default values.  Needs to extract data from the database, not kludged/hardcoded.
-	//  I would create a Java class or function from a class, call it in bench.jsp in a scriptlet,
+	//  I would create a Java class or function from a class, call it in edit.jsp in a scriptlet,
 	//  assign the results to a javascript variable and reference it globally.
 	var block = new Block(
 			EMAIL_CHANNEL,

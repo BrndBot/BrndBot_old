@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.ModelCollection;
 import com.brndbot.client.Promotion;
-import com.brndbot.client.dummy.DummyClientInterface;
 
 public class NullClientInterface implements ClientInterface {
 
@@ -17,7 +16,7 @@ public class NullClientInterface implements ClientInterface {
 	
 	private static final long serialVersionUID = 1L;
 
-	final static Logger logger = LoggerFactory.getLogger(DummyClientInterface.class);
+	final static Logger logger = LoggerFactory.getLogger(NullClientInterface.class);
 
 	private ModelCollection mCollection = new ModelCollection ();
 	private Map<String, Promotion> promotionPrototypes = new HashMap<>();
@@ -29,11 +28,6 @@ public class NullClientInterface implements ClientInterface {
 	@Override
 	public String getName() {
 		return CLIENT_INTERFACE_NAME;
-	}
-
-	@Override
-	public ModelCollection getModels() {
-		return mCollection;
 	}
 
 	@Override
