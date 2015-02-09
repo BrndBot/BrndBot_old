@@ -540,8 +540,6 @@
 		// ensure the top of the page is shown
 		document.getElementById("brndbotMain").scrollIntoView();
 
-		// Set up the editor for the initial pane 
-		//benchcontent.insertEditFields ( $('#workArea'));
 	});
 </script>
 
@@ -550,12 +548,43 @@
 <script type="text/x-kendo-template" id="editFieldsTemplate">
 	<div>
 		# if (styleType == 'text') {   #
+				<div style="font-weight:bold">#:fieldid#</div>
+				<div>Content</div>
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
 							style="width:100%">#:content#
 						</textarea>
                 </div>
+                <div>Point size</div>
+                <div class="editTextArea" >
+                        <textarea data-linkedfield="#:fieldid#"
+							onfocus="benchcontent.updatePrototypePointSize(this)" rows="1" 
+							style="width:100%">#:ptsize#
+						</textarea>
+                </div>
+                <div>
+                	<label>Typeface
+                	<select data-linkedfield="#:fieldid#"
+                			onchange="benchcontent.updatePrototypeTypeface(this)">
+                		<option value="serif" selected>Serif</option>
+                		<option value="sans-serif">Sans Serif</option>
+                	</select>
+                	</label>
+                </div>
+                <div>
+                	<label><input type="checkbox" data-linkedfield="#:fieldid#" #:italicChecked#
+                			onchange="benchcontent.updatePrototypeItalic(this)">
+                		Italic
+                	</label>
+                </div>		
+                <div>
+                	<label><input type="checkbox" data-linkedfield="#:fieldid#" #:boldChecked#
+                			onchange="benchcontent.updatePrototypeBold(this)">
+                		Bold
+                	</label>
+                </div>	
+                <p>&nbsp;</p>	
 		# } #
 	</div>
 </script>

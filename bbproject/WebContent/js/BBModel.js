@@ -34,6 +34,15 @@ function Model () {
 			this.fields[i] = modelField;
 		}
 	};
+	
+	this.findFieldByName = function (nam) {
+		for (var i = 0; i < this.fields.length; i++) {
+			var field = this.fields[i];
+			if (field.name == nam)
+				return field;
+		}
+		return null;
+	}
 }
 
 /* The prototype constructor for one field of a Model. */
@@ -54,6 +63,9 @@ function ModelField () {
 	this.text = null;
 	this.color = null;
 	this.typeface = null;
+	this.fontSize = 12;
+	this.bold = null;
+	this.italic = null;
 	
 	this.populateFromJSON = function (jsonField) {
 		this.name = jsonField.name;
@@ -72,6 +84,14 @@ function ModelField () {
 		else if (this.style.defaultText)
 			content = this.style.defaultText;
 		return content;
+	}
+	
+	this.isBold = function () {
+		return (this.bold !== null) ? this.bold : this.style.bold;
+	}
+	
+	this.isItalic = function () {
+		return (this.italic !== null) ? this.italic : this.style.italic;
 	}
 	
 	this.draw = function (location, canvas ) {
@@ -100,37 +120,72 @@ function ModelField () {
 		}
 
 	}
+	
+	this.getFontSize = function () {
+		return this.fontSize ? this.fontSize : this.style.fontSize;
+	}
+	
+	this.getTypeface = function () {
+		return this.typeface ? this.typeface : this.style.typeface;
+	}
+	
+	this.getX = function () {
+		return (this.offsetX !== null) ? this.offsetX : this.style.offsetX;
+	}
+
+	this.getY = function () {
+		return (this.offsetY !== null) ? this.offsetY : this.style.offsetY;
+	}
+	
+	this.getWidth = function () {
+		return (this.width !== null) ? this.width : this.style.width;
+	}
+	
+	this.getHeight = function () {
+		return (this.height !== null) ? this.height : this.style.height;
+	}
+	
+	this.getFontSize = function () {
+		return (this.fontSize !== null) ? this.fontSize : this.style.fontSize;
+	}
+	
+	this.isBold = function () {
+		return (this.bold !== null) ? this.bold : this.style.bold;
+	}
+
+	this.isItalic = function () {
+		return (this.italic !== null) ? this.italic : this.style.italic;
+	}
 
 	this.fabricateText = function (canvas) {
 		console.log ("fabricateText");
-		var typeface = this.typeface ? this.typeface : this.style.typeface;
-		var x = this.offsetX ? this.offsetX : this.style.offsetX;
-		var y = this.offsetY ? this.offsetY : this.style.offsetY;
-		var wid = this.width ? this.width : this.style.width;
-		var ht = this.height ? this.height : this.style.height;
 		var anchor = this.anchor ? this.anchor : this.style.anchor;
-		var typeface = this.typeface ? this.typeface : this.style.typeface;
 		var originx = "left";
 		console.log ("Anchor = " + anchor);
+		var x = this.getX();
 		if (anchor == "TR" || anchor == "BR") {
 			originx = "right";
 			x = -x;
 		}
 		var originy = "top";
+		var y = this.getY();
 		if (anchor == "BR" || anchor == "BL") {
 			originy = "bottom";
 			y = -y;
 		}
-		var content = this.getText();
+		var weight = this.isBold() ? "bold" : "normal";
+		var fstyle = this.isItalic() ? "italic" : "normal";
 		
-		var text = new fabric.Text(content, {
-			fontSize: 12,		// just to get something
+		var text = new fabric.Text(this.getText(), {
+			fontSize: this.getFontSize(),
 			left: x,
 			top: y,
-			width: wid,
-			height: ht
+			width: this.getWidth(),
+			height: this.getHeight(),
+			fontWeight: weight,
+			fontStyle: fstyle
 		});
-		fabricObject = text;
+		this.fabricObject = text;
 		canvas.add(text);
 	};
 	
@@ -153,7 +208,7 @@ function ModelField () {
 			top: y,
 			fill: color
 		});
-		fabricObject = rect;
+		this.fabricObject = rect;
 		canvas.add(rect);
 	};
 	
@@ -212,6 +267,8 @@ function Style (name, styleType) {
 	this.offsetX = 0;
 	this.offsetY = 0;
 	this.typeface = null;
+	this.bold = false;
+	this.italic = false;
 	
 	// other fields vary by the styleType
 	
@@ -221,6 +278,8 @@ function Style (name, styleType) {
 		this.name = jsonObj.name;
 		this.fieldName = jsonObj.fieldName;
 		this.styleType = jsonObj.styleType;
+		this.italic = (jsonObj.italic !== null ? jsonObj.italic : false);
+		this.bold = (jsonObj.bold !== null ? jsonObj.bold : false);
 		this.width = jsonObj.width;
 		this.height = jsonObj.height;
 		this.anchor = jsonObj.anchor;
@@ -245,6 +304,7 @@ function Promotion (model, styleSet) {
 	this.model = model;
 	// styleSet is a StyleSet
 	this.styleSet = styleSet;
+	this.canvas = null;
 	
 	// Merge the styles into the Model
 	for (var i = 0; i < model.fields.length; i++) {
@@ -259,12 +319,12 @@ function Promotion (model, styleSet) {
 		var canvasElem = $('#' + location);
 		canvasElem.attr("width", this.styleSet.width);
 		canvasElem.attr("height", this.styleSet.height);
-		var canvas = new fabric.Canvas (location);
+		this.canvas = new fabric.Canvas (location);
 		var fields = this.model.fields;
 		for (var i = 0, len = fields.length; i < len; i++) {
 			var field = fields[i];
 			console.log ("Drawing a field named " + field.name);
-			field.draw (location, canvas);
+			field.draw (location, this.canvas);
 		}	
 	};
 	
