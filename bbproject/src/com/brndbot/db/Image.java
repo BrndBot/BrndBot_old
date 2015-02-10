@@ -141,7 +141,7 @@ public class Image implements TableModel
 		{
 			_image_id = new Integer(rs.getInt("ImageID"));
 			_user_id = new Integer(rs.getInt("UserID"));
-			_image_type = ImageType.create(rs.getInt("ImageType"));
+			_image_type = ImageType.getByItemNumber(rs.getInt("ImageType"));
 			_image_name = rs.getString("ImageName");
 			_image_size = new Integer(rs.getInt("ImageSize"));
 			_image_height = new Integer(rs.getInt("ImageHeight"));

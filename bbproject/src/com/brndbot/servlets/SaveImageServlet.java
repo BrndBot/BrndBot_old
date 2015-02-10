@@ -98,7 +98,7 @@ public class SaveImageServlet extends HttpServlet
 				return;
 			}
 			logger.debug("Image ID Key: " + type);
-			ImageType image_type = ImageType.create(type);
+			ImageType image_type = ImageType.getByItemNumber(type);
 			if (image_type == null)
 			{
 				//throw new RuntimeException("Unexpected image type: " + type);

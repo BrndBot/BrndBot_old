@@ -77,10 +77,10 @@ public class SetSessionServlet extends HttpServlet
 			}
 			else
 			{
-				ImageType image_type = ImageType.create(image_id);
+				ImageType image_type = ImageType.getByItemNumber(image_id);
 				if (image_type == null)
 				{
-					System.out.println("Invalid image_type: " + image_id);
+					logger.debug("Invalid image_type: " + image_id);
 					throw new RuntimeException("Invalid image_type: " + image_id);
 				}
 	

@@ -752,7 +752,8 @@ function loadPromotion (promoName) {
 			canvas.attr("height", defaultStyleSet.height);
 
 			currentPromotion.draw ('finishedImage1');
-			benchcontent.insertEditFields ( $('#workArea'));
+			benchcontent.insertEditFields ( $('#contentArea'));
+			benchdesign.insertEditFields ( $('#designArea'));
 		}
 	});	
 	loadStyles (promotionDataSource);

@@ -23,7 +23,7 @@ insertEditFields: function (dest) {
 	dest.kendoListView({
 		dataSource: new kendo.data.DataSource({data: benchcontent.modelToSourceData(currentPromotion.model)}),
 	    selectable: true,
-        template: kendo.template($('#editFieldsTemplate').html())
+        template: kendo.template($('#contentFieldsTemplate').html())
 	});
 	dest.show();
 },
@@ -62,9 +62,10 @@ to the ModelField. If we set the attribute data-linkedfield
 to the field name, we should have what we need.  */
 updatePrototypeText: function(tarea) {
 
+	benchcontent.highlightTextArea(tarea);
+	
     function testForChange() {
-		var target = $(tarea).attr("data-linkedfield");
-		var field = currentPromotion.model.findFieldByName (target);
+    	var field = benchcontent.elemToLinkedField(tarea);
     	if (tarea.value != field.fabricObject.getText()) {
     		field.text = tarea.value;
     		field.fabricObject.setText(tarea.value);
@@ -75,6 +76,7 @@ updatePrototypeText: function(tarea) {
     tarea.onblur = function() {
         window.clearInterval(timer);
         testForChange();
+        benchcontent.unhighlightTextArea (tarea);
         tarea.onblur = null;
     };
 
@@ -85,10 +87,11 @@ updatePrototypeText: function(tarea) {
 
 updatePrototypePointSize: function(tarea) {
 
-    function testForChange() {
+	benchcontent.highlightTextArea(tarea);
+
+	function testForChange() {
     	if (!isNaN (tarea.value)) {
-        	var target = $(tarea).attr("data-linkedfield");
-        	var field = currentPromotion.model.findFieldByName (target);
+    		var field = benchcontent.elemToLinkedField(tarea);
     		var newsize = Number(tarea.value);
     		if (newsize != field.getFontSize ()) {
     			field.fontSize = Number (tarea.value);
@@ -102,6 +105,7 @@ updatePrototypePointSize: function(tarea) {
      *  great idea, so we don't put this on timer. */
     tarea.onblur = function() {
         testForChange();
+        benchcontent.unhighlightTextArea (tarea);
         tarea.onblur = null;
     };
 
@@ -110,8 +114,7 @@ updatePrototypePointSize: function(tarea) {
 /* This is called by an onchange event, so we already know there's a change */
 updatePrototypeItalic: function (cbox) {
 		
-   	var target = $(cbox).attr("data-linkedfield");
-   	var field = currentPromotion.model.findFieldByName (target);
+	var field = benchcontent.elemToLinkedField(cbox);
    	var nowChecked = $(cbox).prop('checked');
    	if (nowChecked != field.isItalic()) {
    		field.italic = nowChecked;
@@ -122,8 +125,7 @@ updatePrototypeItalic: function (cbox) {
 
 updatePrototypeBold: function (cbox) {
 	
-   	var target = $(cbox).attr("data-linkedfield");
-   	var field = currentPromotion.model.findFieldByName (target);
+	var field = benchcontent.elemToLinkedField(cbox);
    	var nowChecked = $(cbox).prop('checked');
    	if (nowChecked != field.isBold()) {
    		field.bold = nowChecked;
@@ -133,8 +135,7 @@ updatePrototypeBold: function (cbox) {
 },
 
 updatePrototypeTypeface: function (sel) {
-   	var target = $(sel).attr("data-linkedfield");
-   	var field = currentPromotion.model.findFieldByName (target);
+	var field = benchcontent.elemToLinkedField(sel);
    	var selected = $(sel).children().filter(":selected");
    	var typeface = selected.val();
    	console.log (typeface);
@@ -144,7 +145,26 @@ updatePrototypeTypeface: function (sel) {
    		field.fabricObject.setFontFamily (typeface);
 		currentPromotion.canvas.renderAll();
    	}
+},
+
+highlightTextArea: function (tarea) {
+	var field = benchcontent.elemToLinkedField(tarea);
+	field.fabricObject.setBackgroundColor('#C0C0C0');
+	currentPromotion.canvas.renderAll();
+	
+},
+
+unhighlightTextArea: function(tarea) {
+	var field = benchcontent.elemToLinkedField(tarea);
+	field.fabricObject.setBackgroundColor('');
+	currentPromotion.canvas.renderAll();
+},
+
+/* For the a DOM element which has the data-linkedfield attribute,
+ * return the linked field.
+ */
+elemToLinkedField: function (elem) {
+	var target = $(elem).attr("data-linkedfield");
+   	return currentPromotion.model.findFieldByName (target);
 }
-
-
 }

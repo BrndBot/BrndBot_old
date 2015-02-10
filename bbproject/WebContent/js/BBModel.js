@@ -149,6 +149,10 @@ function ModelField () {
 		return (this.fontSize !== null) ? this.fontSize : this.style.fontSize;
 	}
 	
+	this.getAlignment = function () {
+		return (this.alignment !== null) ? this.alignment : this.style.alignment;
+	}
+	
 	this.isBold = function () {
 		return (this.bold !== null) ? this.bold : this.style.bold;
 	}
@@ -183,7 +187,8 @@ function ModelField () {
 			width: this.getWidth(),
 			height: this.getHeight(),
 			fontWeight: weight,
-			fontStyle: fstyle
+			fontStyle: fstyle,
+			alignment: this.getAlignment()
 		});
 		this.fabricObject = text;
 		canvas.add(text);
@@ -269,6 +274,7 @@ function Style (name, styleType) {
 	this.typeface = null;
 	this.bold = false;
 	this.italic = false;
+	this.alignment = "left";
 	
 	// other fields vary by the styleType
 	
@@ -291,6 +297,7 @@ function Style (name, styleType) {
 			this.text = jsonObj.text;
 			this.defaultText = jsonObj.defaultText;
 		}
+		this.alignment = jsonObj.alignment;
 	};
 }
 

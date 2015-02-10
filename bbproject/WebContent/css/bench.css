@@ -134,7 +134,8 @@
 
 .editTextArea textarea
 {
-	font-size: 1.125rem;
+	font-size: 0.8rem;
+	font-family:sans-serif;
 }
 
 .blockEdit div

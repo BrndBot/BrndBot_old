@@ -151,7 +151,7 @@
 							</ul>
 							<div>
 								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
-									<div id="workArea"><!--edit fields go here--></div>
+									<div id="contentArea"><!--edit fields go here--></div>
 								</div>
 								<!--  These get hidden or shown depending on the button selections made.
 								      Actually, we won't use these at all, but leave one around
@@ -163,17 +163,8 @@
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>							
 							<div> <!-- Design tab -->
-								<div style="padding-top: 3rem;height: 32rem;">
-
-								  <c:choose>
-									<c:when test="${tmp_channel == channel_email}">
-										<%@include file="templates/email/design.jsp" %>
-									</c:when>
-									<c:when test="${tmp_channel == channel_facebook}">
-										<%@include file="templates/facebook/design.jsp" %>
-									</c:when>
-								  </c:choose>
-
+								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
+									<div id="designArea"><!--edit fields for design go here--></div>
 								</div>
 							</div>
 							<div> <!-- Layout tab -->
@@ -522,6 +513,7 @@
 	
 	</div> <!-- brndbotMain -->
 	<script type="text/javascript" src="js/benchcontent.js"></script>
+	<script type="text/javascript" src="js/benchdesign.js"></script>
 <script type="text/javascript">
 // This is the "style" implementation.  The design and implementation of the "style" (aka "layout variation")
 //  needs requirements before it can be done correctly.  At the time the implementation of this editor was halted,
@@ -545,7 +537,7 @@
 
 <!-- Script for generating the data to populate the editor pane. 
      Big, but apparently you can't put a Kendo template in a separate file. -->
-<script type="text/x-kendo-template" id="editFieldsTemplate">
+<script type="text/x-kendo-template" id="contentFieldsTemplate">
 	<div>
 		# if (styleType == 'text') {   #
 				<div style="font-weight:bold">#:fieldid#</div>
@@ -553,14 +545,14 @@
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
-							style="width:100%">#:content#
+							style="width:98%">#:content#
 						</textarea>
                 </div>
                 <div>Point size</div>
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypePointSize(this)" rows="1" 
-							style="width:100%">#:ptsize#
+							style="width:98%">#:ptsize#
 						</textarea>
                 </div>
                 <div>
@@ -588,6 +580,44 @@
 		# } #
 	</div>
 </script>
+
+<script type="text/x-kendo-template" id="designFieldsTemplate">
+	<div>
+		<div style="font-weight:bold">#:fieldid#</div>
+		<table>
+		<tr>
+			<td>X</td>
+			<td><textarea class="editTextArea" data-linkedfield="#:fieldid#"
+					onfocus="benchdesign.updateXPos(this)" rows="1"
+						style="width:98%">#:x#
+			</textarea></td>
+		</tr>
+		<tr>
+			<td>Y</td>
+			<td><textarea class="editTextArea" data-linkedfield="#:fieldid#"
+					onfocus="benchdesign.updateYPos(this)" rows="1"
+						style="width:98%">#:y#
+			</textarea></td>
+		</tr>
+		<tr>
+			<td>Width</td>
+			<td><textarea class="editTextArea" data-linkedfield="#:fieldid#"
+					onfocus="benchdesign.updateWidth(this)" rows="1"
+						style="width:98%">#:width#
+			</textarea></td>
+		</tr>
+		<tr>
+			<td>Height</td>
+			<td><textarea class="editTextArea" data-linkedfield="#:fieldid#"
+					onfocus="benchdesign.updateHeight(this)" rows="1"
+						style="width:98%">#:height#
+			</textarea></td>
+		</tr>
+		</table>
+	</div>
+</script>
+
+	
 </c:if>		<!-- sessionOK -->
 
 </body>

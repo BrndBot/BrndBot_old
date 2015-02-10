@@ -20,12 +20,14 @@ var benchdesign = {
  */
 insertEditFields: function (dest) {
 	
+	console.log($('#designFieldsTemplate').html());
+	
 	dest.kendoListView({
 		dataSource: new kendo.data.DataSource({data: benchdesign.modelToSourceData(currentPromotion.model)}),
 	    selectable: true,
-        template: kendo.template($('#editFieldsTemplate').html())
+        template: kendo.template($('#designFieldsTemplate').html())
 	});
-	dest.show();
+	//dest.show();
 },
 
 /* This function takes the promotion fields and extracts the
@@ -40,6 +42,10 @@ modelToSourceData: function (model) {
 		var fielddata = {};
 		fielddata.fieldid = field.name;
 		//TODO fill in geometric data for every field
+		fielddata.x = field.getX().toString();
+		fielddata.y = field.getY().toString();
+		fielddata.width = field.getWidth().toString();
+		fielddata.height = field.getHeight().toString();
 		srcdata.push(fielddata);
 	}
 	return srcdata;
@@ -48,21 +54,23 @@ modelToSourceData: function (model) {
 updateXPos: function(tarea) {
 
     function testForChange() {
+    	var target = $(tarea).attr("data-linkedfield");
+    	var field = currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
-        	var target = $(tarea).attr("data-linkedfield");
-        	var field = currentPromotion.model.findFieldByName (target);
     		var newpos = Number(tarea.value);
     		if (newpos != field.getX ()) {
     			field.offsetX = Number (tarea.value);
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			field.fabricObject.setLeft(Number(field.fontSize));
+    			field.fabricObject.setLeft(Number(field.offsetX));
     			currentPromotion.canvas.renderAll();
     		}
     	}
+    	else {
+    		// Restore to last good value
+    		$(tarea).val (field.getX().toString());
+    	}
     }
 
-    /*  Changing the point size with every keystroke probably isn't a
-     *  great idea, so we don't put this on timer. */
     tarea.onblur = function() {
         testForChange();
         tarea.onblur = null;
@@ -74,21 +82,23 @@ updateXPos: function(tarea) {
 updateYPos: function(tarea) {
 
     function testForChange() {
+    	var target = $(tarea).attr("data-linkedfield");
+    	var field = currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
-        	var target = $(tarea).attr("data-linkedfield");
-        	var field = currentPromotion.model.findFieldByName (target);
     		var newpos = Number(tarea.value);
     		if (newpos != field.getY ()) {
     			field.offsetY = Number (tarea.value);
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			field.fabricObject.setTop(Number(field.fontSize));
+    			field.fabricObject.setTop(Number(field.offsetY));
     			currentPromotion.canvas.renderAll();
     		}
     	}
+    	else {
+    		// Restore to last good value
+    		$(tarea).val (field.getY().toString());
+    	}
     }
 
-    /*  Changing the point size with every keystroke probably isn't a
-     *  great idea, so we don't put this on timer. */
     tarea.onblur = function() {
         testForChange();
         tarea.onblur = null;
@@ -99,9 +109,9 @@ updateYPos: function(tarea) {
 updateWidth: function(tarea) {
 
     function testForChange() {
+    	var target = $(tarea).attr("data-linkedfield");
+    	var field = currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
-        	var target = $(tarea).attr("data-linkedfield");
-        	var field = currentPromotion.model.findFieldByName (target);
     		var newwid = Number(tarea.value);
     		if (newwid != field.getWidth ()) {
     			field.width = Number (tarea.value);
@@ -110,10 +120,12 @@ updateWidth: function(tarea) {
     			currentPromotion.canvas.renderAll();
     		}
     	}
+    	else {
+    		// Restore to last good value
+    		$(tarea).val (field.getWidth().toString());
+    	}
     }
 
-    /*  Changing the point size with every keystroke probably isn't a
-     *  great idea, so we don't put this on timer. */
     tarea.onblur = function() {
         testForChange();
         tarea.onblur = null;
@@ -124,9 +136,9 @@ updateWidth: function(tarea) {
 updateHeight: function(tarea) {
 
     function testForChange() {
+    	var target = $(tarea).attr("data-linkedfield");
+    	var field = currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
-        	var target = $(tarea).attr("data-linkedfield");
-        	var field = currentPromotion.model.findFieldByName (target);
     		var newht = Number(tarea.value);
     		if (newht != field.getHeight ()) {
     			field.height = Number (tarea.value);
@@ -135,10 +147,12 @@ updateHeight: function(tarea) {
     			currentPromotion.canvas.renderAll();
     		}
     	}
+    	else {
+    		// Restore to last good value
+    		$(tarea).val (field.getHeight().toString());
+    	}
     }
 
-    /*  Changing the point size with every keystroke probably isn't a
-     *  great idea, so we don't put this on timer. */
     tarea.onblur = function() {
         testForChange();
         tarea.onblur = null;

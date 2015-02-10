@@ -67,7 +67,7 @@ public class SaveHTMLAsImageServlet extends HttpServlet
 			return;
 		}
 		System.out.println("Image ID Key: " + type);
-		ImageType image_type = ImageType.create(type);
+		ImageType image_type = ImageType.getByItemNumber(type);
 		if (image_type == null)
 		{
 			throw new RuntimeException("Unexpected image type: " + type);
@@ -76,7 +76,6 @@ public class SaveHTMLAsImageServlet extends HttpServlet
 		String html = Utils.getStringParameter(request, "hiddenHtml");
 //		String html = "<div id=\"graphicBlock-2\" style=\"\" class=\"blockSelectable\"><div style=\"width:94%;padding:0rem 1.25rem;background:#ffffff;overflow:hidden;\"><div style=\"width:100%;\"><div style=\"text-align:center;padding-top:.5rem;padding-bottom:.5rem\"><img src=\"http://localhost:8080/images/barre-1.jpg\" alt=\"\" height=\"355\" width=\"500\" /></div></div></div></div>";
 		Assert.that(html.length() > 0, "Empty HTML, barf it up for now!");
-//		System.out.println("LENGTH OF ORIGINAL HTML: " + html.length());
 		Document doc = Jsoup.parse(html);
 		doc.select("div[style*=display:none]").remove();
 		Element link = doc.select("body").first();

@@ -60,10 +60,9 @@ public class GetImagesServlet extends HttpServlet
 			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
-		ImageType image_type = ImageType.create(type);
+		ImageType image_type = ImageType.getByItemNumber(type);
 		if (image_type == null)
 		{
-			//throw new RuntimeException("Unexpected image type: " + type);
 			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
