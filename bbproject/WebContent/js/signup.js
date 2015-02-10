@@ -217,10 +217,12 @@ $(document).ready(function()
                 console.log("Populating color detail pane");
                 populateColorDetailPane();
             },
-            error: function (xhr, ajaxOptions, thrownError)
+            error: function (xhr, textStatus, thrownError)
             {
-            	alert('Call to color processor failed: ' + xhr.status);
-            	alert(thrownError);
+            	alert('Call to color processor failed');
+            	console.log ('Call to color processor failed: ' + xhr.status);
+            	console.log(thrownError);
+            	console.log("Text status: " + textStatus);
             	uploadStatus("Try again?");
             	displayForLogo(true);
             }
