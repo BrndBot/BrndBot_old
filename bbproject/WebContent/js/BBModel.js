@@ -63,7 +63,7 @@ function ModelField () {
 	this.text = null;
 	this.color = null;
 	this.typeface = null;
-	this.fontSize = 12;
+	this.pointSize = null;
 	this.bold = null;
 	this.italic = null;
 	
@@ -121,8 +121,8 @@ function ModelField () {
 
 	}
 	
-	this.getFontSize = function () {
-		return this.fontSize ? this.fontSize : this.style.fontSize;
+	this.getPointSize = function () {
+		return this.pointSize ? this.pointSize : this.style.pointSize;
 	}
 	
 	this.getTypeface = function () {
@@ -145,8 +145,8 @@ function ModelField () {
 		return (this.height !== null) ? this.height : this.style.height;
 	}
 	
-	this.getFontSize = function () {
-		return (this.fontSize !== null) ? this.fontSize : this.style.fontSize;
+	this.getPointSize = function () {
+		return (this.pointSize !== null) ? this.pointSize : this.style.pointSize;
 	}
 	
 	this.getAlignment = function () {
@@ -181,7 +181,7 @@ function ModelField () {
 		var fstyle = this.isItalic() ? "italic" : "normal";
 		
 		var text = new fabric.Text(this.getText(), {
-			fontSize: this.getFontSize(),
+			pointSize: this.getPointSize(),
 			left: x,
 			top: y,
 			width: this.getWidth(),
@@ -272,6 +272,7 @@ function Style (name, styleType) {
 	this.offsetX = 0;
 	this.offsetY = 0;
 	this.typeface = null;
+	this.pointSize = null;
 	this.bold = false;
 	this.italic = false;
 	this.alignment = "left";
@@ -294,6 +295,7 @@ function Style (name, styleType) {
 		this.color = jsonObj.color;
 		if (this.styleType == "text") {
 			this.typeface = jsonObj.typeface;
+			this.pointSize = jsonObj.pointSize;
 			this.text = jsonObj.text;
 			this.defaultText = jsonObj.defaultText;
 		}
@@ -310,17 +312,23 @@ function Promotion (model, styleSet) {
 	// model is a Model
 	this.model = model;
 	// styleSet is a StyleSet
-	this.styleSet = styleSet;
 	this.canvas = null;
 	
-	// Merge the styles into the Model
-	for (var i = 0; i < model.fields.length; i++) {
-		var field = model.fields[i];
-		var style = styleSet.findApplicableStyle (field);
-		if (style)
-			field.style = style;
-	}
-	
+	this.applyStyleSet = function (styleSet) {
+		this.styleSet = styleSet;
+
+		// Merge the styles into the Model
+		for (var i = 0; i < this.model.fields.length; i++) {
+			var field = this.model.fields[i];
+			var style = styleSet.findApplicableStyle (field);
+			if (style)
+				field.style = style;
+		}
+
+	};
+
+	this.applyStyleSet (styleSet);
+
 	// Draw a Promotion. The argument is the ID of a canvas element.
 	this.draw = function (location) {
 		var canvasElem = $('#' + location);
@@ -334,6 +342,17 @@ function Promotion (model, styleSet) {
 			field.draw (location, this.canvas);
 		}	
 	};
+	
+	// Redraw a Promotion.
+	this.redraw = function () {
+		var fields = this.model.fields;
+		for (var i = 0, len = fields.length; i < len; i++) {
+			var field = fields[i];
+			this.canvas.remove (field.fabricObject);
+			field.fabricObject = null;
+			field.draw (location, this.canvas);
+		}	
+	}
 	
 
 }

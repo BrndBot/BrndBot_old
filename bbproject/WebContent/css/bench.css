@@ -275,3 +275,8 @@
 	width: 10rem;
 }
 
+li.stylefield {
+	width:50%;
+	float:left;
+	list-style-type: none;
+}

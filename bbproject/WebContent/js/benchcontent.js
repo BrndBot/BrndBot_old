@@ -30,7 +30,7 @@ insertEditFields: function (dest) {
 
 
 /* This function takes the promotion fields and extracts the
- * essential data as a Java Array suitable for a Kendo data source.
+ * essential data as a JavaScript Array suitable for a Kendo data source.
  * 
  */
 
@@ -43,7 +43,7 @@ modelToSourceData: function (model) {
 			var fielddata = {};
 			fielddata.fieldid = field.name;
 			fielddata.content = field.getText();
-			fielddata.ptsize = field.getFontSize().toString();
+			fielddata.ptsize = field.getPointSize().toString();
 			fielddata.styleType = "text";
 			fielddata.italicChecked = field.isItalic() ? "checked" : "";
 			fielddata.boldChecked = field.isBold() ? "checked" : "";
@@ -93,7 +93,7 @@ updatePrototypePointSize: function(tarea) {
     	if (!isNaN (tarea.value)) {
     		var field = benchcontent.elemToLinkedField(tarea);
     		var newsize = Number(tarea.value);
-    		if (newsize != field.getFontSize ()) {
+    		if (newsize != field.getPointSize ()) {
     			field.fontSize = Number (tarea.value);
     			field.fabricObject.setFontSize(Number(field.fontSize));
     			currentPromotion.canvas.renderAll();

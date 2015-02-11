@@ -754,6 +754,7 @@ function loadPromotion (promoName) {
 			currentPromotion.draw ('finishedImage1');
 			benchcontent.insertEditFields ( $('#contentArea'));
 			benchdesign.insertEditFields ( $('#designArea'));
+			benchstyle.insertStyles ( $('#styleArea'));
 		}
 	});	
 	loadStyles (promotionDataSource);

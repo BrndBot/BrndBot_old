@@ -168,17 +168,8 @@
 								</div>
 							</div>
 							<div> <!-- Layout tab -->
-								<div style="padding-top: 3rem;height: 32rem;">
-
-								  <c:choose>
-									<c:when test="${tmp_channel == channel_email}">
-										<%@include file="templates/email/layout.jsp" %>
-									</c:when>
-									<c:when test="${tmp_channel == channel_facebook}">
-										<%@include file="templates/facebook/layout.jsp" %>
-									</c:when>
-								  </c:choose>
-
+								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
+								  <ul id="styleArea"><!--styles go here--></div>
 								</div>
 							</div>
 						</div>		<!-- tabstrip2 -->
@@ -514,6 +505,7 @@
 	</div> <!-- brndbotMain -->
 	<script type="text/javascript" src="js/benchcontent.js"></script>
 	<script type="text/javascript" src="js/benchdesign.js"></script>
+	<script type="text/javascript" src="js/benchstyle.js"></script>
 <script type="text/javascript">
 // This is the "style" implementation.  The design and implementation of the "style" (aka "layout variation")
 //  needs requirements before it can be done correctly.  At the time the implementation of this editor was halted,
@@ -617,6 +609,12 @@
 	</div>
 </script>
 
+<script type="text/x-kendo-template" id="styleFieldsTemplate">
+	<li class="stylefield" data-linkedstyle="#:name#"
+		onclick="benchstyle.updateStyle(this)">
+		#:name#
+	</li>
+</script>
 	
 </c:if>		<!-- sessionOK -->
 

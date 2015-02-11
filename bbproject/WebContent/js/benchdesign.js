@@ -10,7 +10,7 @@
  * Gary McGath
  * February 9, 2015
  *
- * This populates the content pane of the editor.
+ * This populates the design pane of the editor.
  */
 
 var benchdesign = {
@@ -31,7 +31,7 @@ insertEditFields: function (dest) {
 },
 
 /* This function takes the promotion fields and extracts the
- * essential data as a Java Array suitable for a Kendo data source.
+ * essential data as a JavaScript Array suitable for a Kendo data source.
  * 
  */
 
