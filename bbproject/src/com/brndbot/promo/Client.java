@@ -81,6 +81,8 @@ public class Client implements Serializable {
 	public static Client getClient (HttpSession session) {
 		logger.debug ("starting getClient");
 		int uid = SessionUtils.getUserId(session);
+		if (uid == 0)
+			logger.error ("getClient: User ID in session is 0");
 		Client client = clients.get (uid);
 
 		if (client != null) {

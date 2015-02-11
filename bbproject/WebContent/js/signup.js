@@ -127,16 +127,10 @@ $(document).ready(function()
 		setPaletteBlockSize(currentYourPalette, 60, 90, 'paletteSquare-selected');
 	});
 
-	$('#mindBodyPos').on('click', function(event) 
-	{
-		$('#posTitle').html("Connect to Mindbody, good.");
-		$('#mindBodySpecific').show();
-	});
 
     $("#files").kendoUpload({
         async: {
             saveUrl: "SaveImageServlet",
-//            saveUrl: "http://pictaculous.com/api/1.0/",
             removeUrl: "RemoveLogoServlet",
             autoUpload: true
         },
@@ -174,6 +168,13 @@ $(document).ready(function()
             	console.log("Came back from PHP page " + PHP_SERVER_PAGE);
             	uploadStatus("Saving your palette, please wait...");
             	console.dir(data);
+            	
+            	// The service has developed a weird tendency to wrap the entire
+            	// returning string in quotes, making the data one long string.
+            	// Strip them off before parsing.
+            	if (typeof(data) == "string" && data.indexOf('"') === 0) {
+            		data = data.substring(1, data.length - 1);
+            	}
 
             	var json = jQuery.parseJSON(data);
             	console.log("Came back from parseJSON");

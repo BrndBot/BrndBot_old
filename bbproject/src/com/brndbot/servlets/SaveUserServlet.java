@@ -6,9 +6,6 @@
 package com.brndbot.servlets;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.User;
+import com.brndbot.promo.Client;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
 import com.brndbot.util.PWHash;
@@ -63,9 +61,9 @@ public class SaveUserServlet extends HttpServlet
 		String companyURL = Utils.getStringParameter(request, "hiddenUrl").toLowerCase();
 		String facebookURL = Utils.getStringParameter(request, "hiddenFacebookUrl").toLowerCase();
 		String twitterHandle = Utils.getStringParameter(request, "hiddenTwitterHandle");
-		String linkedIn = Utils.getStringParameter(request, "hiddenLinkedIn");
-		String youTube = Utils.getStringParameter(request, "hiddenYouTube");
-		String instagram = Utils.getStringParameter(request, "hiddenInstagram");
+//		String linkedIn = Utils.getStringParameter(request, "hiddenLinkedIn");
+//		String youTube = Utils.getStringParameter(request, "hiddenYouTube");
+//		String instagram = Utils.getStringParameter(request, "hiddenInstagram");
 		String orgId = Utils.getStringParameter(request,  "hiddenOrgId");
 
 		HttpSession session = request.getSession();
@@ -83,58 +81,16 @@ public class SaveUserServlet extends HttpServlet
 		user.saveUser (con);
 		int user_id = user.getUserID();
 		
-//		PreparedStatement pstmt = null;
-//		Statement stmt = null;
-//		ResultSet rs = null;
-//		try
-//		{
-//			String sql = "INSERT INTO user " +
-//					" (EmailAddress, Password, Company, CompanyAddress, URL, FacebookURL, TwitterHandle, LinkedIn, YouTube, Instagram, orgid) " +
-//					" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-//			pstmt = con.createPreparedStatement(sql);
-//			pstmt.setString(1, userEmail);
-//			pstmt.setString(2, hashedPassword);
-//			pstmt.setString(3, companyName);
-//			pstmt.setString(4, companyAddress);
-//			pstmt.setString(5, companyURL);
-//			pstmt.setString(6, facebookURL);
-//			pstmt.setString(7, twitterHandle);
-//			pstmt.setString(8, linkedIn);
-//			pstmt.setString(9, youTube);
-//			pstmt.setString(10, instagram);
-//			pstmt.setInt(11, Integer.parseInt(orgId));
-//			pstmt.executeUpdate();
-//			// Get the new user ID
-//			sql = "select LAST_INSERT_ID() FROM user;";
-//			stmt = con.createStatement();
-//			rs = con.QueryDB(sql, stmt);
-//			if (rs.next())
-//			{
-//				user_id = rs.getInt(1);
-//			}
-//			logger.debug("USER_ID: " + user_id);
-//			if (user_id == 0)
-//			{
-//				throw new RuntimeException("User ID is zero after save!!");
-//
-//			}
-//			rs.close();
-//			stmt.close();
-//		}
-//		catch (Exception e)
-//		{
-//			logger.error("EXCEPTION: {}    {}", e.getClass().getName(), e.getMessage());
-//			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//			session.removeAttribute(SessionUtils.USER_ID);
-//			return;
-//		}
-//		finally
-//		{
-//			pstmt = null;
-//			con.close();
-//		}
+
 		logger.debug("Saved user_id: " + user_id);
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
+		Client client = Client.getClient (session);		// Load up the client
+		try {
+			logger.debug ("Created Client with interface {}", client.getClientInterface().getClass().getName());
+		} catch (Exception e) {
+			logger.error ("Problem creating Client: {}", e.getClass().getName());
+			e.printStackTrace();
+		}
 		response.setStatus(HttpServletResponse.SC_OK);
 		return;
 	}
