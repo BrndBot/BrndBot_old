@@ -111,6 +111,19 @@ updatePrototypePointSize: function(tarea) {
 
 },
 
+updatePrototypeColor: function (input) {
+	var field = benchcontent.elemToLinkedField(input);
+//	var newcolor = input.value;
+//	console.log("color = " + newcolor);
+//	field.color = newcolor;
+//	field.fabricObject.setFill(newcolor);
+	var fieldid = $(input).attr("data-linkedfield");
+	var buttondiv = $('#' + fieldid + "-select");
+	buttondiv.toggle();
+	currentPromotion.canvas.renderAll();
+},
+
+
 /* This is called by an onchange event, so we already know there's a change */
 updatePrototypeItalic: function (cbox) {
 		

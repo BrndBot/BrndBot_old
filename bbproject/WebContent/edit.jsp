@@ -542,10 +542,9 @@
                 </div>
                 <div>Point size</div>
                 <div class="editTextArea" >
-                        <textarea data-linkedfield="#:fieldid#"
-							onfocus="benchcontent.updatePrototypePointSize(this)" rows="1" 
-							style="width:98%">#:ptsize#
-						</textarea>
+                    <input type="number" data-linkedfield="#:fieldid#"
+							onfocus="benchcontent.updatePrototypePointSize(this)" 
+							style="width:98%" value="#:ptsize#">
                 </div>
                 <div>
                 	<label>Typeface
@@ -568,6 +567,22 @@
                 		Bold
                 	</label>
                 </div>	
+				<div>
+					<label>Color
+						<button type="button" data-linkedfield="#:fieldid#" 
+							style="width:30px;height:15px;background-color:\\#CC2222"
+							onclick="benchcontent.updatePrototypeColor(this)"></button>
+					</label>
+				</div>
+				<div id="#:fieldid#-select" style="display:none">
+					<table><tr>
+						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:30px;height:15px;background-color:blue"></button></td>
+						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:30px;height:15px;background-color:black"></button></td>
+						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:30px;height:15px;background-color:red"></button></td>
+						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:30px;height:15px;background-color:green"></button></td>
+						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:40px;height:15px;font-size:60%;" name="color">Custom</button></td>
+					</tr></table>
+				</div>
                 <p>&nbsp;</p>	
 		# } #
 	</div>
@@ -579,31 +594,31 @@
 		<table>
 		<tr>
 			<td>X</td>
-			<td><textarea class="editTextArea" data-linkedfield="#:fieldid#"
-					onfocus="benchdesign.updateXPos(this)" rows="1"
-						style="width:98%">#:x#
-			</textarea></td>
+			<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+					onfocus="benchdesign.updateXPos(this)" 
+						style="width:98%" value="#:x#">
+			</td>
 		</tr>
 		<tr>
 			<td>Y</td>
-			<td><textarea class="editTextArea" data-linkedfield="#:fieldid#"
-					onfocus="benchdesign.updateYPos(this)" rows="1"
-						style="width:98%">#:y#
-			</textarea></td>
+			<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+					onfocus="benchdesign.updateYPos(this)" 
+						style="width:98%" value="#:y#">
+			</td>
 		</tr>
 		<tr>
 			<td>Width</td>
-			<td><textarea class="editTextArea" data-linkedfield="#:fieldid#"
-					onfocus="benchdesign.updateWidth(this)" rows="1"
-						style="width:98%">#:width#
-			</textarea></td>
+			<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+					onfocus="benchdesign.updateWidth(this)" 
+						style="width:98%" value="#:width#"
+			</td>
 		</tr>
 		<tr>
 			<td>Height</td>
-			<td><textarea class="editTextArea" data-linkedfield="#:fieldid#"
-					onfocus="benchdesign.updateHeight(this)" rows="1"
-						style="width:98%">#:height#
-			</textarea></td>
+			<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+					onfocus="benchdesign.updateHeight(this)" 
+						style="width:98%" value="#:height#"
+			</td>
 		</tr>
 		</table>
 	</div>

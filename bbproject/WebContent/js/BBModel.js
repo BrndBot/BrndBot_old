@@ -141,6 +141,10 @@ function ModelField () {
 		return (this.width !== null) ? this.width : this.style.width;
 	}
 	
+	this.getColor = function () {
+		return (this.color !== null) ? this.color : this.style.color;
+	}
+	
 	this.getHeight = function () {
 		return (this.height !== null) ? this.height : this.style.height;
 	}
@@ -181,7 +185,8 @@ function ModelField () {
 		var fstyle = this.isItalic() ? "italic" : "normal";
 		
 		var text = new fabric.Text(this.getText(), {
-			pointSize: this.getPointSize(),
+			fontSize: this.getPointSize(),
+			fontFamily: this.getTypeface(),
 			left: x,
 			top: y,
 			width: this.getWidth(),
@@ -201,11 +206,11 @@ function ModelField () {
 	};
 	
 	this.fabricateBlock = function  (canvas) {
-		var x = this.offsetX ? this.offsetX : this.style.offsetX;
-		var y = this.offsetY ? this.offsetY : this.style.offsetY;
-		var wid = this.width ? this.width : this.style.width;
-		var ht = this.height ? this.height : this.style.height;
-		var color = this.color ? this.color : this.style.color;
+		var x = this.getX();
+		var y = this.getY();
+		var wid = this.getWidth();
+		var ht = this.getHeight();
+		var color = this.getColor ();
 		var rect = new fabric.Rect ({
 			width: wid,
 			height: ht,
