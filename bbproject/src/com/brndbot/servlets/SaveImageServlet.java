@@ -34,6 +34,7 @@ import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
 import com.brndbot.util.AppEnvironment;
 
+/** This servlet works with the Kendo upload widget to handle a successful upload. */
 public class SaveImageServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -61,7 +62,7 @@ public class SaveImageServlet extends HttpServlet
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		logger.debug("--------Entering new SaveImageServlet----------");
+		logger.debug("--------Entering SaveImageServlet----------");
 
 		MultipartFormDataRequest data;
 		String responseString = null;
@@ -73,8 +74,8 @@ public class SaveImageServlet extends HttpServlet
 			catch (UploadException e1)
 			{
 				e1.printStackTrace();
-				//throw new RuntimeException("Exception uploading logo.  Error message: " + e1.getMessage());
-				responseString = "Exception uploading logo: " + e1.getClass().getName();
+				responseString = "Exception uploading image: " + e1.getClass().getName();
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;
 			}
 	
@@ -82,18 +83,24 @@ public class SaveImageServlet extends HttpServlet
 			int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 			if (user_id == 0)
 			{
-				logger.debug("USER NOT LOGGED IN, SENDING TO LOGIN PAGE");
-				response.sendRedirect("index.jsp");
+				responseString = "Not logged in";
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 			logger.debug("User ID: " + user_id);
 	
-			// Make sure the image type is passed
-			int type = SessionUtils.getIntSession(session, SessionUtils.IMAGE_ID_KEY);
+			// Make sure the image type is passed. Try first the URL parameter,
+			// then the session variable.
+			int type = 0;
+			try {
+				type = Integer.parseInt(request.getParameter("brndbotimageid"));
+			} catch (Exception e) {}
+			if (type == 0) {
+				type = SessionUtils.getIntSession(session, SessionUtils.IMAGE_ID_KEY);
+			}
 			if (type == 0)
 			{
 				logger.error("No IMAGE TYPE passed (type=" + type + "). Programming error.");
-				responseString = "Internal error: No image type passed";
 				response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 				return;
 			}
@@ -101,7 +108,6 @@ public class SaveImageServlet extends HttpServlet
 			ImageType image_type = ImageType.getByItemNumber(type);
 			if (image_type == null)
 			{
-				//throw new RuntimeException("Unexpected image type: " + type);
 				responseString = "The image type (" + type + ") is not supported";
 				response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 				return;
@@ -109,18 +115,12 @@ public class SaveImageServlet extends HttpServlet
 	
 			DbConnection con = DbConnection.GetDb();
 			
-			String return_name = "";  // URL of filename alone to return in json
 			String imgTag = ""; // <img> tag to return in json
 	
 			try
 			{
 				@SuppressWarnings("rawtypes")
 				Hashtable files = data.getFiles();
-	//			UserLogo existing_logo = UserLogo.getLogoByUserID(user_id, con);
-	//			System.out.println("Existing logo: " + existing_logo);
-	//			logo_name = (existing_logo != null && 
-	//				existing_logo.getImage().getImageName().length() > 0 ? 
-	//					existing_logo.getImage().getImageName() : "");
 	
 				logger.debug("files.size:  " + files.size());
 				Image image = null;
@@ -132,36 +132,9 @@ public class SaveImageServlet extends HttpServlet
 				}
 				if (image != null)
 				{
-					// Build the URL for the image
-					String urlBase = SystemProp.get(SystemProp.ASSETS);
-					return_name = Utils.Slashies(urlBase + "\\" + image.getImageName());
-					logger.debug("JSON return name: " + return_name);
-					int bounding_height = 0;
-					int bounding_width = 0;
-					int saved_img_id = 0;
-					if (image_type.equals(ImageType.DEFAULT_LOGO))
-					{
-						logger.debug("We got a LOGO");
-						UserLogo user_logo = new UserLogo(user_id, image);
-						bounding_height = UserLogo.MAX_BOUNDING_HEIGHT;
-						bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
-						saved_img_id = user_logo.save(con);
-					}
-					else if (image_type.equals(ImageType.USER_UPLOAD) ||
-							image_type.equals(ImageType.ALTERNATE_LOGO))
-					{
-						logger.debug("We got a " + image_type.getItemText());
-	
-						//Use logo binding size for now, will be replaced
-						bounding_height = UserLogo.MAX_BOUNDING_HEIGHT;
-						bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
-						saved_img_id = image.save(con);
-					}
-					logger.debug("Saved Image ID = " + saved_img_id);
-					imgTag = UserLogo.getBoundImage(
-							image.getImageName(), 
-							bounding_height, bounding_width, true);
-					logger.debug("Returned from getBoundImage");
+					responseString = saveImage (image, image_type, user_id, con);
+					response.setContentType("application/json; charset=UTF-8");
+					response.setStatus(HttpServletResponse.SC_OK);
 				}
 				else
 				{
@@ -192,24 +165,6 @@ public class SaveImageServlet extends HttpServlet
 				con.close();
 			}
 	
-			logger.debug("Building json_obj");
-			JSONObject json_obj = new JSONObject();
-			try
-			{
-				json_obj.put("imageName", return_name);
-				json_obj.put("imgTag", imgTag);
-				response.setContentType("application/json; charset=UTF-8");
-				
-				responseString = json_obj.toString();
-				logger.debug("returning serialized json_obj");
-				response.setStatus(HttpServletResponse.SC_OK);
-			}
-			catch (JSONException e) 
-			{
-				e.printStackTrace();
-				logger.error(e.getMessage());
-				responseString = "Internal error: " + e.getClass().getName();
-			}
 		} finally {
 			if (responseString != null) {
 				PrintWriter out = response.getWriter();
@@ -217,6 +172,61 @@ public class SaveImageServlet extends HttpServlet
 				out.flush();
 			}
 		}
+	}
+	
+	private String saveImage (Image image, ImageType image_type, int user_id, DbConnection con) 
+				throws ImageException, SQLException {
+		// Build the URL for the image
+		String urlBase = SystemProp.get(SystemProp.ASSETS);
+		int bounding_height = 0;
+		int bounding_width = 0;
+		int saved_img_id = 0;
+		if (image_type.equals(ImageType.DEFAULT_LOGO))
+		{
+			logger.debug("We got a LOGO");
+			UserLogo user_logo = new UserLogo(user_id, image);
+			bounding_height = UserLogo.MAX_BOUNDING_HEIGHT;
+			bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
+			saved_img_id = user_logo.save(con);
+		}
+		else if (image_type.equals(ImageType.USER_UPLOAD) ||
+				image_type.equals(ImageType.ALTERNATE_LOGO))
+		{
+			logger.debug("We got a " + image_type.getItemText());
+
+			//Use logo binding size for now, will be replaced
+			bounding_height = UserLogo.MAX_BOUNDING_HEIGHT;
+			bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
+			saved_img_id = image.save(con);
+		}
+		logger.debug("Saved Image ID = " + saved_img_id);
+		String imgTag = UserLogo.getBoundImage(
+				image.getImageName(), 
+				bounding_height, bounding_width, true);
+		logger.debug("Returned from getBoundImage");
+
+		String return_name = Utils.Slashies(urlBase + "\\" + image.getImageName());
+		logger.debug("JSON return name: " + return_name);
+
+		logger.debug("Building json_obj");
+		JSONObject json_obj = new JSONObject();
+		String responseString = "";
+		try
+		{
+			json_obj.put("imageName", return_name);
+			json_obj.put("imgTag", imgTag);
+			
+			responseString = json_obj.toString();
+			logger.debug("returning serialized json_obj");
+		}
+		catch (JSONException e) 
+		{
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			responseString = "Internal error: " + e.getClass().getName();
+			throw new ImageException (responseString);
+		}
+		return responseString;
 	}
 }
 

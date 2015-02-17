@@ -4,12 +4,14 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.Set;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 public class MyServletContextListener implements ServletContextListener {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		// This manually deregisters JDBC driver, which prevents Tomcat 7 from complaining about memory leaks wrto this class
@@ -18,9 +20,16 @@ public class MyServletContextListener implements ServletContextListener {
             Driver driver = drivers.nextElement();
             try {
                 DriverManager.deregisterDriver(driver);
-            } catch (SQLException e) {
+            } catch (SQLException e) {}
+        }
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+        for(Thread t:threadArray) {
+            if(t.getName().contains("Abandoned connection cleanup thread")) {
+                synchronized(t) {
+                    t.stop(); //don't complain, it works
+                }
             }
-
         }
 	}
 

@@ -24,7 +24,7 @@ public class DoTodayRenderer extends Renderer {
 	/* We want to render first the categories, then the models under the selected
 	 * category.
 	 * 
-	 * Um, we have a problem here. The bottom row will change, so we can't
+	 * The bottom row will change, so we can't
 	 * do it in Java. Has to be in JavaScript. So just render the top row 
 	 * (the categories) here.
 	 */

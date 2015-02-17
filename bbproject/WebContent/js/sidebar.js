@@ -1,61 +1,61 @@
-var lastSideBarID = '';
-var lastEmailID = '';
+var sidebar = {
 
-function clickSideBar(startID)
+lastSideBarID: '',
+lastEmailID: '',
+
+clickSideBar: function (startID)
 {
-	if (startID === lastSideBarID)
+	if (startID === sidebar.lastSideBarID)
 	{
 		return;
 	}
 
-	if (lastSideBarID !== '')
+	if (sidebar.lastSideBarID !== '')
 	{
-		collapseSideBar(lastSideBarID);
+		sidebar.collapseSideBar(sidebar.lastSideBarID);
 	}
 
 	// Clear the email submenu choice
-	if (lastEmailID !== '')
+	if (sidebar.lastEmailID !== '')
 	{
-		$('#' + lastEmailID).removeClass('isActiveOrange');
+		$('#' + sidebar.lastEmailID).removeClass('isActiveOrange');
 	}
 
 	if (startID === 'homeLine')
 	{
-//		$('#homeLine').switchClass('isInactive homeInactive', 'isActive homeActive', { duration: 250 });
 		$('#homeLine').switchClass('isInactive homeInactive', 'isActive homeActive');
 	}
 	else if (startID === 'emailLine')
 	{
-//		$(this).animate({height:'200px'});
-//		$('#emailPs').fadeIn();
 		$('#emailPs').show();
-//		$('#emailLine').switchClass('isInactive emailInactive', 'isActive emailActive', { duration: 250 });
 		$('#emailLine').switchClass('isInactive emailInactive', 'isActive emailActive');
 	}
 	else if (startID === 'socialLine')
 	{
-//		$('#socialLine').switchClass('isInactive socialInactive', 'isActive socialActive', { duration: 250 });
 		$('#socialLine').removeClass('isInactive socialInactive').addClass('isActive socialActive');
 	}
 	else if (startID === 'autoLine')
 	{
-//		$('#autoLine').switchClass('isInactive autoInactive', 'isActive autoActive', { duration: 250 });
 		$('#autoLine').removeClass('isInactive autoInactive').addClass('isActive autoActive');
 	}
 	else if (startID === 'acctLine')
 	{
-//		$('#acctLine').switchClass('isInactive acctInactive', 'isActive acctActive', { duration: 250 });
 		$('#acctLine').removeClass('isInactive acctInactive').addClass('isActive acctActive');
+	}
+	else if (startID === 'imagesLine')
+	{
+		window.location = 'images.jsp';
+		return;
 	}
 	else
 	{
 		alert('Forgot something');
 		return;
 	}
-	lastSideBarID = startID;
-}
+	sidebar.lastSideBarID = startID;
+},
 
-function collapseSideBar(startID)
+collapseSideBar: function (startID)
 {
 	if (startID === 'homeLine')
 	{
@@ -84,11 +84,11 @@ function collapseSideBar(startID)
 		alert('Forgot something');
 		return;
 	}
-}
+},
 
-function emailTypeClicked(id)
+emailTypeClicked: function(id)
 {
-	if (lastEmailID === id)
+	if (sidebar.lastEmailID === id)
 	{
 		return;
 	}
@@ -100,12 +100,13 @@ function emailTypeClicked(id)
 			id === 'emailTrash')
 	{
 		$('#' + id).addClass('isActiveOrange');
-		if (lastEmailID !== '')
+		if (sidebar.lastEmailID !== '')
 		{
-			$('#' + lastEmailID).removeClass('isActiveOrange');
+			$('#' + sidebar.lastEmailID).removeClass('isActiveOrange');
 		}
-		lastEmailID = id;
+		sidebar.lastEmailID = id;
 	}
 	else
 		alert('Wrong email option.');
 }
+};

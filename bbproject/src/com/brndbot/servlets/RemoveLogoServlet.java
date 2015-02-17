@@ -21,6 +21,9 @@ import com.brndbot.db.UserLogo;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
 
+/** This provides the functionality for the "Remove" result of a kendo file
+ *  upload.
+ */
 public class RemoveLogoServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -49,7 +52,6 @@ public class RemoveLogoServlet extends HttpServlet
 
 		// Check for attachment
 		UserLogo existing_logo = UserLogo.getLogoByUserID(user_id, con);
-//		System.out.println("Existing logo: " + existing_logo);
 		UserLogo user_logo = new UserLogo(user_id);
 		user_logo.setUserID(user_id);
 

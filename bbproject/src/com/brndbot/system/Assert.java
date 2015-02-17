@@ -5,6 +5,10 @@
  */
 package com.brndbot.system;
 
+/** A clumsy way of wrapping a check that throws a RuntimeException
+ *  in what looks like an assertion system while just being lazy and
+ *  not doing proper exception handling. Can we get rid of it?
+ */
 public class Assert 
 {
 	private Assert() {}

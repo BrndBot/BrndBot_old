@@ -45,7 +45,7 @@ public class BlockBase
 	{
 		channelType = ChannelEnum.create(b.channelType.getValue());
 //		_block_type = BlockType.create(b._block_type.getValue().intValue());
-		Assert.that(b._database_id.intValue() > 0, "Database ID is zero for the block.");
+//		Assert.that(b._database_id.intValue() > 0, "Database ID is zero for the block.");
 		_database_id = new Integer(b._database_id.intValue());
 		name = b.name;
 		description = b.description;

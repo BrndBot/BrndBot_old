@@ -1,7 +1,7 @@
 /**
  *  CONFIDENTIAL
  *  
- *  All rights reserved by Brndbot, Ltd. 2014
+ *  All rights reserved by Brndbot, Ltd. 2015
  *
 */
 package com.brndbot.jsphelper;
@@ -15,11 +15,11 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.brndbot.block.Block;
+//import com.brndbot.block.Block;
 import com.brndbot.block.ChannelEnum;
 import com.brndbot.client.ClientInterface;
-import com.brndbot.client.ClientInterfaceFactory;
-import com.brndbot.client.Model;
+//import com.brndbot.client.ClientInterfaceFactory;
+//import com.brndbot.client.Model;
 import com.brndbot.client.Promotion;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Palette;
@@ -31,7 +31,7 @@ import com.brndbot.promo.Client;
  *  the useBean tag. Therefore, it conforms closely to the Java Bean
  *  pattern. 
  */
-public class BenchHelper {
+public class BenchHelper extends Helper {
 
 	final static Logger logger = LoggerFactory.getLogger(BenchHelper.class);
 	

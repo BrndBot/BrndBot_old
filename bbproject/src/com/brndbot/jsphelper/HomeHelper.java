@@ -9,55 +9,17 @@ package com.brndbot.jsphelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.brndbot.db.DbConnection;
-import com.brndbot.db.User;
-import com.brndbot.db.UserLogo;
-import com.brndbot.promo.Client;
+//import com.brndbot.db.DbConnection;
+//import com.brndbot.db.User;
+//import com.brndbot.db.UserLogo;
+//import com.brndbot.promo.Client;
 
-public class HomeHelper {
+public class HomeHelper extends Helper {
 
 	final static Logger logger = LoggerFactory.getLogger(HomeHelper.class);
 
-	final static int MAX_LOGO_HEIGHT = 130;
-	final static int MAX_LOGO_WIDTH = 200;
-	
-	private int userId;
-	private User user;
 	private String organization;
-	private Client client;
 
-
-	public void setUserId (int id) {
-		logger.debug ("setUserId: {}", id);
-		userId = id;
-		DbConnection con = null;
-		try {
-			con= DbConnection.GetDb();
-			user = User.getUserNameAndLogo(id, con);
-		} finally {
-			if (con != null)
-				con.close();
-		}
-		client = Client.getByUserId(id);
-		if (client == null)
-			logger.error ("No client for ID {}", id);
-	}
-	
-	/** This seeks out the appropriate ClientInterface for the user.
-	 *  TODO make it real, getting the class name from the database.
-	 *  For now, uses the dummy client interface
-	 */
-//	private void loadClientInterface () {
-//		final String className = "com.brndbot.client.dummy.DummyClientInterface";
-//		try {
-//			clientInterface = ClientInterfaceFactory.getInterfaceForClass(className);
-//		} catch (Exception e) {
-//			logger.error ("FATAL: {}", e.getClass().getName());
-//		}
-//		if (clientInterface == null) {
-//			logger.error ("FATAL: Could not load client interface {}", className);
-//		}
-//	}
 	
 	/** This loads up, if necessary, and returns the list of StyleSets for the
 	 *  client. It needs to get into the session somewhere, but probably not here. */
@@ -67,6 +29,10 @@ public class HomeHelper {
 	 *  be inserted.
 	 */
 	public String getRenderDoToday () {
+		if (client == null) {
+			logger.error ("getRenderDoToday: client is null");
+			return null;
+		}
 		DoTodayRenderer renderer = new DoTodayRenderer (client);
 		return renderer.getFragment();
 	}
@@ -95,11 +61,4 @@ public class HomeHelper {
 		return user.getLogoName ();
 	}
 	
-	public String getBoundLogo () {
-		return UserLogo.getBoundLogo (userId, MAX_LOGO_HEIGHT, MAX_LOGO_WIDTH);
-	}
-	
-	public int getUserId () {
-		return userId;
-	}
 }

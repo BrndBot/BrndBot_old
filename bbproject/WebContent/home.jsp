@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<!--  *  All rights reserved by Brndbot, Ltd. 2015 -->
 <%@ page session="true"%>
 
 
@@ -61,7 +62,6 @@ prototypes to select, and the user picks one for processing in the editor (bench
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/kendo.all.min.js"></script>
-    <script type="text/javascript" src="js/kendo.all.min.js"></script>
 	<script type="text/javascript" src="js/modernizr.custom.63321.js"></script>
     <script type="text/javascript" src="js/sidebar.js"></script>
 	<script type="text/javascript" src="js/session.js"></script>
@@ -70,10 +70,6 @@ prototypes to select, and the user picks one for processing in the editor (bench
 
 </head>
 <body>
-<!-- Server info: <%= application.getServerInfo() %><br>
-Servlet version: <%= application.getMajorVersion() %>.<%= application.getMinorVersion() %><br>
-JSP version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion() %><br>
-Java version: <%= System.getProperty("java.version") %><br> -->
 
 <c:if test="${empty sessionScope.brndbotuser_id || sessionScope.brndbotuser_id <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
@@ -103,7 +99,7 @@ Java version: <%= System.getProperty("java.version") %><br> -->
 <div id="brndbotMain">
 	<div id="brndbotHeader">
 		&nbsp;
-	</div> <!-- brndbotDashHeader -->
+	</div> <!-- brndbotHeader -->
 
 	<div id="brndbotDashBody">
 
@@ -118,7 +114,7 @@ Java version: <%= System.getProperty("java.version") %><br> -->
 				</table>
 			</div>
 
-<%@include file="sidebar.jsp" %>
+			<%@include file="sidebar.jsp" %>
 
 		</div>
 
@@ -167,7 +163,7 @@ Java version: <%= System.getProperty("java.version") %><br> -->
 				    <div class="listBackground">
 				    	<div id="viewButtonPanel" class="viewButtonPanel">
 				    		<div style="padding-top:1.25rem">
-<c:out escapeXml="false" value="${homeHelper.renderModelListButtons}"/>
+								<c:out escapeXml="false" value="${homeHelper.renderModelListButtons}"/>
 					    		<div class="lastUnit">
 									&nbsp;
 					    		</div>
@@ -176,13 +172,7 @@ Java version: <%= System.getProperty("java.version") %><br> -->
 
 						<!-- This probably replaces all of the ones below  -->
 						<div id="promoProtosHere" style="display:none;border-color:#ffffff"></div>
-						<!-- Old style
-		 				<div id="classHere" style="display:none;border-color:#ffffff"></div>
-		 				<div id="classPager" style="display:none;"></div>
-						<div id="workshopHere" style="display:none;border-color:#ffffff"></div>
-		 				<div id="workshopPager" style="display:none;"></div>
-						<div id="staffHere" style="display:none;border-color:#ffffff"></div>
-		 				<div id="staffPager" style="display:none;"></div>    -->
+
 					</div>  <!-- end listBackground -->
 				</div>
 
@@ -233,12 +223,9 @@ Java version: <%= System.getProperty("java.version") %><br> -->
 			</div>
 		</div>
 	</div>
-</div>
+</div>		<!-- brndbotMain -->
 
 <script type="text/javascript">
-	// Init the left-side panel
-//	clickSideBar('homeLine');
-
 
 	// Singleton class for client-side session management
 	// There's something dumb about defining globals in the JSP, but Javascript doesn't have an include!

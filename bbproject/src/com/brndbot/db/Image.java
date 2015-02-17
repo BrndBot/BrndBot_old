@@ -6,6 +6,7 @@
 package com.brndbot.db;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +52,6 @@ public class Image implements TableModel
 	private Integer _image_height;
 	private Integer _image_width;
 	private Blob _image;
-	private byte[] _image_bytes; // to store to db
 	private String mime_type;
 
 	// Max file size for a image
@@ -111,29 +112,20 @@ public class Image implements TableModel
 
 	public void setImageSize(int arg) { _image_size = new Integer(arg); } 
 
-	public byte[] getImageBytes() 
-	{ 
-		if (_image_bytes != null)
-			return _image_bytes;
-		return new byte[0];
-	}
-
-	public void setImageBytes(byte[] bytes) 
-	{
-		_image_bytes = null;
-		_image_bytes = new byte[bytes.length];
-		for (int i=0; i < bytes.length; i++)
-		{
-			_image_bytes[i] = bytes[i];
-		}
-	} 
 
 	public Blob getImage()
 	{ 
 		return _image; 
 	}
 
-	public void setImage(Blob arg) { _image = arg; }
+	public void setImage(byte[] blobData) throws SQLException { 
+		Blob blob = new SerialBlob (blobData);
+		_image = blob; 
+	}
+
+	public void setImage(Blob blob) throws SQLException { 
+		_image = blob; 
+	}
 
 	public Image(ResultSet rs)
 	{
@@ -146,7 +138,7 @@ public class Image implements TableModel
 			_image_size = new Integer(rs.getInt("ImageSize"));
 			_image_height = new Integer(rs.getInt("ImageHeight"));
 			_image_width = new Integer(rs.getInt("ImageWidth"));
-// never used			_image = rs.getBlob("Image");
+			_image = rs.getBlob("Image");
 		}
 		catch (SQLException e) 
 		{
@@ -154,7 +146,6 @@ public class Image implements TableModel
 		}
 		finally
 		{
-//			System.out.println("att name: " + _image_name);
 		}
 	}
 
@@ -164,16 +155,24 @@ public class Image implements TableModel
 	public int save(DbConnection con) throws SQLException
 	{
 		logger.debug("IMAGE SAVE SAVE SAVE**************");
-		PreparedStatement pstmt = con.createPreparedStatement("INSERT INTO images (" +
+		PreparedStatement pstmt;
+		if (_image == null) {
+			pstmt = con.createPreparedStatement("INSERT INTO images (" +
 				"ImageType, UserID, ImageName, ImageSize, ImageHeight, ImageWidth) " +
 				"VALUES (?, ?, ?, ?, ?, ?);");
+		}
+		else {
+			pstmt = con.createPreparedStatement("INSERT INTO images (" +
+					"ImageType, UserID, ImageName, ImageSize, ImageHeight, ImageWidth, Image) " +
+					"VALUES (?, ?, ?, ?, ?, ?);");
+			pstmt.setBlob(7, getImage());
+		}
 		pstmt.setInt(1, getImageType().getValue().intValue());
 		pstmt.setInt(2, getUserID().intValue());
 		pstmt.setString(3, getImageName());
 		pstmt.setInt(4, getImageSize().intValue());
 		pstmt.setInt(5, getImageHeight().intValue());
 		pstmt.setInt(6, getImageWidth().intValue());
-//		pstmt.setBytes(7, getImageBytes());  Not sure that we ever use
 		// Timestamp is defined by default as current system time 
 		pstmt.executeUpdate();
 		pstmt.close();
@@ -387,14 +386,17 @@ public class Image implements TableModel
 		return ret;
 	}
 
+	/*  As it stands, this always uploads to a file that's directly
+	 *  accessible by a URL. We want to replace this with files in the
+	 *  database or else files outside the publicly accessible space.
+	 */
 	static public Image uploadFile(
 			int user_id, 
 			ImageType image_type, 
 			@SuppressWarnings("rawtypes") Hashtable files, 
-			DbConnection con) throws IOException
+			DbConnection con) throws IOException, SQLException 
 	{
 		Image return_image = null;
-		FileOutputStream fos = null;
 		logger.debug ("uploadFile");
 
 		if (files.size() > 0)
@@ -430,35 +432,56 @@ public class Image implements TableModel
 					byte[] bytes = new byte[(int)image_file.getFileSize()+1];
 					uploadInStream.read(bytes);
 
+					// Get the image info from the image in memory, instead of writing it
+					// to a file and then reading again.
+					ByteArrayInputStream instrm = new ByteArrayInputStream (bytes);
+					BufferedImage bimg = ImageIO.read (instrm);
+					return_image.setImageWidth(bimg.getWidth());
+					return_image.setImageHeight(bimg.getHeight());
+
 					// Store in the database
 					int count = Image.getImageCount(con);
 					return_image.setUserID(user_id);
 					return_image.setImageType(image_type);
-					return_image.setImageBytes(bytes);
 					String url_file_name = Utils.Slashies(image_type.getFolder() + user_id + "-" + count + "-" +
 							image_file.getFileName());
 					logger.debug("Relative URL file name: " + url_file_name);
-					return_image.setImageName(url_file_name);
 					return_image.setImageSize((int)image_file.getFileSize());
-
-					// Now save image to the images/uploads/.. folder
-					//String tomcat_base = SystemProp.get(SystemProp.TOMCAT_BASE);
-					//image_file.setFileName(Utils.Slashies(tomcat_base + "\\" + url_file_name));
-					image_file.setFileName(AppEnvironment.baseInAppDirectory(url_file_name));
-					logger.debug ("Saving image to {}", image_file.getFileName());
-					fos = new FileOutputStream(image_file.getFileName());
-					fos.write(bytes);
-					fos.close();
-
-					BufferedImage bimg = ImageIO.read(new File(image_file.getFileName()));
-					return_image.setImageWidth(bimg.getWidth());
-					return_image.setImageHeight(bimg.getHeight());
+					// For the moment, only "stock" (user gallery) images are saved to
+					// the database. Once this is working, we should migrate logos
+					// there as well.
+					if (image_type == ImageType.USER_UPLOAD) {
+						saveToDatabase (bytes, image_file, url_file_name, return_image);
+					} else {
+						return_image.setImageName(url_file_name);
+						saveToFile (bytes, image_file, url_file_name);
+					}
 				}
 			}
 		}
 		return return_image;
 	}
 
+	/* Complete the file save to the file system */
+	private static void saveToFile (byte[] bytes, UploadFile uploadFile, String fileName) 
+			throws IOException {
+		// Now save image to the images/uploads/.. folder
+		uploadFile.setFileName(AppEnvironment.baseInAppDirectory(fileName));	// huh??
+		logger.debug ("Saving image to {}", uploadFile.getFileName());
+		FileOutputStream fos = new FileOutputStream(uploadFile.getFileName());
+		fos.write(bytes);
+		fos.close();
+	}
+	
+	/* Save the file to the database */
+	private static void saveToDatabase (byte[] bytes, UploadFile uploadFile, String imageName, Image image) 
+				throws SQLException {
+		// TODO stub
+		logger.debug ("Saving image data to database");
+		image.setImage(bytes);
+	}
+	
+	
 	static public JSONArray getImagesForDisplay(int user_id, ImageType image_type, DbConnection con)
 	{
 		Statement stmt = con.createStatement();

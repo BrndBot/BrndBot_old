@@ -100,33 +100,7 @@ public enum ImageType
     	return itemNumMap.get (num);
     }
 
-//    static public ImageType create(int type)
-//    {
-//    	ImageType stype = new ImageType(new Integer(type), "", "", 0L);
-//    	if (stype.equals(ALTERNATE_LOGO))
-//    	{
-//    		return ALTERNATE_LOGO;
-//    	}
-//    	else if (stype.equals(USER_UPLOAD))
-//    	{
-//    		return USER_UPLOAD;
-//    	}
-//    	else if (stype.equals(STOCK))
-//    	{
-//    		return STOCK;
-//    	}
-//    	else if (stype.equals(DEFAULT_LOGO))
-//    	{
-//    		return DEFAULT_LOGO;
-//    	}
-//    	else if (stype.equals(FUSED_IMAGE))
-//    	{
-//    		return FUSED_IMAGE;
-//    	}
-//
-//    	stype = null;
-//    	throw new RuntimeException("Unknown BlockType: " + type);
-//    }
+
 
 //    public boolean equals(Object obj)
 //    {
