@@ -13,12 +13,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
+<head>
+
 <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
 <script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/kendo.all.min.js"></script>
 
-<head>
+<link href="styles/kendo.common.min.css" rel="stylesheet">
+<link href="styles/kendo.rtl.min.css" rel="stylesheet">
+<link href="styles/kendo.flat.min.css" rel="stylesheet">
+<link href="css/shared.css" rel="stylesheet">
+<link href="css/images.css" rel="stylesheet">
 
     <title>Brndbot: Image Management</title>
     <meta charset="utf-8">
@@ -39,10 +45,26 @@
 
 	<form method="post">
 		<div class="demo-section k-header">
-			<input name="files" id="files" type="file" />
+				<input name="files" id="files" type="file" />
 		</div>
 	</form>
 </div>		<!-- brndbotMain -->
+
+
+<!-- Template for popup dialog to name the image that was just uploaded. -->
+<div id="nameImagePopup" class="rounded" style="display:none">
+	<form id="nameImageForm" onsubmit="imagesjs.nameImageFormSubmit()">
+	<ul class="namefileform">
+		<li><label>Image name:
+			<input type="text" name="imgname" id="imgname">
+			</label>
+		</li>
+		<li>
+			<input type="submit" value="Set name">
+		</li>
+		</ul>
+	</form>
+</div>		<!-- nameImagePopup -->
 
 <script type="text/javascript" src="js/images.js"></script>
 </c:if>			<!-- end of session check for body ->

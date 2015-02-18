@@ -230,7 +230,10 @@ public class UserLogo implements TableModel
 						image_name, width);
 	}
 
-	/** Returns the URL for a logo. But you have to know the URL first. */
+	/** Returns an img element for a logo. 
+	 *  Reads the image file, apparentlym just to get its width and height.
+	 *  FQDN is "fully qualified domain name."
+	 *  "Bound" seems to mean bound to a URL. I guess. */
 	static public String getBoundImage(
 			String local_image_file_name, 
 			int max_img_height, 

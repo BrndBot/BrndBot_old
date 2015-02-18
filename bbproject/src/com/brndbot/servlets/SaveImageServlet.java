@@ -32,7 +32,7 @@ import com.brndbot.db.UserLogo;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
-import com.brndbot.util.AppEnvironment;
+//import com.brndbot.util.AppEnvironment;
 
 /** This servlet works with the Kendo upload widget to handle a successful upload. */
 public class SaveImageServlet extends HttpServlet
@@ -62,7 +62,7 @@ public class SaveImageServlet extends HttpServlet
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		logger.debug("--------Entering SaveImageServlet----------");
+		logger.debug("saveImageServlet.doPost");
 
 		MultipartFormDataRequest data;
 		String responseString = null;
@@ -115,7 +115,7 @@ public class SaveImageServlet extends HttpServlet
 	
 			DbConnection con = DbConnection.GetDb();
 			
-			String imgTag = ""; // <img> tag to return in json
+			//String imgTag = ""; // <img> tag to return in json
 	
 			try
 			{
@@ -181,28 +181,39 @@ public class SaveImageServlet extends HttpServlet
 		int bounding_height = 0;
 		int bounding_width = 0;
 		int saved_img_id = 0;
-		if (image_type.equals(ImageType.DEFAULT_LOGO))
-		{
-			logger.debug("We got a LOGO");
+		String imgTag = "";
+		switch (image_type) {
+		case DEFAULT_LOGO:
+		
+			logger.debug("We got a logo");
 			UserLogo user_logo = new UserLogo(user_id, image);
 			bounding_height = UserLogo.MAX_BOUNDING_HEIGHT;
 			bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
 			saved_img_id = user_logo.save(con);
-		}
-		else if (image_type.equals(ImageType.USER_UPLOAD) ||
-				image_type.equals(ImageType.ALTERNATE_LOGO))
-		{
+			imgTag = UserLogo.getBoundImage(
+					image.getImageName(), 
+					bounding_height, bounding_width, true);
+			break;
+		
+		case ALTERNATE_LOGO:
+		
 			logger.debug("We got a " + image_type.getItemText());
 
 			//Use logo binding size for now, will be replaced
 			bounding_height = UserLogo.MAX_BOUNDING_HEIGHT;
 			bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
 			saved_img_id = image.save(con);
+			imgTag = UserLogo.getBoundImage(
+					image.getImageName(), 
+					bounding_height, bounding_width, true);
+			// The "tag" is an <img> element
+			break;
+		case USER_UPLOAD:
+			saved_img_id = image.save(con);
+			// Anything else?
+			break;
 		}
 		logger.debug("Saved Image ID = " + saved_img_id);
-		String imgTag = UserLogo.getBoundImage(
-				image.getImageName(), 
-				bounding_height, bounding_width, true);
 		logger.debug("Returned from getBoundImage");
 
 		String return_name = Utils.Slashies(urlBase + "\\" + image.getImageName());

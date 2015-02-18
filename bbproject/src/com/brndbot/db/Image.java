@@ -164,7 +164,7 @@ public class Image implements TableModel
 		else {
 			pstmt = con.createPreparedStatement("INSERT INTO images (" +
 					"ImageType, UserID, ImageName, ImageSize, ImageHeight, ImageWidth, Image) " +
-					"VALUES (?, ?, ?, ?, ?, ?);");
+					"VALUES (?, ?, ?, ?, ?, ?, ?);");
 			pstmt.setBlob(7, getImage());
 		}
 		pstmt.setInt(1, getImageType().getValue().intValue());
@@ -180,6 +180,7 @@ public class Image implements TableModel
 		return DbUtils.getLastInsertID(con);
 	}
 
+	/** Returns the total number of images in the database */
 	static public int getImageCount(DbConnection con)
 	{
 		String sql = "SELECT COUNT(*) FROM images;";
@@ -206,6 +207,10 @@ public class Image implements TableModel
 		return count;
 	}
 
+	/** Deletes an image that matches the specified ImagdID and UserID.
+	 *  For some unclear reason, fetches the image first. The only reason I
+	 *  can see for this is to prevent deletion of defective images.
+	 *  But why would we not want to delete defective images? */
 	static public void deleteImage(int image_id, int user_id, DbConnection con) 
 			throws SQLException
 	{
@@ -217,6 +222,10 @@ public class Image implements TableModel
 		}
 	}
 
+	/** Creates an Image object from the ImageID and UserID. 
+	 *  Returns null if there's no match.
+	 *  What's the difference between this and getImageByID?
+	 */
 	static public Image makeThisImage(int image_id, int user_id, DbConnection con)
 	{
 		Statement stmt = con.createStatement();
@@ -346,10 +355,12 @@ public class Image implements TableModel
 		return s;
 	}
 
-	static public Image getImageByID(int image_id, int user_id, DbConnection con)
+	/** Creates an Image object from the ImageID and UserID. 
+	 *  Returns null if there's no match.
+	 *  What's the difference between this and makeThisImage?
+	 */	static public Image getImageByID(int image_id, int user_id, DbConnection con)
 	{
 		Statement stmt = con.createStatement();
-//		String sql = "SELECT * FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
 		String sql = "SELECT ImageID, UserID, ImageType, ImageName, ImageSize, ImageHeight, ImageWidth FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
 		logger.debug("For images:\n" + sql);
 		ResultSet rs = con.QueryDB(sql, stmt);
@@ -359,7 +370,6 @@ public class Image implements TableModel
 			if (rs.next())
 			{
 				Image = new Image(rs);
-				logger.debug("FOUNDLOGO IMAGE");
 			}
 			else
 				logger.error("Image not found, image ID = {}", image_id);
@@ -386,7 +396,12 @@ public class Image implements TableModel
 		return ret;
 	}
 
-	/*  As it stands, this always uploads to a file that's directly
+	/**
+	 * Handle file upload. 
+	 *
+	 * @return  an Image object which has _not_ been saved to the database.
+	 * 
+	 *   As it stands, this always uploads to a file that's directly
 	 *  accessible by a URL. We want to replace this with files in the
 	 *  database or else files outside the publicly accessible space.
 	 */
@@ -424,7 +439,7 @@ public class Image implements TableModel
 				{
 					if (image_file.getFileSize() > image_type.getMaxFileSize())
 					{
-						logger.info("Logo file is too big");
+						logger.info("Image file is too big");
 						//TODO these log messages really don't help the user!!!
 						return null;
 					}
@@ -451,7 +466,7 @@ public class Image implements TableModel
 					// the database. Once this is working, we should migrate logos
 					// there as well.
 					if (image_type == ImageType.USER_UPLOAD) {
-						saveToDatabase (bytes, image_file, url_file_name, return_image);
+						return_image.setImage(bytes);
 					} else {
 						return_image.setImageName(url_file_name);
 						saveToFile (bytes, image_file, url_file_name);
@@ -472,14 +487,7 @@ public class Image implements TableModel
 		fos.write(bytes);
 		fos.close();
 	}
-	
-	/* Save the file to the database */
-	private static void saveToDatabase (byte[] bytes, UploadFile uploadFile, String imageName, Image image) 
-				throws SQLException {
-		// TODO stub
-		logger.debug ("Saving image data to database");
-		image.setImage(bytes);
-	}
+
 	
 	
 	static public JSONArray getImagesForDisplay(int user_id, ImageType image_type, DbConnection con)

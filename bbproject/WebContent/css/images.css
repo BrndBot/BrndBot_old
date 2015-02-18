@@ -1,0 +1,6 @@
+@CHARSET "UTF-8";
+/* CSS specific to images.jsp */
+
+.namefileform li {
+	list-style-type: none;
+}
