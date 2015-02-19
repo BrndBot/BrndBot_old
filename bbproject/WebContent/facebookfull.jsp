@@ -27,9 +27,9 @@
 
 	<script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-    <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
-    <script type="text/javascript" src="js/kendo.all.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="scripts/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="scripts/kendo.all.min.js"></script>
     <script type="text/javascript" src="js/facebookfull.js"></script>
     <script type="text/javascript" src="js/post-to-facebook.js"></script>
     <script type="text/javascript" src="js/FBLogin.js"></script>

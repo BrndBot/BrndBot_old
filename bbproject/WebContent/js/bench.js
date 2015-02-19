@@ -224,7 +224,7 @@ function initTheBench()
 		for (var i=0; i < dataItems.length; i++)
 		{
 	        var dataItem = dataItems[i];
-	        var id = parseInt(dataItem.ID);
+	        id = parseInt(dataItem.ID);
 	        if (id == database_id)
 	        {
 				// Build a Javascript Block object to store in the blockStack array
@@ -522,12 +522,12 @@ function initTheBench()
 			return;
 		}
 
-		if (currentID != 0)
+		if (currentID !== 0)
 		{
 			$('#' + idPrefix[bType - 1] + 'Button' + currentID).hide();
 		}
 
-		if (listID != 0)
+		if (listID !== 0)
 		{
 			$('#' + idPrefix[bType - 1] + 'Button' + listID).show();
 		}
@@ -550,7 +550,7 @@ function initTheBench()
 		for (var i=0; i < dataItems.length; i++)
 		{
 	        var dataItem = dataItems[i];
-	        var id = dataItem.ID;
+	        id = dataItem.ID;
 	    	$('#' + idPrefix[cType - 1] + 'Button' + id).kendoButton({
 	    		click: publishClicked
 	    	});

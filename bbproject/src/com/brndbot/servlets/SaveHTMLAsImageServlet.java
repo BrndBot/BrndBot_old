@@ -113,7 +113,7 @@ public class SaveHTMLAsImageServlet extends HttpServlet
 		image.setImageType(image_type);
 		image.setImageHeight(buff.getHeight());
 		image.setImageWidth(buff.getWidth());
-		image.setImageName(rel_path);
+		image.setImageUrl(rel_path);
 		int saved_img_id;
 		try
 		{

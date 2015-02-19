@@ -287,19 +287,18 @@ $(document).ready(function()
 
     	var html = '';
     	// Create an array of 10 x 5 of colors
-    	var count = 0;
+    	count = 0;
     	for (var i = 0; i < 5; i++)
     	{
     		html += '<div class="paletteRow">';
     		for (var j = 0; j < 10; j++)
     		{
-    			var title = getTitle(other_colors[count]);
+    			var title1 = getTitle(other_colors[count]);
 
-        		// title="This is my tooltip"
     			var unitType = (j < 9 ? 'float:left;' : 'float:none;');
     			html += '<div id="paletteCol-' + count + 
     				'" class="paletteCol" style="background-color: ' + 
-    				other_colors[count++] + ';' + unitType + '"' + title + '></div>';
+    				other_colors[count++] + ';' + unitType + '"' + title1 + '></div>';
     		}
     		html += '</div>';
     	}
@@ -632,7 +631,7 @@ function validateEmail(email)
 
 function validateEntryMade(id, prompt)
 {
-	if ($(id).val().length == 0)
+	if ($(id).val().length === 0)
 	{
 		dataEntryError('You must enter a value in the ' + prompt + ' to continue with the sign up.');
 		return false;
@@ -735,7 +734,7 @@ function doSubmitForUser()
         {
         	console.log('SaveUserServlet returned successfully');
         	brndBotUserID = data[signUpUserKey];
-        	if (brndBotUserID == 0) {
+        	if (brndBotUserID === 0) {
         		alert("Unsuccessful registration");
         	}
         },

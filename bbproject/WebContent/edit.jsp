@@ -82,9 +82,9 @@
 <%	benchHelper.setSession (session);	// Need Java to set binary values 
 %>
 
-    <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
-    <script type="text/javascript" src="js/kendo.all.min.js"></script>
-    <script type="text/javascript" src="js/fabric.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="scripts/kendo.all.min.js"></script>
+    <script type="text/javascript" src="scripts/fabric.min.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
     <script type="text/javascript" src="js/BBModel.js"></script>

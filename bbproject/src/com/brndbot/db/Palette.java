@@ -87,8 +87,9 @@ public class Palette implements TableModel
 		pstmt.setInt(2, _sequence);
 		pstmt.setInt(3, (_is_suggested ? 1 : 0));
 		pstmt.setString(4, _color);
-		ResultSet rs = con.QueryDB(sql, pstmt);
-		rs.close();
+		pstmt.execute();
+		//ResultSet rs = con.QueryDB(sql, pstmt);
+		//rs.close();
 	}
 	
 	

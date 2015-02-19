@@ -106,7 +106,7 @@ Block.prototype.fillMyValues = function(useShortDescription, displayEditType)
 	}
 	fillValue(this.imgUrlID, this.imgURL);
 
-	if (this.blockID != '') $('#' + this.blockID).show();
+	if (this.blockID !== '') $('#' + this.blockID).show();
 	else $('#' + this.blockID).hide();
 };
 

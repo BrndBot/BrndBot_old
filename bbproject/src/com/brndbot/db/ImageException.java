@@ -12,6 +12,9 @@ public class ImageException extends Exception
 		super(string);
 	}
 
+	public ImageException (String string, Throwable cause) {
+		super(string, cause);
+	}
 	/**
 	 * 
 	 */

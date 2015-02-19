@@ -23,9 +23,9 @@
     <link href="css/shared.css" rel="stylesheet">
     <link href="css/signup.css" rel="stylesheet">
 
-    <script type="text/javascript" src="js/jquery-2.1.1.js"></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
-    <script type="text/javascript" src="js/kendo.all.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="scripts/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="scripts/kendo.all.min.js"></script>
     <script type="text/javascript" src="js/signup.js"></script>
 	<script type="text/javascript" src="js/session.js"></script>
 

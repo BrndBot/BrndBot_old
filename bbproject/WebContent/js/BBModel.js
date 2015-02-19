@@ -42,7 +42,7 @@ function Model () {
 				return field;
 		}
 		return null;
-	}
+	};
 }
 
 /* The prototype constructor for one field of a Model. */
@@ -70,7 +70,7 @@ function ModelField () {
 	this.populateFromJSON = function (jsonField) {
 		this.name = jsonField.name;
 		this.styleType = jsonField.styleType;
-	}
+	};
 	
 	/* For text fields only. Would it be cleaner to subclass
 	 * ModelField? 
@@ -84,15 +84,15 @@ function ModelField () {
 		else if (this.style.defaultText)
 			content = this.style.defaultText;
 		return content;
-	}
+	};
 	
 	this.isBold = function () {
 		return (this.bold !== null) ? this.bold : this.style.bold;
-	}
+	};
 	
 	this.isItalic = function () {
 		return (this.italic !== null) ? this.italic : this.style.italic;
-	}
+	};
 	
 	this.draw = function (location, canvas ) {
 		// Draw only if there's a style for this field
@@ -119,51 +119,51 @@ function ModelField () {
 			}
 		}
 
-	}
+	};
 	
 	this.getPointSize = function () {
 		return this.pointSize ? this.pointSize : this.style.pointSize;
-	}
+	};
 	
 	this.getTypeface = function () {
 		return this.typeface ? this.typeface : this.style.typeface;
-	}
+	};
 	
 	this.getX = function () {
 		return (this.offsetX !== null) ? this.offsetX : this.style.offsetX;
-	}
+	};
 
 	this.getY = function () {
 		return (this.offsetY !== null) ? this.offsetY : this.style.offsetY;
-	}
+	};
 	
 	this.getWidth = function () {
 		return (this.width !== null) ? this.width : this.style.width;
-	}
+	};
 	
 	this.getColor = function () {
 		return (this.color !== null) ? this.color : this.style.color;
-	}
+	};
 	
 	this.getHeight = function () {
 		return (this.height !== null) ? this.height : this.style.height;
-	}
+	};
 	
 	this.getPointSize = function () {
 		return (this.pointSize !== null) ? this.pointSize : this.style.pointSize;
-	}
+	};
 	
 	this.getAlignment = function () {
 		return (this.alignment !== null) ? this.alignment : this.style.alignment;
-	}
+	};
 	
 	this.isBold = function () {
 		return (this.bold !== null) ? this.bold : this.style.bold;
-	}
+	};
 
 	this.isItalic = function () {
 		return (this.italic !== null) ? this.italic : this.style.italic;
-	}
+	};
 
 	this.fabricateText = function (canvas) {
 		console.log ("fabricateText");
@@ -357,7 +357,7 @@ function Promotion (model, styleSet) {
 			field.fabricObject = null;
 			field.draw (location, this.canvas);
 		}	
-	}
+	};
 	
 
 }

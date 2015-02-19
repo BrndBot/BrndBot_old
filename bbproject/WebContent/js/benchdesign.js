@@ -158,5 +158,5 @@ updateHeight: function(tarea) {
         tarea.onblur = null;
     };
 
-},
 }
+};

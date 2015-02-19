@@ -33,7 +33,7 @@ insertStyles: function (dest) {
 /** Update the promotion style to the one given in the list item */
 updateStyle: function (litem) {
 	var styleSet = benchstyle.elemToLinkedStyleSet (litem);
-	if (styleSet != null) {
+	if (styleSet !== null) {
 		console.log ("can switch to style set" + styleSet.name);
 		currentPromotion.applyStyleSet (styleSet);
 		currentPromotion.redraw();
@@ -52,4 +52,4 @@ elemToLinkedStyleSet: function (elem) {
 }
 
 
-}
+};

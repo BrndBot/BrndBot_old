@@ -15,10 +15,10 @@
 
 <head>
 
-<script type="text/javascript" src="js/jquery-2.1.1.js"></script>
-<script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
-<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="js/kendo.all.min.js"></script>
+<script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="scripts/jquery-migrate-1.2.1.js"></script>
+<script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
+<script type="text/javascript" src="scripts/kendo.all.min.js"></script>
 
 <link href="styles/kendo.common.min.css" rel="stylesheet">
 <link href="styles/kendo.rtl.min.css" rel="stylesheet">
@@ -50,10 +50,13 @@
 	</form>
 </div>		<!-- brndbotMain -->
 
+<div id="imageGallery">
+
+</div> <-- imageGallery -->
 
 <!-- Template for popup dialog to name the image that was just uploaded. -->
 <div id="nameImagePopup" class="rounded" style="display:none">
-	<form id="nameImageForm" onsubmit="imagesjs.nameImageFormSubmit()">
+	<form id="nameImageForm" >
 	<ul class="namefileform">
 		<li><label>Image name:
 			<input type="text" name="imgname" id="imgname">

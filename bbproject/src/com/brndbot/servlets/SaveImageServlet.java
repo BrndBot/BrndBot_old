@@ -191,7 +191,7 @@ public class SaveImageServlet extends HttpServlet
 			bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
 			saved_img_id = user_logo.save(con);
 			imgTag = UserLogo.getBoundImage(
-					image.getImageName(), 
+					image.getImageUrl(), 
 					bounding_height, bounding_width, true);
 			break;
 		
@@ -204,7 +204,7 @@ public class SaveImageServlet extends HttpServlet
 			bounding_width = UserLogo.MAX_BOUNDING_WIDTH;
 			saved_img_id = image.save(con);
 			imgTag = UserLogo.getBoundImage(
-					image.getImageName(), 
+					image.getImageUrl(), 
 					bounding_height, bounding_width, true);
 			// The "tag" is an <img> element
 			break;
@@ -216,7 +216,7 @@ public class SaveImageServlet extends HttpServlet
 		logger.debug("Saved Image ID = " + saved_img_id);
 		logger.debug("Returned from getBoundImage");
 
-		String return_name = Utils.Slashies(urlBase + "\\" + image.getImageName());
+		String return_name = Utils.Slashies(urlBase + "\\" + image.getImageUrl());
 		logger.debug("JSON return name: " + return_name);
 
 		logger.debug("Building json_obj");

@@ -180,4 +180,4 @@ elemToLinkedField: function (elem) {
 	var target = $(elem).attr("data-linkedfield");
    	return currentPromotion.model.findFieldByName (target);
 }
-}
+};

@@ -131,7 +131,7 @@ public class UserLogo implements TableModel
 					e.getClass().getName(),
 					e.getMessage());
 			con.rollback();
-			throw new ImageException("Unexpected error:\n" + e.getMessage());
+			throw new ImageException("Unexpected error:\n" + e.getMessage(), e);
 		}
 		finally
 		{
@@ -214,7 +214,7 @@ public class UserLogo implements TableModel
 				int h = ((int)(height * scale));
 				int w = ((int)(width * scale));
 				s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
-						logo.getImage().getImageName(), h, w);
+						logo.getImage().getImageUrl(), h, w);
 //				System.out.println("Logo: " + s);
 			}
 		}

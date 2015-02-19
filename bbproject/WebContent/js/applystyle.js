@@ -23,7 +23,7 @@ var applyStyle = {
 		for (var i = 0, len = promotion.fields.length; i < len; i++) {
 			var field = promotion.fields[i];
 			var style = applyStyle.findApplicableStyle (field, ss);
-			if (style != null) {
+			if (style !== null) {
 				console.log ("Applying style");
 				field.style = style;
 			}
@@ -74,4 +74,4 @@ var applyStyle = {
 	}
 	
 
-}
+};

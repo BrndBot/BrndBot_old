@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,135 +43,158 @@ public class Image implements TableModel
 	final static Logger logger = LoggerFactory.getLogger(Image.class);
 	final static String tableName = "images";
 	
-	private Integer _image_id;
-	private Integer _user_id;  // 0 if it's a Brndbot stock image
-	private ImageType _image_type;
-	private String _image_name;
-	private Integer _image_size;
-	private Integer _image_height;
-	private Integer _image_width;
-	private Blob _image;
-	private String mime_type;
+	private Integer imageId;
+	private Integer userId;  // 0 if it's a Brndbot stock image
+	private ImageType imageType;
+	private String imageUrl;
+	private String imageName;
+	private Integer imageSize;
+	private Integer imageHeight;
+	private Integer imageWidth;
+	private Blob image;
+	private String mimeType;
 
 	// Max file size for a image
 	public static long MAX_IMAGE_SIZE = 500000L;
 	
 	public Image()
 	{
-		_image_id = new Integer(0);
-		_user_id = new Integer(0);
-		_image_type = null;
-		_image_name = "";
-		_image_size = new Integer(0);
-		_image_height = new Integer(0);
-		_image_width = new Integer(0);
-		_image = null;
+		imageId = new Integer(0);
+		userId = new Integer(0);
+		imageType = null;
+		imageUrl = "";
+		imageName = "";
+		imageSize = new Integer(0);
+		imageHeight = new Integer(0);
+		imageWidth = new Integer(0);
+		image = null;
 	}
 	
 	public String getTableName () {
 		return tableName;
 	}
 	
-	public Image(Image m)
-	{
-		_image_id = m._image_id;
-		_user_id = m._user_id;
-		_image_name = m._image_name;
-		_image_type = m._image_type;
-		_image_size = new Integer(m._image_size.intValue());
-		_image_height = new Integer(m._image_height.intValue());
-		_image_width = new Integer(m._image_width.intValue());
-		_image = m._image;
-	}
-
-	static final String CS = ", ";
-
-	public Integer getImageID() { return _image_id; }
-	public void setImageID(int arg) { _image_id = new Integer(arg); } 
-
-	public Integer getUserID() { return _user_id; }
-	public void setUserID(int arg) { _user_id = new Integer(arg); } 
-
-	public String getImageName() { return _image_name; }
-	public void setImageName(String arg) { _image_name = arg; }
-
-	public ImageType getImageType() { return _image_type; }
-	public void setImageType(ImageType arg) { _image_type = arg; }
-
-	public Integer getImageHeight() { return _image_height; }
-	public void setImageHeight(int arg) { _image_height = new Integer(arg); } 
-
-	public Integer getImageWidth() { return _image_width; }
-	public void setImageWidth(int arg) { _image_width = new Integer(arg); } 
-
-	public Integer getImageSize() 
-	{
-		return _image_size; 
-	}
-
-	public void setImageSize(int arg) { _image_size = new Integer(arg); } 
-
-
-	public Blob getImage()
-	{ 
-		return _image; 
-	}
-
-	public void setImage(byte[] blobData) throws SQLException { 
-		Blob blob = new SerialBlob (blobData);
-		_image = blob; 
-	}
-
-	public void setImage(Blob blob) throws SQLException { 
-		_image = blob; 
-	}
-
+	/** Consructor that loads up the image from a ResultSet that includes ImageID, UserID,
+	 *  ImageType, ImageURL, ImageSize, ImageHeight, and ImageWidth. 
+	 *  The field Image is not included here since it's so big it should
+	 *  be loaded only when actually needed. */
 	public Image(ResultSet rs)
 	{
 		try
 		{
-			_image_id = new Integer(rs.getInt("ImageID"));
-			_user_id = new Integer(rs.getInt("UserID"));
-			_image_type = ImageType.getByItemNumber(rs.getInt("ImageType"));
-			_image_name = rs.getString("ImageName");
-			_image_size = new Integer(rs.getInt("ImageSize"));
-			_image_height = new Integer(rs.getInt("ImageHeight"));
-			_image_width = new Integer(rs.getInt("ImageWidth"));
-			_image = rs.getBlob("Image");
+			imageId = new Integer(rs.getInt("ImageID"));
+			userId = new Integer(rs.getInt("UserID"));
+			imageType = ImageType.getByItemNumber(rs.getInt("ImageType"));
+			imageUrl = rs.getString("ImageURL");
+			imageSize = new Integer(rs.getInt("ImageSize"));
+			imageHeight = new Integer(rs.getInt("ImageHeight"));
+			imageWidth = new Integer(rs.getInt("ImageWidth"));
+			//image = rs.getBlob("Image");
 		}
 		catch (SQLException e) 
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
+	}
+
+	/** Copy constructor */
+	public Image(Image m)
+	{
+		imageId = m.imageId;
+		userId = m.userId;
+		imageUrl = m.imageUrl;
+		imageName = m.imageName;
+		imageType = m.imageType;
+		imageSize = new Integer(m.imageSize.intValue());
+		imageHeight = new Integer(m.imageHeight.intValue());
+		imageWidth = new Integer(m.imageWidth.intValue());
+		image = m.image;
+	}
+
+	static final String CS = ", ";
+
+	public Integer getImageID() { return imageId; }
+	public void setImageID(int arg) { imageId = arg; } 
+
+	public Integer getUserID() { return userId; }
+	public void setUserID(int arg) { userId = arg; } 
+
+	public String getImageUrl() { return imageUrl; }
+	public void setImageUrl(String arg) { imageUrl = arg; }
+
+	public String getImageName() { return imageName; }
+	public void setImageName(String arg) { imageName = arg; }
+
+	public ImageType getImageType() { return imageType; }
+	public void setImageType(ImageType arg) { imageType = arg; }
+
+	public Integer getImageHeight() { return imageHeight; }
+	public void setImageHeight(int arg) { imageHeight = arg; } 
+
+	public Integer getImageWidth() { return imageWidth; }
+	public void setImageWidth(int arg) { imageWidth = arg; } 
+
+	public String getMimeType() { return mimeType; }
+	public void setMimeType(String arg) { mimeType = arg; } 
+
+	public Integer getImageSize() 
+	{
+		return imageSize; 
+	}
+
+	public void setImageSize(int arg) { imageSize = new Integer(arg); } 
+
+	/** Return the binary image data. May be null if imageUrl is used instead. */
+	public Blob getImage()
+	{ 
+		return image; 
+	}
+
+	public void setImage(byte[] blobData) throws SQLException { 
+		Blob blob = new SerialBlob (blobData);
+		image = blob; 
+	}
+
+	public void setImage(Blob blob) throws SQLException { 
+		image = blob; 
+	}
+	
+	/** Load the image blog in an already populated Image. */
+	public void loadImage (DbConnection con) throws Exception {
+		PreparedStatement pstmt = con.createPreparedStatement
+				("SELECT Image FROM images WHERE UserID = ?");
+		pstmt.setInt (1, imageId);
+		ResultSet rs = pstmt.executeQuery();
+		if (rs.next()) {
+			image = rs.getBlob (1);
 		}
 	}
 
-	/** save assumes that the image is always defined by "name" (really
-	 *  path) rather than blob. This whole scheme is wonky.
+	/** Create a new row in the table "images" with the specified data.
+	 *  if image (the big blob) is non-null, it's included, otherwise not.
 	 */
 	public int save(DbConnection con) throws SQLException
 	{
 		logger.debug("IMAGE SAVE SAVE SAVE**************");
 		PreparedStatement pstmt;
-		if (_image == null) {
+		if (image == null) {
 			pstmt = con.createPreparedStatement("INSERT INTO images (" +
-				"ImageType, UserID, ImageName, ImageSize, ImageHeight, ImageWidth) " +
-				"VALUES (?, ?, ?, ?, ?, ?);");
+				"ImageType, UserID, ImageURL, ImageSize, ImageHeight, ImageWidth, ImageName) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?);");
 		}
 		else {
 			pstmt = con.createPreparedStatement("INSERT INTO images (" +
-					"ImageType, UserID, ImageName, ImageSize, ImageHeight, ImageWidth, Image) " +
-					"VALUES (?, ?, ?, ?, ?, ?, ?);");
-			pstmt.setBlob(7, getImage());
+					"ImageType, UserID, ImageURL, ImageSize, ImageHeight, ImageWidth, ImageName, Image) " +
+					"VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+			pstmt.setBlob(8, getImage());
 		}
-		pstmt.setInt(1, getImageType().getValue().intValue());
+		pstmt.setInt(1, getImageType().getValue());
 		pstmt.setInt(2, getUserID().intValue());
-		pstmt.setString(3, getImageName());
-		pstmt.setInt(4, getImageSize().intValue());
-		pstmt.setInt(5, getImageHeight().intValue());
-		pstmt.setInt(6, getImageWidth().intValue());
+		pstmt.setString(3, getImageUrl());
+		pstmt.setInt(4, getImageSize());
+		pstmt.setInt(5, getImageHeight());
+		pstmt.setInt(6, getImageWidth());
+		pstmt.setString(7, getImageName());
 		// Timestamp is defined by default as current system time 
 		pstmt.executeUpdate();
 		pstmt.close();
@@ -224,22 +246,13 @@ public class Image implements TableModel
 
 	/** Creates an Image object from the ImageID and UserID. 
 	 *  Returns null if there's no match.
+	 *  Doesn't load the image blob.
 	 *  What's the difference between this and getImageByID?
 	 */
 	static public Image makeThisImage(int image_id, int user_id, DbConnection con)
 	{
 		Statement stmt = con.createStatement();
-/*
-			_image_id = new Integer(rs.getInt("ImageID"));
-			_user_id = new Integer(rs.getInt("UserID"));
-			_image_type = ImageType.create(rs.getInt("ImageType"));
-			_image_name = rs.getString("ImageName");
-			_image_size = new Integer(rs.getInt("ImageSize"));
-			_image_height = new Integer(rs.getInt("ImageHeight"));
-			_image_width = new Integer(rs.getInt("ImageWidth"));
- */
-		String sql = "SELECT ImageID, UserID, ImageType, ImageName, ImageSize, ImageHeight, ImageWidth FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
-//		System.out.println("SQL: " + sql);
+		String sql = "SELECT ImageID, UserID, ImageType, ImageURL, ImageSize, ImageHeight, ImageWidth FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
 		ResultSet rs = con.QueryDB(sql, stmt);
 		Image image = null;
 		try 
@@ -284,7 +297,7 @@ public class Image implements TableModel
 				int h = ((int)(height * scale));
 				int w = ((int)(width * scale));
 				s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
-						image.getImageName(), h, w);
+						image.getImageUrl(), h, w);
 			}
 		}
 		con.close();
@@ -327,6 +340,15 @@ public class Image implements TableModel
 		return s;
 	}
 
+	/** This is a peculiar thing. It does one thing if json_obj is non-null,
+	 *  something quite different if it's null. For a non-null json_obj,
+	 *  it adds the values height, width, and imgTag, where imgTag is the
+	 *  file name, and it returns an empty string.
+	 *  
+	 *  If json_obj is null, it returns an img element with empty alt text,
+	 *  width and height proportionally scaled to fit in the specified max values, 
+	 *  and the file name.
+	 */
 	static public String genImageTag(JSONObject json_obj, String local_image_file_name, 
 			 int max_img_height, int max_img_width, int height, int width)
 	{
@@ -361,7 +383,7 @@ public class Image implements TableModel
 	 */	static public Image getImageByID(int image_id, int user_id, DbConnection con)
 	{
 		Statement stmt = con.createStatement();
-		String sql = "SELECT ImageID, UserID, ImageType, ImageName, ImageSize, ImageHeight, ImageWidth FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
+		String sql = "SELECT ImageID, UserID, ImageType, ImageURL, ImageSize, ImageHeight, ImageWidth, Image FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
 		logger.debug("For images:\n" + sql);
 		ResultSet rs = con.QueryDB(sql, stmt);
 		Image Image = null;
@@ -460,6 +482,10 @@ public class Image implements TableModel
 					return_image.setImageType(image_type);
 					String url_file_name = Utils.Slashies(image_type.getFolder() + user_id + "-" + count + "-" +
 							image_file.getFileName());
+					
+					// use File as a convenient way to extract the name from the path
+					File theFile = new File(url_file_name);
+					return_image.setImageName(theFile.getName());
 					logger.debug("Relative URL file name: " + url_file_name);
 					return_image.setImageSize((int)image_file.getFileSize());
 					// For the moment, only "stock" (user gallery) images are saved to
@@ -468,7 +494,7 @@ public class Image implements TableModel
 					if (image_type == ImageType.USER_UPLOAD) {
 						return_image.setImage(bytes);
 					} else {
-						return_image.setImageName(url_file_name);
+						return_image.setImageUrl(url_file_name);
 						saveToFile (bytes, image_file, url_file_name);
 					}
 				}
@@ -494,7 +520,7 @@ public class Image implements TableModel
 	{
 		Statement stmt = con.createStatement();
 		ResultSet rs = null;
-		String sql = "SELECT ImageID, ImageName, ImageHeight, ImageWidth FROM images WHERE UserID = " + user_id + 
+		String sql = "SELECT ImageID, ImageURL, ImageHeight, ImageWidth FROM images WHERE UserID = " + user_id + 
 				" AND ImageType = " + image_type.getValue().intValue() + " ORDER BY CreateDateTime;";
 		logger.debug("getImagesForDisplay: " + sql);
 		JSONArray json_array = new JSONArray();
