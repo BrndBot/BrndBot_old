@@ -23,6 +23,9 @@ public class ImageServlet extends HttpServlet {
 	 *  with the indicated MIME type. The "img" parameter specifies
 	 *  the database ID of the image.
 	 *  
+	 *  If the img parameter is "default", get the default image.
+	 *  If the img parameter is "logo", get the user's default logo.
+	 *  
 	 *  An image may be stored in the database as a mediumblob, or its
 	 *  "name" may be a relative path. Only images in the database
 	 *  can be accessed by this servlet. This
@@ -44,20 +47,34 @@ public class ImageServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		final int bufferSize = 2048;
+		boolean useDefaultImage = false;
+		boolean userLogo = false;
 		HttpSession session = request.getSession();
 		int userId = SessionUtils.getUserId(session);
 		String imageIdStr = (String)request.getParameter("img"); 
 		int imageId = 0;
-		try {
-			imageId = Integer.parseInt(imageIdStr);
-		}
-		catch (NumberFormatException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+		if ("default".equals (imageIdStr)) 
+			useDefaultImage = true;
+		else if ("logo".equals (imageIdStr))
+			userLogo = true;
+		else {
+			try {
+				imageId = Integer.parseInt(imageIdStr);
+			}
+			catch (NumberFormatException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
 		}
 		DbConnection con = DbConnection.GetDb();
 
-		MimeTypedInputStream imgStream = Image.getImageStream(userId, imageId, con);
+		MimeTypedInputStream imgStream;
+		if (useDefaultImage) 
+			imgStream = Image.getDefaultImageStream (userId, con);
+		else if (userLogo)
+			imgStream = Image.getLogoImageStream (userId, con);
+		else
+			imgStream = Image.getImageStream(userId, imageId, con);
 		if (imgStream == null) {
 			con.close();
 			response.setStatus (HttpServletResponse.SC_NOT_FOUND);

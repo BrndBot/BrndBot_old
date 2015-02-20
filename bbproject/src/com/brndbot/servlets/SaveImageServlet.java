@@ -212,6 +212,10 @@ public class SaveImageServlet extends HttpServlet
 			saved_img_id = image.save(con);
 			// Anything else?
 			break;
+		case FUSED_IMAGE:
+		case STOCK:
+			// What ARE these, anyway???
+			break;
 		}
 		logger.debug("Saved Image ID = " + saved_img_id);
 		logger.debug("Returned from getBoundImage");

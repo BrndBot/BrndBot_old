@@ -97,6 +97,7 @@ function ModelField () {
 	this.draw = function (location, canvas ) {
 		// Draw only if there's a style for this field
 		if (this.style) {
+			console.log ("Style exists, type " + this.style.styleType);
 			switch (this.style.styleType) {
 			case "text":
 				this.fabricateText (canvas);
@@ -130,23 +131,59 @@ function ModelField () {
 	};
 	
 	this.getX = function () {
-		return (this.offsetX !== null) ? this.offsetX : this.style.offsetX;
+		// We want this not to get an error even if there is no style,
+		// because the kendo data source is rather blind.
+		if (this.offsetX !== null) {
+			return this.offsetX;
+		}
+		else if (this.style && this.style.offsetX) {
+			return this.style.offsetX;
+		}
+		else 
+			return 0;
 	};
 
 	this.getY = function () {
-		return (this.offsetY !== null) ? this.offsetY : this.style.offsetY;
+		// We want this not to get an error even if there is no style,
+		// because the kendo data source is rather blind.
+		if (this.offsetY !== null) {
+			return this.offsetY;
+		}
+		else if (this.style && this.style.offsetY) {
+			return this.style.offsetY;
+		}
+		else 
+			return 0;
 	};
 	
 	this.getWidth = function () {
-		return (this.width !== null) ? this.width : this.style.width;
+		// We want this not to get an error even if there is no style,
+		// because the kendo data source is rather blind.
+		if (this.width !== null) {
+			return this.width;
+		}
+		else if (this.style && this.style.width) {
+			return this.style.width;
+		}
+		else 
+			return 0;
+	};
+	
+	this.getHeight = function () {
+		// We want this not to get an error even if there is no style,
+		// because the kendo data source is rather blind.
+		if (this.height !== null) {
+			return this.height;
+		}
+		else if (this.style && this.style.height) {
+			return this.style.height;
+		}
+		else 
+			return 0;
 	};
 	
 	this.getColor = function () {
 		return (this.color !== null) ? this.color : this.style.color;
-	};
-	
-	this.getHeight = function () {
-		return (this.height !== null) ? this.height : this.style.height;
 	};
 	
 	this.getPointSize = function () {
@@ -166,29 +203,17 @@ function ModelField () {
 	};
 
 	this.fabricateText = function (canvas) {
-		console.log ("fabricateText");
-		var anchor = this.anchor ? this.anchor : this.style.anchor;
-		var originx = "left";
-		console.log ("Anchor = " + anchor);
-		var x = this.getX();
-		if (anchor == "TR" || anchor == "BR") {
-			originx = "right";
-			x = -x;
-		}
-		var originy = "top";
-		var y = this.getY();
-		if (anchor == "BR" || anchor == "BL") {
-			originy = "bottom";
-			y = -y;
-		}
+		var pos = this.getPosition();
 		var weight = this.isBold() ? "bold" : "normal";
 		var fstyle = this.isItalic() ? "italic" : "normal";
 		
 		var text = new fabric.Text(this.getText(), {
 			fontSize: this.getPointSize(),
 			fontFamily: this.getTypeface(),
-			left: x,
-			top: y,
+			left: pos.x,
+			top: pos.y,
+			originX: pos.originx,
+			originY: pos.originy,
 			width: this.getWidth(),
 			height: this.getHeight(),
 			fontWeight: weight,
@@ -200,22 +225,51 @@ function ModelField () {
 	};
 	
 	this.fabricateImage = function  (canvas) {
+		console.log ("fabricateImage");
+		var pos = this.getPosition();
+		var width = this.getWidth();
+		var height = this.getHeight();
+		var img = fabric.Image.fromURL("ImageServlet?img=default", function (img) {
+			console.log ("fabricateImage callback");
+			img.left = pos.x;
+			img.top = pos.y;
+			img.originX = pos.originx;
+			img.oritinY = pos.originy;
+			img.width = width;
+			img.height = height;
+			canvas.add(img);
+		});
 	};
 	
 	this.fabricateLogo = function  (canvas) {
+		console.log ("fabricateLogo");
+		var pos = this.getPosition();
+		var width = this.getWidth();
+		var height = this.getHeight();
+		var img = fabric.Image.fromURL("ImageServlet?img=logo", function (img) {
+			console.log ("fabricateLogo callback");
+			img.left = pos.x;
+			img.top = pos.y;
+			img.originX = pos.originx;
+			img.oritinY = pos.originy;
+			img.width = width;
+			img.height = height;
+			canvas.add(img);
+		});
 	};
 	
 	this.fabricateBlock = function  (canvas) {
-		var x = this.getX();
-		var y = this.getY();
+		var pos = this.getPosition();
 		var wid = this.getWidth();
 		var ht = this.getHeight();
 		var color = this.getColor ();
 		var rect = new fabric.Rect ({
 			width: wid,
 			height: ht,
-			left: x,
-			top: y,
+			left: pos.x,
+			top: pos.y,
+			originX: pos.originx,
+			originY: pos.originy,
 			fill: color
 		});
 		this.fabricObject = rect;
@@ -223,8 +277,31 @@ function ModelField () {
 	};
 	
 	this.fabricateSVG = function  (field, canvas) {
+		var pos = this.getPosition();
+		var wid = this.getWidth();
+		var ht = this.getHeight();
+		// Use loadSVGFromString(string, callback, reviver)
 	};
 
+	/* Function for the x, y, and anchor calculations. Returns an object with 
+	 * fields x, y, and anchor. */
+	this.getPosition = function () {
+		console.log ("getPosition");
+		var anchor = this.anchor ? this.anchor : this.style.anchor;
+		var retval = {x: 0, y: 0, originx: "left", originy: "top" };
+		retval.x = this.getX();
+		if (anchor == "TR" || anchor == "BR") {
+			retval.originx = "right";
+			retval.x = -retval.x;
+		}
+		retval.y = this.getY();
+		if (anchor == "BR" || anchor == "BL") {
+			retval.originy = "bottom";
+			retval.y = -retval.y;
+		}
+
+		return retval;
+	};
 }
 
 /* The prototype constructor for a StyleSet. */

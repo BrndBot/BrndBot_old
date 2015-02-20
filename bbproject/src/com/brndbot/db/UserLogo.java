@@ -21,8 +21,12 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.system.Assert;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
-import com.brndbot.util.AppEnvironment;
+//import com.brndbot.util.AppEnvironment;
 
+/** The UserLogo table simply maps user IDs to the image IDs of their logos.
+ *  You wouldn't think such a simple table would entail so much code.
+ *  
+ */
 public class UserLogo implements TableModel
 {
 	final static Logger logger = LoggerFactory.getLogger(UserLogo.class);
@@ -244,7 +248,7 @@ public class UserLogo implements TableModel
 		if (use_FQDN)
 		{
 			// Make sure we have a FQDN
-			String tmp = local_image_file_name.toLowerCase();
+			//String tmp = local_image_file_name.toLowerCase();
 			if (local_image_file_name.indexOf("http:") == -1)
 			{
 				url = SystemProp.get(SystemProp.ASSETS) + "//" + local_image_file_name;
@@ -253,8 +257,8 @@ public class UserLogo implements TableModel
 		logger.debug("FQDN: " + url);
 		String s = String.format("<img src=\"%s\" alt=\"\"></img>",
 				url);
-
 		// local_image_file_name should be something like 'images/file
+
 		if (max_img_height > 0 || max_img_width > 0)
 		{
 			String tomcat_base = SystemProp.get(SystemProp.TOMCAT_BASE);
@@ -299,7 +303,7 @@ public class UserLogo implements TableModel
 			{
 				logo = new UserLogo(rs);
 				Image image = Image.getImageByID(logo.getImage().getImageID().intValue(), user_id, con);
-				logo.setImage(null);
+				//logo.setImage(null);	// Is there some mystical reason for this?
 				logo.setImage(image);
 			}
 			else

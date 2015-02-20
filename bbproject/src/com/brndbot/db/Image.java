@@ -8,16 +8,21 @@ package com.brndbot.db;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.sql.rowset.serial.SerialBlob;
@@ -42,6 +47,8 @@ public class Image implements TableModel
 	
 	final static Logger logger = LoggerFactory.getLogger(Image.class);
 	final static String tableName = "images";
+	
+	final private static Random randomizer = new Random (new Date().getTime());
 	
 	private Integer imageId;
 	private Integer userId;  // 0 if it's a Brndbot stock image
@@ -68,10 +75,6 @@ public class Image implements TableModel
 		imageHeight = new Integer(0);
 		imageWidth = new Integer(0);
 		image = null;
-	}
-	
-	public String getTableName () {
-		return tableName;
 	}
 	
 	/** Consructor that loads up the image from a ResultSet that includes ImageID, UserID,
@@ -111,7 +114,12 @@ public class Image implements TableModel
 		image = m.image;
 	}
 
-	static final String CS = ", ";
+	public String getTableName () {
+		return tableName;
+	}
+	
+
+//	static final String CS = ", ";
 
 	public Integer getImageID() { return imageId; }
 	public void setImageID(int arg) { imageId = arg; } 
@@ -159,7 +167,7 @@ public class Image implements TableModel
 		image = blob; 
 	}
 	
-	/** Load the image blog in an already populated Image. */
+	/** Load the image blob in an already populated Image. */
 	public void loadImage (DbConnection con) throws Exception {
 		PreparedStatement pstmt = con.createPreparedStatement
 				("SELECT Image FROM images WHERE UserID = ?");
@@ -420,12 +428,14 @@ public class Image implements TableModel
 
 	/**
 	 * Handle file upload. 
+	 * 
+	 * User upload files are saved to the database. Logos and alternate
+	 * logos are saved to files. This is just a legacy which needs to be
+	 * fixed; all files should be in the database, or at least not on
+	 * public URLs.
 	 *
 	 * @return  an Image object which has _not_ been saved to the database.
 	 * 
-	 *   As it stands, this always uploads to a file that's directly
-	 *  accessible by a URL. We want to replace this with files in the
-	 *  database or else files outside the publicly accessible space.
 	 */
 	static public Image uploadFile(
 			int user_id, 
@@ -477,16 +487,16 @@ public class Image implements TableModel
 					return_image.setImageHeight(bimg.getHeight());
 
 					// Store in the database
-					int count = Image.getImageCount(con);
-					return_image.setUserID(user_id);
+					// Argh, argh, argh!!! This code was RECYCLING DELETED IMAGE IDs to set the
+					// ID, in order to generate a "unique" file name!!!
+					// Generate a moderately big random number, that's safer.
+					
+					int count = randomizer.nextInt() % 999999;
 					return_image.setImageType(image_type);
-					String url_file_name = Utils.Slashies(image_type.getFolder() + user_id + "-" + count + "-" +
-							image_file.getFileName());
 					
 					// use File as a convenient way to extract the name from the path
-					File theFile = new File(url_file_name);
+					File theFile = new File(image_file.getFileName());
 					return_image.setImageName(theFile.getName());
-					logger.debug("Relative URL file name: " + url_file_name);
 					return_image.setImageSize((int)image_file.getFileSize());
 					// For the moment, only "stock" (user gallery) images are saved to
 					// the database. Once this is working, we should migrate logos
@@ -494,6 +504,8 @@ public class Image implements TableModel
 					if (image_type == ImageType.USER_UPLOAD) {
 						return_image.setImage(bytes);
 					} else {
+						String url_file_name = Utils.Slashies(image_type.getFolder() + user_id + "-" + count + "-" +
+								image_file.getFileName());
 						return_image.setImageUrl(url_file_name);
 						saveToFile (bytes, image_file, url_file_name);
 					}
@@ -502,7 +514,7 @@ public class Image implements TableModel
 		}
 		return return_image;
 	}
-
+	
 	/* Complete the file save to the file system */
 	private static void saveToFile (byte[] bytes, UploadFile uploadFile, String fileName) 
 			throws IOException {
@@ -515,6 +527,35 @@ public class Image implements TableModel
 	}
 
 	
+	/** Returns the default image for a user. For the moment, this is the
+	 *  oldest image; it may change.
+	 *  
+	 *  @return  An Image with just the imageId and userId set.
+	 */
+	static public Image getDefaultImage (int userId, DbConnection con) {
+		PreparedStatement pstmt = con.createPreparedStatement
+				("SELECT ImageID, CreateDateTime FROM images WHERE UserID = ? " + 
+								"ORDER BY CreateDateTime ASC");
+		ResultSet rs = null;
+		try {
+			pstmt.setInt (1, userId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				int imageId = rs.getInt(1);
+				Image img = new Image();
+				img.setImageID(imageId);
+				img.setUserID(userId);
+				return img;
+			}
+		} catch (Exception e) {
+			logger.error ("Exception in getDefaultImage: {}   {}", 
+					e.getClass().getName(),
+					e.getMessage());
+			return null;
+		}
+		return null;		// no images for user ID
+	}
+
 	
 	static public JSONArray getImagesForDisplay(int user_id, ImageType image_type, DbConnection con)
 	{
@@ -585,5 +626,34 @@ public class Image implements TableModel
 			} catch (Exception e) {}
 		}
 		return null;	
+	}
+	
+	/** Returns an OutputStream width the content of the user's default image. Returns
+	 *  null if the image isn't available, or if the database entry
+	 *  references the image by URL rather than having a blob.
+	 *  
+	 */
+	static public MimeTypedInputStream getDefaultImageStream (int user_id, DbConnection con) {
+		Image defImage = getDefaultImage(user_id, con);
+		// This has only the image and user IDs
+		return getImageStream (user_id, defImage.getImageID(), con);
+	}
+	
+	/** Returns an OutputStream with the content of the user's default logo.
+	 *  For legacy reasons, we get this from a relative path. 
+	 */
+	static public MimeTypedInputStream getLogoImageStream (int user_id, DbConnection con) {
+		UserLogo uLogo = UserLogo.getLogoByUserID(user_id, con);
+		Image logoImage = uLogo.getImage();
+		String mimeType = logoImage.getMimeType();
+		String tomcatBase = SystemProp.get(SystemProp.TOMCAT_BASE);
+		String imagePath = Utils.Slashies(tomcatBase + "\\" + logoImage.getImageUrl());
+		try {
+			FileInputStream fileStream = new FileInputStream (imagePath);
+			return new MimeTypedInputStream(fileStream, mimeType);
+		} catch (IOException e) {
+			logger.error ("Exception getting file: {} on {}", e.getClass().getName(), imagePath);
+		}
+		return null;		// TODO stub
 	}
 }

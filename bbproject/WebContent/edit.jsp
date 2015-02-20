@@ -494,7 +494,7 @@
 				<table id="imageWrapper" style="width:100%;height:100%">
 					<tr>
 			    		<td class="super-centered">
-							<img  id="#:ID#" src="#:imgTag#" alt="" height="#:height#" width="#:width#" />
+							<img  id="#:ID#" src="#:url#" alt="" height="#:height#" width="#:width#" />
 						</td>
 					</tr>
 				</table>

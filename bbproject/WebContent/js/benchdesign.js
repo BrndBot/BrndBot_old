@@ -19,9 +19,7 @@ var benchdesign = {
  *       will be inserted
  */
 insertEditFields: function (dest) {
-	
-	console.log($('#designFieldsTemplate').html());
-	
+		
 	dest.kendoListView({
 		dataSource: new kendo.data.DataSource({data: benchdesign.modelToSourceData(currentPromotion.model)}),
 	    selectable: true,

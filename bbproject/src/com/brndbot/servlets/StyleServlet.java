@@ -98,6 +98,7 @@ public class StyleServlet extends HttpServlet {
 				JSONObject jstyle = styleSet.toJSON();
 				jsonStyles.put (jstyle);		
 				jsonStr = jsonStyles.toString ();
+				logger.debug (jsonStr);
 			}
 		}
 		catch (JSONException e) {
