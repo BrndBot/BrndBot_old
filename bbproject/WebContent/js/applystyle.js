@@ -10,7 +10,7 @@ var applyStyle = {
 	   moment, use the first style in styles. */
 	applyDefaultStyle: function (promotion) {
 		console.log ("applyDefaultStyle");
-		var defaultStyleSet = styleSets[0];		// TODO find the one named "default" by preference
+		var defaultStyleSet = bench.styleSets[0];		// TODO find the one named "default" by preference
 		console.log ("Applying styleset " + defaultStyleSet.name);
 		applyStyle.applyStyleSetToPromotion (defaultStyleSet, promotion);
 	},

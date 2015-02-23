@@ -21,7 +21,7 @@ var benchdesign = {
 insertEditFields: function (dest) {
 		
 	dest.kendoListView({
-		dataSource: new kendo.data.DataSource({data: benchdesign.modelToSourceData(currentPromotion.model)}),
+		dataSource: new kendo.data.DataSource({data: benchdesign.modelToSourceData(bench.currentPromotion.model)}),
 	    selectable: true,
         template: kendo.template($('#designFieldsTemplate').html())
 	});
@@ -53,14 +53,14 @@ updateXPos: function(tarea) {
 
     function testForChange() {
     	var target = $(tarea).attr("data-linkedfield");
-    	var field = currentPromotion.model.findFieldByName (target);
+    	var field = bench.currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
     		var newpos = Number(tarea.value);
     		if (newpos != field.getX ()) {
     			field.offsetX = Number (tarea.value);
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
     			field.fabricObject.setLeft(Number(field.offsetX));
-    			currentPromotion.canvas.renderAll();
+    			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     	else {
@@ -81,14 +81,14 @@ updateYPos: function(tarea) {
 
     function testForChange() {
     	var target = $(tarea).attr("data-linkedfield");
-    	var field = currentPromotion.model.findFieldByName (target);
+    	var field = bench.currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
     		var newpos = Number(tarea.value);
     		if (newpos != field.getY ()) {
     			field.offsetY = Number (tarea.value);
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
     			field.fabricObject.setTop(Number(field.offsetY));
-    			currentPromotion.canvas.renderAll();
+    			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     	else {
@@ -108,14 +108,14 @@ updateWidth: function(tarea) {
 
     function testForChange() {
     	var target = $(tarea).attr("data-linkedfield");
-    	var field = currentPromotion.model.findFieldByName (target);
+    	var field = bench.currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
     		var newwid = Number(tarea.value);
     		if (newwid != field.getWidth ()) {
     			field.width = Number (tarea.value);
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
     			field.fabricObject.setWidth(Number(field.width));
-    			currentPromotion.canvas.renderAll();
+    			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     	else {
@@ -135,14 +135,14 @@ updateHeight: function(tarea) {
 
     function testForChange() {
     	var target = $(tarea).attr("data-linkedfield");
-    	var field = currentPromotion.model.findFieldByName (target);
+    	var field = bench.currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
     		var newht = Number(tarea.value);
     		if (newht != field.getHeight ()) {
     			field.height = Number (tarea.value);
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
     			field.fabricObject.setHeight(Number(field.height));
-    			currentPromotion.canvas.renderAll();
+    			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     	else {

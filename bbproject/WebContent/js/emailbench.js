@@ -41,7 +41,7 @@ function benchSpecificInits()
 		click: function()
 		{
 			// Get the block data
-			var stackIdx = isolateEnum(lastSelectedBlock) - 1;
+			var stackIdx = bench.isolateEnum(bench.lastSelectedBlock) - 1;
 			var block = blockStack[stackIdx];
 			block.setBlockType(NON_CLASS_OBJ);
 
@@ -50,7 +50,7 @@ function benchSpecificInits()
 			$('#' + block.getBlockID()).hide();
 			
 			// recalculate the ids and redisplay
-			fillBlock(stackIdx + 1, blockStack[stackIdx], true);
+			bench.fillBlock(stackIdx + 1, blockStack[stackIdx], true);
 			document.getElementById(blockStack[stackIdx].getBlockID()).scrollIntoView();
 			$('#' + blockStack[stackIdx].getBlockID()).click();
 		}
@@ -62,7 +62,7 @@ function benchSpecificInits()
 		click: function()
 		{
 			// Get the block data
-			var stackIdx = isolateEnum(lastSelectedBlock) - 1;
+			var stackIdx = bench.isolateEnum(bench.lastSelectedBlock) - 1;
 			var block = blockStack[stackIdx];
 			block.setBlockType(CLASS_OBJ);
 
@@ -71,7 +71,7 @@ function benchSpecificInits()
 			$('#' + block.getBlockID()).hide();
 			
 			// recalculate the ids and redisplay
-			fillBlock(stackIdx + 1, blockStack[stackIdx], true);
+			bench.fillBlock(stackIdx + 1, blockStack[stackIdx], true);
 			document.getElementById(blockStack[stackIdx].getBlockID()).scrollIntoView();
 			$('#' + blockStack[stackIdx].getBlockID()).click();
 		}
@@ -81,14 +81,14 @@ function benchSpecificInits()
 	$("#toNonWorkshopButton").kendoButton({
 		click: function()
 		{
-			var stackIdx = isolateEnum(lastSelectedBlock) - 1;
+			var stackIdx = bench.isolateEnum(bench.lastSelectedBlock) - 1;
 			var block = blockStack[stackIdx];
 			block.setBlockType(NON_WORKSHOP_OBJ);
 			blockStack.splice(stackIdx, 1, block);
 			$('#' + block.getBlockID()).hide();
 			
 			// recalculate the ids and redisplay
-			fillBlock(stackIdx + 1, blockStack[stackIdx], true);
+			bench.fillBlock(stackIdx + 1, blockStack[stackIdx], true);
 			document.getElementById(blockStack[stackIdx].getBlockID()).scrollIntoView();
 			$('#' + blockStack[stackIdx].getBlockID()).click();
 		}
@@ -98,14 +98,14 @@ function benchSpecificInits()
 	$("#toWorkshopButton").kendoButton({
 		click: function()
 		{
-			var stackIdx = isolateEnum(lastSelectedBlock) - 1;
+			var stackIdx = bench.isolateEnum(bench.lastSelectedBlock) - 1;
 			var block = blockStack[stackIdx];
 			block.setBlockType(WORKSHOP_OBJ);
 			blockStack.splice(stackIdx, 1, block);
 			$('#' + block.getBlockID()).hide();
 			
 			// recalculate the ids and redisplay
-			fillBlock(stackIdx + 1, blockStack[stackIdx], true);
+			bench.fillBlock(stackIdx + 1, blockStack[stackIdx], true);
 			document.getElementById(blockStack[stackIdx].getBlockID()).scrollIntoView();
 			$('#' + blockStack[stackIdx].getBlockID()).click();
 		}
@@ -118,10 +118,10 @@ function benchSpecificInits()
 		e.preventDefault();
 		
 		// Take the perimeter boundry down and lose the idea of a currently selected block
-		unselectLastSelectedBlock();
+		bench.unselectLastSelectedBlock();
 	
 		// Assumption is that the template has an enumerated value
-		var stackIdx = isolateEnum(id) - 1;
+		var stackIdx = bench.isolateEnum(id) - 1;
 	//			$('#' + id).hide();
 	
 		// Switch the order in the data array first
@@ -134,8 +134,8 @@ function benchSpecificInits()
 		$('#' + other_block.getBlockID()).hide();
 	
 		// recalculate the ids and redisplay the new order
-		fillBlock(stackIdx, blockStack[stackIdx - 1], true);
-		fillBlock(stackIdx + 1, blockStack[stackIdx], true);
+		bench.fillBlock(stackIdx, blockStack[stackIdx - 1], true);
+		bench.fillBlock(stackIdx + 1, blockStack[stackIdx], true);
 		var theBlock = '#' + blockStack[stackIdx - 1].getBlockID();
 		document.getElementById(blockStack[stackIdx - 1].getBlockID()).scrollIntoView();
 		$(theBlock).click(); // select the template we moved
@@ -154,9 +154,9 @@ function benchSpecificInits()
 	function sortDownClicked(e, id)
 	{
 		e.preventDefault();
-		unselectLastSelectedBlock();
+		bench.unselectLastSelectedBlock();
 	
-		var stackIdx = isolateEnum(id) - 1;
+		var stackIdx = bench.isolateEnum(id) - 1;
 	//			$('#' + id).hide();
 		var block = blockStack[stackIdx];
 		var other_block = blockStack[stackIdx + 1];
@@ -165,8 +165,8 @@ function benchSpecificInits()
 		$('#' + block.getBlockID()).hide();
 		
 		// recalculate the ids and redisplay
-		fillBlock(stackIdx + 1, blockStack[stackIdx], true);
-		fillBlock(stackIdx + 2, blockStack[stackIdx + 1], true);
+		bench.fillBlock(stackIdx + 1, blockStack[stackIdx], true);
+		bench.fillBlock(stackIdx + 2, blockStack[stackIdx + 1], true);
 		document.getElementById(blockStack[stackIdx + 1].getBlockID()).scrollIntoView();
 		$('#' + blockStack[stackIdx + 1].getBlockID()).click();
 	}
@@ -191,7 +191,7 @@ function addFooterBlock(suppress_click, display_edit_type)
 			'',
 			'imgurl');
 	blockStack.push(block);
-	fillBlock(blockStack.length, block, display_edit_type);
+	bench.fillBlock(blockStack.length, block, display_edit_type);
 	if (!suppress_click)
 	{
 		document.getElementById(block.getBlockID()).scrollIntoView();
@@ -216,7 +216,7 @@ function addScheduleLink(suppress_click, display_edit_type)
 			'New Yoga, Fitness, and Barre Classes.',
 			'imgurl');
 	blockStack.push(block);
-	fillBlock(blockStack.length, block, display_edit_type);
+	bench.fillBlock(blockStack.length, block, display_edit_type);
 //	$(id).show();
 	document.getElementById(block.getBlockID()).scrollIntoView();
 	$(id).click();
@@ -238,7 +238,7 @@ function addSocialBlock(suppress_click, display_edit_type)
 			'Links to your social networks',
 			'');
 	blockStack.push(block);
-	fillBlock(blockStack.length, block, display_edit_type);
+	bench.fillBlock(blockStack.length, block, display_edit_type);
 	if (!suppress_click)
 	{
 		document.getElementById(block.getBlockID()).scrollIntoView();
@@ -263,7 +263,7 @@ function addGraphicBlock(suppress_click, display_edit_type)
 			'imgurl'
 			);
 	blockStack.push(block);
-	fillBlock(blockStack.length, block, display_edit_type);
+	bench.fillBlock(blockStack.length, block, display_edit_type);
 	if (!suppress_click)
 	{
 		document.getElementById(block.getBlockID()).scrollIntoView();
@@ -317,7 +317,7 @@ function initialBlockDisplay(the_starting_block)
 	addTextBlock(true, false);
 	var count = blockStack.push(the_starting_block);
 	var block = blockStack[count - 1];
-	fillBlock(count, block, false);
+	bench.fillBlock(count, block, false);
 	addSocialBlock(true, false);
 	addFooterBlock(true, false);
 }
@@ -338,7 +338,7 @@ function addTextBlock(suppress_click, display_edit_type)
 			'Come enjoy our new classes and check out our new Fall schedule.  Sign up today!',
 			'');
 	blockStack.push(block);
-	fillBlock(blockStack.length, block, display_edit_type);
+	bench.fillBlock(blockStack.length, block, display_edit_type);
 	$(block.getBlockID()).show();
 	if (!suppress_click)
 	{
@@ -350,5 +350,5 @@ function addTextBlock(suppress_click, display_edit_type)
 function editorSpecificDynamicPush(block)
 {
 	blockStack.push(block);
-	fillBlock(blockStack.length, block, true);
+	bench.fillBlock(blockStack.length, block, true);
 }

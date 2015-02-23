@@ -24,7 +24,7 @@ insertStyles: function (dest) {
 	console.log($('#styleFieldsTemplate').html());
 	
 	dest.kendoListView({
-		dataSource: new kendo.data.DataSource({data: styleSets}),
+		dataSource: new kendo.data.DataSource({data: bench.styleSets}),
 	    selectable: true,
         template: kendo.template($('#styleFieldsTemplate').html())
 	});
@@ -35,16 +35,16 @@ updateStyle: function (litem) {
 	var styleSet = benchstyle.elemToLinkedStyleSet (litem);
 	if (styleSet !== null) {
 		console.log ("can switch to style set" + styleSet.name);
-		currentPromotion.applyStyleSet (styleSet);
-		currentPromotion.redraw();
+		bench.currentPromotion.applyStyleSet (styleSet);
+		bench.currentPromotion.redraw();
 	}
 },
 
 /** Find the styleset linked to by the element */
 elemToLinkedStyleSet: function (elem) {
 	var target = $(elem).attr("data-linkedstyle");
-   	for (var i = 0; i < styleSets.length; i++) {
-   		var styleSet = styleSets[i];
+   	for (var i = 0; i < bench.styleSets.length; i++) {
+   		var styleSet = bench.styleSets[i];
    		if (styleSet.name == target)
    			return styleSet;
    	}

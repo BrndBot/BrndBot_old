@@ -150,27 +150,22 @@
 								</li>
 							</ul>
 							<div>
-								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
-									<div id="contentArea"><!--edit fields go here--></div>
-								</div>
-								<!--  These get hidden or shown depending on the button selections made.
-								      Actually, we won't use these at all, but leave one around
-								      as an example to work from. -->
-								<div id="toClassID" style="float:left;display:none">
-									<button id="toNonClassButton" style="font-size: 1rem;width:7.5rem" 
-										class="greenButton rounded" >non-feature</button>
+								<div class="editTab" style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
+									<div id="contentArea" ><!--edit fields go here--></div>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>							
 							<div> <!-- Design tab -->
-								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
+								<div class="editTab" style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
 									<div id="designArea"><!--edit fields for design go here--></div>
 								</div>
+								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>
 							<div> <!-- Layout tab -->
-								<div style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
+								<div class="editTab" style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
 								  <ul id="styleArea"><!--styles go here--></div>
 								</div>
+								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>
 						</div>		<!-- tabstrip2 -->
 					</div>			<!-- editorDiv -->
@@ -516,10 +511,10 @@
 	$(document).ready(function() 
 	{
 		// doc.ready init for the bench, in bench.js
-		initTheBench();
+		bench.initTheBench();
 
 		// load the promotion and all the styles in bench.js
-		loadPromotion ("${proto_name}");
+		bench.loadPromotion ("${proto_name}");
 
 		// ensure the top of the page is shown
 		document.getElementById("brndbotMain").scrollIntoView();

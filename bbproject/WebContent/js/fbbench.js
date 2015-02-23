@@ -78,13 +78,13 @@ function initialBlockDisplay(the_starting_block)
 	the_starting_block.block_type = TEXT_OBJ;
 	var count = blockStack.push(the_starting_block);
 	var block = blockStack[count - 1];
-	fillBlock(count, block, false);
+	bench.fillBlock(count, block, false);
 
 	// Second block is original type, mostly graphic
 	the_starting_block.block_type = saveType;
 	count = blockStack.push(the_starting_block);
 	block = blockStack[count - 1];
-	fillBlock(count, block, false);
+	bench.fillBlock(count, block, false);
 
 	// display the panes (suppress selection)
 //	addTextBlock(true);
@@ -107,7 +107,7 @@ function addTextBlock(suppress_click, display_edit_type)
 			'Change to your message',
 			'');
 	blockStack.push(block);
-	fillBlock(blockStack.length, block, display_edit_type);
+	bench.fillBlock(blockStack.length, block, display_edit_type);
 	$(block.getBlockID()).show();
 	if (!suppress_click)
 	{
@@ -127,5 +127,5 @@ function editorSpecificDynamicPush(block)
 
 	initialBlockDisplay(block);
 //	blockStack.push(block);
-//	fillBlock(blockStack.length, block, true);
+//	bench.fillBlock(blockStack.length, block, true);
 }

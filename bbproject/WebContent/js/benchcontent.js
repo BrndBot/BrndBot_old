@@ -21,7 +21,7 @@ var benchcontent = {
 insertEditFields: function (dest) {
 	
 	dest.kendoListView({
-		dataSource: new kendo.data.DataSource({data: benchcontent.modelToSourceData(currentPromotion.model)}),
+		dataSource: new kendo.data.DataSource({data: benchcontent.modelToSourceData(bench.currentPromotion.model)}),
 	    selectable: true,
         template: kendo.template($('#contentFieldsTemplate').html())
 	});
@@ -69,7 +69,7 @@ updatePrototypeText: function(tarea) {
     	if (tarea.value != field.fabricObject.getText()) {
     		field.text = tarea.value;
     		field.fabricObject.setText(tarea.value);
-    		currentPromotion.canvas.renderAll();
+    		bench.currentPromotion.canvas.renderAll();
     	}
     }
 
@@ -96,7 +96,7 @@ updatePrototypePointSize: function(tarea) {
     		if (newsize != field.getPointSize ()) {
     			field.fontSize = Number (tarea.value);
     			field.fabricObject.setFontSize(Number(field.fontSize));
-    			currentPromotion.canvas.renderAll();
+    			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     }
@@ -120,7 +120,7 @@ updatePrototypeColor: function (input) {
 	var fieldid = $(input).attr("data-linkedfield");
 	var buttondiv = $('#' + fieldid + "-select");
 	buttondiv.toggle();
-	currentPromotion.canvas.renderAll();
+	bench.currentPromotion.canvas.renderAll();
 },
 
 
@@ -132,7 +132,7 @@ updatePrototypeItalic: function (cbox) {
    	if (nowChecked != field.isItalic()) {
    		field.italic = nowChecked;
    		field.fabricObject.setFontStyle (nowChecked ? "italic" : "normal");
-		currentPromotion.canvas.renderAll();
+		bench.currentPromotion.canvas.renderAll();
    	}
 },
 
@@ -143,7 +143,7 @@ updatePrototypeBold: function (cbox) {
    	if (nowChecked != field.isBold()) {
    		field.bold = nowChecked;
    		field.fabricObject.setFontWeight (nowChecked ? "bold" : "normal");
-		currentPromotion.canvas.renderAll();
+		bench.currentPromotion.canvas.renderAll();
 	}
 },
 
@@ -156,21 +156,21 @@ updatePrototypeTypeface: function (sel) {
    	if (typeface != currentTypeface) {
    		field.typeface = typeface;
    		field.fabricObject.setFontFamily (typeface);
-		currentPromotion.canvas.renderAll();
+		bench.currentPromotion.canvas.renderAll();
    	}
 },
 
 highlightTextArea: function (tarea) {
 	var field = benchcontent.elemToLinkedField(tarea);
 	field.fabricObject.setBackgroundColor('#C0C0C0');
-	currentPromotion.canvas.renderAll();
+	bench.currentPromotion.canvas.renderAll();
 	
 },
 
 unhighlightTextArea: function(tarea) {
 	var field = benchcontent.elemToLinkedField(tarea);
 	field.fabricObject.setBackgroundColor('');
-	currentPromotion.canvas.renderAll();
+	bench.currentPromotion.canvas.renderAll();
 },
 
 /* For the a DOM element which has the data-linkedfield attribute,
@@ -178,6 +178,6 @@ unhighlightTextArea: function(tarea) {
  */
 elemToLinkedField: function (elem) {
 	var target = $(elem).attr("data-linkedfield");
-   	return currentPromotion.model.findFieldByName (target);
+   	return bench.currentPromotion.model.findFieldByName (target);
 }
 };
