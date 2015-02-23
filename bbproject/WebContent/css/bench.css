@@ -289,4 +289,8 @@ input::-webkit-inner-spin-button,
 
 .editTab {
 	overflow: auto;
+	width:100%;
+	height:32rem;
+	background-color: #ffffff;
+	margin-bottom:0.9375rem
 }

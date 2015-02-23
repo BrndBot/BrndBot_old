@@ -108,14 +108,12 @@ public class DashboardServlet extends HttpServlet
 		else
 			logger.error ("getModelByName returned null model");
 		Map<String,Promotion> protos = client.getPromotionPrototypes(model);
-		logger.debug ("Got {} promotion prototypes", protos.size());
 		JSONArray jsonProtos = new JSONArray();
 		
 		// Assemble JSONized prototypes into a list, giving each a unique ID
 		int id = 1;
 		try {
 			for (Promotion proto : protos.values()) {
-				logger.debug (proto.toString ());
 				JSONObject jproto = proto.toJSON();
 				jproto.put ("ID", id++);
 				jproto.put ("protoName", proto.getName());
@@ -128,7 +126,6 @@ public class DashboardServlet extends HttpServlet
 
 		if (jsonStr.length() > 0)
 		{
-			logger.debug ("Returning JSON: " + jsonStr);
 	        response.setContentType("application/json; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.println(jsonStr);

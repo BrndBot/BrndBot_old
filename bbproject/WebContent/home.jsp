@@ -241,7 +241,7 @@ prototypes to select, and the user picks one for processing in the editor (bench
 		<div class="listDescription">
 		#:description#
 		</div>
-		<button id="button#:ID#" data-proto="#:protoName#" onclick="selectProto(this);">Promote</button>
+		<button id="button#:ID#" data-proto="#:protoName#" onclick="homejs.selectProto(this);">Promote</button>
 	</div>
 </script>
 		

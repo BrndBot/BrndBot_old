@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Image;
 import com.brndbot.db.MimeTypedInputStream;
@@ -33,6 +36,8 @@ public class ImageServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	final static Logger logger = LoggerFactory.getLogger(ImageServlet.class);
+
 	public ImageServlet() {
 		// TODO Auto-generated constructor stub
 	}
@@ -46,6 +51,7 @@ public class ImageServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
+		logger.debug ("Starting ImageServlet post");
 		final int bufferSize = 2048;
 		boolean useDefaultImage = false;
 		boolean userLogo = false;
@@ -76,6 +82,7 @@ public class ImageServlet extends HttpServlet {
 		else
 			imgStream = Image.getImageStream(userId, imageId, con);
 		if (imgStream == null) {
+			logger.warn ("Couldn't get image stream");
 			con.close();
 			response.setStatus (HttpServletResponse.SC_NOT_FOUND);
 			return;
@@ -85,7 +92,7 @@ public class ImageServlet extends HttpServlet {
 		byte[] buffer = new byte[bufferSize];
 		for (;;) {
 			int len = imgStream.read(buffer);
-			if (len == 0)
+			if (len <= 0)
 				break;
 			out.write (buffer, 0, len);
 		}

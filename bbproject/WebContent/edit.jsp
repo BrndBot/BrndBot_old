@@ -150,19 +150,19 @@
 								</li>
 							</ul>
 							<div>
-								<div class="editTab" style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
+								<div class="editTab" >
 									<div id="contentArea" ><!--edit fields go here--></div>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>							
 							<div> <!-- Design tab -->
-								<div class="editTab" style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
+								<div class="editTab" >
 									<div id="designArea"><!--edit fields for design go here--></div>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>
 							<div> <!-- Layout tab -->
-								<div class="editTab" style="width:100%;height:32rem;background-color: #ffffff;margin-bottom:0.9375rem">
+								<div class="editTab" >
 								  <ul id="styleArea"><!--styles go here--></div>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
