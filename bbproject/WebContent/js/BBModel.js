@@ -229,6 +229,7 @@ function ModelField () {
 		var pos = this.getPosition();
 		var width = this.getWidth();
 		var height = this.getHeight();
+		var field = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=default", function (img) {
 			console.log ("fabricateImage callback");
 			img.left = pos.x;
@@ -237,6 +238,7 @@ function ModelField () {
 			img.oritinY = pos.originy;
 			img.width = width;
 			img.height = height;
+			field.fabricObject = img;
 			canvas.add(img);
 		});
 	};
@@ -246,6 +248,7 @@ function ModelField () {
 		var pos = this.getPosition();
 		var width = this.getWidth();
 		var height = this.getHeight();
+		var field = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=logo", function (img) {
 			console.log ("fabricateLogo callback");
 			img.left = pos.x;
@@ -254,6 +257,7 @@ function ModelField () {
 			img.oritinY = pos.originy;
 			img.width = width;
 			img.height = height;
+			field.fabricObject = img;
 			canvas.add(img);
 		});
 	};
