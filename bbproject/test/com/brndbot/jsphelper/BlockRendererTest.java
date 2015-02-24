@@ -3,6 +3,8 @@ package com.brndbot.jsphelper;
 import static org.junit.Assert.*;
 
 import org.jdom2.Element;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +20,8 @@ import com.brndbot.client.style.StyleSet;
 import com.brndbot.client.style.TextStyle;
 
 public class BlockRendererTest {
+
+	XMLOutputter outputter = new XMLOutputter(Format.getCompactFormat());
 
 	private ModelCollection mCollection;
 	private StyleSet styleSet;
@@ -81,7 +85,7 @@ public class BlockRendererTest {
 		svgStyle.setOffsetX(0);
 		svgStyle.setOffsetY(0);
 		svgStyle.setAnchor(Anchor.BOTTOM_RIGHT);
-		svgStyle.setSVG(svgelem);
+		svgStyle.setSVG(outputter.outputString(svgelem));
 		styleSet.addStyle(svgStyle);
 
 		ImageStyle imgStyle = new ImageStyle ();

@@ -111,15 +111,24 @@ updatePrototypePointSize: function(tarea) {
 
 },
 
-updatePrototypeColor: function (input) {
-	var field = benchcontent.elemToLinkedField(input);
-//	var newcolor = input.value;
-//	console.log("color = " + newcolor);
-//	field.color = newcolor;
-//	field.fabricObject.setFill(newcolor);
+showHideColorSelect: function (input) {
 	var fieldid = $(input).attr("data-linkedfield");
 	var buttondiv = $('#' + fieldid + "-select");
 	buttondiv.toggle();
+	bench.currentPromotion.canvas.renderAll();
+},
+
+/* This is for the Custom button in the color controls */
+showHideColorPicker: function (input) {
+	var picker = $(input).parent().find("input");
+	picker.toggle();
+},
+
+setToPaletteColor: function (input) {
+	var field = benchcontent.elemToLinkedField(input);
+	var color = $(input).attr("data-color");
+	field.color = color;
+	field.fabricObject.setFill(color);
 	bench.currentPromotion.canvas.renderAll();
 },
 

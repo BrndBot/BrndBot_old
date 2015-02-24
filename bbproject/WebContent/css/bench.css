@@ -294,3 +294,14 @@ input::-webkit-inner-spin-button,
 	background-color: #ffffff;
 	margin-bottom:0.9375rem
 }
+
+td.paletteButton {
+	width:40px;
+	height:20px;
+	padding:3px
+}
+
+td.paletteButton button {
+	width:30px;
+	height:15px;
+}

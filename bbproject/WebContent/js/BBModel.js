@@ -66,6 +66,7 @@ function ModelField () {
 	this.pointSize = null;
 	this.bold = null;
 	this.italic = null;
+	this.svg = null;
 	
 	this.populateFromJSON = function (jsonField) {
 		this.name = jsonField.name;
@@ -201,6 +202,10 @@ function ModelField () {
 	this.isItalic = function () {
 		return (this.italic !== null) ? this.italic : this.style.italic;
 	};
+	
+	this.getSVG = function () {
+		return (this.svg !== null) ? this.svg : this.style.svg;
+	};
 
 	this.fabricateText = function (canvas) {
 		var pos = this.getPosition();
@@ -208,6 +213,8 @@ function ModelField () {
 		var fstyle = this.isItalic() ? "italic" : "normal";
 		
 		var text = new fabric.Text(this.getText(), {
+			hasControls: false,
+			selectable: false,
 			fontSize: this.getPointSize(),
 			fontFamily: this.getTypeface(),
 			left: pos.x,
@@ -222,6 +229,7 @@ function ModelField () {
 		});
 		this.fabricObject = text;
 		canvas.add(text);
+		canvas.bringToFront(text);
 	};
 	
 	this.fabricateImage = function  (canvas) {
@@ -231,7 +239,8 @@ function ModelField () {
 		var height = this.getHeight();
 		var field = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=default", function (img) {
-			console.log ("fabricateImage callback");
+			img.hasControls = false;
+			img.selectable = false;
 			img.left = pos.x;
 			img.top = pos.y;
 			img.originX = pos.originx;
@@ -240,6 +249,7 @@ function ModelField () {
 			img.height = height;
 			field.fabricObject = img;
 			canvas.add(img);
+			canvas.bringToFront(img);
 		});
 	};
 	
@@ -250,7 +260,8 @@ function ModelField () {
 		var height = this.getHeight();
 		var field = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=logo", function (img) {
-			console.log ("fabricateLogo callback");
+			img.hasControls = false;
+			img.selectable = false;
 			img.left = pos.x;
 			img.top = pos.y;
 			img.originX = pos.originx;
@@ -259,6 +270,7 @@ function ModelField () {
 			img.height = height;
 			field.fabricObject = img;
 			canvas.add(img);
+			canvas.bringToFront(img);
 		});
 	};
 	
@@ -268,6 +280,8 @@ function ModelField () {
 		var ht = this.getHeight();
 		var color = this.getColor ();
 		var rect = new fabric.Rect ({
+			hasControls: false,
+			selectable: false,
 			width: wid,
 			height: ht,
 			left: pos.x,
@@ -278,19 +292,39 @@ function ModelField () {
 		});
 		this.fabricObject = rect;
 		canvas.add(rect);
+		canvas.bringToFront(rect);
 	};
 	
-	this.fabricateSVG = function  (field, canvas) {
+	/* See http://fabricjs.com/fabric-intro-part-3/ */
+	this.fabricateSVG = function  (canvas) {
+		console.log ("fabricateSVG");
 		var pos = this.getPosition();
 		var wid = this.getWidth();
 		var ht = this.getHeight();
+		var svg = this.getSVG();
+		console.log ("Style: " + this.style);
+		console.log ("SVG data: " + svg);
+		var field = this;
 		// Use loadSVGFromString(string, callback, reviver)
+		fabric.loadSVGFromString(svg, function(objects, options) {
+			var obj = fabric.util.groupSVGElements(objects, options);
+			obj.hasControls = false;
+			obj.selectable = false;
+			obj.width = wid;
+			obj.height = ht;
+			obj.left = pos.x;
+			obj.top = pos.y;
+			obj.originX = pos.originx;
+			obj.originY = pos.originy;
+			canvas.add(obj);
+			canvas.bringToFront(obj);
+			field.fabricObject = obj;
+		});
 	};
 
 	/* Function for the x, y, and anchor calculations. Returns an object with 
 	 * fields x, y, and anchor. */
 	this.getPosition = function () {
-		console.log ("getPosition");
 		var anchor = this.anchor ? this.anchor : this.style.anchor;
 		var retval = {x: 0, y: 0, originx: "left", originy: "top" };
 		retval.x = this.getX();
@@ -362,6 +396,7 @@ function Style (name, styleType) {
 	this.bold = false;
 	this.italic = false;
 	this.alignment = "left";
+	this.svg = null;
 	
 	// other fields vary by the styleType
 	
@@ -379,6 +414,9 @@ function Style (name, styleType) {
 		this.offsetX = jsonObj.offsetX;
 		this.offsetY = jsonObj.offsetY;
 		this.color = jsonObj.color;
+		this.svg = jsonObj.svg;
+		if (this.svg !== null)
+			console.log ("found svg value");
 		if (this.styleType == "text") {
 			this.typeface = jsonObj.typeface;
 			this.pointSize = jsonObj.pointSize;

@@ -79,8 +79,6 @@
 	<jsp:setProperty name="benchHelper" property="promoProto" value="${proto_name}"/>
 	<jsp:setProperty name="benchHelper" property="modelName" value="${model_name}"/>
 </jsp:useBean>
-<%	benchHelper.setSession (session);	// Need Java to set binary values 
-%>
 
     <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="scripts/kendo.all.min.js"></script>
@@ -114,13 +112,7 @@
 
 </head>
 <body>
-<%
 
-
-	// Fill in the block for the content object chosen by the user on the dashboard.  See the JS below
-	// for how the block JS object is used.
-	//request.setAttribute ("starting_block", benchHelper.getStartingBlock());
-%>
 <jsp:useBean id="starting_block" class="com.brndbot.block.Block" scope="page" >
 	<jsp:setProperty name="starting_block" property="channelType" value="${tmp_channel}"/>
 	<jsp:setProperty name="starting_block" property="name" value="${proto_name}"/>
@@ -259,24 +251,9 @@
 
 			<div class="rounded benchHeader">
 
-			<c:choose>
-			  <c:when test="${tmp_channel == channel_email}">
 				<div class="emailBenchHeader">
-					<span style="padding-left:1.5rem">
-						<img src="images/bench/emailIcon.png" alt="" />
-					</span>
-					&nbsp;Email Message Builder
+					&nbsp;Message Builder
 				</div>
-			  </c:when>
-			  <c:when test="${tmp_channel == channel_facebook}">
-				<div class="emailBenchHeader">
-					<span style="padding-left:1.5rem">
-						<img src="images/bench/emailIcon.png" alt="" />
-					</span>
-					&nbsp;Facebook Message Builder
-				</div>
-			  </c:when>
-			</c:choose>
 			  <div style="position:relative;"><div style="position:absolute;top:36px;"><div style="position:relative;" id="promoview">
  		<%
 			// Options anticipated by the templates.  The templates are separate JSPs and expect thse variables
@@ -566,16 +543,31 @@
 					<label>Color
 						<button type="button" data-linkedfield="#:fieldid#" 
 							style="width:30px;height:15px;background-color:\\#CC2222"
-							onclick="benchcontent.updatePrototypeColor(this)"></button>
+							onclick="benchcontent.showHideColorSelect(this)"></button>
 					</label>
 				</div>
 				<div id="#:fieldid#-select" style="display:none">
-					<table><tr>
-						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:30px;height:15px;background-color:blue"></button></td>
-						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:30px;height:15px;background-color:black"></button></td>
-						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:30px;height:15px;background-color:red"></button></td>
-						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:30px;height:15px;background-color:green"></button></td>
-						<td style="width:40px;height:20px;padding:3px;"><button type="button" style="width:40px;height:15px;font-size:60%;" name="color">Custom</button></td>
+					<table>
+						<tr>
+						<c:forEach var="color" items="${benchHelper.userPaletteColors}">
+							<td class="paletteButton">
+								<button type="button" style="background-color:${color}"
+									data-linkedfield="#:fieldid#"
+									data-color="${color}"
+									onclick="benchcontent.setToPaletteColor(this)">
+								</button>
+							</td>
+						</c:forEach>
+						</tr>
+						<tr>
+						<td class="paletteButton">
+							<button type="button" style="width:40px;height:15px;font-size:60%;" 
+									name="color" onclick="showHideColorPicker(this)">
+								Custom
+							</button>
+						</td><td>
+							<input type="color" >
+						</td>
 					</tr></table>
 				</div>
                 <p>&nbsp;</p>	

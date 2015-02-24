@@ -37,7 +37,7 @@ public class BenchHelper extends Helper {
 	
 //	private DbConnection con;
 	
-	private HttpSession session;
+	//private HttpSession session;
 	private int userId;
 	private int channel;
 	private int databaseId;
@@ -116,12 +116,32 @@ public class BenchHelper extends Helper {
 		}
 	}
 	
+	/** Get a List of colors from the user palette.
+	 *  We have to escape the pound sign in front of the color so Kendo
+	 *  won't try to evaluate it. We can't do that in the JSP because it
+	 *  will escape the EL expressioN! */
+	public List<String> getUserPaletteColors () {
+		logger.debug ("getUserPaletteColors");
+		List<Palette> palettes = getUserPalette();
+		List<String> colors = new ArrayList<>();
+		for (Palette pal : palettes) {
+			logger.debug ("Adding color {}", pal.getColor());
+			// Four backslashes needed here to turn into 2 in the JSP
+			colors.add("\\\\" + pal.getColor());
+			
+			// Limit to 4 colors. TODO why does it get more than 4 colors??
+			if (colors.size() == 4)
+				break;
+		}
+		return colors;
+	}
+	
 	
 	/** We have to set the session with a scriptlet, not
 	 *  setProperty */
-	public void setSession (HttpSession s) {
-		session = s;
-	}
+	//public void setSession (HttpSession s) {
+	//	session = s;
+	//}
 
 	public int getUserId () {
 		return userId;
@@ -193,18 +213,26 @@ public class BenchHelper extends Helper {
 	}
 	
 	public List<Palette> getPaletteArray () {
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con = null;
 		try {
 			if (paletteArray == null) {
+				con = DbConnection.GetDb();
 				paletteArray = User.getUserPalette(userId, con);
 			}
 		} finally {
-			con.close();
+			if (con != null)
+				con.close();
 		}
 		return paletteArray;
 	}
 	
-
+	public String getPaletteColor (int idx) {
+		List<Palette> paletteArray = getPaletteArray ();
+		if (paletteArray == null || paletteArray.size() <= idx) {
+			return "#000000";		// no palette color for index, things are looking black
+		}
+		return paletteArray.get(idx).getColor();
+	}
 	
 
 }
