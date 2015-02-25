@@ -67,6 +67,9 @@ function ModelField () {
 	this.bold = null;
 	this.italic = null;
 	this.svg = null;
+	this.dropShadowH = null;
+	this.dropShadowV = null;
+	this.dropShadowBlur = null;
 	
 	this.populateFromJSON = function (jsonField) {
 		this.name = jsonField.name;
@@ -206,6 +209,20 @@ function ModelField () {
 	this.getSVG = function () {
 		return (this.svg !== null) ? this.svg : this.style.svg;
 	};
+	
+	this.getDropShadowH = function () {
+		return (this.dropShadowH !== null) ? this.dropShadowH : this.style.dropShadowH;
+	}
+
+	this.getDropShadowV = function () {
+		return (this.dropShadowV !== null) ? this.dropShadowV : this.style.dropShadowV;
+	}
+	
+	this.getDropShadowBlur = function () {
+		return (this.dropShadowBlur !== null) ? this.dropShadowBlur : this.style.dropShadowBlur;
+	}
+
+
 
 	this.fabricateText = function (canvas) {
 		var pos = this.getPosition();
@@ -217,6 +234,7 @@ function ModelField () {
 			selectable: false,
 			fontSize: this.getPointSize(),
 			fontFamily: this.getTypeface(),
+			fill: this.getColor(),
 			left: pos.x,
 			top: pos.y,
 			originX: pos.originx,
@@ -227,6 +245,15 @@ function ModelField () {
 			fontStyle: fstyle,
 			alignment: this.getAlignment()
 		});
+		
+		var dropShadowH = this.getDropShadowH();
+		var dropShadowV = this.getDropShadowV();
+		if (dropShadowH != 0 || dropShadowV != 0) {
+			text.shadow = this.getColor() + ' ' +
+				this.getDropShadowH() + ' ' +
+				this.getDropShadowV() + ' ' +
+				this.getDropShadowBlur();
+		}
 		this.fabricObject = text;
 		canvas.add(text);
 		canvas.bringToFront(text);
@@ -397,6 +424,9 @@ function Style (name, styleType) {
 	this.italic = false;
 	this.alignment = "left";
 	this.svg = null;
+	this.dropShadowH = 0;
+	this.dropShadowV = 0;
+	this.dropShadowBlur = 0;
 	
 	// other fields vary by the styleType
 	
@@ -415,6 +445,10 @@ function Style (name, styleType) {
 		this.offsetY = jsonObj.offsetY;
 		this.color = jsonObj.color;
 		this.svg = jsonObj.svg;
+		this.dropShadowH = jsonObj.dropShadowH;
+		this.dropShadowV = jsonObj.dropShadowV;
+		this.dropShadowBlur = jsonObj.dropShadowBlur;
+		
 		if (this.svg !== null)
 			console.log ("found svg value");
 		if (this.styleType == "text") {

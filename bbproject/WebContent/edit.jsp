@@ -562,11 +562,13 @@
 						<tr>
 						<td class="paletteButton">
 							<button type="button" style="width:40px;height:15px;font-size:60%;" 
-									name="color" onclick="showHideColorPicker(this)">
+									name="color" onclick="benchcontent.showHideColorPicker(this)">
 								Custom
 							</button>
-						</td><td>
-							<input type="color" >
+						</td><td colspan="2">
+							<input style="height:15px;display:none" type="color" 
+								onchange="benchcontent.setToInputColor(this)"
+								data-linkedfield="#:fieldid#">
 						</td>
 					</tr></table>
 				</div>

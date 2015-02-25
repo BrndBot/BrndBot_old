@@ -140,6 +140,11 @@
     </servlet>
 
     <servlet>
+      <servlet-name>ModelButtonServlet</servlet-name>
+      <servlet-class>com.brndbot.servlets.ModelButtonServlet</servlet-class>
+    </servlet>
+
+    <servlet>
       <servlet-name>StyleServlet</servlet-name>
       <servlet-class>com.brndbot.servlets.StyleServlet</servlet-class>
     </servlet>
@@ -214,6 +219,11 @@
     </servlet-mapping>
 
     <servlet-mapping>
+      <servlet-name>ModelButtonServlet</servlet-name>
+      <url-pattern>/ModelButtonServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
       <servlet-name>StyleServlet</servlet-name>
       <url-pattern>/StyleServlet</url-pattern>
     </servlet-mapping>
@@ -260,10 +270,10 @@
 
     <filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
-    	<servlet-name>GetImagesServlet</servlet-name>
+    	<servlet-name>ModelButtonServlet</servlet-name>
     </filter-mapping>
 
-    <filter-mapping>
+v    <filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
     	<servlet-name>StyleServlet</servlet-name>
     </filter-mapping>

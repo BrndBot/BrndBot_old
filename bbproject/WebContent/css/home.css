@@ -17,6 +17,12 @@
 	text-align: center;
 }
 
+.categoryButton {
+	padding: 0;
+	border: none;
+	background: none;
+}
+
 #brndbotDashMain {
     width:100%;
 	padding:0rem 0 0.625rem;

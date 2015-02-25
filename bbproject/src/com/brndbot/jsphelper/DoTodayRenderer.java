@@ -39,11 +39,6 @@ public class DoTodayRenderer extends Renderer {
 			for (String cat : categories) {
 				renderCategory (cat, idx++);
 			}
-//			Map<String, Model> models = modelCol.getAllModels();
-//			for (Model m : models.values()) {
-//				int idx = 0;
-//				renderModel (m, idx++);
-//			}
 			
 			// Now create templates for each row. These include the tr tag,
 			// since it's slightly more convenient to copy a single element.
@@ -74,15 +69,35 @@ public class DoTodayRenderer extends Renderer {
 
 	private void renderCategory (String cat, int idx) throws IOException {
 		Element catCell = new Element ("td");
-		// We want graphics for categories, don't we? Where do they
-		// come from? for now show just the name.
+
+		// Inside the TD, put a table with one row for the button 
+		// and one for the name.
+		Element catTable = new Element ("table");
+		Element buttonTR = new Element ("tr");
+		Element buttonTD = new Element ("td");
 		Element catButton = new Element ("button");
 		catButton.setAttribute ("id", "Cat" + idx);
 		catButton.setAttribute ("class", "categoryButton");
 		catButton.setAttribute ("data-category", cat);
-		catButton.setAttribute ("style", "background-color:#BBBBFF");
-		catButton.addContent ("Promote " + cat);
-		catCell.addContent (catButton);
+		//catButton.setAttribute ("style", "background-color:#BBBBFF");
+		//catButton.addContent ("Promote " + cat);
+		Element buttonImage = new Element ("img");
+		buttonImage.setAttribute ("alt", "Promote " + cat);
+		buttonImage.setAttribute ("src", "ModelButtonServlet?category=" + cat);
+		catButton.addContent (buttonImage);
+		buttonTD.addContent (catButton);
+		buttonTR.addContent (buttonTD);
+		catTable.addContent (buttonTR);
+		
+		// Now a row for the name
+		Element nameTR = new Element ("tr");
+		Element nameTD = new Element ("td");
+		// TODO style nameTD
+		nameTD.addContent (cat);
+		nameTR.addContent (nameTD);
+		catTable.addContent (nameTR);
+		
+		catCell.addContent (catTable);
 		outputter.output (catCell, writer);
 	}
 

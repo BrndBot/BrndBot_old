@@ -92,13 +92,10 @@ public class Client implements Serializable {
 		try {
 			DbConnection con = DbConnection.GetDb();
 			User user = new User(uid);
-			logger.debug ("Loading client info");
 			user.loadClientInfo(con);
 			int orgId = user.getOrganizationID();
-			logger.debug ("org ID is {}", orgId);
 			Organization org = Organization.getById(orgId);
 			String moduleClass = org.getModuleClass();
-			logger.debug ("Module class is {}", moduleClass);
 			client = new Client (moduleClass);
 			client.organizationName = org.getName();
 			client.organizationDirName = org.getDirectoryName();

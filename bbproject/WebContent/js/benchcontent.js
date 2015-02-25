@@ -120,10 +120,11 @@ showHideColorSelect: function (input) {
 
 /* This is for the Custom button in the color controls */
 showHideColorPicker: function (input) {
-	var picker = $(input).parent().find("input");
+	var picker = $(input).parent().parent().find("input");
 	picker.toggle();
 },
 
+/* Set field to the color indicated by a palette button */
 setToPaletteColor: function (input) {
 	var field = benchcontent.elemToLinkedField(input);
 	var color = $(input).attr("data-color");
@@ -132,6 +133,14 @@ setToPaletteColor: function (input) {
 	bench.currentPromotion.canvas.renderAll();
 },
 
+/* Set field to the color indicated by the color picker */
+setToInputColor: function (input) {
+	var field = benchcontent.elemToLinkedField(input);
+	var color = $(input).val();
+	field.color = color;
+	field.fabricObject.setFill(color);
+	bench.currentPromotion.canvas.renderAll();
+},
 
 /* This is called by an onchange event, so we already know there's a change */
 updatePrototypeItalic: function (cbox) {
