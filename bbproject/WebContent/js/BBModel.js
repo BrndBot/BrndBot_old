@@ -43,6 +43,17 @@ function Model () {
 		}
 		return null;
 	};
+	
+	/* Make a copy of a Model. The most important thing this does is
+	 * not to share the fields' fabricObjects. */
+	this.copy = function () {
+		var cloneModel = new Model;
+		cloneModel.name = this.name;
+		for (var i = 0; i < this.fields.length; i++) {
+			cloneModel.fields[i] = this.fields[i].copy();
+		}
+		return cloneModel;
+	}
 }
 
 /* The prototype constructor for one field of a Model. */
@@ -75,6 +86,28 @@ function ModelField () {
 		this.name = jsonField.name;
 		this.styleType = jsonField.styleType;
 	};
+	
+	/* Return a copy of the modelField. It does not share fabricObject,
+	 * since it's intended for separate drawing. */
+	this.copy = function () {
+		var cloneField = new ModelField();
+		cloneField.name = this.name;
+		cloneField.styleType = this.styleType;
+		cloneField.style = this.style;
+		cloneField.width = this.width;
+		cloneField.height = this.height;
+		cloneField.anchor= this.anchor;
+		cloneField.text = this.text;
+		cloneField.color = this.color;
+		cloneField.typeface = this.typeface;
+		cloneField.pointSize = this.pointSize;
+		cloneField.bold = this.bold;
+		cloneField.italic = this.italic;
+		cloneField.svg = this.svg;
+		cloneField.dropShadowH= this.dropShadowH;
+		cloneField.dropShadowBlur = this.dropShadowBlur;
+		return cloneField;
+	}
 	
 	/* For text fields only. Would it be cleaner to subclass
 	 * ModelField? 
@@ -185,9 +218,15 @@ function ModelField () {
 		else 
 			return 0;
 	};
-	
+
+	/* getColor returns black as a last resort, so it always returns
+	 * a color string. */
 	this.getColor = function () {
-		return (this.color !== null) ? this.color : this.style.color;
+		if (this.color !== null)
+			return this.color;
+		else if (this.style.color !== null)
+			return this.style.color;
+		else return "#000000";
 	};
 	
 	this.getPointSize = function () {
@@ -488,6 +527,7 @@ function Promotion (model, styleSet) {
 	this.applyStyleSet (styleSet);
 
 	// Draw a Promotion. The argument is the ID of a canvas element.
+	// Width and height are optional for scaling.
 	this.draw = function (location) {
 		var canvasElem = $('#' + location);
 		canvasElem.attr("width", this.styleSet.width);

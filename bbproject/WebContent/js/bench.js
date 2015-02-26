@@ -374,6 +374,8 @@ var bench = {
 		// Select onclick handler for any block with the class 'blockSelectable'.
 		// If the template has that class, if you click on it with the mouse, this
 		// function gets called.
+		
+		// This block stack stuff may be obsolete with the current design.
 		$('div[class^="blockSelectable"]').each(function ()
 		{
 			$(this).on('click', function(e)
@@ -405,37 +407,37 @@ var bench = {
 				$(bench.lastSelectedBlock).css('border','.0625rem solid #000000');
 	
 				// Show up/down buttons where appropriate
-				if (stackIdx > 0)
-				{
-					if (stackIdx > 1)
-						$(bench.lastSelectedBlock + 'SortUpBtn').css('display', 'inline');
-					if (stackIdx < blockStack.length)
-						$(bench.lastSelectedBlock + 'SortDownBtn').css('display', 'inline');
-				}
+//				if (stackIdx > 0)
+//				{
+//					if (stackIdx > 1)
+//						$(bench.lastSelectedBlock + 'SortUpBtn').css('display', 'inline');
+//					if (stackIdx < blockStack.length)
+//						$(bench.lastSelectedBlock + 'SortDownBtn').css('display', 'inline');
+//				}
 	
 				// The trash button (X)
-				$(bench.lastSelectedBlock + 'TrashBtn').css('display', 'inline');
+				//$(bench.lastSelectedBlock + 'TrashBtn').css('display', 'inline');
 				return false;
 			});
 		});
 	
 		// Event handler for when the trash button (X) is clicked
-		$('div[class^="trashBlock"]').each(function ()
-		{
-			$(this).on('click', function(e)
-			{
+//		$('div[class^="trashBlock"]').each(function ()
+//		{
+//			$(this).on('click', function(e)
+//			{
 				// Remove from the blockStack and slide anything following the now-deleted
 				//  entry up one.
-				var form = bench.prepEditID(bench.lastSelectedBlock);
-				if (form)
-				{
+//				var form = bench.prepEditID(bench.lastSelectedBlock);
+//				if (form)
+//				{
 	//				$('#applyButton').hide();
-					form.hide();
-					bench.hideOtherTabs(bench.lastSelectedBlock);
-				}
-				bench.trashBlockClicked(e, this.id, true);
-			});
-		});
+//					form.hide();
+//					bench.hideOtherTabs(bench.lastSelectedBlock);
+//				}
+//				bench.trashBlockClicked(e, this.id, true);
+//			});
+//		});
 	
 		$("#viewClasses").kendoButton({
 			click: openPopup

@@ -155,7 +155,7 @@
 							</div>
 							<div> <!-- Layout tab -->
 								<div class="editTab" >
-								  <ul id="styleArea"><!--styles go here--></div>
+								  <ul id="styleArea"><!--styles go here--></ul></div>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>
@@ -615,8 +615,8 @@
 
 <script type="text/x-kendo-template" id="styleFieldsTemplate">
 	<li class="stylefield" data-linkedstyle="#:name#"
-		onclick="benchstyle.updateStyle(this)">
-		#:name#
+			onclick="benchstyle.updateStyle(this)">
+		<canvas id="styleCanvas#:name#" ">
 	</li>
 </script>
 	

@@ -28,6 +28,15 @@ insertStyles: function (dest) {
 	    selectable: true,
         template: kendo.template($('#styleFieldsTemplate').html())
 	});
+	var listItems = dest.find ("li");
+	listItems.each (function () {
+		var styleSet = benchstyle.elemToLinkedStyleSet (this);
+		var promo = new Promotion (bench.currentPromotion.model.copy(), styleSet);
+		var canvas = $(this).find("canvas");
+		promo.draw (canvas.attr("id"));
+		canvas.css("width", 135);
+		canvas.css("height", 135);
+	});
 },
 
 /** Update the promotion style to the one given in the list item */
