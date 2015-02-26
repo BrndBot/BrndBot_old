@@ -1,14 +1,14 @@
 package com.brndbot.jsphelper;
 
 import java.io.IOException;
-import java.util.List;
+//import java.util.List;
 import java.util.Map;
 
 import org.jdom2.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.brndbot.client.ClientInterface;
+//import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Model;
 import com.brndbot.client.ModelCollection;
 import com.brndbot.promo.Client;
@@ -41,8 +41,6 @@ public class ModelListButtonRenderer extends Renderer {
 	}
 
 	private void renderModel (Model m, int idx) throws IOException {
-		logger.debug ("renderModel idx = {}", idx);
-		logger.debug ("Model name is {}", m.getName());
 		Element topDiv = new Element ("div");
 		topDiv.setAttribute ("class", "unit eachButton");
 		Element button = new Element ("button");
@@ -50,7 +48,6 @@ public class ModelListButtonRenderer extends Renderer {
 		button.setAttribute ("class", "greenNoHoverButton");
 		topDiv.addContent (button);
 		button.addContent (m.getName() + "s");
-		// TODO we probably want a pluralName field in Model
 		outputter.output (topDiv, writer);
 	}
 

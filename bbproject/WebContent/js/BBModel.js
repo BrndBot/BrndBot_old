@@ -288,10 +288,11 @@ function ModelField () {
 		var dropShadowH = this.getDropShadowH();
 		var dropShadowV = this.getDropShadowV();
 		if (dropShadowH != 0 || dropShadowV != 0) {
-			text.shadow = this.getColor() + ' ' +
-				this.getDropShadowH() + ' ' +
-				this.getDropShadowV() + ' ' +
-				this.getDropShadowBlur();
+			text.shadow = new fabric.Shadow ();
+			text.shadow.blur = this.getDropShadowBlur();
+			text.shadow.offsetX = dropShadowH;
+			text.shadow.offsetY = dropShadowV;
+			text.shadow.color = this.getColor();
 		}
 		this.fabricObject = text;
 		canvas.add(text);

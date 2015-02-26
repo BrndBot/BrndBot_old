@@ -21,8 +21,10 @@ import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
 
 /**
- * This servlet generates image streams for category and model buttons.
- * It can have a parameter of category=catname or model=modelname
+ * This servlet generates image streams for category buttons.
+ * (Model buttons have been dropped from the spec.)
+ * Paramter: category=catname 
+ * 			hover=any means to get the hover-state graphic.
  */
 public class ModelButtonServlet extends HttpServlet {
 
@@ -44,24 +46,22 @@ public class ModelButtonServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		int userId = SessionUtils.getUserId(session);
 		String category = Utils.getStringParameter(request, "category");
-		String model = null;
-		if (category == null) {
-			model = Utils.getStringParameter(request, "model");
-		}
+		boolean hover = Utils.getStringParameter(request, "hover").length() > 0;
+		//String model = null;
 		if (category != null) {
-			returnCategoryButton (request, response, userId, category);
-		} else if (model != null) {
-			returnModelButton (request, response, userId, model);
+			returnCategoryButton (request, response, userId, category, hover);
 		} else  {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
 	}
 	
-	// The only difference between returnCategoryButton and ReturnModelButton is
-	// how the path is obtained. TODO Refactor.
 	private void returnCategoryButton 
-			(HttpServletRequest request, HttpServletResponse response, int userId, String category) {
+			(HttpServletRequest request, 
+					HttpServletResponse response, 
+					int userId, 
+					String category,
+					boolean hover) {
 		final int bufferSize = 4096;
 		String modelBase = SystemProp.get(SystemProp.LOCAL_ASSETS);
 		StringBuilder path = new StringBuilder (modelBase);
@@ -69,7 +69,11 @@ public class ModelButtonServlet extends HttpServlet {
 		path.append (getOrganizationDir(userId));
 		path.append ("/");
 		path.append (category);
-		path.append ("__.png");
+		// Set the name for the normal or hover button
+		if (hover)
+			path.append("__Hover.png");
+		else
+			path.append ("__.png");
 		logger.debug ("Getting button image from {}", path);
 		FileInputStream inputStream = null;
 		ServletOutputStream out = null;
@@ -104,10 +108,10 @@ public class ModelButtonServlet extends HttpServlet {
 		}
 	}
 
-	private void returnModelButton 
-			(HttpServletRequest request, HttpServletResponse response, int userId, String model) {
-		response.setStatus (HttpServletResponse.SC_NOT_FOUND);	// TODO stub
-	}
+//	private void returnModelButton 
+//			(HttpServletRequest request, HttpServletResponse response, int userId, String model) {
+//		response.setStatus (HttpServletResponse.SC_NOT_FOUND);	// TODO stub
+//	}
 	
 	private String getOrganizationDir (int userId) {
 		DbConnection con = DbConnection.GetDb();

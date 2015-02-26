@@ -67,6 +67,7 @@ public class DoTodayRenderer extends Renderer {
 		}
 	}
 
+	/* This puts up the category button and caption for one category. */
 	private void renderCategory (String cat, int idx) throws IOException {
 		Element catCell = new Element ("td");
 
@@ -79,11 +80,15 @@ public class DoTodayRenderer extends Renderer {
 		catButton.setAttribute ("id", "Cat" + idx);
 		catButton.setAttribute ("class", "categoryButton");
 		catButton.setAttribute ("data-category", cat);
+		catButton.setAttribute ("onmouseover", "homejs.showHoverImage(this);");
+		catButton.setAttribute ("onmouseout", "homejs.showNormalImage(this);");
 		//catButton.setAttribute ("style", "background-color:#BBBBFF");
 		//catButton.addContent ("Promote " + cat);
 		Element buttonImage = new Element ("img");
 		buttonImage.setAttribute ("alt", "Promote " + cat);
 		buttonImage.setAttribute ("src", "ModelButtonServlet?category=" + cat);
+		buttonImage.setAttribute ("data-normalsrc", "ModelButtonServlet?category=" + cat);
+		buttonImage.setAttribute ("data-hoversrc", "ModelButtonServlet?hover=y&category=" + cat);
 		catButton.addContent (buttonImage);
 		buttonTD.addContent (catButton);
 		buttonTR.addContent (buttonTD);

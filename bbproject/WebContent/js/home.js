@@ -180,6 +180,20 @@ var homejs = {
 		}
 		// TODO hide old button, hide new one.
 		currentItemID = itemID;
+	},
+	
+	/* Set a button to its hover state. */
+	showHoverImage: function (button) {
+		console.log ("showHoverImage");
+		var img = $(button).find("img");
+		img.attr("src", img.attr("data-hoversrc"));
+	},
+	
+	/* Set a button to its non-hover state */
+	showNormalImage: function (button) {
+		console.log ("showNormalImage");
+		var img = $(button).find("img");
+		img.attr("src", img.attr("data-normalsrc"));
 	}
 
 };
