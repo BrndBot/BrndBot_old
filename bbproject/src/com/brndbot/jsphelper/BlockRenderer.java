@@ -127,7 +127,7 @@ public class BlockRenderer extends Renderer {
 			cssBuilder.setBold();
 		if (tStyle.isItalic())
 			cssBuilder.setItalic();
-		String color = tStyle.getTextColor();
+		String color = tStyle.getColor();
 		if (color != null)
 			cssBuilder.setColor (color);
 		Alignment align = tStyle.getAlignment();
