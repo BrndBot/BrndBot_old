@@ -43,6 +43,9 @@ $(document).ready(function()
 		 * Clicking on a content badge button will bring up the prototypes for
 		 * that model. Since the buttons change dynamically, we need to assign this
 		 * handler every time the button is loaded from a template.
+		 * 
+		 * TODO CHANGE IN SPEC: List the models just by name in a column below the
+		 * category button.
 		 */
 		var handleModelButton = function (e)
 		{

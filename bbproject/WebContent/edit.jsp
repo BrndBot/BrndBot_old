@@ -38,6 +38,7 @@
     <link href="styles/kendo.rtl.min.css" rel="stylesheet">
     	<!--  use the Kendo "flat" style -->
     <link href="styles/kendo.flat.min.css" rel="stylesheet">
+    <link href="styles/jquery.Jcrop.css" rel="stylesheet">
     <link href="css/shared.css" rel="stylesheet">
     <link href="css/signup.css" rel="stylesheet">
     <link href="css/bench.css" rel="stylesheet">
@@ -83,6 +84,7 @@
     <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="scripts/kendo.all.min.js"></script>
     <script type="text/javascript" src="scripts/fabric.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.Jcrop.min.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
     <script type="text/javascript" src="js/BBModel.js"></script>
@@ -475,6 +477,13 @@
 
 	
 	</div> <!-- brndbotMain -->
+
+	<!-- Template for cropping modal window -->
+	<div display="none">
+		<div id="cropWindow">
+			<img class="cropImage">
+		</div>
+	</div>
 	<script type="text/javascript" src="js/benchcontent.js"></script>
 	<script type="text/javascript" src="js/benchdesign.js"></script>
 	<script type="text/javascript" src="js/benchstyle.js"></script>
@@ -505,7 +514,6 @@
 	<div>
 		# if (styleType == 'text') {   #
 				<div style="font-weight:bold">#:fieldid#</div>
-				<div>Content</div>
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
@@ -573,7 +581,15 @@
 					</tr></table>
 				</div>
                 <p>&nbsp;</p>	
-		# } #
+		# } #		<!-- text -->
+		# if (styleType == 'image') {   #
+				<div style="font-weight:bold">#:fieldid#</div>
+				<button type="button" style="width:70px;height:20px;font-size:85%;" 
+					data-linkedField="#:fieldid#"
+					onclick="benchcontent.showCrop(this);">
+					Cropping
+				</button>
+		# } #		<!-- image -->
 	</div>
 </script>
 

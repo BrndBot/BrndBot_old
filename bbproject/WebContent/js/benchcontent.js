@@ -49,6 +49,12 @@ modelToSourceData: function (model) {
 			fielddata.boldChecked = field.isBold() ? "checked" : "";
 			srcdata.push(fielddata);
 		}
+		else if (field.styleType == "image") {
+			var fielddata = {};
+			fielddata.fieldid = field.name;
+			fielddata.styleType = "image";
+			srcdata.push(fielddata);
+		}
 	}
 	return srcdata;
 },
@@ -111,6 +117,9 @@ updatePrototypePointSize: function(tarea) {
 
 },
 
+/* This is for showing and hiding the group of palette buttons
+ * and the Custom button. It doesn't affect the state of the
+ * color picker. */
 showHideColorSelect: function (input) {
 	var fieldid = $(input).attr("data-linkedfield");
 	var buttondiv = $('#' + fieldid + "-select");
@@ -118,9 +127,13 @@ showHideColorSelect: function (input) {
 	bench.currentPromotion.canvas.renderAll();
 },
 
-/* This is for the Custom button in the color controls */
-showHideColorPicker: function (input) {
-	var picker = $(input).parent().parent().find("input");
+/* This is for the Custom button in the color controls.
+ * btn is a button in a td, and the color picker is in
+ * the next td. */
+showHideColorPicker: function (btn) {
+	var picker = $(btn).parent().parent().find("input");
+	var field = benchcontent.elemToLinkedField(picker);
+	picker.prop("defaultValue", field.getColor());
 	picker.toggle();
 },
 
@@ -129,7 +142,7 @@ setToPaletteColor: function (input) {
 	var field = benchcontent.elemToLinkedField(input);
 	var color = $(input).attr("data-color");
 	field.color = color;
-	field.fabricObject.setFill(color);
+	field.fabricObject.fill = color;
 	bench.currentPromotion.canvas.renderAll();
 },
 
@@ -138,7 +151,7 @@ setToInputColor: function (input) {
 	var field = benchcontent.elemToLinkedField(input);
 	var color = $(input).val();
 	field.color = color;
-	field.fabricObject.setFill(color);
+	field.fabricObject.fill = color;
 	bench.currentPromotion.canvas.renderAll();
 },
 
@@ -189,6 +202,47 @@ unhighlightTextArea: function(tarea) {
 	var field = benchcontent.elemToLinkedField(tarea);
 	field.fabricObject.setBackgroundColor('');
 	bench.currentPromotion.canvas.renderAll();
+},
+
+cropper: null,
+
+/* Bring up a cropping modal window for the specified image */
+showCrop: function (btn) {
+	var field = benchcontent.elemToLinkedField(btn);
+	var img = $("#cropWindow .cropImage");
+	img.attr ("src", "ImageServlet?img=default");
+	$("#cropWindow").kendoWindow ({
+		actions: ["Custom", "Minimize", "Maximize", "Close"],
+		title: "Crop Image",
+		draggable: false,
+		modal: true,
+		close: function () {
+			benchcontent.releaseCrop();
+		}
+	});
+	var win = $("#cropWindow").data("kendoWindow");
+	win.center();
+	img.Jcrop({
+		onSelect: benchcontent.applyCrop
+	},
+	function () {
+		benchcontent.cropper = this;
+	}
+	);
+},
+
+/* Call this when the crop window is closed */
+releaseCrop: function () {
+	if (benchcontent.cropper)
+		benchcontent.cropper.release ();
+},
+
+/* Apply the cropping from Jcrop */
+applyCrop: function (coords) {
+	console.log ("crop x: " + coords.x);
+	console.log ("crop y: " + coords.y);
+	console.log ("crop width: " + coords.w);
+	console.log ("crop height: " + coords.h);
 },
 
 /* For the a DOM element which has the data-linkedfield attribute,

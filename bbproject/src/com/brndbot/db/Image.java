@@ -374,6 +374,7 @@ public class Image implements TableModel
 					json_obj.put("height", h);
 					json_obj.put("width", w);
 					json_obj.put("imgTag", local_image_file_name);
+					json_obj.put("url", " ");		// for template compatibility
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}

@@ -47,13 +47,13 @@ function Model () {
 	/* Make a copy of a Model. The most important thing this does is
 	 * not to share the fields' fabricObjects. */
 	this.copy = function () {
-		var cloneModel = new Model;
+		var cloneModel = new Model();
 		cloneModel.name = this.name;
 		for (var i = 0; i < this.fields.length; i++) {
 			cloneModel.fields[i] = this.fields[i].copy();
 		}
 		return cloneModel;
-	}
+	};
 }
 
 /* The prototype constructor for one field of a Model. */
@@ -107,7 +107,7 @@ function ModelField () {
 		cloneField.dropShadowH= this.dropShadowH;
 		cloneField.dropShadowBlur = this.dropShadowBlur;
 		return cloneField;
-	}
+	};
 	
 	/* For text fields only. Would it be cleaner to subclass
 	 * ModelField? 
@@ -222,9 +222,9 @@ function ModelField () {
 	/* getColor returns black as a last resort, so it always returns
 	 * a color string. */
 	this.getColor = function () {
-		if (this.color !== null)
+		if (this.color)
 			return this.color;
-		else if (this.style.color !== null)
+		else if (this.style.color)
 			return this.style.color;
 		else return "#000000";
 	};
@@ -251,15 +251,15 @@ function ModelField () {
 	
 	this.getDropShadowH = function () {
 		return (this.dropShadowH !== null) ? this.dropShadowH : this.style.dropShadowH;
-	}
+	};
 
 	this.getDropShadowV = function () {
 		return (this.dropShadowV !== null) ? this.dropShadowV : this.style.dropShadowV;
-	}
+	};
 	
 	this.getDropShadowBlur = function () {
 		return (this.dropShadowBlur !== null) ? this.dropShadowBlur : this.style.dropShadowBlur;
-	}
+	};
 
 
 
@@ -287,12 +287,11 @@ function ModelField () {
 		
 		var dropShadowH = this.getDropShadowH();
 		var dropShadowV = this.getDropShadowV();
-		if (dropShadowH != 0 || dropShadowV != 0) {
+		if (dropShadowH  || dropShadowV ) {
 			text.shadow = new fabric.Shadow ();
 			text.shadow.blur = this.getDropShadowBlur();
 			text.shadow.offsetX = dropShadowH;
 			text.shadow.offsetY = dropShadowV;
-			text.shadow.color = this.getColor();
 		}
 		this.fabricObject = text;
 		canvas.add(text);
@@ -460,6 +459,7 @@ function Style (name, styleType) {
 	this.offsetY = 0;
 	this.typeface = null;
 	this.pointSize = null;
+	this.color = null;
 	this.bold = false;
 	this.italic = false;
 	this.alignment = "left";
