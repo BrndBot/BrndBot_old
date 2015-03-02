@@ -70,6 +70,13 @@
 </div>		<!-- nameImagePopup -->
 
 <script type="text/javascript" src="js/images.js"></script>
+
+<script type="text/x-kendo-template" id="galleryTemplate">
+	<li class="stylefield" 
+		<img src="ImageServlet?img=#:id#">
+	</li>
+</script>
+
 </c:if>			<!-- end of session check for body ->
 </body>
 </html>

@@ -12,16 +12,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+//import java.net.MalformedURLException;
+//import java.net.URL;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -81,25 +84,62 @@ public class Image implements TableModel
 	 *  ImageType, ImageURL, ImageSize, ImageHeight, and ImageWidth. 
 	 *  The field Image is not included here since it's so big it should
 	 *  be loaded only when actually needed. */
+//	public Image(ResultSet rs)
+//	{
+//		try
+//		{
+//			imageId = new Integer(rs.getInt("ImageID"));
+//			userId = new Integer(rs.getInt("UserID"));
+//			imageType = ImageType.getByItemNumber(rs.getInt("ImageType"));
+//			imageUrl = rs.getString("ImageURL");
+//			imageSize = new Integer(rs.getInt("ImageSize"));
+//			imageHeight = new Integer(rs.getInt("ImageHeight"));
+//			imageWidth = new Integer(rs.getInt("ImageWidth"));
+//			//image = rs.getBlob("Image");
+//		}
+//		catch (SQLException e) 
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 	public Image(ResultSet rs)
 	{
 		try
 		{
-			imageId = new Integer(rs.getInt("ImageID"));
-			userId = new Integer(rs.getInt("UserID"));
-			imageType = ImageType.getByItemNumber(rs.getInt("ImageType"));
-			imageUrl = rs.getString("ImageURL");
-			imageSize = new Integer(rs.getInt("ImageSize"));
-			imageHeight = new Integer(rs.getInt("ImageHeight"));
-			imageWidth = new Integer(rs.getInt("ImageWidth"));
-			//image = rs.getBlob("Image");
+			ResultSetMetaData md = rs.getMetaData();
+			for (int i = 1; i <= md.getColumnCount(); i++) {
+				String name = md.getColumnName(i);
+				switch (name) {
+				case "ImageID":
+					imageId = new Integer(rs.getInt(name));
+					break;
+				case "UserID":
+					userId = new Integer(rs.getInt(name));
+					break;
+				case "ImageType":
+					imageType = ImageType.getByItemNumber(rs.getInt(name));
+					break;
+				case "ImageURL":
+					imageUrl = rs.getString(name);
+					break;
+				case "ImageSize":
+					imageSize = rs.getInt(name);
+					break;
+				case "ImageHeight":
+					imageHeight = new Integer(rs.getInt(name));
+					break;
+				case "ImageWidth":
+					imageWidth = new Integer(rs.getInt(name));
+					break;
+					
+				}
+			}
 		}
 		catch (SQLException e) 
 		{
 			e.printStackTrace();
 		}
 	}
-
 	/** Copy constructor */
 	public Image(Image m)
 	{
@@ -210,32 +250,33 @@ public class Image implements TableModel
 		return DbUtils.getLastInsertID(con);
 	}
 
-	/** Returns the total number of images in the database */
-	static public int getImageCount(DbConnection con)
-	{
-		String sql = "SELECT COUNT(*) FROM images;";
-		Statement stmt = con.createStatement();
-		ResultSet rs = null;
-		int count = 0;
-		try
-		{
-			rs = stmt.executeQuery(sql);
-			if (rs.next())
-			{
-				count = rs.getInt(1);
-			}
-		} 
-		catch (SQLException e) 
-		{
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-		}
-		finally
-		{
-			DbUtils.close(stmt, rs);
-		}
-		return count;
-	}
+	/** Returns the total number of images in the database
+	 *  (why was this ever written?) */
+//	static public int getImageCount(DbConnection con)
+//	{
+//		String sql = "SELECT COUNT(*) FROM images;";
+//		Statement stmt = con.createStatement();
+//		ResultSet rs = null;
+//		int count = 0;
+//		try
+//		{
+//			rs = stmt.executeQuery(sql);
+//			if (rs.next())
+//			{
+//				count = rs.getInt(1);
+//			}
+//		} 
+//		catch (SQLException e) 
+//		{
+//			e.printStackTrace();
+//			throw new RuntimeException(e.getMessage());
+//		}
+//		finally
+//		{
+//			DbUtils.close(stmt, rs);
+//		}
+//		return count;
+//	}
 
 	/** Deletes an image that matches the specified ImagdID and UserID.
 	 *  For some unclear reason, fetches the image first. The only reason I
@@ -244,46 +285,12 @@ public class Image implements TableModel
 	static public void deleteImage(int image_id, int user_id, DbConnection con) 
 			throws SQLException
 	{
-		Image Image = makeThisImage(image_id, user_id, con);
+		Image Image = getImageByID(image_id, user_id, con);
 		if (Image != null)
 		{
 			String sql = "DELETE FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
 			con.ExecuteDB(sql, false);
 		}
-	}
-
-	/** Creates an Image object from the ImageID and UserID. 
-	 *  Returns null if there's no match.
-	 *  Doesn't load the image blob.
-	 *  What's the difference between this and getImageByID?
-	 */
-	static public Image makeThisImage(int image_id, int user_id, DbConnection con)
-	{
-		Statement stmt = con.createStatement();
-		String sql = "SELECT ImageID, UserID, ImageType, ImageURL, ImageSize, ImageHeight, ImageWidth FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
-		ResultSet rs = con.QueryDB(sql, stmt);
-		Image image = null;
-		try 
-		{
-			if (rs.next())
-			{
-				image = new Image(rs);
-				if (image.getImageID().intValue() != image_id)
-				{
-					image = null;
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			logger.error ("SQLException getting image: {}", e.getMessage());
-			e.printStackTrace();
-		}
-		finally 
-		{
-			DbUtils.close(stmt, rs);
-		}
-		return image;
 	}
 
 	static public String getBoundImage(int image_id, int user_id,
@@ -389,18 +396,22 @@ public class Image implements TableModel
 	/** Creates an Image object from the ImageID and UserID. 
 	 *  Returns null if there's no match.
 	 *  What's the difference between this and makeThisImage?
-	 */	static public Image getImageByID(int image_id, int user_id, DbConnection con)
+	 */	
+	static public Image getImageByID(int image_id, int user_id, DbConnection con)
 	{
-		Statement stmt = con.createStatement();
-		String sql = "SELECT ImageID, UserID, ImageType, ImageURL, ImageSize, ImageHeight, ImageWidth, Image FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
-		logger.debug("For images:\n" + sql);
-		ResultSet rs = con.QueryDB(sql, stmt);
-		Image Image = null;
+		PreparedStatement pstmt = con.createPreparedStatement
+				("SELECT ImageID, UserID, ImageType, ImageURL, ImageSize, ImageHeight, " +
+				"ImageWidth, Image FROM images WHERE ImageID = ? AND UserID = ?");
+		ResultSet rs = null;
+		Image image = null;
 		try 
 		{
+			pstmt.setInt (1, image_id);
+			pstmt.setInt (2, user_id);
+			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				Image = new Image(rs);
+				image = new Image(rs);
 			}
 			else
 				logger.error("Image not found, image ID = {}", image_id);
@@ -413,10 +424,78 @@ public class Image implements TableModel
 		}
 		finally 
 		{
-			DbUtils.close(stmt, rs);
+			if (rs != null)
+				DbUtils.close(pstmt, rs);
 		}
-		return Image;
+		return image;
 	}
+
+	/** Returns all images of type USER_UPLOAD for the user. Without the 
+	 *  image blobs loaded, of course.
+	 */
+	static public List<Image> getAllUserImages (int user_id, DbConnection con) {
+		PreparedStatement pstmt = con.createPreparedStatement
+				("SELECT ImageID, UserID, ImageType, ImageURL, ImageSize, ImageHeight, " +
+				"ImageWidth, Image FROM images WHERE UserID = ? ORDER BY UserID");
+		ResultSet rs = null;
+		List<Image> retList = new ArrayList<>();
+		try {
+			pstmt.setInt (1, user_id);
+			rs = pstmt.executeQuery();
+			while (rs.next ()) {
+				Image image = new Image (rs);
+				retList.add (image);
+			}
+		}
+		catch (SQLException e) 
+		{
+			logger.error("Exception in getAllUserImages(): " + 
+						e.getClass().getName() + ", message = " + e.getMessage());
+			e.printStackTrace();
+		}
+		finally 
+		{
+			if (rs != null)
+				DbUtils.close(pstmt, rs);
+		}
+		return retList;
+	}
+	 
+	/** Creates an Image object from the ImageID and UserID. 
+	 *  Returns null if there's no match.
+	 *  Doesn't load the image blob.
+	 *  What's the difference between this and getImageByID?
+	 *  Only that this doesn't work with database images.
+	 */
+//	static public Image makeThisImage(int image_id, int user_id, DbConnection con)
+//	{
+//		Statement stmt = con.createStatement();
+//		String sql = "SELECT ImageID, UserID, ImageType, ImageURL, ImageSize, ImageHeight, ImageWidth FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
+//		ResultSet rs = con.QueryDB(sql, stmt);
+//		Image image = null;
+//		try 
+//		{
+//			if (rs.next())
+//			{
+//				image = new Image(rs);
+//				if (image.getImageID().intValue() != image_id)
+//				{
+//					image = null;
+//				}
+//			}
+//		}
+//		catch (SQLException e)
+//		{
+//			logger.error ("SQLException getting image: {}", e.getMessage());
+//			e.printStackTrace();
+//		}
+//		finally 
+//		{
+//			DbUtils.close(stmt, rs);
+//		}
+//		return image;
+//	}
+
 
 	static public boolean isAnImage(String extension)
 	{

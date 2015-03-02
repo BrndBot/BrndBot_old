@@ -110,6 +110,11 @@
     </servlet>
 
     <servlet>
+      <servlet-name>ImagesServlet</servlet-name>
+      <servlet-class>com.brndbot.servlets.ImagesServlet</servlet-class>
+    </servlet>
+
+    <servlet>
       <servlet-name>SaveHTMLAsImageServlet</servlet-name>
       <servlet-class>com.brndbot.servlets.SaveHTMLAsImageServlet</servlet-class>
     </servlet>
@@ -189,6 +194,11 @@
     </servlet-mapping>
 
     <servlet-mapping>
+      <servlet-name>ImagesServlet</servlet-name>
+      <url-pattern>/ImagesServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
       <servlet-name>SaveHTMLAsImageServlet</servlet-name>
       <url-pattern>/SaveHTMLAsImageServlet</url-pattern>
     </servlet-mapping>
@@ -246,6 +256,11 @@
 	<filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
 		<servlet-name>ImageServlet</servlet-name>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<servlet-name>ImagesServlet</servlet-name>
 	</filter-mapping>
 	
 	<filter-mapping>

@@ -52,15 +52,7 @@ public class GetImagesServlet extends HttpServlet
 		HttpSession session = request.getSession();
 		int user_id = SessionUtils.getUserId(session);
 
-		// Make sure the image type is passed
-		int type = Utils.getIntParameter(request, SessionUtils.IMAGE_ID_KEY);
-		if (type == 0)
-		{
-			logger.error("No IMAGE TYPE passed (type=" + type + "). Programming error.");
-			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-		ImageType image_type = ImageType.getByItemNumber(type);
+		ImageType image_type = ImageType.USER_UPLOAD;
 		if (image_type == null)
 		{
 			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);

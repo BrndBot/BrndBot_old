@@ -38,9 +38,7 @@ public class ImageServlet extends HttpServlet {
 
 	final static Logger logger = LoggerFactory.getLogger(ImageServlet.class);
 
-	public ImageServlet() {
-		// TODO Auto-generated constructor stub
-	}
+
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 

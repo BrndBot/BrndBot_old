@@ -49,7 +49,7 @@
 	int image_id = SessionUtils.getIntSession(session, SessionUtils.FUSED_IMAGE_ID_KEY);
 	System.out.println("FUSED_IMAGE_ID: " + image_id);
 	DbConnection con = DbConnection.GetDb();
-	Image image = Image.makeThisImage(image_id, user_id, con);
+	Image image = Image.getImageByID(image_id, user_id, con);
 	Assert.that(image != null, "Image is NULL!  DB ID: " + image_id);
 	con.close();
 	String image_fqdn = Utils.Slashies(SystemProp.get(SystemProp.ASSETS) + "\\" + image.getImageName());

@@ -20,6 +20,8 @@
 		imagesjs.populateGallery ($('#imageGallery'));
 	});
 
+/** Wrap functions in a named object to achieve namespacing. 
+ */
 var imagesjs = {
 		
 	saveUrl: "" ,
@@ -37,12 +39,14 @@ var imagesjs = {
     	$("#nameImagePopup").data("kendoWindow").center().open(); 
     },
     
+    /* Do I use this for anything?? */
     uploadFilter: function (e) {
     	// We update the URL to specify the user selected name
     	console.log("uploadFilter");
         e.sender.options.async.saveUrl = imagesjs.saveUrl;
     },
     
+    /* I was starting to do something with this, wasn't I? */
 	nameImageFormSubmit: function () {
 		var newName = $("#imgname").val().trim();
 		if (!newName)
@@ -61,7 +65,23 @@ var imagesjs = {
     	return imagesjs.saveUrl;
     },
     
+    /** Here's where we load up the gallery display on the page. */
     populateGallery: function (sel) {
-    	// TODO use kendo list
-    }
+    	sel.kendoListView ({
+    		dataSource: imagesjs.galleryDataSource,
+    		template: kendo.template($("#galleryTemplate").html()),
+		    selectable: true
+    	});
+    },
+    
+    galleryDataSource: new kendo.data.DataSource({
+    	transport:
+    	{
+    		read:
+    		{
+    			url: "GetImagesServlet" ,
+				dataType: "json"
+    		}
+    	}
+    })
 };
