@@ -387,6 +387,24 @@ function ModelField () {
 			field.fabricObject = obj;
 		});
 	};
+	
+	/* Crop the field to a specified rectangle. This works only for ...
+	 * well, right now, it doesn't work for anything, but it should
+	 * for images and maybe logos.
+	 * 
+	 * The x and y arguments are relative to the top left of the image.
+	 */
+	this.crop = function (x, y, wid, ht) {
+		// We have to translate the coordinates to center-based coordinates.
+		// This is a slightly brute-force approach, but the fabric functions
+		// don't do what I expect.
+		x -= this.fabricObject.width / 2;
+		y -= this.fabricObject.height / 2;
+		console.log ("Cropping to " + x + ", " + y + ", " + wid + ", " + ht);
+		this.fabricObject.clipTo = function (ctx) {
+			ctx.rect (x, y, wid, ht);
+		};
+	};
 
 	/* Function for the x, y, and anchor calculations. Returns an object with 
 	 * fields x, y, and anchor. */

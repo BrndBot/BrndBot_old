@@ -217,7 +217,7 @@ showCrop: function (btn) {
 		draggable: false,
 		modal: true,
 		close: function () {
-			benchcontent.releaseCrop();
+			benchcontent.closeCrop();
 		}
 	});
 	var win = $("#cropWindow").data("kendoWindow");
@@ -226,23 +226,39 @@ showCrop: function (btn) {
 		onSelect: benchcontent.applyCrop
 	},
 	function () {
-		benchcontent.cropper = this;
+		benchcontent.cropper = {
+				jcrop: this,	// the JCROP API object
+				field: field
+		};	// the JCROP API 
 	}
 	);
 },
 
 /* Call this when the crop window is closed */
-releaseCrop: function () {
+closeCrop: function () {
 	if (benchcontent.cropper)
-		benchcontent.cropper.release ();
+		benchcontent.cropper.jcrop.destroy ();
 },
 
 /* Apply the cropping from Jcrop */
 applyCrop: function (coords) {
-	console.log ("crop x: " + coords.x);
-	console.log ("crop y: " + coords.y);
-	console.log ("crop width: " + coords.w);
-	console.log ("crop height: " + coords.h);
+	var fld = benchcontent.cropper.field;
+	var origSize = fld.fabricObject.getOriginalSize();
+	
+	// Scale to the display size of the image
+	var scaleX = fld.fabricObject.width / origSize.width;
+	var scaleY = fld.fabricObject.height / origSize.height;
+	coords.x *= scaleX;
+	coords.y *= scaleY;
+	coords.w *= scaleX;
+	coords.h *= scaleY;
+	console.log ("scaled crop x: " + coords.x);
+	console.log ("scaled crop y: " + coords.y);
+	console.log ("scaled crop width: " + coords.w);
+	console.log ("scaled crop height: " + coords.h);
+	
+	fld.crop(coords.x, coords.y, coords.w, coords.h);
+	bench.currentPromotion.canvas.renderAll();
 },
 
 /* For the a DOM element which has the data-linkedfield attribute,
