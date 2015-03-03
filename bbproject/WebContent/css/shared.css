@@ -1,11 +1,9 @@
 
-@font-face:
-{
+@font-face {
 	font-family: proxima-nova;
 }
 
-.topRow
-{
+.topRow {
 	overflow: auto;
 	width: 100%;
 	padding-bottom: 2rem;
@@ -23,8 +21,7 @@
 }
 
 #imageWrapper table, #imageWrapper tbody, #imageWrapper tr, #imageWrapper td, #imageWrapper td div,
-#imageWrapper2 table, #imageWrapper2 tbody, #imageWrapper2 tr, #imageWrapper2 td, #imageWrapper2 td div
-{
+#imageWrapper2 table, #imageWrapper2 tbody, #imageWrapper2 tr, #imageWrapper2 td, #imageWrapper2 td div  {
 	width: 100%;
 }
 

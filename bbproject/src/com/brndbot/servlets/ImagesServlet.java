@@ -57,6 +57,7 @@ public class ImagesServlet extends HttpServlet {
 			{
 				// Even if array is zero length, jsonStr should have brackets
 		        response.setContentType("application/json; charset=UTF-8");
+		        logger.debug (jsonStr);
 				PrintWriter out = response.getWriter();
 				out.println(jsonStr);
 				out.flush();

@@ -53,11 +53,11 @@ public class GetImagesServlet extends HttpServlet
 		int user_id = SessionUtils.getUserId(session);
 
 		ImageType image_type = ImageType.USER_UPLOAD;
-		if (image_type == null)
-		{
-			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
+//		if (image_type == null)
+//		{
+//			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
 
 		DbConnection con = DbConnection.GetDb();
 		JSONArray json_array = Image.getImagesForDisplay(user_id, image_type, con);

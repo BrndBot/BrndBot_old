@@ -443,7 +443,7 @@ function StyleSet () {
 		var jsonStyles = jsonObj.styles;
 		for (var i = 0; i < jsonStyles.length; i++) {
 			var jsonStyle = jsonStyles[i];
-			this.styles[i] = new Style (jsonStyle.name, jsonStyle.styleType);
+			this.styles[i] = new Style (jsonStyle.styleType);
 			this.styles[i].populateFromJSON (jsonStyle);
 		}
 	};
@@ -452,8 +452,12 @@ function StyleSet () {
 	this.findApplicableStyle = function (modelField) {
 		console.log ("findApplicableStyle, field name = " + modelField.name);
 		var fieldName = modelField.name;
+		if (!fieldName)
+			return null;
 		for (var i = 0; i < this.styles.length; i++) {
 			var style = this.styles[i];
+			if (!style)
+				continue;
 			console.log ("Checking style " + style.fieldName);
 			if (style.fieldName == fieldName) {
 				console.log ("Found a style");
@@ -465,8 +469,7 @@ function StyleSet () {
 }
 
 /* The prototype constructor for one field in a Style. */
-function Style (name, styleType) {
-	this.name = name;
+function Style (styleType) {
 	// The name of the ModelField associated with the style
 	this.fieldName = null;
 	this.styleType = styleType;
@@ -491,7 +494,6 @@ function Style (name, styleType) {
 	/* Populating from a JSON object is particularly easy in
 	 * this case. */
 	this.populateFromJSON = function (jsonObj) {
-		this.name = jsonObj.name;
 		this.fieldName = jsonObj.fieldName;
 		this.styleType = jsonObj.styleType;
 		this.italic = (jsonObj.italic !== null ? jsonObj.italic : false);

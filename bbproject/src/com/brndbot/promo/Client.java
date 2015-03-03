@@ -248,12 +248,17 @@ public class Client implements Serializable {
 			for (File ssfile : styleSetFiles) {
 				if (ssfile.isDirectory())
 					continue;
+				if (!ssfile.getName().endsWith(".xml"))
+					continue;
 				logger.debug ("Calling StyleSetParser on {}", ssfile.getPath ());
 				StyleSetParser ssp = new StyleSetParser (ssfile);
 				try {
 					StyleSet ss = ssp.parse();
 					logger.debug ("Adding style set {}", ss.getName());
-					brandIdentity.addStyleSet(ss.getModel(), ss);
+					if (ss.isValid ()) 
+						brandIdentity.addStyleSet(ss.getModel(), ss);
+					else 
+						logger.warn ("Invalid style set: {}", ss.getName());
 				} catch (Exception e) {
 					logger.error ("Exception parsing styleset {}", ssfile.getPath());
 					logger.error (e.getClass().getName());

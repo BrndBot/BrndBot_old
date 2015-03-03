@@ -38,6 +38,10 @@ modelToSourceData: function (model) {
 	var srcdata = [];
 	for (var i = 0; i < model.fields.length; i++) {
 		var field = model.fields[i];
+		if (!field.style) {
+			// If there's no style, the field isn't used with this stylesheet
+			continue;
+		}
 		if (field.styleType == "text") {
 			// Text content ModelField
 			var fielddata = {};
