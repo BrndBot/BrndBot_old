@@ -78,6 +78,8 @@ function ModelField () {
 	this.bold = null;
 	this.italic = null;
 	this.svg = null;
+	this.opacity = null;
+	this.multiply = null;
 	this.dropShadowH = null;
 	this.dropShadowV = null;
 	this.dropShadowBlur = null;
@@ -483,6 +485,8 @@ function Style (styleType) {
 	this.color = null;
 	this.bold = false;
 	this.italic = false;
+	this.opacity = 100;
+	this.multiply = false;
 	this.alignment = "left";
 	this.svg = null;
 	this.dropShadowH = 0;
@@ -504,6 +508,8 @@ function Style (styleType) {
 		this.offsetX = jsonObj.offsetX;
 		this.offsetY = jsonObj.offsetY;
 		this.color = jsonObj.color;
+		this.opacity = jsonObj.opacity;
+		this.multiply = jsonObj.multiply;
 		this.svg = jsonObj.svg;
 		this.dropShadowH = jsonObj.dropShadowH;
 		this.dropShadowV = jsonObj.dropShadowV;

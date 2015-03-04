@@ -48,11 +48,14 @@
 				<input name="files" id="files" type="file" />
 		</div>
 	</form>
+
+<ul id="imageGallery" style="border-style:none">
+
+</ul> <!-- imageGallery -->
+<div style="float:none"><div>
+
 </div>		<!-- brndbotMain -->
 
-<div id="imageGallery">
-
-</div> <-- imageGallery -->
 
 <!-- Template for popup dialog to name the image that was just uploaded. -->
 <div id="nameImagePopup" class="rounded" style="display:none">
@@ -72,9 +75,9 @@
 <script type="text/javascript" src="js/images.js"></script>
 
 <script type="text/x-kendo-template" id="galleryTemplate">
-	<div class="stylefield">
-		<img src="ImageServlet?brndbotimageid=2&img=#:ID#">
-	</div>
+	<li class="stylefield" style="float:left;padding:20px;list-style-type:none">
+		<img src="ImageServlet?brndbotimageid=2&img=#:ID#" style="max-width:300px;max-height:300px">
+	</li>
 </script>
 
 </c:if>			<!-- end of session check for body ->
