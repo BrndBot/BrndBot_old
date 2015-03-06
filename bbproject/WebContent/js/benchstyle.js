@@ -21,17 +21,17 @@ var benchstyle = {
  */
 insertStyles: function (dest) {
 	
-	console.log($('#styleFieldsTemplate').html());
-	
 	dest.kendoListView({
-		dataSource: new kendo.data.DataSource({data: bench.styleSets}),
+		dataSource: new kendo.data.DataSource({data: benchstyle.styleSetsToDataSource(bench.styleSets)}),
 	    selectable: true,
         template: kendo.template($('#styleFieldsTemplate').html())
 	});
 	var listItems = dest.find ("li");
 	listItems.each (function () {
 		var styleSet = benchstyle.elemToLinkedStyleSet (this);
-		var promo = new Promotion (bench.currentPromotion.model.copy(), styleSet);
+		var cloneStyleSet = styleSet.copyForDisplay();
+		cloneStyleSet.attachToModel(bench.currentPromotion.model);
+		var promo = new Promotion (bench.currentPromotion.model, cloneStyleSet);
 		var canvas = $(this).find("canvas");
 		promo.draw (canvas.attr("id"));
 		canvas.css("width", 135);
@@ -58,6 +58,21 @@ elemToLinkedStyleSet: function (elem) {
    			return styleSet;
    	}
    	return null;
+},
+
+/** Convert the StyleSet array into a simple data source. */
+styleSetsToDataSource: function (styleSets) {
+	console.log ("styleSetsToDataSource");
+	var retval = [];
+	var len = styleSets.length;
+	for (i = 0; i < len; i++) {
+		var styleSet = styleSets[i];
+		console.log ("Adding style set " + styleSet.name);
+		var newItem = {name: styleSet.name};
+		retval.push (newItem);
+	}
+	console.log ("Returning " + retval);
+	return retval;
 }
 
 

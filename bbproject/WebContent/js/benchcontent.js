@@ -21,7 +21,7 @@ var benchcontent = {
 insertEditFields: function (dest) {
 	
 	dest.kendoListView({
-		dataSource: new kendo.data.DataSource({data: benchcontent.modelToSourceData(bench.currentPromotion.model)}),
+		dataSource: new kendo.data.DataSource({data: benchcontent.stylesToSourceData(bench.currentPromotion.styleSet)}),
 	    selectable: true,
         template: kendo.template($('#contentFieldsTemplate').html())
 	});
@@ -34,28 +34,27 @@ insertEditFields: function (dest) {
  * 
  */
 
-modelToSourceData: function (model) {
+stylesToSourceData: function (styleSet) {
 	var srcdata = [];
-	for (var i = 0; i < model.fields.length; i++) {
-		var field = model.fields[i];
-		if (!field.style) {
-			// If there's no style, the field isn't used with this stylesheet
+	for (var i = 0; i < styleSet.styles.length; i++) {
+		var style = styleSet.styles[i];
+		var field = style.modelField;
+		if (!field)
 			continue;
-		}
-		if (field.styleType == "text") {
+		if (style.styleType == "text") {
 			// Text content ModelField
 			var fielddata = {};
-			fielddata.fieldid = field.name;
-			fielddata.content = field.getText();
-			fielddata.ptsize = field.getPointSize().toString();
+			fielddata.fieldid = i.toString();
+			fielddata.content = style.getText();
+			fielddata.ptsize = style.getPointSize().toString();
 			fielddata.styleType = "text";
-			fielddata.italicChecked = field.isItalic() ? "checked" : "";
-			fielddata.boldChecked = field.isBold() ? "checked" : "";
+			fielddata.italicChecked = style.isItalic() ? "checked" : "";
+			fielddata.boldChecked = style.isBold() ? "checked" : "";
 			srcdata.push(fielddata);
 		}
-		else if (field.styleType == "image") {
+		else if (style.styleType == "image") {
 			var fielddata = {};
-			fielddata.fieldid = field.name;
+			fielddata.fieldid = i.toString();
 			fielddata.styleType = "image";
 			srcdata.push(fielddata);
 		}
@@ -75,10 +74,10 @@ updatePrototypeText: function(tarea) {
 	benchcontent.highlightTextArea(tarea);
 	
     function testForChange() {
-    	var field = benchcontent.elemToLinkedField(tarea);
-    	if (tarea.value != field.fabricObject.getText()) {
-    		field.text = tarea.value;
-    		field.fabricObject.setText(tarea.value);
+    	var style = benchcontent.elemToLinkedStyle(tarea);
+    	if (tarea.value != style.fabricObject.getText()) {
+    		style.setLocalText(tarea.value);
+    		style.fabricObject.setText(tarea.value);
     		bench.currentPromotion.canvas.renderAll();
     	}
     }
@@ -101,11 +100,12 @@ updatePrototypePointSize: function(tarea) {
 
 	function testForChange() {
     	if (!isNaN (tarea.value)) {
-    		var field = benchcontent.elemToLinkedField(tarea);
+    		var style = benchcontent.elemToLinkedStyle(tarea);
     		var newsize = Number(tarea.value);
-    		if (newsize != field.getPointSize ()) {
-    			field.fontSize = Number (tarea.value);
-    			field.fabricObject.setFontSize(Number(field.fontSize));
+    		if (newsize != style.getPointSize ()) {
+    			var pointSize = Number (tarea.value);
+    			style.setLocalPointSize (pointSize);
+    			style.fabricObject.setFontSize(pointSize);
     			bench.currentPromotion.canvas.renderAll();
     		}
     	}
@@ -136,75 +136,75 @@ showHideColorSelect: function (input) {
  * the next td. */
 showHideColorPicker: function (btn) {
 	var picker = $(btn).parent().parent().find("input");
-	var field = benchcontent.elemToLinkedField(picker);
-	picker.prop("defaultValue", field.getColor());
+	var style = benchcontent.elemToLinkedStyle(picker);
+	picker.prop("defaultValue", style.getColor());
 	picker.toggle();
 },
 
 /* Set field to the color indicated by a palette button */
 setToPaletteColor: function (input) {
-	var field = benchcontent.elemToLinkedField(input);
+	var style = benchcontent.elemToLinkedStyle(input);
 	var color = $(input).attr("data-color");
-	field.color = color;
-	field.fabricObject.fill = color;
+	style.setLocalColor (color);
+	style.fabricObject.fill = color;
 	bench.currentPromotion.canvas.renderAll();
 },
 
 /* Set field to the color indicated by the color picker */
 setToInputColor: function (input) {
-	var field = benchcontent.elemToLinkedField(input);
+	var style = benchcontent.elemToLinkedStyle(input);
 	var color = $(input).val();
-	field.color = color;
-	field.fabricObject.fill = color;
+	style.setLocalColor(color);
+	style.fabricObject.fill = color;
 	bench.currentPromotion.canvas.renderAll();
 },
 
 /* This is called by an onchange event, so we already know there's a change */
 updatePrototypeItalic: function (cbox) {
 		
-	var field = benchcontent.elemToLinkedField(cbox);
+	var style = benchcontent.elemToLinkedStyle(cbox);
    	var nowChecked = $(cbox).prop('checked');
-   	if (nowChecked != field.isItalic()) {
-   		field.italic = nowChecked;
-   		field.fabricObject.setFontStyle (nowChecked ? "italic" : "normal");
+   	if (nowChecked != style.isItalic()) {
+   		style.setLocalItalic(nowChecked);
+   		style.fabricObject.setFontStyle (nowChecked ? "italic" : "normal");
 		bench.currentPromotion.canvas.renderAll();
    	}
 },
 
 updatePrototypeBold: function (cbox) {
 	
-	var field = benchcontent.elemToLinkedField(cbox);
+	var style = benchcontent.elemToLinkedStyle(cbox);
    	var nowChecked = $(cbox).prop('checked');
-   	if (nowChecked != field.isBold()) {
-   		field.bold = nowChecked;
-   		field.fabricObject.setFontWeight (nowChecked ? "bold" : "normal");
+   	if (nowChecked != style.isBold()) {
+   		style.setLocalBold(nowChecked);
+   		style.fabricObject.setFontWeight (nowChecked ? "bold" : "normal");
 		bench.currentPromotion.canvas.renderAll();
 	}
 },
 
 updatePrototypeTypeface: function (sel) {
-	var field = benchcontent.elemToLinkedField(sel);
+	var style = benchcontent.elemToLinkedStyle(sel);
    	var selected = $(sel).children().filter(":selected");
    	var typeface = selected.val();
    	console.log (typeface);
-   	var currentTypeface = field.getTypeface();
+   	var currentTypeface = style.getTypeface();
    	if (typeface != currentTypeface) {
-   		field.typeface = typeface;
-   		field.fabricObject.setFontFamily (typeface);
+   		style.setLocalTypeface (typeface);
+   		style.fabricObject.setFontFamily (typeface);
 		bench.currentPromotion.canvas.renderAll();
    	}
 },
 
 highlightTextArea: function (tarea) {
-	var field = benchcontent.elemToLinkedField(tarea);
-	field.fabricObject.setBackgroundColor('#C0C0C0');
+	var style = benchcontent.elemToLinkedStyle(tarea);
+	style.fabricObject.setBackgroundColor('#C0C0C0');
 	bench.currentPromotion.canvas.renderAll();
 	
 },
 
 unhighlightTextArea: function(tarea) {
-	var field = benchcontent.elemToLinkedField(tarea);
-	field.fabricObject.setBackgroundColor('');
+	var style = benchcontent.elemToLinkedStyle(tarea);
+	style.fabricObject.setBackgroundColor('');
 	bench.currentPromotion.canvas.renderAll();
 },
 
@@ -266,10 +266,10 @@ applyCrop: function (coords) {
 },
 
 /* For the a DOM element which has the data-linkedfield attribute,
- * return the linked field.
+ * return the linked style by its index.
  */
-elemToLinkedField: function (elem) {
+elemToLinkedStyle: function (elem) {
 	var target = $(elem).attr("data-linkedfield");
-   	return bench.currentPromotion.model.findFieldByName (target);
+   	return bench.currentPromotion.styleSet.styles[parseInt(target, 10)];
 }
 };

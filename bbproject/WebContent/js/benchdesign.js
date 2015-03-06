@@ -21,7 +21,7 @@ var benchdesign = {
 insertEditFields: function (dest) {
 		
 	dest.kendoListView({
-		dataSource: new kendo.data.DataSource({data: benchdesign.modelToSourceData(bench.currentPromotion.model)}),
+		dataSource: new kendo.data.DataSource({data: benchdesign.styleToSourceData(bench.currentPromotion.styleSet)}),
 	    selectable: true,
         template: kendo.template($('#designFieldsTemplate').html())
 	});
@@ -33,17 +33,18 @@ insertEditFields: function (dest) {
  * 
  */
 
-modelToSourceData: function (model) {
+styleToSourceData: function (styleSet) {
 	var srcdata = [];
-	for (var i = 0; i < model.fields.length; i++) {
-		var field = model.fields[i];
+	for (var i = 0; i < styleSet.styles.length; i++) {
+		var style = styleSet.styles[i];
+		if (!style.modelField)
+			continue;
 		var fielddata = {};
-		fielddata.fieldid = field.name;
-		//TODO fill in geometric data for every field
-		fielddata.x = field.getX().toString();
-		fielddata.y = field.getY().toString();
-		fielddata.width = field.getWidth().toString();
-		fielddata.height = field.getHeight().toString();
+		fielddata.fieldid = i.toString();
+		fielddata.x = style.getX().toString();
+		fielddata.y = style.getY().toString();
+		fielddata.width = style.getWidth().toString();
+		fielddata.height = style.getHeight().toString();
 		srcdata.push(fielddata);
 	}
 	return srcdata;
@@ -52,20 +53,19 @@ modelToSourceData: function (model) {
 updateXPos: function(tarea) {
 
     function testForChange() {
-    	var target = $(tarea).attr("data-linkedfield");
-    	var field = bench.currentPromotion.model.findFieldByName (target);
+    	var style = benchdesign.elemToLinkedStyle($(tarea));
     	if (!isNaN (tarea.value)) {
     		var newpos = Number(tarea.value);
-    		if (newpos != field.getX ()) {
-    			field.offsetX = Number (tarea.value);
+    		if (newpos != style.getX ()) {
+    			style.setLocalX(Number (tarea.value));
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			field.fabricObject.setLeft(Number(field.offsetX));
+    			style.fabricObject.setLeft(Number(style.getX()));
     			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     	else {
     		// Restore to last good value
-    		$(tarea).val (field.getX().toString());
+    		$(tarea).val (style.getX().toString());
     	}
     }
 
@@ -80,20 +80,19 @@ updateXPos: function(tarea) {
 updateYPos: function(tarea) {
 
     function testForChange() {
-    	var target = $(tarea).attr("data-linkedfield");
-    	var field = bench.currentPromotion.model.findFieldByName (target);
+    	var style = benchdesign.elemToLinkedStyle($(tarea));
     	if (!isNaN (tarea.value)) {
     		var newpos = Number(tarea.value);
-    		if (newpos != field.getY ()) {
-    			field.offsetY = Number (tarea.value);
+    		if (newpos != style.getY ()) {
+    			style.setLocalY(Number (tarea.value));
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			field.fabricObject.setTop(Number(field.offsetY));
+    			style.fabricObject.setTop(Number(style.getY()));
     			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     	else {
     		// Restore to last good value
-    		$(tarea).val (field.getY().toString());
+    		$(tarea).val (style.getY().toString());
     	}
     }
 
@@ -107,20 +106,19 @@ updateYPos: function(tarea) {
 updateWidth: function(tarea) {
 
     function testForChange() {
-    	var target = $(tarea).attr("data-linkedfield");
-    	var field = bench.currentPromotion.model.findFieldByName (target);
+    	var style = benchdesign.elemToLinkedStyle($(tarea));
     	if (!isNaN (tarea.value)) {
     		var newwid = Number(tarea.value);
-    		if (newwid != field.getWidth ()) {
-    			field.width = Number (tarea.value);
+    		if (newwid != style.getWidth ()) {
+    			style.setLocalWidth(Number (tarea.value));
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			field.fabricObject.setWidth(Number(field.width));
+    			style.fabricObject.setWidth(Number(style.getWidth()));
     			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     	else {
     		// Restore to last good value
-    		$(tarea).val (field.getWidth().toString());
+    		$(tarea).val (style.getWidth().toString());
     	}
     }
 
@@ -134,20 +132,20 @@ updateWidth: function(tarea) {
 updateHeight: function(tarea) {
 
     function testForChange() {
-    	var target = $(tarea).attr("data-linkedfield");
-    	var field = bench.currentPromotion.model.findFieldByName (target);
+    	var style = benchdesign.elemToLinkedStyle($(tarea));
+//    	var field = bench.currentPromotion.model.findFieldByName (target);
     	if (!isNaN (tarea.value)) {
     		var newht = Number(tarea.value);
-    		if (newht != field.getHeight ()) {
-    			field.height = Number (tarea.value);
+    		if (newht != style.getHeight ()) {
+    			style.setLocalHeight(Number (tarea.value));
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			field.fabricObject.setHeight(Number(field.height));
+    			style.fabricObject.setHeight(Number(style.getHeight()));
     			bench.currentPromotion.canvas.renderAll();
     		}
     	}
     	else {
     		// Restore to last good value
-    		$(tarea).val (field.getHeight().toString());
+    		$(tarea).val (style.getHeight().toString());
     	}
     }
 
@@ -156,5 +154,10 @@ updateHeight: function(tarea) {
         tarea.onblur = null;
     };
 
+},
+
+elemToLinkedStyle: function (elem) {
+	var target = $(elem).attr("data-linkedfield");
+   	return bench.currentPromotion.styleSet.styles[parseInt(target, 10)];
 }
 };

@@ -1,6 +1,8 @@
 /**
  *  Functions for applying styles to promotions.
  *  All the functions are packaged in the applyStyle object.
+ *  
+ *  DOES ANYONE USE THIS??
  */
 
 var applyStyle = {
@@ -28,6 +30,7 @@ var applyStyle = {
 				field.style = style;
 			}
 		}
+		ss.attachToModel(promotion.model);
 	},
 	
 	/** Find a style whose name matches a promotion field */

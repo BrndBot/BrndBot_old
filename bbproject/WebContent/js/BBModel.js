@@ -7,6 +7,22 @@
  *  
  * This JavaScript package supports management and drawing of models with styles.
  * 
+ * Overview:
+ * 
+ * A Promotion is something that's prepared for drawing and ultimately sending to
+ * a channel. Its two principal components are a Model and a StyleSet. Drawing is
+ * driven by the StyleSet, which contains an ordered sequence of Styles.
+ * 
+ * A Model contains a set of ModelFields. These simply define what kind of object
+ * is being drawn: Text, Image, Logo, Block, or SVG, and they name the field. 
+ * Different StyleSets can be applied to the same Model.
+ * 
+ * When used, a StyleSet is attached to a Model. Each StyleSet is intended for
+ * use with only one Model. However, the user can change the contents of a ModelField,
+ * so each Style works with a _copy_ of the ModelField ...
+ * 
+ * 
+ * 
  * Gary McGath
  * February 5, 2015
  * 
@@ -44,8 +60,7 @@ function Model () {
 		return null;
 	};
 	
-	/* Make a copy of a Model. The most important thing this does is
-	 * not to share the fields' fabricObjects. */
+	/* Make a copy of a Model.  */
 	this.copy = function () {
 		var cloneModel = new Model();
 		cloneModel.name = this.name;
@@ -60,211 +75,275 @@ function Model () {
 function ModelField () {
 	this.name = null;
 	this.styleType = null;
-	// A ModelField may have a Style associated with it.
-	this.style = null;
-	// fabricObject is a fabric.js drawing object for the field
-	this.fabricObject = null;
-	
-	// Values are initially null, which means the style governs
-	this.offsetX = null;
-	this.offsetY = null;
-	this.width = null;
-	this.height = null;
-	this.anchor = null;
-	this.text = null;
-	this.color = null;
-	this.typeface = null;
-	this.pointSize = null;
-	this.bold = null;
-	this.italic = null;
-	this.svg = null;
-	this.opacity = null;
-	this.multiply = null;
-	this.dropShadowH = null;
-	this.dropShadowV = null;
-	this.dropShadowBlur = null;
 	
 	this.populateFromJSON = function (jsonField) {
 		this.name = jsonField.name;
 		this.styleType = jsonField.styleType;
 	};
 	
-	/* Return a copy of the modelField. It does not share fabricObject,
-	 * since it's intended for separate drawing. */
-	this.copy = function () {
-		var cloneField = new ModelField();
-		cloneField.name = this.name;
-		cloneField.styleType = this.styleType;
-		cloneField.style = this.style;
-		cloneField.width = this.width;
-		cloneField.height = this.height;
-		cloneField.anchor= this.anchor;
-		cloneField.text = this.text;
-		cloneField.color = this.color;
-		cloneField.typeface = this.typeface;
-		cloneField.pointSize = this.pointSize;
-		cloneField.bold = this.bold;
-		cloneField.italic = this.italic;
-		cloneField.svg = this.svg;
-		cloneField.dropShadowH= this.dropShadowH;
-		cloneField.dropShadowBlur = this.dropShadowBlur;
-		return cloneField;
+	
+//	/* For text fields only. Would it be cleaner to subclass
+//	 * ModelField? 
+//	 */
+//	this.getText = function () {
+//		var content = "";
+//		if (this.text)
+//			content = this.text;
+//		else if (this.style.text)
+//			content = this.style.text;
+//		else if (this.style.defaultText)
+//			content = this.style.defaultText;
+//		return content;
+//	};
+//	
+//	this.isBold = function () {
+//		return (this.bold !== null) ? this.bold : this.style.bold;
+//	};
+//	
+//	this.isItalic = function () {
+//		return (this.italic !== null) ? this.italic : this.style.italic;
+//	};
+//	
+////	this.draw = function (location, canvas ) {
+////		// Draw only if there's a style for this field
+////		if (this.style) {
+////			console.log ("Style exists, type " + this.style.styleType);
+////			switch (this.style.styleType) {
+////			case "text":
+////				this.fabricateText (canvas);
+////				break;
+////			case "image":
+////				this.fabricateImage (canvas);
+////				break;
+////			case "logo":
+////				this.fabricateLogo (canvas);
+////				break;
+////			case "block":
+////				this.fabricateBlock (canvas);
+////				break;
+////			case "svg":
+////				this.fabricateSVG (canvas);
+////				break;
+////			default:
+////				console.log ("Unknown field type " + this.style.styleType);
+////				break;
+////			}
+////		}
+////
+////	};
+////	
+
+
+
+	
+
+}
+
+/* The prototype constructor for a StyleSet. A StyleSet contains an ordered
+ * array of Styles, each of which is associated with a ModelField. */
+function StyleSet () {
+	this.name = null;
+	// styles is an array of Styles
+	this.styles = [];
+	// dimensions of the promotion to be drawn
+	this.width = 0;
+	this.height = 0;
+
+	// Convert JSON data into data for this Model
+	this.populateFromJSON = function (jsonObj) {
+		this.name = jsonObj.name;
+		this.width = jsonObj.width;
+		this.height = jsonObj.height;
+		var jsonStyles = jsonObj.styles;
+		for (var i = 0; i < jsonStyles.length; i++) {
+			var jsonStyle = jsonStyles[i];
+			this.styles[i] = new Style (jsonStyle.styleType);
+			this.styles[i].populateFromJSON (jsonStyle);
+		}
 	};
 	
-	/* For text fields only. Would it be cleaner to subclass
-	 * ModelField? 
+	/* Make a copy that will be suitable for a separate display. This
+	 * means all styles are copied, all localStyles removed, and all
 	 */
-	this.getText = function () {
-		var content = "";
-		if (this.text)
-			content = this.text;
-		else if (this.style.text)
-			content = this.style.text;
-		else if (this.style.defaultText)
-			content = this.style.defaultText;
-		return content;
+	this.copyForDisplay = function() {
+		var retval = new StyleSet();
+		retval.name = this.name;
+		retval.width = this.width;
+		retval.height = this.height;
+		retval.styles = [];
+		for (i = 0; i < this.styles.length; i++) {
+			var style = this.styles[i];
+			retval.styles.push (style.copy());
+		}
+		
+		return retval;
 	};
 	
-	this.isBold = function () {
-		return (this.bold !== null) ? this.bold : this.style.bold;
+	/* Attach the styles of the styleset to fields of the model.
+	 * When we do this, we add a localStyle to each style, which initially
+	 * is a copy of itself.
+	 */
+	this.attachToModel = function (model) {
+		var len = this.styles.length;
+		for (i = 0; i < len; i++) {
+			var style = this.styles[i];
+			style.attachToModel (model);
+		}
+	}
+	
+	// Find a Style that matches a ModelField, or null
+	this.findApplicableStyle = function (modelField) {
+		console.log ("findApplicableStyle, field name = " + modelField.name);
+		var fieldName = modelField.name;
+		if (!fieldName)
+			return null;
+		for (var i = 0; i < this.styles.length; i++) {
+			var style = this.styles[i];
+			if (!style)
+				continue;
+			console.log ("Checking style " + style.fieldName);
+			if (style.fieldName == fieldName) {
+				console.log ("Found a style");
+				return style;
+			}
+		}
+		return null;
+	};
+}
+
+/* The prototype constructor for one field in a Style.
+ * A StyleSet's Style will have a local Style associated with it,
+ * where all changes are made. It will also have a fabric.js object
+ * associated with it for drawing. These can be replaced when the
+ * Style is reused. */
+function Style (styleType) {
+	// For Styles in a StyleSet, they have a local copy associated with
+	// them which is subject to change.
+	this.localStyle = null;
+	// The ModelField associated with the style
+	this.modelField = null;
+	// The name of the ModelField.
+	this.fieldName = null;
+	this.styleType = styleType;
+	this.width = 0;
+	this.height = 0;
+	this.anchor = "TL";
+	this.offsetX = 0;
+	this.offsetY = 0;
+	this.typeface = null;
+	this.pointSize = null;
+	this.color = null;
+	this.bold = false;
+	this.italic = false;
+	this.opacity = 100;
+	this.multiply = false;
+	this.alignment = "left";
+	this.svg = null;
+	this.dropShadowH = 0;
+	this.dropShadowV = 0;
+	this.dropShadowBlur = 0;
+	this.fabricObject = null;
+	
+	/* Make a copy of the Style. This can be used to add a localStyle to
+	 * a Style, so we never copy the localStyle or fabricObject.
+	 */
+	this.copy = function () {
+		var retval = new Style(this.styleType);
+		retval.fieldName = this.fieldName;
+		retval.width = this.width;
+		retval.height = this.height;
+		retval.anchor = this.anchor = "TL";
+		retval.offsetX = this.offsetX;
+		retval.offsetY = this.offsetY;
+		retval.typeface = this.typeface;
+		retval.pointSize = this.pointSize;
+		retval.color = this.color;
+		retval.bold = this.bold;
+		retval.italic = this.italic;
+		retval.opacity = this.opacity;
+		retval.multiple = this.multiply;
+		retval.alignment = this.alignment;
+		retval.svg = this.svg;
+		retval.dropShadowH = this.dropShadowH;
+		retval.dropShadowV = this.dropShadowV;
+		retval.dropShadowBlur = this.dropShadowBlur;
+		return retval;
+	}
+	
+	/* Populating from a JSON object is particularly easy in
+	 * this case. */
+	this.populateFromJSON = function (jsonObj) {
+		this.fieldName = jsonObj.fieldName;
+		this.styleType = jsonObj.styleType;
+		this.italic = (jsonObj.italic !== null ? jsonObj.italic : false);
+		this.bold = (jsonObj.bold !== null ? jsonObj.bold : false);
+		this.width = jsonObj.width;
+		this.height = jsonObj.height;
+		this.anchor = jsonObj.anchor;
+		this.offsetX = jsonObj.offsetX;
+		this.offsetY = jsonObj.offsetY;
+		this.color = jsonObj.color;
+		this.opacity = jsonObj.opacity;
+		this.multiply = jsonObj.multiply;
+		this.svg = jsonObj.svg;
+		this.dropShadowH = jsonObj.dropShadowH;
+		this.dropShadowV = jsonObj.dropShadowV;
+		this.dropShadowBlur = jsonObj.dropShadowBlur;
+
+		// Text-specific fields.
+		if (this.styleType == "text") {
+			this.typeface = jsonObj.typeface;
+			this.pointSize = jsonObj.pointSize;
+			this.text = jsonObj.text;
+			this.defaultText = jsonObj.defaultText;
+		}
+		this.alignment = jsonObj.alignment;
 	};
 	
-	this.isItalic = function () {
-		return (this.italic !== null) ? this.italic : this.style.italic;
-	};
-	
-	this.draw = function (location, canvas ) {
-		// Draw only if there's a style for this field
-		if (this.style) {
-			console.log ("Style exists, type " + this.style.styleType);
-			switch (this.style.styleType) {
-			case "text":
-				this.fabricateText (canvas);
-				break;
-			case "image":
-				this.fabricateImage (canvas);
-				break;
-			case "logo":
-				this.fabricateLogo (canvas);
-				break;
-			case "block":
-				this.fabricateBlock (canvas);
-				break;
-			case "svg":
-				this.fabricateSVG (canvas);
-				break;
-			default:
-				console.log ("Unknown field type " + this.style.styleType);
+	/* Attach the style to the matching field in the model.
+	 * When we do this, we also make a localStyle that can
+	 * be modified for the presentation of this ModelField.
+	*/ 
+	this.attachToModel  = function (model) {
+		this.model = model;
+		var len = model.fields.length;
+		for (i = 0; i < len; i++) {
+			var field = model.fields[i];
+			if (field.name == this.fieldName) {
+				this.modelField = field;
 				break;
 			}
 		}
+		this.localStyle = this.copy();
+	};
+
+	/* Draw a Style's ModelField under the control of this style. */
+	this.draw = function (location, canvas ) {
+		if (!this.modelField)
+			return;		// Can't draw a style that has no model
+		switch (this.styleType) {
+		case "text":
+			this.fabricateText (canvas);
+			break;
+		case "image":
+			this.fabricateImage (canvas);
+			break;
+		case "logo":
+			this.fabricateLogo (canvas);
+			break;
+		case "block":
+			this.fabricateBlock (canvas);
+			break;
+		case "svg":
+			this.fabricateSVG (canvas);
+			break;
+		default:
+			console.log ("Unknown field type " + this.styleType);
+			break;
+		}
 
 	};
 	
-	this.getPointSize = function () {
-		return this.pointSize ? this.pointSize : this.style.pointSize;
-	};
-	
-	this.getTypeface = function () {
-		return this.typeface ? this.typeface : this.style.typeface;
-	};
-	
-	this.getX = function () {
-		// We want this not to get an error even if there is no style,
-		// because the kendo data source is rather blind.
-		if (this.offsetX !== null) {
-			return this.offsetX;
-		}
-		else if (this.style && this.style.offsetX) {
-			return this.style.offsetX;
-		}
-		else 
-			return 0;
-	};
-
-	this.getY = function () {
-		// We want this not to get an error even if there is no style,
-		// because the kendo data source is rather blind.
-		if (this.offsetY !== null) {
-			return this.offsetY;
-		}
-		else if (this.style && this.style.offsetY) {
-			return this.style.offsetY;
-		}
-		else 
-			return 0;
-	};
-	
-	this.getWidth = function () {
-		// We want this not to get an error even if there is no style,
-		// because the kendo data source is rather blind.
-		if (this.width !== null) {
-			return this.width;
-		}
-		else if (this.style && this.style.width) {
-			return this.style.width;
-		}
-		else 
-			return 0;
-	};
-	
-	this.getHeight = function () {
-		// We want this not to get an error even if there is no style,
-		// because the kendo data source is rather blind.
-		if (this.height !== null) {
-			return this.height;
-		}
-		else if (this.style && this.style.height) {
-			return this.style.height;
-		}
-		else 
-			return 0;
-	};
-
-	/* getColor returns black as a last resort, so it always returns
-	 * a color string. */
-	this.getColor = function () {
-		if (this.color)
-			return this.color;
-		else if (this.style.color)
-			return this.style.color;
-		else return "#000000";
-	};
-	
-	this.getPointSize = function () {
-		return (this.pointSize !== null) ? this.pointSize : this.style.pointSize;
-	};
-	
-	this.getAlignment = function () {
-		return (this.alignment !== null) ? this.alignment : this.style.alignment;
-	};
-	
-	this.isBold = function () {
-		return (this.bold !== null) ? this.bold : this.style.bold;
-	};
-
-	this.isItalic = function () {
-		return (this.italic !== null) ? this.italic : this.style.italic;
-	};
-	
-	this.getSVG = function () {
-		return (this.svg !== null) ? this.svg : this.style.svg;
-	};
-	
-	this.getDropShadowH = function () {
-		return (this.dropShadowH !== null) ? this.dropShadowH : this.style.dropShadowH;
-	};
-
-	this.getDropShadowV = function () {
-		return (this.dropShadowV !== null) ? this.dropShadowV : this.style.dropShadowV;
-	};
-	
-	this.getDropShadowBlur = function () {
-		return (this.dropShadowBlur !== null) ? this.dropShadowBlur : this.style.dropShadowBlur;
-	};
-
-
-
 	this.fabricateText = function (canvas) {
 		var pos = this.getPosition();
 		var weight = this.isBold() ? "bold" : "normal";
@@ -299,13 +378,38 @@ function ModelField () {
 		canvas.add(text);
 		canvas.bringToFront(text);
 	};
+
+	this.fabricateBlock = function  (canvas) {
+		var pos = this.getPosition();
+		var wid = this.getWidth();
+		var ht = this.getHeight();
+		var color = this.getColor ();
+		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
+		var rect = new fabric.Rect ({
+			hasControls: false,
+			selectable: false,
+			width: wid,
+			height: ht,
+			left: pos.x,
+			top: pos.y,
+			originX: pos.originx,
+			originY: pos.originy,
+			fill: color,
+			opacity: opacity
+		});
+		this.fabricObject = rect;
+		canvas.add(rect);
+		canvas.bringToFront(rect);
+	};
 	
+
 	this.fabricateImage = function  (canvas) {
 		console.log ("fabricateImage");
 		var pos = this.getPosition();
 		var width = this.getWidth();
 		var height = this.getHeight();
-		var field = this;
+		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
+		var style = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=default", function (img) {
 			img.hasControls = false;
 			img.selectable = false;
@@ -315,7 +419,8 @@ function ModelField () {
 			img.oritinY = pos.originy;
 			img.width = width;
 			img.height = height;
-			field.fabricObject = img;
+			img.opacity = opacity;
+			style.fabricObject = img;
 			canvas.add(img);
 			canvas.bringToFront(img);
 		});
@@ -326,7 +431,7 @@ function ModelField () {
 		var pos = this.getPosition();
 		var width = this.getWidth();
 		var height = this.getHeight();
-		var field = this;
+		var style = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=logo", function (img) {
 			img.hasControls = false;
 			img.selectable = false;
@@ -336,31 +441,10 @@ function ModelField () {
 			img.oritinY = pos.originy;
 			img.width = width;
 			img.height = height;
-			field.fabricObject = img;
+			style.fabricObject = img;
 			canvas.add(img);
 			canvas.bringToFront(img);
 		});
-	};
-	
-	this.fabricateBlock = function  (canvas) {
-		var pos = this.getPosition();
-		var wid = this.getWidth();
-		var ht = this.getHeight();
-		var color = this.getColor ();
-		var rect = new fabric.Rect ({
-			hasControls: false,
-			selectable: false,
-			width: wid,
-			height: ht,
-			left: pos.x,
-			top: pos.y,
-			originX: pos.originx,
-			originY: pos.originy,
-			fill: color
-		});
-		this.fabricObject = rect;
-		canvas.add(rect);
-		canvas.bringToFront(rect);
 	};
 	
 	/* See http://fabricjs.com/fabric-intro-part-3/ */
@@ -370,9 +454,7 @@ function ModelField () {
 		var wid = this.getWidth();
 		var ht = this.getHeight();
 		var svg = this.getSVG();
-		console.log ("Style: " + this.style);
-		console.log ("SVG data: " + svg);
-		var field = this;
+		var style = this;
 		// Use loadSVGFromString(string, callback, reviver)
 		fabric.loadSVGFromString(svg, function(objects, options) {
 			var obj = fabric.util.groupSVGElements(objects, options);
@@ -386,8 +468,218 @@ function ModelField () {
 			obj.originY = pos.originy;
 			canvas.add(obj);
 			canvas.bringToFront(obj);
-			field.fabricObject = obj;
+			style.fabricObject = obj;
 		});
+	};
+	
+
+	
+	/* For text fields only. We apply defaultText
+	 * if no other text has been set.
+	 */
+	this.getText = function () {
+		var content = "";
+		if (this.localStyle.text)
+			content = this.localStyle.text;
+		else if (this.text)
+			content = this.text;
+		else if (this.defaultText)
+			content = this.defaultText;
+		return content;
+	};
+	
+	this.setLocalText = function (txt) {
+		this.localStyle.text = txt;
+	}
+	
+	this.isBold = function () {
+		return (this.localStyle.bold !== null) ? this.localStyle.bold : this.bold;
+	};
+	
+	this.setLocalBold = function (b) {
+		this.localStyle.bold = b;
+	}
+	
+	this.isItalic = function () {
+		return (this.localStyle.italic !== null) ? this.localStyle.italic : this.italic;
+	};
+	
+	this.setLocalItalic = function (b) {
+		this.localStyle.italic = b;
+	}
+	
+	this.getPointSize = function () {
+		return this.localStyle.pointSize ? this.localStyle.pointSize : this.pointSize;
+	};
+	
+	this.setLocalPointSize  = function (n) {
+		this.localStyle.pointSize = n;
+	};
+	
+	this.getTypeface = function () {
+		return this.localStyle.typeface ? this.localStyle.typeface : this.typeface;
+	};
+	
+	this.setLocalTypeface = function (t) {
+		this.localStyle.typeface = t;
+	}
+	
+	this.getX = function () {
+		if (this.localStyle.offsetX !== null) {
+			return this.localStyle.offsetX;
+		}
+		else if (this.offsetX) {
+			return this.offsetX;
+		}
+		else 
+			return 0;		// Always return something, for Kendo's benefit
+	};
+	
+	this.setLocalX = function (x) {
+		this.localStyle.offsetX = x;
+	}
+
+	this.getY = function () {
+		if (this.localStyle.offsetY !== null) {
+			return this.localStyle.offsetY;
+		}
+		else if (this.offsetY) {
+			return this.offsetY;
+		}
+		else 
+			return 0;
+	};
+	
+	this.setLocalY = function (y) {
+		this.localStyle.offsetY = y;
+	}
+	
+	this.getWidth = function () {
+		if (this.localStyle.width !== null) {
+			return this.localStyle.width;
+		}
+		else if (this.width) {
+			return this.width;
+		}
+		else 
+			return 0;
+	};
+	
+	this.setLocalWidth = function (w) {
+		this.localStyle.width = w;
+	}
+	
+	this.getHeight = function () {
+		if (this.localStyle.height !== null) {
+			return this.localStyle.height;
+		}
+		else if (this.height) {
+			return this.height;
+		}
+		else 
+			return 0;
+	};
+	
+	this.setLocalHeight = function (h) {
+		this.localStyle.height = h;
+	}
+
+	/* getColor returns black as a last resort, so it always returns
+	 * a color string. */
+	this.getColor = function () {
+		if (this.localStyle.color)
+			return this.localStyle.color;
+		else if (this.color)
+			return this.color;
+		else return "#000000";
+	};
+	
+	this.setLocalColor = function (c) {
+		this.localStyle.color = c;
+	}
+	
+	this.getAlignment = function () {
+		return (this.localStyle.alignment !== null) ? this.localStyle.alignment : this.alignment;
+	};
+	
+	this.setLocalAlignment = function (al) {
+		this.localStyle.alignment = al;
+	}
+	
+	this.isBold = function () {
+		return (this.localStyle.bold !== null) ? this.localStyle.bold : this.bold;
+	};
+	
+	this.setLocalBold = function (b) {
+		this.localStyle.bold = b;
+	}
+
+	this.isItalic = function () {
+		return (this.localStyle.italic !== null) ? this.localStyle.italic : this.italic;
+	};
+	
+	this.setLocalItalic = function (it) {
+		this.localStyle.italic = it;
+	}
+	
+	this.getSVG = function () {
+		return (this.localStyle.svg !== null) ? this.localStyle.svg : this.svg;
+	};
+	
+	this.setLocalSVG = function (svg) {
+		this.localStyle.svg = svg;
+	}
+	
+	/* Opacity is 0-100. Will need to be normalized to 0-1 for Fabric. */
+	this.getOpacity = function () {
+		return (this.localStyle.opacity !== null) ? this.localStyle.opacity : this.opacity;
+	}
+	
+	this.setLocalOpacity = function (op) {
+		this.localStyle.opacity = op;
+	}
+	
+	this.getDropShadowH = function () {
+		return (this.localStyle.dropShadowH !== null) ? this.localStyle.dropShadowH : this.dropShadowH;
+	};
+	
+	this.setLocalDropShadowH = function (h) {
+		this.localStyle.dropShadowH = h;
+	}
+
+	this.getDropShadowV = function () {
+		return (this.localStyle.dropShadowV !== null) ? this.localStyle.dropShadowV : this.dropShadowV;
+	};
+
+	this.setLocalDropShadowV = function (v) {
+		this.localStyle.dropShadowV = v;
+	}
+
+	this.getDropShadowBlur = function () {
+		return (this.localStyle.dropShadowBlur !== null) ? this.localStyle.dropShadowBlur : this.dropShadowBlur;
+	};
+
+	this.setLocalDropShadowBlur = function (b) {
+		this.localStyle.dropShadowBlur = b;
+	}
+
+	/* Function for the x, y, and anchor calculations. Returns an object with 
+	 * fields x, y, and anchor. */
+	this.getPosition = function () {
+		var anchor = this.localStyle.anchor ? this.localStyle.anchor : this.anchor;
+		var retval = {x: 0, y: 0, originx: "left", originy: "top" };
+		retval.x = this.getX();
+		if (anchor == "TR" || anchor == "BR") {
+			retval.originx = "right";
+			retval.x = -retval.x;
+		}
+		retval.y = this.getY();
+		if (anchor == "BR" || anchor == "BL") {
+			retval.originy = "bottom";
+			retval.y = -retval.y;
+		}
+
+		return retval;
 	};
 	
 	/* Crop the field to a specified rectangle. This works only for ...
@@ -407,125 +699,9 @@ function ModelField () {
 			ctx.rect (x, y, wid, ht);
 		};
 	};
-
-	/* Function for the x, y, and anchor calculations. Returns an object with 
-	 * fields x, y, and anchor. */
-	this.getPosition = function () {
-		var anchor = this.anchor ? this.anchor : this.style.anchor;
-		var retval = {x: 0, y: 0, originx: "left", originy: "top" };
-		retval.x = this.getX();
-		if (anchor == "TR" || anchor == "BR") {
-			retval.originx = "right";
-			retval.x = -retval.x;
-		}
-		retval.y = this.getY();
-		if (anchor == "BR" || anchor == "BL") {
-			retval.originy = "bottom";
-			retval.y = -retval.y;
-		}
-
-		return retval;
-	};
 }
 
-/* The prototype constructor for a StyleSet. */
-function StyleSet () {
-	this.name = null;
-	// styles is an array of Styles
-	this.styles = [];
-	// dimensions of the promotion to be drawn
-	this.width = 0;
-	this.height = 0;
 
-	// Convert JSON data into data for this Model
-	this.populateFromJSON = function (jsonObj) {
-		this.name = jsonObj.name;
-		this.width = jsonObj.width;
-		this.height = jsonObj.height;
-		var jsonStyles = jsonObj.styles;
-		for (var i = 0; i < jsonStyles.length; i++) {
-			var jsonStyle = jsonStyles[i];
-			this.styles[i] = new Style (jsonStyle.styleType);
-			this.styles[i].populateFromJSON (jsonStyle);
-		}
-	};
-	
-	// Find a Style that matches a ModelField, or null
-	this.findApplicableStyle = function (modelField) {
-		console.log ("findApplicableStyle, field name = " + modelField.name);
-		var fieldName = modelField.name;
-		if (!fieldName)
-			return null;
-		for (var i = 0; i < this.styles.length; i++) {
-			var style = this.styles[i];
-			if (!style)
-				continue;
-			console.log ("Checking style " + style.fieldName);
-			if (style.fieldName == fieldName) {
-				console.log ("Found a style");
-				return style;
-			}
-		}
-		return null;
-	};
-}
-
-/* The prototype constructor for one field in a Style. */
-function Style (styleType) {
-	// The name of the ModelField associated with the style
-	this.fieldName = null;
-	this.styleType = styleType;
-	this.width = 0;
-	this.height = 0;
-	this.anchor = "TL";
-	this.offsetX = 0;
-	this.offsetY = 0;
-	this.typeface = null;
-	this.pointSize = null;
-	this.color = null;
-	this.bold = false;
-	this.italic = false;
-	this.opacity = 100;
-	this.multiply = false;
-	this.alignment = "left";
-	this.svg = null;
-	this.dropShadowH = 0;
-	this.dropShadowV = 0;
-	this.dropShadowBlur = 0;
-	
-	// other fields vary by the styleType
-	
-	/* Populating from a JSON object is particularly easy in
-	 * this case. */
-	this.populateFromJSON = function (jsonObj) {
-		this.fieldName = jsonObj.fieldName;
-		this.styleType = jsonObj.styleType;
-		this.italic = (jsonObj.italic !== null ? jsonObj.italic : false);
-		this.bold = (jsonObj.bold !== null ? jsonObj.bold : false);
-		this.width = jsonObj.width;
-		this.height = jsonObj.height;
-		this.anchor = jsonObj.anchor;
-		this.offsetX = jsonObj.offsetX;
-		this.offsetY = jsonObj.offsetY;
-		this.color = jsonObj.color;
-		this.opacity = jsonObj.opacity;
-		this.multiply = jsonObj.multiply;
-		this.svg = jsonObj.svg;
-		this.dropShadowH = jsonObj.dropShadowH;
-		this.dropShadowV = jsonObj.dropShadowV;
-		this.dropShadowBlur = jsonObj.dropShadowBlur;
-		
-		if (this.svg !== null)
-			console.log ("found svg value");
-		if (this.styleType == "text") {
-			this.typeface = jsonObj.typeface;
-			this.pointSize = jsonObj.pointSize;
-			this.text = jsonObj.text;
-			this.defaultText = jsonObj.defaultText;
-		}
-		this.alignment = jsonObj.alignment;
-	};
-}
 
 /* The Promotion prototype constructor. A Promotion associates a Model
  * with a StyleSet and custom content and provides drawing capability.
@@ -541,14 +717,15 @@ function Promotion (model, styleSet) {
 	this.applyStyleSet = function (styleSet) {
 		this.styleSet = styleSet;
 
-		// Merge the styles into the Model
-		for (var i = 0; i < this.model.fields.length; i++) {
-			var field = this.model.fields[i];
-			var style = styleSet.findApplicableStyle (field);
-			if (style)
-				field.style = style;
-		}
-
+		// Merge the styles into the Model. Do I still need this?
+//		for (var i = 0; i < this.model.fields.length; i++) {
+//			var field = this.model.fields[i];
+//			var style = styleSet.findApplicableStyle (field);
+//			if (style)
+//				field.style = style;
+//		}
+		styleSet.attachToModel (model);
+		
 	};
 
 	this.applyStyleSet (styleSet);
@@ -560,22 +737,32 @@ function Promotion (model, styleSet) {
 		canvasElem.attr("width", this.styleSet.width);
 		canvasElem.attr("height", this.styleSet.height);
 		this.canvas = new fabric.Canvas (location);
-		var fields = this.model.fields;
-		for (var i = 0, len = fields.length; i < len; i++) {
-			var field = fields[i];
-			console.log ("Drawing a field named " + field.name);
-			field.draw (location, this.canvas);
-		}	
+		
+		// NO! need to draw in order of styles!!
+//		var fields = this.model.fields;
+//		for (var i = 0, len = fields.length; i < len; i++) {
+//			var field = fields[i];
+//			console.log ("Drawing a field named " + field.name);
+//			field.draw (location, this.canvas);
+//		}	
+		
+		var styles = this.styleSet.styles;
+		var len = styles.length;
+		for (var i = 0; i < len; i++) {
+			var style = styles[i];
+			style.draw (location, this.canvas);
+		}
 	};
 	
 	// Redraw a Promotion.
-	this.redraw = function () {
-		var fields = this.model.fields;
-		for (var i = 0, len = fields.length; i < len; i++) {
-			var field = fields[i];
-			this.canvas.remove (field.fabricObject);
-			field.fabricObject = null;
-			field.draw (location, this.canvas);
+	this.redraw = function (location) {
+		var styles = this.styleSet.styles;
+		var len = styles.length;
+		for (var i = 0; i < len; i++) {
+			var style = styles[i];
+			this.canvas.remove (this.fabricObject);
+			this.fabricObject = null;
+			this.draw (location, this.canvas);
 		}	
 	};
 	
