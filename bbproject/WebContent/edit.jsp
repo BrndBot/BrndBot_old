@@ -513,7 +513,7 @@
 <script type="text/x-kendo-template" id="contentFieldsTemplate">
 	<div>
 		# if (styleType == 'text') {   #
-				<div style="font-weight:bold">#:fieldid#</div>
+				<div style="font-weight:bold">#:fieldname#</div>
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
@@ -595,7 +595,7 @@
 
 <script type="text/x-kendo-template" id="designFieldsTemplate">
 	<div>
-		<div style="font-weight:bold">#:fieldid#</div>
+		<div style="font-weight:bold">#:fieldname#</div>
 		<table>
 		<tr>
 			<td>X</td>

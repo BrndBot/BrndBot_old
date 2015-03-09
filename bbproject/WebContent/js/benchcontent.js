@@ -45,6 +45,7 @@ stylesToSourceData: function (styleSet) {
 			// Text content ModelField
 			var fielddata = {};
 			fielddata.fieldid = i.toString();
+			fielddata.fieldname = field.name;
 			fielddata.content = style.getText();
 			fielddata.ptsize = style.getPointSize().toString();
 			fielddata.styleType = "text";

@@ -163,7 +163,8 @@ function StyleSet () {
 	};
 	
 	/* Make a copy that will be suitable for a separate display. This
-	 * means all styles are copied, all localStyles removed, and all
+	 * means all styles are copied, but local styles are SHARED, so
+	 * that a change in one will affect the other.
 	 */
 	this.copyForDisplay = function() {
 		var retval = new StyleSet();
@@ -173,11 +174,13 @@ function StyleSet () {
 		retval.styles = [];
 		for (i = 0; i < this.styles.length; i++) {
 			var style = this.styles[i];
+			var copyStyle = style.copy(); 
 			retval.styles.push (style.copy());
 		}
 		
 		return retval;
 	};
+
 	
 	/* Attach the styles of the styleset to fields of the model.
 	 * When we do this, we add a localStyle to each style, which initially
@@ -245,7 +248,8 @@ function Style (styleType) {
 	this.fabricObject = null;
 	
 	/* Make a copy of the Style. This can be used to add a localStyle to
-	 * a Style, so we never copy the localStyle or fabricObject.
+	 * a Style, so we never copy the fabricObject, and we share rather
+	 * than copy the localStyle if any.
 	 */
 	this.copy = function () {
 		var retval = new Style(this.styleType);
@@ -267,6 +271,7 @@ function Style (styleType) {
 		retval.dropShadowH = this.dropShadowH;
 		retval.dropShadowV = this.dropShadowV;
 		retval.dropShadowBlur = this.dropShadowBlur;
+		retval.localStyle = this.localStyle;	// same object
 		return retval;
 	}
 	
@@ -314,7 +319,8 @@ function Style (styleType) {
 				break;
 			}
 		}
-		this.localStyle = this.copy();
+		if (!this.localStyle)
+			this.localStyle = this.copy();
 	};
 
 	/* Draw a Style's ModelField under the control of this style. */
@@ -380,6 +386,7 @@ function Style (styleType) {
 	};
 
 	this.fabricateBlock = function  (canvas) {
+		console.log ("fabricateBlock");
 		var pos = this.getPosition();
 		var wid = this.getWidth();
 		var ht = this.getHeight();

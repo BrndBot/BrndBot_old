@@ -37,10 +37,12 @@ styleToSourceData: function (styleSet) {
 	var srcdata = [];
 	for (var i = 0; i < styleSet.styles.length; i++) {
 		var style = styleSet.styles[i];
-		if (!style.modelField)
+		var field = style.modelField
+		if (!field)
 			continue;
 		var fielddata = {};
 		fielddata.fieldid = i.toString();
+		fielddata.fieldname = field.name;
 		fielddata.x = style.getX().toString();
 		fielddata.y = style.getY().toString();
 		fielddata.width = style.getWidth().toString();

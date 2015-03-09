@@ -39,7 +39,8 @@ insertStyles: function (dest) {
 	});
 },
 
-/** Update the promotion style to the one given in the list item */
+/** Update the promotion style to the one given in the list item
+ *  that was just clicked. */
 updateStyle: function (litem) {
 	var styleSet = benchstyle.elemToLinkedStyleSet (litem);
 	if (styleSet !== null) {
