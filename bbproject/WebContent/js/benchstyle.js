@@ -46,7 +46,7 @@ updateStyle: function (litem) {
 	if (styleSet !== null) {
 		console.log ("can switch to style set" + styleSet.name);
 		bench.currentPromotion.applyStyleSet (styleSet);
-		bench.currentPromotion.redraw();
+		bench.currentPromotion.redraw('finishedImage1');
 	}
 },
 

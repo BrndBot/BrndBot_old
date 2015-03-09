@@ -274,17 +274,7 @@
 				//  job on image resizing.  Future effort for image cropping could use th same class.  This is
 				//  a mess currently.  Needs good requirements!
 			chosenImg = UserLogo.getBoundLogo(benchHelper.getUserId(), 150, 150);
-/*			else if (CHANNEL.equals(ChannelEnum.FACEBOOK))
-			{
-				static public String getBoundImage(
-						String local_image_file_name, 
-						int max_img_height, 
-						int max_img_width)
 
-				chosenImg = UserLogo.getBoundImage("images/barre-1.jpg", 500, 500, true);
-				logger.debug("chosenImg: {}", chosenImg);
-			}
-*/
 			templateVisible = false;
 		%>
 <%
@@ -326,6 +316,9 @@
 			<div id="finishedImage">
 
 				<c:set var="templateEnum" value="2" scope="page"/> 
+
+				<% // Here's where the promotion goes
+				%>
 				<canvas id="finishedImage1"></div>
 
 				<c:set var="templateEnum" value="3" scope="page"/> 

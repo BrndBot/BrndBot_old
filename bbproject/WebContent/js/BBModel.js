@@ -75,65 +75,13 @@ function Model () {
 function ModelField () {
 	this.name = null;
 	this.styleType = null;
+	this.localStyle = null;
 	
 	this.populateFromJSON = function (jsonField) {
 		this.name = jsonField.name;
 		this.styleType = jsonField.styleType;
 	};
 	
-	
-//	/* For text fields only. Would it be cleaner to subclass
-//	 * ModelField? 
-//	 */
-//	this.getText = function () {
-//		var content = "";
-//		if (this.text)
-//			content = this.text;
-//		else if (this.style.text)
-//			content = this.style.text;
-//		else if (this.style.defaultText)
-//			content = this.style.defaultText;
-//		return content;
-//	};
-//	
-//	this.isBold = function () {
-//		return (this.bold !== null) ? this.bold : this.style.bold;
-//	};
-//	
-//	this.isItalic = function () {
-//		return (this.italic !== null) ? this.italic : this.style.italic;
-//	};
-//	
-////	this.draw = function (location, canvas ) {
-////		// Draw only if there's a style for this field
-////		if (this.style) {
-////			console.log ("Style exists, type " + this.style.styleType);
-////			switch (this.style.styleType) {
-////			case "text":
-////				this.fabricateText (canvas);
-////				break;
-////			case "image":
-////				this.fabricateImage (canvas);
-////				break;
-////			case "logo":
-////				this.fabricateLogo (canvas);
-////				break;
-////			case "block":
-////				this.fabricateBlock (canvas);
-////				break;
-////			case "svg":
-////				this.fabricateSVG (canvas);
-////				break;
-////			default:
-////				console.log ("Unknown field type " + this.style.styleType);
-////				break;
-////			}
-////		}
-////
-////	};
-////	
-
-
 
 	
 
@@ -183,8 +131,6 @@ function StyleSet () {
 
 	
 	/* Attach the styles of the styleset to fields of the model.
-	 * When we do this, we add a localStyle to each style, which initially
-	 * is a copy of itself.
 	 */
 	this.attachToModel = function (model) {
 		var len = this.styles.length;
@@ -220,9 +166,6 @@ function StyleSet () {
  * associated with it for drawing. These can be replaced when the
  * Style is reused. */
 function Style (styleType) {
-	// For Styles in a StyleSet, they have a local copy associated with
-	// them which is subject to change.
-	this.localStyle = null;
 	// The ModelField associated with the style
 	this.modelField = null;
 	// The name of the ModelField.
@@ -247,9 +190,7 @@ function Style (styleType) {
 	this.dropShadowBlur = 0;
 	this.fabricObject = null;
 	
-	/* Make a copy of the Style. This can be used to add a localStyle to
-	 * a Style, so we never copy the fabricObject, and we share rather
-	 * than copy the localStyle if any.
+	/* Make a copy of the Style. 
 	 */
 	this.copy = function () {
 		var retval = new Style(this.styleType);
@@ -271,7 +212,6 @@ function Style (styleType) {
 		retval.dropShadowH = this.dropShadowH;
 		retval.dropShadowV = this.dropShadowV;
 		retval.dropShadowBlur = this.dropShadowBlur;
-		retval.localStyle = this.localStyle;	// same object
 		return retval;
 	}
 	
@@ -319,8 +259,10 @@ function Style (styleType) {
 				break;
 			}
 		}
-		if (!this.localStyle)
-			this.localStyle = this.copy();
+		// If the model field already has a local style, leave it;
+		// otherwise give it a copy of this style.
+		if (this.modelField && !this.modelField.localStyle)
+			this.modelField.localStyle = this.copy();
 	};
 
 	/* Draw a Style's ModelField under the control of this style. */
@@ -486,8 +428,8 @@ function Style (styleType) {
 	 */
 	this.getText = function () {
 		var content = "";
-		if (this.localStyle.text)
-			content = this.localStyle.text;
+		if (this.modelField.localStyle.text)
+			content = this.modelField.localStyle.text;
 		else if (this.text)
 			content = this.text;
 		else if (this.defaultText)
@@ -496,44 +438,44 @@ function Style (styleType) {
 	};
 	
 	this.setLocalText = function (txt) {
-		this.localStyle.text = txt;
+		this.modelField.localStyle.text = txt;
 	}
 	
 	this.isBold = function () {
-		return (this.localStyle.bold !== null) ? this.localStyle.bold : this.bold;
+		return (this.modelField.localStyle.bold !== null) ? this.modelField.localStyle.bold : this.bold;
 	};
 	
 	this.setLocalBold = function (b) {
-		this.localStyle.bold = b;
+		this.modelField.localStyle.bold = b;
 	}
 	
 	this.isItalic = function () {
-		return (this.localStyle.italic !== null) ? this.localStyle.italic : this.italic;
+		return (this.modelField.localStyle.italic !== null) ? this.modelField.localStyle.italic : this.italic;
 	};
 	
 	this.setLocalItalic = function (b) {
-		this.localStyle.italic = b;
+		this.modelField.localStyle.italic = b;
 	}
 	
 	this.getPointSize = function () {
-		return this.localStyle.pointSize ? this.localStyle.pointSize : this.pointSize;
+		return this.modelField.localStyle.pointSize ? this.modelField.localStyle.pointSize : this.pointSize;
 	};
 	
 	this.setLocalPointSize  = function (n) {
-		this.localStyle.pointSize = n;
+		this.modelField.localStyle.pointSize = n;
 	};
 	
 	this.getTypeface = function () {
-		return this.localStyle.typeface ? this.localStyle.typeface : this.typeface;
+		return this.modelField.localStyle.typeface ? this.modelField.localStyle.typeface : this.typeface;
 	};
 	
 	this.setLocalTypeface = function (t) {
-		this.localStyle.typeface = t;
+		this.modelField.localStyle.typeface = t;
 	}
 	
 	this.getX = function () {
-		if (this.localStyle.offsetX !== null) {
-			return this.localStyle.offsetX;
+		if (this.modelField.localStyle.offsetX !== null) {
+			return this.modelField.localStyle.offsetX;
 		}
 		else if (this.offsetX) {
 			return this.offsetX;
@@ -543,12 +485,12 @@ function Style (styleType) {
 	};
 	
 	this.setLocalX = function (x) {
-		this.localStyle.offsetX = x;
+		this.modelField.localStyle.offsetX = x;
 	}
 
 	this.getY = function () {
-		if (this.localStyle.offsetY !== null) {
-			return this.localStyle.offsetY;
+		if (this.modelField.localStyle.offsetY !== null) {
+			return this.modelField.localStyle.offsetY;
 		}
 		else if (this.offsetY) {
 			return this.offsetY;
@@ -558,12 +500,12 @@ function Style (styleType) {
 	};
 	
 	this.setLocalY = function (y) {
-		this.localStyle.offsetY = y;
+		this.modelField.localStyle.offsetY = y;
 	}
 	
 	this.getWidth = function () {
-		if (this.localStyle.width !== null) {
-			return this.localStyle.width;
+		if (this.modelField.localStyle.width !== null) {
+			return this.modelField.localStyle.width;
 		}
 		else if (this.width) {
 			return this.width;
@@ -573,12 +515,12 @@ function Style (styleType) {
 	};
 	
 	this.setLocalWidth = function (w) {
-		this.localStyle.width = w;
+		this.modelField.localStyle.width = w;
 	}
 	
 	this.getHeight = function () {
-		if (this.localStyle.height !== null) {
-			return this.localStyle.height;
+		if (this.modelField.localStyle.height !== null) {
+			return this.modelField.localStyle.height;
 		}
 		else if (this.height) {
 			return this.height;
@@ -588,92 +530,92 @@ function Style (styleType) {
 	};
 	
 	this.setLocalHeight = function (h) {
-		this.localStyle.height = h;
+		this.modelField.localStyle.height = h;
 	}
 
 	/* getColor returns black as a last resort, so it always returns
 	 * a color string. */
 	this.getColor = function () {
-		if (this.localStyle.color)
-			return this.localStyle.color;
+		if (this.modelField.localStyle.color)
+			return this.modelField.localStyle.color;
 		else if (this.color)
 			return this.color;
 		else return "#000000";
 	};
 	
 	this.setLocalColor = function (c) {
-		this.localStyle.color = c;
+		this.modelField.localStyle.color = c;
 	}
 	
 	this.getAlignment = function () {
-		return (this.localStyle.alignment !== null) ? this.localStyle.alignment : this.alignment;
+		return (this.modelField.localStyle.alignment !== null) ? this.modelField.localStyle.alignment : this.alignment;
 	};
 	
 	this.setLocalAlignment = function (al) {
-		this.localStyle.alignment = al;
+		this.modelField.localStyle.alignment = al;
 	}
 	
 	this.isBold = function () {
-		return (this.localStyle.bold !== null) ? this.localStyle.bold : this.bold;
+		return (this.modelField.localStyle.bold !== null) ? this.modelField.localStyle.bold : this.bold;
 	};
 	
 	this.setLocalBold = function (b) {
-		this.localStyle.bold = b;
+		this.modelField.localStyle.bold = b;
 	}
 
 	this.isItalic = function () {
-		return (this.localStyle.italic !== null) ? this.localStyle.italic : this.italic;
+		return (this.modelField.localStyle.italic !== null) ? this.modelField.localStyle.italic : this.italic;
 	};
 	
 	this.setLocalItalic = function (it) {
-		this.localStyle.italic = it;
+		this.modelField.localStyle.italic = it;
 	}
 	
 	this.getSVG = function () {
-		return (this.localStyle.svg !== null) ? this.localStyle.svg : this.svg;
+		return (this.modelField.localStyle.svg !== null) ? this.modelField.localStyle.svg : this.svg;
 	};
 	
 	this.setLocalSVG = function (svg) {
-		this.localStyle.svg = svg;
+		this.modelField.localStyle.svg = svg;
 	}
 	
 	/* Opacity is 0-100. Will need to be normalized to 0-1 for Fabric. */
 	this.getOpacity = function () {
-		return (this.localStyle.opacity !== null) ? this.localStyle.opacity : this.opacity;
+		return (this.modelField.localStyle.opacity !== null) ? this.modelField.localStyle.opacity : this.opacity;
 	}
 	
 	this.setLocalOpacity = function (op) {
-		this.localStyle.opacity = op;
+		this.modelField.localStyle.opacity = op;
 	}
 	
 	this.getDropShadowH = function () {
-		return (this.localStyle.dropShadowH !== null) ? this.localStyle.dropShadowH : this.dropShadowH;
+		return (this.modelField.localStyle.dropShadowH !== null) ? this.modelField.localStyle.dropShadowH : this.dropShadowH;
 	};
 	
 	this.setLocalDropShadowH = function (h) {
-		this.localStyle.dropShadowH = h;
+		this.modelField.localStyle.dropShadowH = h;
 	}
 
 	this.getDropShadowV = function () {
-		return (this.localStyle.dropShadowV !== null) ? this.localStyle.dropShadowV : this.dropShadowV;
+		return (this.modelField.localStyle.dropShadowV !== null) ? this.modelField.localStyle.dropShadowV : this.dropShadowV;
 	};
 
 	this.setLocalDropShadowV = function (v) {
-		this.localStyle.dropShadowV = v;
+		this.modelField.localStyle.dropShadowV = v;
 	}
 
 	this.getDropShadowBlur = function () {
-		return (this.localStyle.dropShadowBlur !== null) ? this.localStyle.dropShadowBlur : this.dropShadowBlur;
+		return (this.modelField.localStyle.dropShadowBlur !== null) ? this.modelField.localStyle.dropShadowBlur : this.dropShadowBlur;
 	};
 
 	this.setLocalDropShadowBlur = function (b) {
-		this.localStyle.dropShadowBlur = b;
+		this.modelField.localStyle.dropShadowBlur = b;
 	}
 
 	/* Function for the x, y, and anchor calculations. Returns an object with 
 	 * fields x, y, and anchor. */
 	this.getPosition = function () {
-		var anchor = this.localStyle.anchor ? this.localStyle.anchor : this.anchor;
+		var anchor = this.modelField.localStyle.anchor ? this.modelField.localStyle.anchor : this.anchor;
 		var retval = {x: 0, y: 0, originx: "left", originy: "top" };
 		retval.x = this.getX();
 		if (anchor == "TR" || anchor == "BR") {
@@ -769,7 +711,7 @@ function Promotion (model, styleSet) {
 			var style = styles[i];
 			this.canvas.remove (this.fabricObject);
 			this.fabricObject = null;
-			this.draw (location, this.canvas);
+			this.draw (location);
 		}	
 	};
 	
