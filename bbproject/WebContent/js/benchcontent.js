@@ -56,6 +56,7 @@ stylesToSourceData: function (styleSet) {
 		else if (style.styleType == "image") {
 			var fielddata = {};
 			fielddata.fieldid = i.toString();
+			fielddata.fieldname = field.name;
 			fielddata.styleType = "image";
 			srcdata.push(fielddata);
 		}

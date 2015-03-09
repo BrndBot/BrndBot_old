@@ -18,7 +18,10 @@ var bench = {
 	// An array of StyleSet objects applicable to the promotion.
 	styleSets: null,
 	
-	
+
+	// Max width and height for promotion canvas
+	MAX_PROMOTION_DIM: 600,
+
 	// One-time initialization called after the page fully loads.  These are initializations common
 	//  to all editor.  The functions called are typically editor-specific.
 	initTheBench: function() 
@@ -472,21 +475,21 @@ var bench = {
 		}
 	
 		// Redirect to the page that posts to Facebook
-		function sendToFinalFacebook()
-		{
-			// Put the contents into the hidden form
-			$('#hiddenHtml').val($('#finishedImage').html());
-	
-		    $.ajax({
-		        type: 'POST',
-		        url: 'SaveHTMLAsImageServlet?brndbotimageid=0',
-		        data: $('#htmlForm').serialize(), // serializes the form's elements.
-		        success: function(data)
-		        {
-		        	window.location = 'facebookfull.jsp';
-		        }
-		      });
-		}
+//		function sendToFinalFacebook()
+//		{
+//			// Put the contents into the hidden form
+//			$('#hiddenHtml').val($('#finishedImage').html());
+//	
+//		    $.ajax({
+//		        type: 'POST',
+//		        url: 'SaveHTMLAsImageServlet?brndbotimageid=0',
+//		        data: $('#htmlForm').serialize(), // serializes the form's elements.
+//		        success: function(data)
+//		        {
+//		        	window.location = 'facebookfull.jsp';
+//		        }
+//		      });
+//		}
 	
 		$("#checkOutButton").kendoButton({
 			click: function()
@@ -746,7 +749,7 @@ var bench = {
 				promotionData = promotionDataSource.data()[0];
 				promotionModel = new Model ();
 				promotionModel.populateFromJSON (promotionData);
-				var canvas = $('finishedImage1');
+				var canvas = $('#finishedImage1');
 				// Because of the way completion routines are hooked up,
 				// styleSets will now be available.
 				var defaultStyleSet = bench.styleSets[0];		// TODO find the one named "default" by preference
@@ -758,6 +761,12 @@ var bench = {
 				benchcontent.insertEditFields ( $('#contentArea'));
 				benchdesign.insertEditFields ( $('#designArea'));
 				benchstyle.insertStyles ( $('#styleArea'));
+				if (defaultStyleSet.width > bench.MAX_PROMOTION_DIM || defaultStyleSet.height > bench.MAX_PROMOTION_DIM) {
+					var scaleRatio = Math.min (bench.MAX_PROMOTION_DIM / defaultStyleSet.width,
+							bench.MAX_PROMOTION_DIM / defaultStyleSet.height);
+					canvas.css("width", Math.floor(defaultStyleSet.width * scaleRatio));
+					canvas.css("height", Math.floor(defaultStyleSet.height * scaleRatio));
+				}
 			}
 		});	
 		bench.loadStyles (promotionDataSource);

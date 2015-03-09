@@ -576,7 +576,7 @@
                 <p>&nbsp;</p>	
 		# } #		<!-- text -->
 		# if (styleType == 'image') {   #
-				<div style="font-weight:bold">#:fieldid#</div>
+				<div style="font-weight:bold">#:fieldname#</div>
 				<button type="button" style="width:70px;height:20px;font-size:85%;" 
 					data-linkedField="#:fieldid#"
 					onclick="benchcontent.showCrop(this);">

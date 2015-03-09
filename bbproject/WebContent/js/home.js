@@ -29,9 +29,12 @@ $(document).ready(function()
 		/* This sets up the function for all the category buttons. */
 		$('.categoryButton').on('click', function(e)
 		{
-			// So how should I do this? Best way is probably to have a template
-			// for each available row and copy the appropriate one here.
-			// Time to get HTML5 templates working right.
+			// NEW APPROACH: Suck in all the categories with a series of
+			// DashboardServlet calls, then populate a table with them, making them
+			// all initially invisible. By assigning appropriate classes,
+			// JQuery calls can show or hide each column as a group.
+			// Or perhaps simpler: Have each TD be a list of the prototypes
+			// for that category, and Kendo-list it. Fewer changes that way too.
 			var dataCat = $(this).attr("data-category");
 			var template = $('template[data-category="' + dataCat + '"]');
 			$('#modelRow').empty();

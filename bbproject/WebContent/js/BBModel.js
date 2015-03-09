@@ -105,8 +105,10 @@ function StyleSet () {
 		var jsonStyles = jsonObj.styles;
 		for (var i = 0; i < jsonStyles.length; i++) {
 			var jsonStyle = jsonStyles[i];
-			this.styles[i] = new Style (jsonStyle.styleType);
-			this.styles[i].populateFromJSON (jsonStyle);
+			var styl = new Style (jsonStyle.styleType);
+			this.styles[i] = styl;
+			styl.index = i;
+			styl.populateFromJSON (jsonStyle);
 		}
 	};
 	
@@ -166,34 +168,36 @@ function StyleSet () {
  * associated with it for drawing. These can be replaced when the
  * Style is reused. */
 function Style (styleType) {
+	this.index = 0;
 	// The ModelField associated with the style
 	this.modelField = null;
 	// The name of the ModelField.
 	this.fieldName = null;
 	this.styleType = styleType;
-	this.width = 0;
-	this.height = 0;
-	this.anchor = "TL";
-	this.offsetX = 0;
-	this.offsetY = 0;
+	this.width = null;
+	this.height = null;
+	this.anchor = null;
+	this.offsetX = null;
+	this.offsetY = null;
 	this.typeface = null;
 	this.pointSize = null;
 	this.color = null;
-	this.bold = false;
-	this.italic = false;
-	this.opacity = 100;
-	this.multiply = false;
-	this.alignment = "left";
+	this.bold = null;
+	this.italic = null;
+	this.opacity = null;
+	this.multiply = null;
+	this.alignment = null;
 	this.svg = null;
-	this.dropShadowH = 0;
-	this.dropShadowV = 0;
-	this.dropShadowBlur = 0;
+	this.dropShadowH = null;
+	this.dropShadowV = null;
+	this.dropShadowBlur = null;
 	this.fabricObject = null;
 	
 	/* Make a copy of the Style. 
 	 */
 	this.copy = function () {
 		var retval = new Style(this.styleType);
+		retval.index = this.index;
 		retval.fieldName = this.fieldName;
 		retval.width = this.width;
 		retval.height = this.height;
@@ -206,7 +210,7 @@ function Style (styleType) {
 		retval.bold = this.bold;
 		retval.italic = this.italic;
 		retval.opacity = this.opacity;
-		retval.multiple = this.multiply;
+		retval.multiply = this.multiply;
 		retval.alignment = this.alignment;
 		retval.svg = this.svg;
 		retval.dropShadowH = this.dropShadowH;
@@ -260,9 +264,9 @@ function Style (styleType) {
 			}
 		}
 		// If the model field already has a local style, leave it;
-		// otherwise give it a copy of this style.
+		// otherwise give it a starter local style.
 		if (this.modelField && !this.modelField.localStyle)
-			this.modelField.localStyle = this.copy();
+			this.modelField.localStyle = new Style();
 	};
 
 	/* Draw a Style's ModelField under the control of this style. */
@@ -324,7 +328,7 @@ function Style (styleType) {
 		}
 		this.fabricObject = text;
 		canvas.add(text);
-		canvas.bringToFront(text);
+		canvas.moveTo(text, this.index);
 	};
 
 	this.fabricateBlock = function  (canvas) {
@@ -334,6 +338,9 @@ function Style (styleType) {
 		var ht = this.getHeight();
 		var color = this.getColor ();
 		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
+		var gco = "source-over";
+		if (this.getMultiply())
+			gco = "multiply";
 		var rect = new fabric.Rect ({
 			hasControls: false,
 			selectable: false,
@@ -344,11 +351,15 @@ function Style (styleType) {
 			originX: pos.originx,
 			originY: pos.originy,
 			fill: color,
+			globalCompositeOperation: gco,
 			opacity: opacity
 		});
+		if (this.multiply) {
+			
+		}
 		this.fabricObject = rect;
 		canvas.add(rect);
-		canvas.bringToFront(rect);
+		canvas.moveTo(rect, this.index);
 	};
 	
 
@@ -371,7 +382,7 @@ function Style (styleType) {
 			img.opacity = opacity;
 			style.fabricObject = img;
 			canvas.add(img);
-			canvas.bringToFront(img);
+			canvas.moveTo(img, style.index);
 		});
 	};
 	
@@ -392,7 +403,7 @@ function Style (styleType) {
 			img.height = height;
 			style.fabricObject = img;
 			canvas.add(img);
-			canvas.bringToFront(img);
+			canvas.moveTo(img, style.index);
 		});
 	};
 	
@@ -416,7 +427,7 @@ function Style (styleType) {
 			obj.originX = pos.originx;
 			obj.originY = pos.originy;
 			canvas.add(obj);
-			canvas.bringToFront(obj);
+			canvas.moveTo(obj, style.index);
 			style.fabricObject = obj;
 		});
 	};
@@ -547,6 +558,14 @@ function Style (styleType) {
 		this.modelField.localStyle.color = c;
 	}
 	
+	this.getMultiply = function () {
+		if (this.modelField.localStyle.multiply !== null)
+			return this.modelField.localStyle.multiply;
+		else if (this.multiply !== null)
+			return this.multiply;
+		else return false;
+	}
+	
 	this.getAlignment = function () {
 		return (this.modelField.localStyle.alignment !== null) ? this.modelField.localStyle.alignment : this.alignment;
 	};
@@ -581,7 +600,11 @@ function Style (styleType) {
 	
 	/* Opacity is 0-100. Will need to be normalized to 0-1 for Fabric. */
 	this.getOpacity = function () {
-		return (this.modelField.localStyle.opacity !== null) ? this.modelField.localStyle.opacity : this.opacity;
+		if (this.modelField.localStyle.opacity !== null)
+			return this.modelField.localStyle.opacity;
+		else if (this.opacity != null)
+			return this.opacity;
+		else return 100;
 	}
 	
 	this.setLocalOpacity = function (op) {
@@ -680,7 +703,6 @@ function Promotion (model, styleSet) {
 	this.applyStyleSet (styleSet);
 
 	// Draw a Promotion. The argument is the ID of a canvas element.
-	// Width and height are optional for scaling.
 	this.draw = function (location) {
 		var canvasElem = $('#' + location);
 		canvasElem.attr("width", this.styleSet.width);
