@@ -95,8 +95,6 @@ public class SavePaletteServlet extends HttpServlet
 	private void writePalette(int user_id, boolean isSuggested, String[] paletteColors, DbConnection con) throws SQLException
 	{
 		Palette.deletePalettes(user_id, isSuggested, con);
-//		con.ExecuteDB("delete from palettes where UserId = " + user_id + " and IsSuggested = " +
-//				(isSuggested ? "1" : "0"), true);
 		for (int i = 0; i < paletteColors.length; i++)
 		{
 			Palette palette = new Palette();
@@ -105,8 +103,6 @@ public class SavePaletteServlet extends HttpServlet
 			palette.setColor(paletteColors[i]);
 			palette.setSequence(i);
 			palette.save(con);
-//			con.ExecuteDB("insert into palettes (UserID, Sequence, IsSuggested, Color) values ("
-//					+ user_id + ", " + i + ", " + (isSuggested ? "1" : "0") + ", \"" + palette[i] + "\");", false);
 		}
 	}
 }

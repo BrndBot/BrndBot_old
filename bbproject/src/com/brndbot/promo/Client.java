@@ -86,7 +86,6 @@ public class Client implements Serializable {
 		Client client = clients.get (uid);
 
 		if (client != null) {
-			logger.debug ("We already have a client");
 			return client;
 		}
 		try {
@@ -205,11 +204,8 @@ public class Client implements Serializable {
 		String modelName = m.getName();
 		Promotion promo = defaultPromotionPrototypes.get(modelName);
 		if (promo == null) {
-			logger.debug ("getPromotionPrototypes: No promotion prototypes for model, creating default");
 			promo = new Promotion ("Default", m, null);
 			promo.populateFromModel ();
-			logger.debug ("Created prototype {} and populated it from model {}", promo.getName(), modelName);
-			logger.debug (promo.toString());
 			defaultPromotionPrototypes.put (modelName, promo);
 		}
 		pmap = new HashMap<>();
@@ -232,10 +228,8 @@ public class Client implements Serializable {
 		pathb.append (brandIdentity.getName());
 		pathb.append ("/");
 		String path = pathb.toString();
-		logger.debug ("Path = {}", path);
 		Map<String, Model> models = modelCollection.getAllModels();
 		for (String modelName : models.keySet()) {
-			logger.debug ("Model name = {}", modelName);
 //			File modelDir = new File (path + modelName);
 //			if (!modelDir.exists() || !modelDir.isDirectory()) {
 //				logger.warn ("No styleset directory {}", modelDir.getPath());

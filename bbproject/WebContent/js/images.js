@@ -11,6 +11,7 @@
 	            removeUrl: "dummy",			// don't quite understand what this signifies
 	            removeField: "fileNames[]"	// not sure what to do with this
     	    },
+    	    complete: imagesjs.onComplete,
             localization: {
                 select: "Upload a JPEG, GIF, or PNG image",
                 headerStatusUploaded: "Image uploaded."
@@ -83,5 +84,11 @@ var imagesjs = {
 				dataType: "json"
     		}
     	}
-    })
+    }),
+    
+    /* This is called when the upload is complete. */
+    onComplete: function () {
+    	imagesjs.galleryDataSource.read();		// Reload the list
+    	imagesjs.populateGallery ($('#imageGallery'));
+    }
 };

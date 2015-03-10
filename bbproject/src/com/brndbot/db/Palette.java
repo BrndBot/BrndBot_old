@@ -8,6 +8,7 @@ package com.brndbot.db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +81,7 @@ public class Palette implements TableModel
 	
 	/** Write a new Palette to the database */
 	public void save(DbConnection con) throws SQLException {
-		String sql = "insert into palettes (UserID, Sequence, IsSuggested, Color) values (?, ?, ?, ?)";
+		String sql = "INSERT INTO palettes (UserID, Sequence, IsSuggested, Color) VALUES (?, ?, ?, ?)";
 //				+ user_id + ", " + i + ", " + (isSuggested ? "1" : "0") + ", \"" + palette[i] + "\");"
 		PreparedStatement pstmt = con.createPreparedStatement (sql);
 		pstmt.setInt(1, _user_id);
@@ -92,14 +93,58 @@ public class Palette implements TableModel
 		//rs.close();
 	}
 	
+	static public ArrayList<Palette> getUserPalette(int user_id, DbConnection con)
+	{
+		ArrayList<Palette> list = new ArrayList<Palette>();
+
+		String sql = "SELECT Color FROM palettes WHERE UserID = ? AND IsSuggested = 0 ORDER BY Sequence;";
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.createPreparedStatement(sql);
+			pstmt.setInt (1, user_id);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs != null)
+			{
+				while (rs.next())
+				{
+					list.add(new Palette(rs.getString("Color")));
+				}
+			}
+		} 
+		catch (SQLException e) 
+		{
+			logger.error ("Execption in getUserPalette: {}    {}", 
+					e.getClass().getName(), e.getMessage());
+			e.printStackTrace();
+		}
+		if (list.size() == 0) {
+			logger.debug("APPLYING DEFAULT PALETTE FOR USER_ID: " + user_id);
+			// Nothing in the database for this user, return default palette
+			list.add(new Palette("#ccc"));
+			list.add(new Palette("#ccc"));
+			list.add(new Palette("#ff0000"));
+			list.add(new Palette("#00ff00"));
+			list.add(new Palette("#0000ff"));
+			list.add(new Palette("#000000"));
+			list.add(new Palette("#000000"));
+		}
+		if (pstmt != null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {}
+		}
+		return list;
+	}
 	
 	/** Delete all of a user's palettes */
 	static public void deletePalettes(int user_id, DbConnection con) 
 			throws SQLException
 	{
 		logger.info("Deleting all palettes for user");
-		String sql = "DELETE FROM palettes WHERE UserID = " + user_id + ";";
-		con.ExecuteDB(sql, false);
+		PreparedStatement pstmt = con.createPreparedStatement 
+					("DELETE FROM palettes WHERE UserID = ?");
+		pstmt.setInt (1, user_id);
+		pstmt.execute();
 	}
 	
 	/** Delete only suggested or non-suggested palettes */
@@ -107,9 +152,11 @@ public class Palette implements TableModel
 			throws SQLException
 	{
 		logger.info("Deleting some palettes for user");
-		String sql = "DELETE FROM palettes WHERE UserID = " + user_id + 
-				" and IsSuggested = " +
-				(isSuggested ? "1" : "0");
-		con.ExecuteDB(sql, false);
+		String sql = "DELETE FROM palettes WHERE UserID = ? AND IsSuggested = ?";
+		;
+		PreparedStatement pstmt = con.createPreparedStatement (sql);
+		pstmt.setInt (1, user_id);
+		pstmt.setInt (2, (isSuggested ? 1 : 0));
+		pstmt.execute();
 	}
 }

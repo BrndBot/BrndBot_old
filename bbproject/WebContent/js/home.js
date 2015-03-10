@@ -144,7 +144,15 @@ var homejs = {
 		console.log ("showPrototypes");
 		currentItemID = -1;
 		var showit = true;
-		if (homejs.protosDataSource.total() <= 1) {
+		var hasRealData = true;
+		if (homejs.protosDataSource.total() == 0)
+			hasRealData = false;
+		else if (homejs.protosDataSource.total() == 1) {
+			var singleProto = protosDataSource.data()[0];
+			if (singleProto.synthetic)
+				hasRealData = false;
+		}
+		if (!hasRealData) {
 			// Go directly to editor 
 			window.location.assign ("edit.jsp?channel=2&proto=Default&model=" + model_name);
 			showit = false;
@@ -184,7 +192,6 @@ var homejs = {
 		if (currentItemID == itemID) {
 			return;
 		}
-		// TODO hide old button, hide new one.
 		currentItemID = itemID;
 	},
 	

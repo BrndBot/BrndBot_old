@@ -531,6 +531,7 @@ public class Image implements TableModel
 			// We got one
 			Enumeration<?> e = files.keys();
 			return_image = new Image();
+			return_image.setUserID(user_id);
 			UploadFile image_file = (UploadFile)files.get(e.nextElement());
 			InputStream uploadInStream = image_file.getInpuStream();
 			if (uploadInStream != null)
@@ -567,11 +568,7 @@ public class Image implements TableModel
 					return_image.setImageHeight(bimg.getHeight());
 
 					// Store in the database
-					// Argh, argh, argh!!! This code was RECYCLING DELETED IMAGE IDs to set the
-					// ID, in order to generate a "unique" file name!!!
-					// Generate a moderately big random number, that's safer.
 					
-					int count = randomizer.nextInt() % 999999;
 					return_image.setImageType(image_type);
 					
 					// use File as a convenient way to extract the name from the path
@@ -584,6 +581,10 @@ public class Image implements TableModel
 					if (image_type == ImageType.USER_UPLOAD) {
 						return_image.setImage(bytes);
 					} else {
+						// Argh, argh, argh!!! This code was RECYCLING DELETED IMAGE IDs to set the
+						// ID, in order to generate a "unique" file name!!!
+						// Generate a moderately big random number, that's safer.
+						int count = randomizer.nextInt() % 9999999;
 						String url_file_name = Utils.Slashies(image_type.getFolder() + user_id + "-" + count + "-" +
 								image_file.getFileName());
 						return_image.setImageUrl(url_file_name);

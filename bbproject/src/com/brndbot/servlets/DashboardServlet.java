@@ -103,10 +103,11 @@ public class DashboardServlet extends HttpServlet
 			return;
 		}
 		Model model = client.getModelCollection().getModelByName(modelName);
-		if (model != null)
-			logger.debug ("getModelByName got model with name {}", model.getName());
-		else
+		if (model == null) {
 			logger.error ("getModelByName returned null model");
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
 		Map<String,Promotion> protos = client.getPromotionPrototypes(model);
 		JSONArray jsonProtos = new JSONArray();
 		
@@ -117,6 +118,7 @@ public class DashboardServlet extends HttpServlet
 				JSONObject jproto = proto.toJSON();
 				jproto.put ("ID", id++);
 				jproto.put ("protoName", proto.getName());
+				jproto.put ("synthetic", proto.isSynthetic());
 				jsonProtos.put (jproto);
 			}
 		} catch (JSONException e) {

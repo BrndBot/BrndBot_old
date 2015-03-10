@@ -211,30 +211,36 @@ unhighlightTextArea: function(tarea) {
 },
 
 cropper: null,
+cropWin: null,
 
 /* Bring up a cropping modal window for the specified image */
 showCrop: function (btn) {
-	var field = benchcontent.elemToLinkedField(btn);
+	var style = benchcontent.elemToLinkedStyle(btn);
 	var img = $("#cropWindow .cropImage");
 	img.attr ("src", "ImageServlet?img=default");
-	$("#cropWindow").kendoWindow ({
-		actions: ["Custom", "Minimize", "Maximize", "Close"],
-		title: "Crop Image",
-		draggable: false,
-		modal: true,
-		close: function () {
-			benchcontent.closeCrop();
-		}
-	});
-	var win = $("#cropWindow").data("kendoWindow");
-	win.center();
+	if (benchcontent.cropWin) {
+		benchcontent.cropWin.data("kendoWindow").open();
+	}
+	else {
+		benchcontent.cropWin = $("#cropWindow").kendoWindow ({
+			actions: ["Custom", "Minimize", "Maximize", "Close"],
+			title: "Crop Image",
+			draggable: false,
+			modal: true,
+			close: function () {
+				benchcontent.closeCrop();
+			}
+		});
+		var win = $("#cropWindow").data("kendoWindow");
+		win.center();
+	}
 	img.Jcrop({
 		onSelect: benchcontent.applyCrop
 	},
 	function () {
 		benchcontent.cropper = {
 				jcrop: this,	// the JCROP API object
-				field: field
+				style: style
 		};	// the JCROP API 
 	}
 	);
@@ -242,18 +248,20 @@ showCrop: function (btn) {
 
 /* Call this when the crop window is closed */
 closeCrop: function () {
-	if (benchcontent.cropper)
+	if (benchcontent.cropper) {
 		benchcontent.cropper.jcrop.destroy ();
+		benchcontent.cropper = null;
+	}
 },
 
 /* Apply the cropping from Jcrop */
 applyCrop: function (coords) {
-	var fld = benchcontent.cropper.field;
-	var origSize = fld.fabricObject.getOriginalSize();
+	var styl = benchcontent.cropper.style;
+	var origSize = styl.fabricObject.getOriginalSize();
 	
 	// Scale to the display size of the image
-	var scaleX = fld.fabricObject.width / origSize.width;
-	var scaleY = fld.fabricObject.height / origSize.height;
+	var scaleX = styl.fabricObject.width / origSize.width;
+	var scaleY = styl.fabricObject.height / origSize.height;
 	coords.x *= scaleX;
 	coords.y *= scaleY;
 	coords.w *= scaleX;
@@ -263,7 +271,7 @@ applyCrop: function (coords) {
 	console.log ("scaled crop width: " + coords.w);
 	console.log ("scaled crop height: " + coords.h);
 	
-	fld.crop(coords.x, coords.y, coords.w, coords.h);
+	styl.crop(coords.x, coords.y, coords.w, coords.h);
 	bench.currentPromotion.canvas.renderAll();
 },
 

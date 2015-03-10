@@ -75,7 +75,7 @@
 <script type="text/javascript" src="js/images.js"></script>
 
 <script type="text/x-kendo-template" id="galleryTemplate">
-	<li class="stylefield" style="float:left;padding:20px;list-style-type:none">
+	<li class="galleryfield" style="float:left;padding:20px;list-style-type:none">
 		<img src="ImageServlet?brndbotimageid=2&img=#:ID#" style="max-width:300px;max-height:300px">
 	</li>
 </script>

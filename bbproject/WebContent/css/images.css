@@ -4,3 +4,8 @@
 .namefileform li {
 	list-style-type: none;
 }
+
+li.galleryfield {
+	width:300px;
+	height:300px;
+}

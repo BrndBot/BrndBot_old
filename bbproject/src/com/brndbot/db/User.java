@@ -359,51 +359,7 @@ public class User implements TableModel
 		return user_id;
     }
 
-	static public ArrayList<Palette> getUserPalette(int user_id, DbConnection con)
-	{
-		ArrayList<Palette> list = new ArrayList<Palette>();
 
-		String sql = "SELECT Color FROM palettes WHERE UserID = " + user_id + 
-			" AND IsSuggested = 0 ORDER BY Sequence;";
-		Statement stmt = con.createStatement();
-		con.QueryDB(sql, stmt);
-		ResultSet rs;
-		try 
-		{
-			rs = stmt.getResultSet();
-			if (rs != null)
-			{
-				while (rs.next())
-				{
-					list.add(new Palette(rs.getString("Color")));
-				}
-			}
-		} 
-		catch (SQLException e) 
-		{
-			logger.error ("Execption in getUserPalette: {}    {}", 
-					e.getClass().getName(), e.getMessage());
-			e.printStackTrace();
-		}
-		if (list.size() == 0)
-		{
-			logger.debug("APPLYING DEFAULT PALETTE FOR USER_ID: " + user_id);
-			// Nothing in the database for this user, return default palette
-			list.add(new Palette("#ccc"));
-			list.add(new Palette("#ccc"));
-			list.add(new Palette("#ff0000"));
-			list.add(new Palette("#00ff00"));
-			list.add(new Palette("#0000ff"));
-			list.add(new Palette("#000000"));
-			list.add(new Palette("#000000"));
-		}
-		if (stmt != null) {
-			try {
-				stmt.close();
-			} catch (SQLException e) {}
-		}
-		return list;
-	}
 
 	/**
 	 * What constitutes a "privileged" user? Is privilege really just a binary state? 

@@ -109,7 +109,7 @@ public class BenchHelper extends Helper {
 	public ArrayList<Palette> getUserPalette () {
 		DbConnection con = DbConnection.GetDb();
 		try {
-			return User.getUserPalette (userId, con);
+			return Palette.getUserPalette (userId, con);
 		}
 		finally {
 			con.close();
@@ -217,7 +217,7 @@ public class BenchHelper extends Helper {
 		try {
 			if (paletteArray == null) {
 				con = DbConnection.GetDb();
-				paletteArray = User.getUserPalette(userId, con);
+				paletteArray = Palette.getUserPalette(userId, con);
 			}
 		} finally {
 			if (con != null)
