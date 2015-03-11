@@ -191,6 +191,7 @@ function Style (styleType) {
 	this.dropShadowH = null;
 	this.dropShadowV = null;
 	this.dropShadowBlur = null;
+	this.imageID = null;
 	this.fabricObject = null;
 	
 	/* Make a copy of the Style. 
@@ -216,6 +217,7 @@ function Style (styleType) {
 		retval.dropShadowH = this.dropShadowH;
 		retval.dropShadowV = this.dropShadowV;
 		retval.dropShadowBlur = this.dropShadowBlur;
+		retval.imageID = this.imageID;
 		return retval;
 	}
 	
@@ -269,8 +271,10 @@ function Style (styleType) {
 			this.modelField.localStyle = new Style();
 	};
 
+
 	/* Draw a Style's ModelField under the control of this style. */
 	this.draw = function (location, canvas ) {
+		this.canvas = canvas;
 		if (!this.modelField)
 			return;		// Can't draw a style that has no model
 		switch (this.styleType) {
@@ -370,7 +374,8 @@ function Style (styleType) {
 		var height = this.getHeight();
 		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
 		var style = this;
-		var img = fabric.Image.fromURL("ImageServlet?img=default", function (img) {
+		var id = this.getImageID();
+		var img = fabric.Image.fromURL("ImageServlet?img=" + id, function (img) {
 			img.hasControls = false;
 			img.selectable = false;
 			img.left = pos.x;
@@ -653,6 +658,26 @@ function Style (styleType) {
 
 		return retval;
 	};
+	
+	/* getImageID returns the string "default" if no image has been set. */
+	this.getImageID = function () {
+		if (this.modelField.localStyle.imageID !== null)
+			return this.modelField.localStyle.imageID;
+		else if (this.imageID !== null)
+			return this.imageID;
+		else return "default";
+	}
+	
+	/* Unlike most of the setters, this one also sets the fabricObject,
+	 * since it's complicated. */
+	this.setLocalImageID = function (id) {
+		this.modelField.localStyle.imageID = id;
+		if (this.fabricObject) {
+			this.fabricObject.remove ();
+//			this.fabricObject.setSrc ("ImageServlet?img=" + id);
+			this.fabricateImage (this.canvas);
+		}
+	}
 	
 	/* Crop the field to a specified rectangle. This works only for ...
 	 * well, right now, it doesn't work for anything, but it should

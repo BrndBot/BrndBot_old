@@ -477,6 +477,21 @@
 			<img class="cropImage">
 		</div>
 	</div>
+	
+	<!-- Template for image gallery modal window -->
+	<div display="none"
+		<div id="galleryWindow">
+			<ul id="imageGallery" style="border-style:none"></ul>
+		</div>
+	</div>
+
+
+	<script type="text/x-kendo-template" id="galleryTemplate">
+		<li class="gallerypickerfield" style="float:left;padding:20px;list-style-type:none">
+			<img src="ImageServlet?brndbotimageid=2&img=#:ID#" style="max-width:180px;max-height:180px">
+		</li>
+	</script>
+
 	<script type="text/javascript" src="js/benchcontent.js"></script>
 	<script type="text/javascript" src="js/benchdesign.js"></script>
 	<script type="text/javascript" src="js/benchstyle.js"></script>
@@ -577,11 +592,21 @@
 		# } #		<!-- text -->
 		# if (styleType == 'image') {   #
 				<div style="font-weight:bold">#:fieldname#</div>
+				<table><tr>
+				<td>
 				<button type="button" style="width:70px;height:20px;font-size:85%;" 
 					data-linkedField="#:fieldid#"
 					onclick="benchcontent.showCrop(this);">
 					Cropping
 				</button>
+				</td><td>
+				<button type="button" style="width:70px;height:20px;font-size:85%;" 
+					data-linkedField="#:fieldid#"
+					onclick="benchcontent.pickImage(this);">
+					Select
+				</button>
+				</td>
+				</tr></table>
 		# } #		<!-- image -->
 	</div>
 </script>

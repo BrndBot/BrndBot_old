@@ -188,7 +188,6 @@ var homejs = {
 	    var item = kendoList.dataSource.view()[index];
 	    // item is an item from the dataSource. We gave them sequential ID values.
 	    var itemID = item.ID;
-	    console.log ("itemID = " + itemID);
 		if (currentItemID == itemID) {
 			return;
 		}

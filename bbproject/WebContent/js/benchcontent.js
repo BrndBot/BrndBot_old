@@ -225,7 +225,7 @@ showCrop: function (btn) {
 		benchcontent.cropWin = $("#cropWindow").kendoWindow ({
 			actions: ["Custom", "Minimize", "Maximize", "Close"],
 			title: "Crop Image",
-			draggable: false,
+			draggable: true,
 			modal: true,
 			close: function () {
 				benchcontent.closeCrop();
@@ -272,6 +272,71 @@ applyCrop: function (coords) {
 	console.log ("scaled crop height: " + coords.h);
 	
 	styl.crop(coords.x, coords.y, coords.w, coords.h);
+	bench.currentPromotion.canvas.renderAll();
+},
+
+galleryTarget: null,
+galleryWin: null,
+
+/* Bring up the image gallery for a selected iamge */
+/* Bring up a cropping modal window for the specified image */
+pickImage: function (btn) {
+	var style = benchcontent.elemToLinkedStyle(btn);
+	benchcontent.galleryTarget = { style: style };
+	if (benchcontent.galleryWin) {
+		benchcontent.galleryWin.data("kendoWindow").open();
+	}
+	else {
+		benchcontent.galleryWin = $("#galleryWindow").kendoWindow ({
+			actions: ["Custom", "Minimize", "Maximize", "Close"],
+			title: "Select Image",
+			draggable: true,
+			modal: true,
+			height: "450px",
+			width: "700px",
+			position: {
+				top: 50,
+				left: 50
+			},
+			close: function () {
+			}
+		});
+
+		benchcontent.populateGallery($('#imageGallery'));
+		var win = $("#galleryWindow").data("kendoWindow");
+		win.center();
+	}
+},
+
+galleryDataSource: new kendo.data.DataSource({
+	transport:
+	{
+		read:
+		{
+			url: "GetImagesServlet" ,
+			dataType: "json"
+		}
+	}
+}),
+
+
+populateGallery: function (sel) {
+	sel.kendoListView ({
+		dataSource: benchcontent.galleryDataSource,
+		template: kendo.template($("#galleryTemplate").html()),
+	    selectable: true,
+	    change: benchcontent.useClickedImage
+	});
+},
+
+useClickedImage: function (e) {
+	// "this" is the kendo List
+    var index = this.select().index();
+    var item = this.dataSource.view()[index];
+    var id = item.ID;
+    console.log("id = " + id);
+    benchcontent.galleryTarget.style.setLocalImageID (id);  // this also sets the fabricObject URL
+//	style.fabricObject.url = color;
 	bench.currentPromotion.canvas.renderAll();
 },
 

@@ -40,7 +40,7 @@ public class GetImagesServlet extends HttpServlet
 		doPost(request, response);
 	}
 
-	/** This gets a JSON array of references (of some kind) to images 
+	/** This gets a JSON array of references to images 
 	 *  that are listed in the database for the user.
 	 *  
 	 *  The URL parameter is a small integer representing the kind of image.

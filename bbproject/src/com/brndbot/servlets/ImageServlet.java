@@ -80,10 +80,14 @@ public class ImageServlet extends HttpServlet {
 		else
 			imgStream = Image.getImageStream(userId, imageId, con);
 		if (imgStream == null) {
-			logger.warn ("Couldn't get image stream");
-			con.close();
-			response.setStatus (HttpServletResponse.SC_NOT_FOUND);
-			return;
+			// If we couldn't get anything, try for the global default image.
+			imgStream = Image.getGlobalDefaultStream (con);
+			if (imgStream == null) {
+				logger.error ("Couldn't get image stream");
+				con.close();
+				response.setStatus (HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
 		}
 		response.setContentType (imgStream.getMimeType());
 		ServletOutputStream out = response.getOutputStream();

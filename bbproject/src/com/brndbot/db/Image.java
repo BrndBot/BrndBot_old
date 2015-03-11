@@ -709,6 +709,42 @@ public class Image implements TableModel
 		return null;	
 	}
 	
+	/** The call of last resort. If we can't get a user image, display the default
+	 *  image. */
+	static public MimeTypedInputStream getGlobalDefaultStream (DbConnection con) {
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT Image, MimeType FROM images WHERE UserID = 0 AND ImageName = '__Default.jpg'");
+			if (rs.next()) {
+				Blob imageBlob = rs.getBlob (1);
+				if (imageBlob == null) {
+					logger.error ("getGlobalDefaultStream reading row with null blob");
+					return null;
+				}
+				String mimeType = rs.getString(2);
+				InputStream blobStream = imageBlob.getBinaryStream ();
+				return new MimeTypedInputStream (blobStream, mimeType);
+			}
+		}
+		catch (SQLException e) {
+			logger.error ("Exception in getGlobalDefaultStream: {}", e.getClass().getName());
+			return null;
+		}
+		finally {
+			try {
+				// Is it safe to close these before the InputStream has been read?
+				if (stmt != null)
+					stmt.close ();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {}
+		}
+		return null;	
+
+	}
+	
 	/** Returns an OutputStream width the content of the user's default image. Returns
 	 *  null if the image isn't available, or if the database entry
 	 *  references the image by URL rather than having a blob.
