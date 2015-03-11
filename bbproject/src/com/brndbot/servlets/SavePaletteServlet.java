@@ -44,7 +44,6 @@ public class SavePaletteServlet extends HttpServlet
 		HttpSession session = request.getSession();
 		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 
-		// For now, just delete any previous palette information with id #1
 		try 
 		{
 			Palette.deletePalettes(user_id, con);
@@ -91,7 +90,11 @@ public class SavePaletteServlet extends HttpServlet
 		con.startTransaction ();
 		try {
 			Palette.deletePalettes(user_id, isSuggested, con);
-			for (int i = 0; i < paletteColors.length; i++)
+			// Write no more than 4 colors
+			int nColors = paletteColors.length;
+			if (nColors > 4)
+				nColors = 4;
+			for (int i = 0; i < nColors; i++)
 			{
 				Palette palette = new Palette();
 				palette.setUserId(user_id);
