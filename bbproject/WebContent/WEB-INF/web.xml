@@ -154,6 +154,12 @@
       <servlet-class>com.brndbot.servlets.StyleServlet</servlet-class>
     </servlet>
 
+    <servlet>
+      <servlet-name>ChooseColorServlet</servlet-name>
+      <servlet-class>com.brndbot.servlets.ChooseColorServlet</servlet-class>
+    </servlet>
+    
+
     <!-- Define mappings that are used by the servlet container to
          translate a particular request URI (context-relative) to a
          particular servlet.  
@@ -238,6 +244,11 @@
       <url-pattern>/StyleServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+      <servlet-name>ChooseColorServlet</servlet-name>
+      <url-pattern>/ChooseColorServlet</url-pattern>
+    </servlet-mapping>
+    
 	<filter>
 		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>com.brndbot.servlets.AuthenticationFilter</filter-class>

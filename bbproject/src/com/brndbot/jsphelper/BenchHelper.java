@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,6 @@ import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Promotion;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Palette;
-import com.brndbot.db.User;
 import com.brndbot.promo.Client;
 
 /** BenchHelper provides Java logic for the editor (edit.jsp).

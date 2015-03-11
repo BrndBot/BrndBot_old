@@ -15,7 +15,7 @@
 
 <head>
 
-<script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+<script type="text/javascript" src="scripts/jquery-2.1.3.js"></script>
 <script type="text/javascript" src="scripts/jquery-migrate-1.2.1.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
 <script type="text/javascript" src="scripts/kendo.all.min.js"></script>

@@ -58,7 +58,7 @@ prototypes to select, and the user picks one for processing in the editor (bench
 	<link href="css/klist.css" rel="stylesheet">
     <link href="css/content.css" rel="stylesheet">
 
-    <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="scripts/jquery-2.1.3.js"></script>
     <script type="text/javascript" src="scripts/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
     <script type="text/javascript" src="scripts/kendo.all.min.js"></script>

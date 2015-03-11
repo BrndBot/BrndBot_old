@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Palette;
-import com.brndbot.db.User;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.Utils;
 
@@ -34,10 +33,6 @@ public class SavePaletteServlet extends HttpServlet
         super();
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{
-		doPost(request, response);
-	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
@@ -65,13 +60,13 @@ public class SavePaletteServlet extends HttpServlet
 
 		// Gather data
 		String yourPalette = Utils.getStringParameter(request, "hiddenYourPalette");
-		String suggestedPalette = Utils.getStringParameter(request, "hiddenSuggestedPalette");
-		String[] suggested = suggestedPalette.split(",");
+		//String suggestedPalette = Utils.getStringParameter(request, "hiddenSuggestedPalette");
+		//String[] suggested = suggestedPalette.split(",");
 		String[] yours = yourPalette.split(",");
 		try
 		{
 			logger.debug("Writing palettes");
-			writePalette(user_id, true, suggested, con);
+			//writePalette(user_id, true, suggested, con);
 			writePalette(user_id, false, yours, con);
 		} 
 		catch (SQLException e) 
@@ -91,18 +86,25 @@ public class SavePaletteServlet extends HttpServlet
 		return;
 	}
 
-	// TODO shouldn't this be done as a transaction?
 	private void writePalette(int user_id, boolean isSuggested, String[] paletteColors, DbConnection con) throws SQLException
 	{
-		Palette.deletePalettes(user_id, isSuggested, con);
-		for (int i = 0; i < paletteColors.length; i++)
-		{
-			Palette palette = new Palette();
-			palette.setUserId(user_id);
-			palette.setIsSuggested(isSuggested);
-			palette.setColor(paletteColors[i]);
-			palette.setSequence(i);
-			palette.save(con);
+		con.startTransaction ();
+		try {
+			Palette.deletePalettes(user_id, isSuggested, con);
+			for (int i = 0; i < paletteColors.length; i++)
+			{
+				Palette palette = new Palette();
+				palette.setUserId(user_id);
+				palette.setIsSuggested(isSuggested);
+				palette.setColor(paletteColors[i]);
+				palette.setSequence(i);
+				palette.save(con);
+			}
 		}
+		catch (Exception e) {
+			con.rollback();
+			throw e;
+		}
+		con.commit();
 	}
 }

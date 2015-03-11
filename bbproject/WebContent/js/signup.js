@@ -29,6 +29,10 @@ $(document).ready(function()
 		click: createMyAccount
 	});
 
+	$("#unforkToLook").kendoButton({
+		click: unforkToLook
+	});
+
 	$("#updateAccount").kendoButton({
 		click: updateAccount
 	});
@@ -162,7 +166,8 @@ $(document).ready(function()
     	$.ajax({
             type: 'GET',
             dataType: 'json',
-            url: PHP_SERVER_PAGE + '?name=' + encodeURIComponent(logoName),
+            //url: PHP_SERVER_PAGE + '?name=' + encodeURIComponent(logoName),
+            url: 'ChooseColorServlet' + '?name=' + encodeURIComponent(logoName),
             success: function(data)
             {
             	console.log("Came back from PHP page " + PHP_SERVER_PAGE);

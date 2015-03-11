@@ -97,7 +97,7 @@ public class Palette implements TableModel
 	{
 		ArrayList<Palette> list = new ArrayList<Palette>();
 
-		String sql = "SELECT Color FROM palettes WHERE UserID = ? AND IsSuggested = 0 ORDER BY Sequence;";
+		String sql = "SELECT Color FROM palettes WHERE UserID = ? ORDER BY Sequence;";
 		PreparedStatement pstmt = null;
 		try {
 			pstmt = con.createPreparedStatement(sql);
@@ -120,13 +120,13 @@ public class Palette implements TableModel
 		if (list.size() == 0) {
 			logger.debug("APPLYING DEFAULT PALETTE FOR USER_ID: " + user_id);
 			// Nothing in the database for this user, return default palette
-			list.add(new Palette("#ccc"));
+			//list.add(new Palette("#ccc"));
 			list.add(new Palette("#ccc"));
 			list.add(new Palette("#ff0000"));
 			list.add(new Palette("#00ff00"));
 			list.add(new Palette("#0000ff"));
-			list.add(new Palette("#000000"));
-			list.add(new Palette("#000000"));
+			//list.add(new Palette("#000000"));
+			//list.add(new Palette("#000000"));
 		}
 		if (pstmt != null) {
 			try {
@@ -151,9 +151,9 @@ public class Palette implements TableModel
 	static public void deletePalettes(int user_id, boolean isSuggested, DbConnection con) 
 			throws SQLException
 	{
-		logger.info("Deleting some palettes for user");
+		logger.info("Deleting some palettes for user {}", user_id);
 		String sql = "DELETE FROM palettes WHERE UserID = ? AND IsSuggested = ?";
-		;
+		
 		PreparedStatement pstmt = con.createPreparedStatement (sql);
 		pstmt.setInt (1, user_id);
 		pstmt.setInt (2, (isSuggested ? 1 : 0));

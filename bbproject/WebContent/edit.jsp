@@ -81,7 +81,7 @@
 	<jsp:setProperty name="benchHelper" property="modelName" value="${model_name}"/>
 </jsp:useBean>
 
-    <script type="text/javascript" src="scripts/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="scripts/jquery-2.1.3.js"></script>
     <script type="text/javascript" src="scripts/kendo.all.min.js"></script>
     <script type="text/javascript" src="scripts/fabric.min.js"></script>
     <script type="text/javascript" src="scripts/jquery.Jcrop.min.js"></script>

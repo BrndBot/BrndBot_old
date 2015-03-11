@@ -38,11 +38,7 @@ public class SaveUserServlet extends HttpServlet
         super();
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{
-		doPost(request, response);
-	}
-
+	/** This can be called only with a POST request, since it changes the database. */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering SaveUserServlet----------");
@@ -54,7 +50,6 @@ public class SaveUserServlet extends HttpServlet
 		String userPassword = Utils.getStringParameter(request, "hiddenPassword");
 		String hashedPassword = PWHash.getHash(userPassword);
 
-//		String userConfirmPassword = Utils.getStringParameter(request, "userConfirmPassword");
 		String companyName = Utils.getStringParameter(request, "hiddenCompany");
 //		String companyFacilities = Utils.getStringParameter(request, "hiddenFacilities");
 		String companyAddress = Utils.getStringParameter(request, "hiddenAddress");
@@ -64,7 +59,19 @@ public class SaveUserServlet extends HttpServlet
 //		String linkedIn = Utils.getStringParameter(request, "hiddenLinkedIn");
 //		String youTube = Utils.getStringParameter(request, "hiddenYouTube");
 //		String instagram = Utils.getStringParameter(request, "hiddenInstagram");
-		String orgId = Utils.getStringParameter(request,  "hiddenOrgId");
+		String orgIdStr = Utils.getStringParameter(request,  "hiddenOrgId");
+		int orgId;
+		try {
+			orgId = Integer.parseInt (orgIdStr);
+		} 
+		catch (Exception e) {
+			orgId = -1;
+		}
+		if (orgId <= 0) {
+			// Should really also check if org exists
+			response.setStatus (HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
 
 		HttpSession session = request.getSession();
 
@@ -77,7 +84,7 @@ public class SaveUserServlet extends HttpServlet
 		user.setCompanyURL(companyURL);
 		user.setFacebook(facebookURL);
 		user.setTwitter(twitterHandle);
-		user.setOrganizationID(Integer.parseInt(orgId));
+		user.setOrganizationID(orgId);
 		user.saveUser (con);
 		int user_id = user.getUserID();
 		
@@ -90,6 +97,8 @@ public class SaveUserServlet extends HttpServlet
 		} catch (Exception e) {
 			logger.error ("Problem creating Client: {}", e.getClass().getName());
 			e.printStackTrace();
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 		return;

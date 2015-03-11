@@ -46,10 +46,7 @@ public class SaveImageServlet extends HttpServlet
         super();
     }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{
-		doPost(request, response);
-	}
+
 
 	/**
 	 *  POST request to initiate an upload.
