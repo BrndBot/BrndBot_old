@@ -69,6 +69,7 @@ public class Organization implements TableModel {
 		finally
 		{
 			DbUtils.close(pstmt, rs);
+			con.close();
 		}
 		return org;
 	}
@@ -103,6 +104,7 @@ public class Organization implements TableModel {
 		finally
 		{
 			DbUtils.close(pstmt, rs);
+			con.close();
 		}
 		return org;
 	}

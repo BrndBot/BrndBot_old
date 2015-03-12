@@ -158,6 +158,11 @@
       <servlet-name>ChooseColorServlet</servlet-name>
       <servlet-class>com.brndbot.servlets.ChooseColorServlet</servlet-class>
     </servlet>
+
+    <servlet>
+      <servlet-name>SavePromotionServlet</servlet-name>
+      <servlet-class>com.brndbot.servlets.SavePromotionServlet</servlet-class>
+    </servlet>
     
 
     <!-- Define mappings that are used by the servlet container to
@@ -249,6 +254,11 @@
       <url-pattern>/ChooseColorServlet</url-pattern>
     </servlet-mapping>
     
+    <servlet-mapping>
+      <servlet-name>SavePromotionServlet</servlet-name>
+      <url-pattern>/SavePromotionServlet</url-pattern>
+    </servlet-mapping>
+    
 	<filter>
 		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>com.brndbot.servlets.AuthenticationFilter</filter-class>
@@ -299,9 +309,14 @@
     	<servlet-name>ModelButtonServlet</servlet-name>
     </filter-mapping>
 
-v    <filter-mapping>
+    <filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
     	<servlet-name>StyleServlet</servlet-name>
+    </filter-mapping>
+
+    <filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+    	<servlet-name>SavePromotionServlet</servlet-name>
     </filter-mapping>
 
 	

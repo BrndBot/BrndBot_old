@@ -1,7 +1,7 @@
 package com.brndbot.servlets;
 
 import com.brndbot.client.ClientInterface;
-import com.brndbot.client.Model;
+//import com.brndbot.client.Model;
 import com.brndbot.client.style.StyleSet;
 import com.brndbot.promo.Client;
 import com.brndbot.system.SessionUtils;
@@ -52,6 +52,7 @@ public class StyleServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
 		Client client = (Client) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
+		logger.debug ("Client: {}", client);
 		/* TODO Generalize to all styles 
 		 * This version will deliver just one styleset from a fixed location
 		 * for initial testing.
@@ -62,6 +63,7 @@ public class StyleServlet extends HttpServlet {
 		ClientInterface ci = null;
 		try {
 			ci = client.getClientInterface();
+			logger.debug ("Client Interface: {}", ci);
 			if (ci == null) {
 				logger.error ("Couldn't get ClientInterface");
 				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -76,6 +78,7 @@ public class StyleServlet extends HttpServlet {
 		}
 		Map<String, StyleSet> styleSetMap = null;
 		try {
+			logger.debug ("Calling getStyleSets");
 			styleSetMap = client.getStyleSets(modelName);
 		} catch (Exception e) {
 			logger.error ("Exception getting style sets: {}", e.getClass().getName());

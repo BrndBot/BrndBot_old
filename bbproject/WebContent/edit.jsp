@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+<!--
+All rights reserved by Brndbot, Ltd. 2015
+-->
 <%@ page session="true" %>
 
 <%@ page import="com.brndbot.block.Block" %>
@@ -236,12 +239,13 @@
 					      and left.
 					 -->
 					<div id="applyDiv2">
-						<button id="checkOutButton" style="font-size: 1rem;width:8rem" class="orangeButton" >continue</button>
+						<button id="checkOutButton" onclick="bench.exportPresentation();" 
+							style="font-size: 1rem;width:8rem" class="orangeButton" >
+						Continue
+						</button>
 					</div>
 
-					<div id="applyDiv">
-						<button id="applyButton" style="font-size: 1rem;width:8rem" class="greenButton rounded" >apply change</button>
-					</div>
+
 
 				</div>
 			</div>

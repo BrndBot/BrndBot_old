@@ -491,30 +491,6 @@ var bench = {
 //		      });
 //		}
 	
-		$("#checkOutButton").kendoButton({
-			click: function()
-			{
-				if (SESSION_CHANNEL == EMAIL_CHANNEL)
-				{
-					// This call will forward to the final fulfillment page for email
-					session_mgr.storeBlocks(blockStack, sendToFinalEmail);
-				}
-				else if (SESSION_CHANNEL == FACEBOOK_CHANNEL)
-				{
-					// This call will fuse the image and then forward to the final 
-					// fulfillment page for facebook
-					session_mgr.storeBlocks(blockStack, sendToFinalFacebook);
-				}
-			}
-		});
-	
-		$("#viewTeachers").kendoButton({
-			click: openPopup
-		});
-	
-		$("#viewWorkshops").kendoButton({
-			click: openPopup
-		});
 	
 		// Track the item that is selected in the popup list
 		function setListState(list, bType)
@@ -805,6 +781,30 @@ var bench = {
 			}
 		});
 		styleDataSource.read();
-	}
+	},
 
+	/* Export the presentation to the database. */
+	exportPresentation: function () {
+		var imageURL = bench.currentPromotion.export ();
+		$.ajax({
+			  type: "POST",
+			  url: 'SavePromotionServlet',
+			  data: { 
+			     imgBase64: imageURL
+			  }
+		}).done(function(o) {
+			  console.log('saved'); 
+			  // Go to new page here
+			});
+	},
+	
+	exportPresError: function (xhr, textStatus, errorThrown) {
+		console.log ("Error: " + textStatus);
+		console.log (errorThrown);
+	},
+	
+	exportPresSuccess: function (data) {
+		console.log ("Alleged success"),
+		console.log(data);
+	}
 };

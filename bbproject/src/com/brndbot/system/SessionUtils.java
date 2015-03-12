@@ -10,8 +10,15 @@ package com.brndbot.system;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SessionUtils
 {
+	
+
+	final private static Logger logger = LoggerFactory.getLogger(SessionUtils.class);
+			
 	// Session actions
 	public static String SET = "set";
 	public static String CLEAR = "clear";
@@ -43,9 +50,18 @@ public class SessionUtils
 	
 	public static Object getSessionData
 			(HttpServletRequest req, String name) {
+		if (SessionUtils.CLIENT.equals (name)) {
+			logger.debug ("Getting client object");
+		}
 		HttpSession session = req.getSession(false);
-		if (session == null)
+		if (session == null) {
+			logger.debug ("No session");
 			return null;
+		}
+		if (session.getAttribute (name) != null)
+			logger.debug ("Attribute {} is not null", name);
+		else
+			logger.debug ("Addtribute {} is null", name);
 		return session.getAttribute (name);
 	}
 	

@@ -55,18 +55,20 @@ $(document).ready(function()
 			model_name = $(this).attr('data-model');	// set the value for the callback
 	
 			// Kendo data source used to get list data for promotion Prototypes
+			alert ("Getting promotion prototypes");
 			homejs.protosDataSource  = new kendo.data.DataSource({
 				transport: 
 				{
 					read:
 					{
+						type: 'POST',
 						url: "DashboardServlet",
-						dataType: "json"
+						dataType: "json",
 					}
 				}
 			});
 			session_mgr.setSession(SESSION_SET, 0, model_name, 0, homejs.showPrototypes);
-			console.log ("set data model " + model_name);
+			alert ("set data model " + model_name);
 			$('#contentType').text (model_name);
 		};
 	

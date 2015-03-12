@@ -298,24 +298,28 @@ public class Image implements TableModel
 	{
 		logger.debug("entering getBoundImage");
 		DbConnection con = DbConnection.GetDb();
-		Image image = getImageByID(image_id, user_id, con);
 		String s = "<div style=\"padding:0.625rem;\">Invalid image</div>";
-		if (image != null)
-		{
-			int height = image.getImageHeight().intValue();
-			int width = image.getImageWidth().intValue();
-			if (height > 0 && width > 0)
+		try {
+			Image image = getImageByID(image_id, user_id, con);
+			if (image != null)
 			{
-				double scalex = (double) max_image_width / width;
-				double scaley = (double) max_image_height / height;
-				double scale = Math.min(scalex, scaley);
-				int h = ((int)(height * scale));
-				int w = ((int)(width * scale));
-				s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
-						image.getImageUrl(), h, w);
+				int height = image.getImageHeight().intValue();
+				int width = image.getImageWidth().intValue();
+				if (height > 0 && width > 0)
+				{
+					double scalex = (double) max_image_width / width;
+					double scaley = (double) max_image_height / height;
+					double scale = Math.min(scalex, scaley);
+					int h = ((int)(height * scale));
+					int w = ((int)(width * scale));
+					s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
+							image.getImageUrl(), h, w);
+				}
 			}
 		}
-		con.close();
+		finally {
+			con.close();
+		}
 		return s;
 	}
 

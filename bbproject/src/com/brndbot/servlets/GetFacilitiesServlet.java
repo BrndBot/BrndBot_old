@@ -39,39 +39,7 @@ public class GetFacilitiesServlet extends HttpServlet
 	{
 		logger.debug("--------Entering GetFacilitiesServlet----------");
 
-//		HttpSession session = request.getSession();
 
-//		String sql = "SELECT * FROM ltfacilitytype order by FacilityType;";
-//		DbConnection con = DbConnection.GetDb();
-//		Statement stmt = con.createStatement();
-//		ResultSet rs = con.QueryDB(sql, stmt);
-//		JSONArray json_array = new JSONArray();
-//
-//        try 
-//		{
-//        	int i = 0;
-//        	while (rs.next())
-//			{
-//				JSONObject json_obj = new JSONObject();
-//				json_obj.put("FacilityID", rs.getInt(1));
-//				json_obj.put("FacilityType", rs.getString(2));
-//				json_array.put(i++, json_obj);
-//			}
-//		} 
-//		catch (SQLException e) 
-//		{
-//			System.out.println("Exception: " + e.getMessage());
-//			e.printStackTrace();
-//		} 
-//		catch (JSONException e1)
-//		{
-//			System.out.println("Exception: " + e1.getMessage());
-//			e1.printStackTrace();
-//		}
-//		finally
-//		{
-//			DbUtils.close(stmt, rs);
-//			con.close();
 //		}
 		JSONArray json_array = Facility.getAllFacilities();
 		if (json_array == null) {

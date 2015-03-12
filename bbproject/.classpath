@@ -17,7 +17,6 @@
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.30-bin.jar"/>
 	<classpathentry kind="lib" path="lib/struts.jar"/>
 	<classpathentry kind="lib" path="lib/uploadbean.jar"/>
-	<classpathentry kind="lib" path="lib/commons-codec-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.3.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-cache-4.3.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.3.4.jar"/>
@@ -38,5 +37,6 @@
 	<classpathentry kind="lib" path="lib/taglibs-standard-impl-1.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/taglibs-standard-jstlel-1.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/taglibs-standard-spec-1.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.10.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

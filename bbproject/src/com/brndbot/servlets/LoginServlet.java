@@ -21,7 +21,6 @@ import com.brndbot.db.User;
 import com.brndbot.promo.Client;
 import com.brndbot.system.LoginCookie;
 import com.brndbot.system.SessionUtils;
-import com.brndbot.system.Utils;
 
 public class LoginServlet extends HttpServlet
 {
@@ -95,7 +94,8 @@ public class LoginServlet extends HttpServlet
 //		session.setAttribute(ParamConstants.EMPLOYER_TYPE, RecruiterTable.fetchEmployerType(user_id));
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
 		session.removeAttribute(SessionUtils.LOGIN_ERROR);
-		Client.getClient (session);		// Load up the client
+		Client client = Client.getClient (session);		// Load up the client
+		SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client);
 
 		response.sendRedirect("home.jsp");
 		return;

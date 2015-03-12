@@ -88,8 +88,9 @@ public class Client implements Serializable {
 		if (client != null) {
 			return client;
 		}
+		DbConnection con = null;
 		try {
-			DbConnection con = DbConnection.GetDb();
+			con = DbConnection.GetDb();
 			User user = new User(uid);
 			user.loadClientInfo(con);
 			int orgId = user.getOrganizationID();
@@ -109,6 +110,9 @@ public class Client implements Serializable {
 			logger.error ("Message: {}", e.getMessage());
 			e.printStackTrace();
 			return null;
+		} finally {
+			if (con != null)
+				con.close();
 		}
 		
 		// TODO save it in the session and get it back from there

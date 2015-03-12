@@ -48,7 +48,6 @@ public class BenchHelper extends Helper {
 	private Client client;
 
 	public BenchHelper () {
-		//con = DbConnection.GetDb();	
 	}
 	
 	

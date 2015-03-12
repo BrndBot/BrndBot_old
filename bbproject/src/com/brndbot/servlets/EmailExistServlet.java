@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
+//import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -53,45 +53,48 @@ public class EmailExistServlet extends HttpServlet
 
 		DbConnection con = DbConnection.GetDb();
 
-		// Gather data
-		String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
-		String authCode = Utils.getStringParameter(request, "hiddenAuth").toLowerCase();
-		logger.debug("authCode = {}", authCode);
-//		String userPassword = Utils.getStringParameter(request, "hiddenPassword");
-
-		JSONObject json_obj = new JSONObject();
-		String status = "ok";
-		int orgID = 0;
-		if (User.doesEmailExist(userEmail, con))
-		{
-			status = "email_exists";
-		}
-		Organization org = Organization.getByAuthCode(authCode);
-		if (org == null) {
-			status = "no_org";
-		} else {
-			orgID = org.getOrganizationID();
-		}
 		try {
-			logger.debug("Putting status and org into JSON");
-			// put status into JSON
-			json_obj.put("status",status);
-			
-			// put organization ID into JSON
-			json_obj.put("orgid",orgID);
-		} catch (JSONException e) {
-			logger.error ("JSON error: {}", e.getClass().getName());
+			// Gather data
+			String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
+			String authCode = Utils.getStringParameter(request, "hiddenAuth").toLowerCase();
+			logger.debug("authCode = {}", authCode);
+	//		String userPassword = Utils.getStringParameter(request, "hiddenPassword");
+	
+			JSONObject json_obj = new JSONObject();
+			String status = "ok";
+			int orgID = 0;
+			if (User.doesEmailExist(userEmail, con))
+			{
+				status = "email_exists";
+			}
+			Organization org = Organization.getByAuthCode(authCode);
+			if (org == null) {
+				status = "no_org";
+			} else {
+				orgID = org.getOrganizationID();
+			}
+			try {
+				logger.debug("Putting status and org into JSON");
+				// put status into JSON
+				json_obj.put("status",status);
+				
+				// put organization ID into JSON
+				json_obj.put("orgid",orgID);
+			} catch (JSONException e) {
+				logger.error ("JSON error: {}", e.getClass().getName());
+			}
+	
+			logger.debug("Writing JSON to output");
+	        response.setContentType("application/json; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			String s = json_obj.toString();
+			out.println(s);
+			out.flush();
+			response.setStatus(HttpServletResponse.SC_OK);
 		}
-
-		logger.debug("Writing JSON to output");
-        response.setContentType("application/json; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		String s = json_obj.toString();
-		out.println(s);
-		out.flush();
-		response.setStatus(HttpServletResponse.SC_OK);
-
-		con.close();
+		finally {
+			con.close();
+		}
 
 		return;
 	}

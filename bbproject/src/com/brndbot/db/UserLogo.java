@@ -206,23 +206,27 @@ public class UserLogo implements TableModel
 		DbConnection con = DbConnection.GetDb();
 		UserLogo logo = getLogoByUserID(user_id, con);
 		String s = "<div style=\"padding:0.625rem;\">Invalid logo</div>";
-		if (logo != null)
-		{
-			int height = logo.getImage().getImageHeight().intValue();
-			int width = logo.getImage().getImageWidth().intValue();
-			if (height > 0 && width > 0)
+		try {
+			if (logo != null)
 			{
-				double scalex = (double) max_logo_width / width;
-				double scaley = (double) max_logo_height / height;
-				double scale = Math.min(scalex, scaley);
-				int h = ((int)(height * scale));
-				int w = ((int)(width * scale));
-				s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
-						logo.getImage().getImageUrl(), h, w);
-//				System.out.println("Logo: " + s);
+				int height = logo.getImage().getImageHeight().intValue();
+				int width = logo.getImage().getImageWidth().intValue();
+				if (height > 0 && width > 0)
+				{
+					double scalex = (double) max_logo_width / width;
+					double scaley = (double) max_logo_height / height;
+					double scale = Math.min(scalex, scaley);
+					int h = ((int)(height * scale));
+					int w = ((int)(width * scale));
+					s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
+							logo.getImage().getImageUrl(), h, w);
+	//				System.out.println("Logo: " + s);
+				}
 			}
 		}
-		con.close();
+		finally {
+			con.close();
+		}
 		return s;
 	}
 

@@ -32,7 +32,7 @@ Session.prototype.storeBlocks = function(blocks, refreshCallback)
 	$('#hiddenBlocks').val(myJsonString);
 	var args = '?action=' + SESSION_BLOCKS;
 	$.ajax({
-        type: 'GET',
+        type: 'POST',
         dataType: 'json',
         url: 'SetSessionServlet' + args,
         data: blockForm.serialize(), // serializes the form's elements.
@@ -55,7 +55,7 @@ Session.prototype.setImageID = function(image_id)
 	}
 
 	$.ajax({
-        type: 'GET',
+        type: 'POST',
         dataType: 'json',
         url: 'SetSessionServlet?action=image&' + SESSION_IMAGE_ID_KEY + '=' + image_id,
         success: function(data)
@@ -91,7 +91,7 @@ Session.prototype.setSession = function(action, channel_type, content_type, data
 		}
 	}
 	$.ajax({
-        type: 'GET',
+        type: 'POST',
         dataType: 'json',
         url: 'SetSessionServlet' + args,
         success: function(data)

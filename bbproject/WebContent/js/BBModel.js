@@ -714,33 +714,20 @@ function Promotion (model, styleSet) {
 	this.applyStyleSet = function (styleSet) {
 		this.styleSet = styleSet;
 
-		// Merge the styles into the Model. Do I still need this?
-//		for (var i = 0; i < this.model.fields.length; i++) {
-//			var field = this.model.fields[i];
-//			var style = styleSet.findApplicableStyle (field);
-//			if (style)
-//				field.style = style;
-//		}
 		styleSet.attachToModel (model);
 		
 	};
 
 	this.applyStyleSet (styleSet);
 
-	// Draw a Promotion. The argument is the ID of a canvas element.
+	/* Draw a Promotion. The argument is the ID of a canvas element. */
 	this.draw = function (location) {
 		var canvasElem = $('#' + location);
 		canvasElem.attr("width", this.styleSet.width);
 		canvasElem.attr("height", this.styleSet.height);
 		this.canvas = new fabric.Canvas (location);
 		
-		// NO! need to draw in order of styles!!
-//		var fields = this.model.fields;
-//		for (var i = 0, len = fields.length; i < len; i++) {
-//			var field = fields[i];
-//			console.log ("Drawing a field named " + field.name);
-//			field.draw (location, this.canvas);
-//		}	
+	
 		
 		var styles = this.styleSet.styles;
 		var len = styles.length;
@@ -750,7 +737,7 @@ function Promotion (model, styleSet) {
 		}
 	};
 	
-	// Redraw a Promotion.
+	/* Redraw a Promotion. */
 	this.redraw = function (location) {
 		var styles = this.styleSet.styles;
 		var len = styles.length;
@@ -762,5 +749,11 @@ function Promotion (model, styleSet) {
 		}	
 	};
 	
-
+	// Export the Promotion as a data URL
+	this.export = function () {
+		return this.canvas.toDataURL({
+			format: "jpg",
+			quality: 0.9
+		});
+	};
 }
