@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.client.Model;
 import com.brndbot.client.ModelCollection;
 import com.brndbot.client.parser.ModelParser;
+import com.brndbot.system.BrndbotException;
 
 
 /** A ModelLoader reads the model files and gives its caller
@@ -22,17 +23,17 @@ public class ModelLoader {
 	/** Constructor. Establishes the directory that holds
 	 *  the category directories, which in turn hold the
 	 *  model files. */
-	public ModelLoader(String path) {
+	public ModelLoader(String path) throws BrndbotException {
 		categoriesDir = new File (path);
 		if (!categoriesDir.exists()) {
 			logger.error ("Model directory {} does not exist", path);
 			categoriesDir = null;
-			return;
+			throw new BrndbotException ("Configuration error: no model directory");
 		}
 		if (!categoriesDir.isDirectory()) {
 			logger.error ("Path {} is not a directory", path);
 			categoriesDir = null;
-			return;
+			throw new BrndbotException ("Configuration error: bad model directory");
 		}
 	}
 	

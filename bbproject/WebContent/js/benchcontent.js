@@ -334,9 +334,18 @@ useClickedImage: function (e) {
     var index = this.select().index();
     var item = this.dataSource.view()[index];
     var id = item.ID;
-    console.log("id = " + id);
-    benchcontent.galleryTarget.style.setLocalImageID (id);  // this also sets the fabricObject URL
-//	style.fabricObject.url = color;
+    var style = benchcontent.galleryTarget.style;
+    style.setLocalImageID (id);  // this also sets the fabricObject URL
+	$.ajax({
+		  url: 'ImageServlet?meta=y&img=' + id,
+		  dataType: 'json',
+		  success: function(data)
+	        {
+			  var width = data.width;
+			  var height = data.height;
+			  style.fitImage (width, height);
+	        },
+	});
 	bench.currentPromotion.canvas.renderAll();
 },
 

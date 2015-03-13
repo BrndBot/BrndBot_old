@@ -182,7 +182,6 @@ $(document).ready(function()
             	}
 
             	var json = jQuery.parseJSON(data);
-            	console.log("Came back from parseJSON");
             	if (json.status == "error") {
             		uploadStatus ("There was a problem:" + json.error);
             		return;

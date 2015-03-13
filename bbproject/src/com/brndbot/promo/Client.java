@@ -22,6 +22,7 @@ import com.brndbot.client.parser.StyleSetParser;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Organization;
 import com.brndbot.db.User;
+import com.brndbot.system.BrndbotException;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.SystemProp;
 
@@ -81,8 +82,10 @@ public class Client implements Serializable {
 	public static Client getClient (HttpSession session) {
 		logger.debug ("starting getClient");
 		int uid = SessionUtils.getUserId(session);
-		if (uid == 0)
+		if (uid == 0) {
 			logger.error ("getClient: User ID in session is 0");
+			return null;		// fail early 
+		}
 		Client client = clients.get (uid);
 
 		if (client != null) {
@@ -134,13 +137,18 @@ public class Client implements Serializable {
 	}
 	
 	public ModelCollection getModels () {
-		if (modelCollection == null)
-			loadModels ();
-		return modelCollection;
+		try {
+			if (modelCollection == null)
+				loadModels ();
+			return modelCollection;
+		}
+		catch (Exception e) {
+			return null;
+		}
 	}
 	
 	/** Load up the models. */
-	private void loadModels () {
+	private void loadModels () throws BrndbotException {
 		String modelBase = SystemProp.get(SystemProp.LOCAL_ASSETS);
 		ModelLoader loader = new ModelLoader(modelBase + "/models/" + organizationDirName);
 		modelCollection = loader.readModelFiles();

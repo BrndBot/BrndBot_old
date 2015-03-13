@@ -1,6 +1,7 @@
 package com.brndbot.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +36,15 @@ public class ImageServlet extends HttpServlet {
 	 *  "name" may be a relative path. Only images in the database
 	 *  can be accessed by this servlet. This
 	 *  gives it a maximum size of 16 megabytes.
+	 *  
+	 *  If the parameter "meta" is present, it returns JSON with the
+	 *  metadata rather than image data.
 	 */
 	private static final long serialVersionUID = 1L;
 
 	final static Logger logger = LoggerFactory.getLogger(ImageServlet.class);
 
+	final static int bufferSize = 2048;
 
 
 	@Override
@@ -47,10 +54,10 @@ public class ImageServlet extends HttpServlet {
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException 
 	{
 		logger.debug ("Starting ImageServlet post");
-		final int bufferSize = 2048;
 		boolean useDefaultImage = false;
 		boolean userLogo = false;
 		HttpSession session = request.getSession();
@@ -70,6 +77,24 @@ public class ImageServlet extends HttpServlet {
 				return;
 			}
 		}
+		String metaParam = (String) request.getParameter ("meta");
+		if (metaParam != null) {
+			logger.debug ("Getting metadata, id = {}", imageId);
+			doMetadata (request, response, userId, imageId, userLogo, useDefaultImage);
+		}
+		else {
+			logger.debug ("Getting image, id = {}", imageId);
+			doImage (request, response, userId, imageId, userLogo, useDefaultImage);
+		}
+	}
+	
+	private void doImage (HttpServletRequest request, 
+			HttpServletResponse response, 
+			int userId,
+			int imageId, 
+			boolean userLogo, 
+			boolean useDefaultImage) 
+					throws ServletException, IOException {
 		DbConnection con = DbConnection.GetDb();
 
 		MimeTypedInputStream imgStream;
@@ -90,6 +115,7 @@ public class ImageServlet extends HttpServlet {
 			}
 		}
 		response.setContentType (imgStream.getMimeType());
+		
 		ServletOutputStream out = response.getOutputStream();
 		byte[] buffer = new byte[bufferSize];
 		for (;;) {
@@ -103,4 +129,69 @@ public class ImageServlet extends HttpServlet {
 		out.flush ();
 		response.setStatus (HttpServletResponse.SC_OK);
 	}
+	
+	private void doMetadata (HttpServletRequest request, 
+			HttpServletResponse response, 
+			int userId,
+			int imageId, 
+			boolean userLogo, 
+			boolean useDefaultImage) 
+					throws ServletException, IOException {
+		DbConnection con = DbConnection.GetDb();
+
+		Image image;
+		if (useDefaultImage) {
+			logger.debug ("Getting default image");
+			image = Image.getDefaultImage(userId, con);
+		}
+		else {
+			// works for both regular images and logos
+			logger.debug ("Getting image id = {}", imageId);
+			image = Image.getImageByID(imageId, userId, con);
+		}
+		if (image == null) {
+			logger.debug ("Couldn't get image, looking for global default");
+			// If we couldn't get anything, try for the global default image.
+			image = Image.getGlobalDefaultImage (con);
+			if (image == null) {
+				logger.error ("Couldn't get image stream");
+				con.close();
+				response.setStatus (HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+		}
+		response.setContentType ("application/json");
+		
+		JSONObject json = new JSONObject ();
+		try {
+			json.put ("mimeType", image.getMimeType());
+			json.put ("width", Integer.toString (image.getImageWidth()));
+			json.put ("height", Integer.toString (image.getImageHeight()));
+		}
+		catch (JSONException e) {
+			logger.error ("Error in building JSON metadata");
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			con.close();
+			return;
+		}
+
+		String jsonStr = json.toString();
+		logger.debug ("Returning JSON {}", jsonStr);
+
+		if (jsonStr.length() > 0)
+		{
+	        response.setContentType("application/json; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.println(jsonStr);
+			out.flush();
+			response.setStatus(HttpServletResponse.SC_OK);
+		}
+		else
+		{
+			logger.error("Error creating JSON for image");
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+		con.close();
+	}
+
 }

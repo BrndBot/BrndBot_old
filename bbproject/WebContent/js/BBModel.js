@@ -174,8 +174,10 @@ function Style (styleType) {
 	// The name of the ModelField.
 	this.fieldName = null;
 	this.styleType = styleType;
-	this.width = null;
-	this.height = null;
+	this.width = null;		// width of the frame
+	this.height = null;		// height of the frame
+	this.sourceWidth = null;	// width of the source image
+	this.sourceHeight = null;	// height of the source image
 	this.anchor = null;
 	this.offsetX = null;
 	this.offsetY = null;
@@ -202,6 +204,8 @@ function Style (styleType) {
 		retval.fieldName = this.fieldName;
 		retval.width = this.width;
 		retval.height = this.height;
+		retval.sourceWidth = this.sourceWidth;
+		retval.sourceHeight = this.sourceHeight;
 		retval.anchor = this.anchor = "TL";
 		retval.offsetX = this.offsetX;
 		retval.offsetY = this.offsetY;
@@ -455,7 +459,7 @@ function Style (styleType) {
 	
 	this.setLocalText = function (txt) {
 		this.modelField.localStyle.text = txt;
-	}
+	};
 	
 	this.isBold = function () {
 		return (this.modelField.localStyle.bold !== null) ? this.modelField.localStyle.bold : this.bold;
@@ -463,7 +467,7 @@ function Style (styleType) {
 	
 	this.setLocalBold = function (b) {
 		this.modelField.localStyle.bold = b;
-	}
+	};
 	
 	this.isItalic = function () {
 		return (this.modelField.localStyle.italic !== null) ? this.modelField.localStyle.italic : this.italic;
@@ -471,7 +475,7 @@ function Style (styleType) {
 	
 	this.setLocalItalic = function (b) {
 		this.modelField.localStyle.italic = b;
-	}
+	};
 	
 	this.getPointSize = function () {
 		return this.modelField.localStyle.pointSize ? this.modelField.localStyle.pointSize : this.pointSize;
@@ -487,7 +491,7 @@ function Style (styleType) {
 	
 	this.setLocalTypeface = function (t) {
 		this.modelField.localStyle.typeface = t;
-	}
+	};
 	
 	this.getX = function () {
 		if (this.modelField.localStyle.offsetX !== null) {
@@ -502,7 +506,7 @@ function Style (styleType) {
 	
 	this.setLocalX = function (x) {
 		this.modelField.localStyle.offsetX = x;
-	}
+	};
 
 	this.getY = function () {
 		if (this.modelField.localStyle.offsetY !== null) {
@@ -517,7 +521,7 @@ function Style (styleType) {
 	
 	this.setLocalY = function (y) {
 		this.modelField.localStyle.offsetY = y;
-	}
+	};
 	
 	this.getWidth = function () {
 		if (this.modelField.localStyle.width !== null) {
@@ -532,7 +536,7 @@ function Style (styleType) {
 	
 	this.setLocalWidth = function (w) {
 		this.modelField.localStyle.width = w;
-	}
+	};
 	
 	this.getHeight = function () {
 		if (this.modelField.localStyle.height !== null) {
@@ -547,7 +551,7 @@ function Style (styleType) {
 	
 	this.setLocalHeight = function (h) {
 		this.modelField.localStyle.height = h;
-	}
+	};
 
 	/* getColor returns black as a last resort, so it always returns
 	 * a color string. */
@@ -561,7 +565,7 @@ function Style (styleType) {
 	
 	this.setLocalColor = function (c) {
 		this.modelField.localStyle.color = c;
-	}
+	};
 	
 	this.getMultiply = function () {
 		if (this.modelField.localStyle.multiply !== null)
@@ -569,7 +573,7 @@ function Style (styleType) {
 		else if (this.multiply !== null)
 			return this.multiply;
 		else return false;
-	}
+	};
 	
 	this.getAlignment = function () {
 		return (this.modelField.localStyle.alignment !== null) ? this.modelField.localStyle.alignment : this.alignment;
@@ -577,7 +581,7 @@ function Style (styleType) {
 	
 	this.setLocalAlignment = function (al) {
 		this.modelField.localStyle.alignment = al;
-	}
+	};
 	
 	this.isBold = function () {
 		return (this.modelField.localStyle.bold !== null) ? this.modelField.localStyle.bold : this.bold;
@@ -585,7 +589,7 @@ function Style (styleType) {
 	
 	this.setLocalBold = function (b) {
 		this.modelField.localStyle.bold = b;
-	}
+	};
 
 	this.isItalic = function () {
 		return (this.modelField.localStyle.italic !== null) ? this.modelField.localStyle.italic : this.italic;
@@ -593,7 +597,7 @@ function Style (styleType) {
 	
 	this.setLocalItalic = function (it) {
 		this.modelField.localStyle.italic = it;
-	}
+	};
 	
 	this.getSVG = function () {
 		return (this.modelField.localStyle.svg !== null) ? this.modelField.localStyle.svg : this.svg;
@@ -601,20 +605,20 @@ function Style (styleType) {
 	
 	this.setLocalSVG = function (svg) {
 		this.modelField.localStyle.svg = svg;
-	}
+	};
 	
 	/* Opacity is 0-100. Will need to be normalized to 0-1 for Fabric. */
 	this.getOpacity = function () {
 		if (this.modelField.localStyle.opacity !== null)
 			return this.modelField.localStyle.opacity;
-		else if (this.opacity != null)
+		else if (this.opacity !== null)
 			return this.opacity;
 		else return 100;
-	}
+	};
 	
 	this.setLocalOpacity = function (op) {
 		this.modelField.localStyle.opacity = op;
-	}
+	};
 	
 	this.getDropShadowH = function () {
 		return (this.modelField.localStyle.dropShadowH !== null) ? this.modelField.localStyle.dropShadowH : this.dropShadowH;
@@ -622,7 +626,7 @@ function Style (styleType) {
 	
 	this.setLocalDropShadowH = function (h) {
 		this.modelField.localStyle.dropShadowH = h;
-	}
+	};
 
 	this.getDropShadowV = function () {
 		return (this.modelField.localStyle.dropShadowV !== null) ? this.modelField.localStyle.dropShadowV : this.dropShadowV;
@@ -630,7 +634,7 @@ function Style (styleType) {
 
 	this.setLocalDropShadowV = function (v) {
 		this.modelField.localStyle.dropShadowV = v;
-	}
+	};
 
 	this.getDropShadowBlur = function () {
 		return (this.modelField.localStyle.dropShadowBlur !== null) ? this.modelField.localStyle.dropShadowBlur : this.dropShadowBlur;
@@ -638,7 +642,7 @@ function Style (styleType) {
 
 	this.setLocalDropShadowBlur = function (b) {
 		this.modelField.localStyle.dropShadowBlur = b;
-	}
+	};
 
 	/* Function for the x, y, and anchor calculations. Returns an object with 
 	 * fields x, y, and anchor. */
@@ -666,7 +670,7 @@ function Style (styleType) {
 		else if (this.imageID !== null)
 			return this.imageID;
 		else return "default";
-	}
+	};
 	
 	/* Unlike most of the setters, this one also sets the fabricObject,
 	 * since it's complicated. */
@@ -674,10 +678,38 @@ function Style (styleType) {
 		this.modelField.localStyle.imageID = id;
 		if (this.fabricObject) {
 			this.fabricObject.remove ();
-//			this.fabricObject.setSrc ("ImageServlet?img=" + id);
 			this.fabricateImage (this.canvas);
 		}
-	}
+	};
+	
+	/* Resize the image based on its source width and height.
+	 * We apply Procrustean logic to the image. Whether it's too
+	 * big or too small, size it to the smallest size that will 
+	 * fill the rectangle given by width and height, centering
+	 * it in the other dimension. */
+	this.fitImage = function (w, h) {
+		this.sourceWidth = w;
+		this.sourceHeight = h;
+		// TODO lots of stuff. First see if we're getting the params.
+		console.log ("sourceWidth = " + w);
+		console.log ("sourceHeight = " + h);
+		// First hack. Don't adjust the position, just fix the dimensions.
+		// This will later become a separate function to handle the
+		// initial image, or else we'll always call fitImage.
+		var widthRatio = this.sourceWidth / this.width;
+		var heightRatio = this.sourceHeight / this.height;
+		if (widthRatio < heightRatio) {
+			// We'll fill the horizontal and overflow the vertical
+			this.fabricObject.width = this.width;
+			this.fabricObject.height = this.height * (this.width / this.sourceWidth);
+			// probably need to redraw
+		}
+		else {
+			// Fill the vertical and overflow the horizontal, or fit perfectly
+			this.fabricObject.height = this.height;
+			this.fabricObject.width = this.width * (this.height / this.sourceHeight);
+		}
+	};
 	
 	/* Crop the field to a specified rectangle. This works only for ...
 	 * well, right now, it doesn't work for anything, but it should
@@ -737,7 +769,7 @@ function Promotion (model, styleSet) {
 		}
 	};
 	
-	/* Redraw a Promotion. */
+	/* Redrawz a Promotion. */
 	this.redraw = function (location) {
 		var styles = this.styleSet.styles;
 		var len = styles.length;

@@ -82,26 +82,9 @@ public class Image implements TableModel
 	
 	/** Consructor that loads up the image from a ResultSet that includes ImageID, UserID,
 	 *  ImageType, ImageURL, ImageSize, ImageHeight, and ImageWidth. 
+	 *  The ResultSet must already have been "nexted" to the desired entry.
 	 *  The field Image is not included here since it's so big it should
 	 *  be loaded only when actually needed. */
-//	public Image(ResultSet rs)
-//	{
-//		try
-//		{
-//			imageId = new Integer(rs.getInt("ImageID"));
-//			userId = new Integer(rs.getInt("UserID"));
-//			imageType = ImageType.getByItemNumber(rs.getInt("ImageType"));
-//			imageUrl = rs.getString("ImageURL");
-//			imageSize = new Integer(rs.getInt("ImageSize"));
-//			imageHeight = new Integer(rs.getInt("ImageHeight"));
-//			imageWidth = new Integer(rs.getInt("ImageWidth"));
-//			//image = rs.getBlob("Image");
-//		}
-//		catch (SQLException e) 
-//		{
-//			e.printStackTrace();
-//		}
-//	}
 	public Image(ResultSet rs)
 	{
 		try
@@ -681,7 +664,7 @@ public class Image implements TableModel
 	 */
 	static public MimeTypedInputStream getImageStream (int user_id, int image_id, DbConnection con) {
 		PreparedStatement pstmt = con.createPreparedStatement
-				("SELECT Image, MimeType FROM images WHERE UserID = ? AND ImageID = ?");
+				("SELECT Image, MimeType, imageWidth, imageHeight FROM images WHERE UserID = ? AND ImageID = ?");
 		ResultSet rs = null;
 		try {
 			pstmt.setInt (1, user_id);
@@ -694,8 +677,13 @@ public class Image implements TableModel
 					return null;
 				}
 				String mimeType = rs.getString(2);
+				int width = rs.getInt(3);
+				int height = rs.getInt(4);
 				InputStream blobStream = imageBlob.getBinaryStream ();
-				return new MimeTypedInputStream (blobStream, mimeType);
+				MimeTypedInputStream retval = new MimeTypedInputStream (blobStream, mimeType);
+				retval.setWidth (width);
+				retval.setHeight (height);
+				return retval;
 			}
 		}
 		catch (SQLException e) {
@@ -720,7 +708,8 @@ public class Image implements TableModel
 		ResultSet rs = null;
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT Image, MimeType FROM images WHERE UserID = 0 AND ImageName = '__Default.jpg'");
+			rs = stmt.executeQuery("SELECT Image, MimeType, imageWidth, imageHeight FROM images " +
+						"WHERE UserID = 0 AND ImageName = '__Default.jpg'");
 			if (rs.next()) {
 				Blob imageBlob = rs.getBlob (1);
 				if (imageBlob == null) {
@@ -728,8 +717,14 @@ public class Image implements TableModel
 					return null;
 				}
 				String mimeType = rs.getString(2);
+				int width = rs.getInt (3);
+				int height = rs.getInt (4);
+				
 				InputStream blobStream = imageBlob.getBinaryStream ();
-				return new MimeTypedInputStream (blobStream, mimeType);
+				MimeTypedInputStream retval = new MimeTypedInputStream (blobStream, mimeType);
+				retval.setWidth (width);
+				retval.setHeight (height);
+				return retval;
 			}
 		}
 		catch (SQLException e) {
@@ -748,6 +743,36 @@ public class Image implements TableModel
 		return null;	
 
 	}
+	
+	/** Get an Image object (without blob) for the global default image */
+	static public Image getGlobalDefaultImage (DbConnection con) {
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT ImageID, MimeType, imageWidth, imageHeight FROM images " +
+						"WHERE UserID = 0 AND ImageName = '__Default.jpg'");
+			if (rs.next()) {
+				Image img = new Image (rs);
+				return img;
+			}
+		}
+		catch (SQLException e) {
+			logger.error ("Exception in getGlobalDefaultImage: {}", e.getClass().getName());
+			return null;
+		}
+		finally {
+			try {
+				if (stmt != null)
+					stmt.close ();
+				if (rs != null)
+					rs.close();
+			} catch (Exception e) {}
+		}
+		return null;	
+
+	}
+	
 	
 	/** Returns an OutputStream width the content of the user's default image. Returns
 	 *  null if the image isn't available, or if the database entry
@@ -771,7 +796,10 @@ public class Image implements TableModel
 		String imagePath = Utils.Slashies(tomcatBase + "\\" + logoImage.getImageUrl());
 		try {
 			FileInputStream fileStream = new FileInputStream (imagePath);
-			return new MimeTypedInputStream(fileStream, mimeType);
+			MimeTypedInputStream retval = new MimeTypedInputStream(fileStream, mimeType);
+			retval.setWidth(logoImage.getImageWidth());
+			retval.setHeight(logoImage.getImageHeight());
+			return retval;
 		} catch (IOException e) {
 			logger.error ("Exception getting file: {} on {}", e.getClass().getName(), imagePath);
 		}
