@@ -46,72 +46,74 @@ var bench = {
 	                effects: "fadeIn"
 	            }
 	        }
-	//        });
 	    
 	    });
 	
-	    // Kendo data source used to retrieve image data for the appropriate gallery
-	    var yourImagesDataSource = new kendo.data.DataSource({
-			transport: 
-			{
-				read:
+	    // Get the available images
+	    $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: "GetImagesServlet?brndbotimageid=2"	// param 2 is uploaded images
+	    }).done (function (imgdata, textStatus, jqXHR) {
+		    // Kendo data source used to retrieve image data for the appropriate gallery
+		    var yourImagesDataSource = new kendo.data.DataSource({
+				data: imgdata,
+		        pageSize: 6
+		    });
+		
+			// Pagination control
+		    $("#yourImagesPager").kendoPager({
+		        dataSource: yourImagesDataSource
+		    });
+		
+			// Assemble images in a list view.  It's setup in the styles that images will rollover to the 
+			//  next line automatically.
+		    $("#yourImagesView").kendoListView({
+		        dataSource: yourImagesDataSource,
+		        template: kendo.template($("#imageTemplate").html()),
+			    selectable: true,
+			    change: selectYourImage,
+			    dataBound: yourImagesViewSuccess,
+			    complete: yourImagesViewSuccess
+			});
+		    
+			// placeholder in case it's needed
+		    function yourImagesViewSuccess(e)
+		    {
+		    }
+		
+			// Combo box-like control to select image type (Kendo widget)
+		    $("#imageTypeList").kendoMultiSelect({
+				animation: false,
+				maxSelectedItems: 1,
+				change: function(e)
 				{
-					url: "GetImagesServlet?brndbotimageid=2",	// param 2 is uploaded images
-					dataType: "json"
+					var str = "" + this.value();
+					str = str.toLowerCase();
+					var image_type = -1;
+					if (str.indexOf("image") != -1)
+					{
+						image_type = 0;		// placeholder FIXME
+						CURRENT_GALLERY_TAB = 0;
+					}
+					else if (str.indexOf("teacher") != -1)
+					{
+						image_type = 0;
+						CURRENT_GALLERY_TAB = 1;
+					}
+					else if (str.indexOf("logo") != -1)
+					{
+						image_type = 0;
+						CURRENT_GALLERY_TAB = 2;
+					}
+					session_mgr.setImageID(image_type);
+					CURRENT_GALLERY_TAB = -1;
 				}
-			},
-	        pageSize: 6
+			});
+		
 	    });
 	
-		// Pagination control
-	    $("#yourImagesPager").kendoPager({
-	        dataSource: yourImagesDataSource
-	    });
-	
-		// Assemble images in a list view.  It's setup in the styles that images will rollover to the 
-		//  next line automatically.
-	    $("#yourImagesView").kendoListView({
-	        dataSource: yourImagesDataSource,
-	        template: kendo.template($("#imageTemplate").html()),
-		    selectable: true,
-		    change: selectYourImage,
-		    dataBound: yourImagesViewSuccess,
-		    complete: yourImagesViewSuccess
-		});
-	    
-		// placeholder in case it's needed
-	    function yourImagesViewSuccess(e)
-	    {
-	    }
-	
-		// Combo box-like control to select image type (Kendo widget)
-	    $("#imageTypeList").kendoMultiSelect({
-			animation: false,
-			maxSelectedItems: 1,
-			change: function(e)
-			{
-				var str = "" + this.value();
-				str = str.toLowerCase();
-				var image_type = -1;
-				if (str.indexOf("image") != -1)
-				{
-					image_type = 0;		// placeholder FIXME
-					CURRENT_GALLERY_TAB = 0;
-				}
-				else if (str.indexOf("teacher") != -1)
-				{
-					image_type = 0;
-					CURRENT_GALLERY_TAB = 1;
-				}
-				else if (str.indexOf("logo") != -1)
-				{
-					image_type = 0;
-					CURRENT_GALLERY_TAB = 2;
-				}
-				session_mgr.setImageID(image_type);
-				CURRENT_GALLERY_TAB = -1;
-			}
-		});
+		 
 	
 		// Initialize the file upload widget
 	    function initFileUpload()
@@ -424,27 +426,7 @@ var bench = {
 			});
 		});
 	
-		// Event handler for when the trash button (X) is clicked
-//		$('div[class^="trashBlock"]').each(function ()
-//		{
-//			$(this).on('click', function(e)
-//			{
-				// Remove from the blockStack and slide anything following the now-deleted
-				//  entry up one.
-//				var form = bench.prepEditID(bench.lastSelectedBlock);
-//				if (form)
-//				{
-	//				$('#applyButton').hide();
-//					form.hide();
-//					bench.hideOtherTabs(bench.lastSelectedBlock);
-//				}
-//				bench.trashBlockClicked(e, this.id, true);
-//			});
-//		});
-	
-		$("#viewClasses").kendoButton({
-			click: openPopup
-		});
+
 	
 		// Apply the values currently in the editor to the currently selected object.
 		// Redisplay the updated values in the template
@@ -467,107 +449,15 @@ var bench = {
 					alert('type no apply button is wrong: ' + type);
 			}
 		});
+		
+
+		// load the promotion and all the styles in bench.js
+		bench.loadPromotion ("${proto_name}");
+
+		// ensure the top of the page is shown
+		document.getElementById("brndbotMain").scrollIntoView();
 	
-		// Redirect to the page that sends the email
-		function sendToFinalEmail()
-		{
-			window.location='emailfull.jsp';		
-		}
-	
-		// Redirect to the page that posts to Facebook
-//		function sendToFinalFacebook()
-//		{
-//			// Put the contents into the hidden form
-//			$('#hiddenHtml').val($('#finishedImage').html());
-//	
-//		    $.ajax({
-//		        type: 'POST',
-//		        url: 'SaveHTMLAsImageServlet?brndbotimageid=0',
-//		        data: $('#htmlForm').serialize(), // serializes the form's elements.
-//		        success: function(data)
-//		        {
-//		        	window.location = 'facebookfull.jsp';
-//		        }
-//		      });
-//		}
-	
-	
-		// Track the item that is selected in the popup list
-		function setListState(list, bType)
-		{
-	        var index = list.select().index();
-	        var item = list.dataSource.view()[index];
-	        var listID = item.ID;
-	        var currentID = bench.currentListID[bType - 1];
-			if (currentID == listID)
-			{
-				// Same as last time, so skip
-				return;
-			}
-	
-			if (currentID !== 0)
-			{
-				$('#' + idPrefix[bType - 1] + 'Button' + currentID).hide();
-			}
-	
-			if (listID !== 0)
-			{
-				$('#' + idPrefix[bType - 1] + 'Button' + listID).show();
-			}
-	
-			bench.currentListID[bType- 1] = listID;
-		}
-	
-	
-		// When you select an item from the popup list, and you are adding it to 
-		//  the stack in the editor, this is the routine that handles that.
-		function doListSuccess(cType)
-		{
-			var id = '#' + idPrefix[cType - 1] + 'Here'; 
-	//		$(id + '>div').css({'border-bottom' : '.0625rem #000000 solid' });
-	
-			var listView = $(id).data("kendoListView");
-	
-			// get data items for the selected options.
-			var dataItems = listView.dataSource._data;
-			for (var i=0; i < dataItems.length; i++)
-			{
-		        var dataItem = dataItems[i];
-		        id = dataItem.ID;
-		    	$('#' + idPrefix[cType - 1] + 'Button' + id).kendoButton({
-		    		click: publishClicked
-		    	});
-			}
-		}
-	
-	
-	
-		// Show the popup window.  Initialize it if necessary.
-		function openPopup(e)
-		{
-			var myWin = $("#contentPopup");
-			if (!myWin.data("kendoWindow"))
-			{
-				// window not yet initialized
-				var dialog = myWin.kendoWindow({
-			        width: "50rem",
-			        height: "37.5rem",
-			        modal: true,
-			        pinned: true,
-			        resizable: false,
-			        title: false,
-			        visible: false
-		        }).data("kendoWindow").center();
-			    myWin.parent().css({ "top" : "4.6875rem"});
-			    dialog.center().open();
-			} 
-			else 
-		    {
-		        // reopening window
-		        myWin.data("kendoWindow").center().open(); // open the window
-		    }
-		}
-	},
+	},				// end initTheBench
 	
 	// If you click on a selected block, it unselects the block.  This is the 
 	//  function that unselects a selected block.

@@ -91,6 +91,7 @@ All rights reserved by Brndbot, Ltd. 2015
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
     <script type="text/javascript" src="js/BBModel.js"></script>
+    <script type="text/javascript" src="js/BBStyle.js"></script>
     <script type="text/javascript" src="js/bench.js"></script>
 
     <%	 // tmp_channel indicates the type of editor needed (i.e. email, Facebook, Twitter, etc.)
@@ -511,11 +512,6 @@ All rights reserved by Brndbot, Ltd. 2015
 		// doc.ready init for the bench, in bench.js
 		bench.initTheBench();
 
-		// load the promotion and all the styles in bench.js
-		bench.loadPromotion ("${proto_name}");
-
-		// ensure the top of the page is shown
-		document.getElementById("brndbotMain").scrollIntoView();
 
 	});
 </script>

@@ -52,25 +52,19 @@ public class StyleServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
 		Client client = (Client) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
-		logger.debug ("Client: {}", client);
-		/* TODO Generalize to all styles 
-		 * This version will deliver just one styleset from a fixed location
-		 * for initial testing.
-		 */
-		//StyleSet styleSet = new StyleSet ("dummy");
 		
 		// Make a JSON array of the promotion prototypes under this model
 		ClientInterface ci = null;
 		try {
 			ci = client.getClientInterface();
-			logger.debug ("Client Interface: {}", ci);
 			if (ci == null) {
 				logger.error ("Couldn't get ClientInterface");
 				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;
 			}
-			else
-				logger.debug ("Got ClientInterface {}", ci.getClass().getName());
+			else {
+				//logger.debug ("Got ClientInterface {}", ci.getClass().getName());
+			}
 		} catch (Throwable t) {
 			logger.error (t.getClass().getName());
 			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -78,7 +72,6 @@ public class StyleServlet extends HttpServlet {
 		}
 		Map<String, StyleSet> styleSetMap = null;
 		try {
-			logger.debug ("Calling getStyleSets");
 			styleSetMap = client.getStyleSets(modelName);
 		} catch (Exception e) {
 			logger.error ("Exception getting style sets: {}", e.getClass().getName());

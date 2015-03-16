@@ -640,6 +640,9 @@ public class Image implements TableModel
 			{
 				JSONObject json_obj = new JSONObject();
 				json_obj.put("ID", rs.getInt(1));
+				json_obj.put("width", rs.getInt(3));
+				json_obj.put("height", rs.getInt(4));
+				// I don't really know what that image tag is all about.
 				genImageTag(json_obj, rs.getString(2), 200, 200,
 						rs.getInt(3), rs.getInt(4));
 				json_array.put(json_obj);

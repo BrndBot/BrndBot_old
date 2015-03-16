@@ -329,24 +329,19 @@ populateGallery: function (sel) {
 	});
 },
 
+
 useClickedImage: function (e) {
 	// "this" is the kendo List
     var index = this.select().index();
     var item = this.dataSource.view()[index];
     var id = item.ID;
+    var w = item.width;
+    var h = item.height;
+    console.log ("w = " + w);
+    console.log ("h = " + h);
     var style = benchcontent.galleryTarget.style;
-    style.setLocalImageID (id);  // this also sets the fabricObject URL
-	$.ajax({
-		  url: 'ImageServlet?meta=y&img=' + id,
-		  dataType: 'json',
-		  success: function(data)
-	        {
-			  var width = data.width;
-			  var height = data.height;
-			  style.fitImage (width, height);
-	        },
-	});
-	bench.currentPromotion.canvas.renderAll();
+    style.setLocalImageID (id, w, h);
+    bench.currentPromotion.canvas.renderAll();
 },
 
 /* For the a DOM element which has the data-linkedfield attribute,
