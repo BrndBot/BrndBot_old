@@ -104,6 +104,9 @@ function Promotion (model, styleSet) {
 	
 	this.applyStyleSet = function (styleSet) {
 		this.styleSet = styleSet;
+		// propagate availableImages only if the styleset doesn't have any
+		if (!styleSet.availableImages || styleSet.availableImages.length === 0)
+			styleSet.assignAvailableImages (this.availableImages);
 
 		styleSet.attachToModel (model);
 		
@@ -111,14 +114,22 @@ function Promotion (model, styleSet) {
 
 	this.applyStyleSet (styleSet);
 
+	/* Assign an array of image objects, and propagate it to all
+	 * the styles. Each element has the properties id, width, height.
+	 */
+	this.assignAvailableImages = function (imgs) {
+		this.availableImages = imgs;
+		styleSet.assignAvailableImages (imgs);
+	};
+	
+	this.assignAvailableImages ([]);
+	
 	/* Draw a Promotion. The argument is the ID of a canvas element. */
 	this.draw = function (location) {
 		var canvasElem = $('#' + location);
 		canvasElem.attr("width", this.styleSet.width);
 		canvasElem.attr("height", this.styleSet.height);
 		this.canvas = new fabric.Canvas (location);
-		
-	
 		
 		var styles = this.styleSet.styles;
 		var len = styles.length;

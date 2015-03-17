@@ -25,6 +25,7 @@ function StyleSet () {
 	// dimensions of the promotion to be drawn
 	this.width = 0;
 	this.height = 0;
+	this.availableImages = [];
 
 	// Convert JSON data into data for this Model
 	this.populateFromJSON = function (jsonObj) {
@@ -69,9 +70,9 @@ function StyleSet () {
 			var style = this.styles[i];
 			style.attachToModel (model);
 		}
-	}
+	};
 	
-	// Find a Style that matches a ModelField, or null
+	/** Find a Style that matches a ModelField, or null */
 	this.findApplicableStyle = function (modelField) {
 		console.log ("findApplicableStyle, field name = " + modelField.name);
 		var fieldName = modelField.name;
@@ -88,6 +89,18 @@ function StyleSet () {
 			}
 		}
 		return null;
+	};
+	
+	/** Assign the array of available images to the StyleSet.
+	 *  This has to be done to each StyleSet that's activated.
+	 *  Repeating it is harmless.
+	 */
+	this.assignAvailableImages = function (imgs) {
+		this.availableImages = imgs;
+		for (var i = 0; i < this.styles.length; i++) {
+			var style = this.styles[i];
+			style.availableImages = imgs;
+		}
 	};
 }
 
@@ -124,6 +137,7 @@ function Style (styleType) {
 	this.dropShadowBlur = null;
 	this.imageID = null;
 	this.fabricObject = null;
+	this.availableImages = [];
 	
 	/* Make a copy of the Style. 
 	 */
@@ -151,8 +165,9 @@ function Style (styleType) {
 		retval.dropShadowV = this.dropShadowV;
 		retval.dropShadowBlur = this.dropShadowBlur;
 		retval.imageID = this.imageID;
+		retval.availableImages = this.availableImages;
 		return retval;
-	}
+	};
 	
 	/* Populating from a JSON object is particularly easy in
 	 * this case. */
@@ -307,23 +322,31 @@ function Style (styleType) {
 		// from the style dimensions
 		var xDisplace = 0;
 		var yDisplace = 0;
+		var width;
+		var height;
+		var id = this.getImageID();
+		var imgdata = this.findImage (id);
 		if (dispWidth) {
-			var width = dispWidth;
+			width = dispWidth;
 			xDisplace = (this.getWidth() - dispWidth) / 2.0;
 			console.log ("xDisplace has been set to " + xDisplace);
 		}
+		else if (imgdata)
+			width = imgdata.width;
 		else
 			width = this.getWidth();
 		if (dispHeight) {
-			var height = dispHeight;
+			height = dispHeight;
 			yDisplace = (this.getHeight() - dispHeight) / 2.0;
 			console.log ("yDisplace has been set to " + yDisplace);
 		}
+		else if (imgdata)
+			height = imgdata.height;
 		else
 			height = this.getHeight();
+		
 		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
 		var style = this;
-		var id = this.getImageID();
 		var img = fabric.Image.fromURL("ImageServlet?img=" + id, function (img) {
 			img.hasControls = false;
 			img.selectable = false;
@@ -614,12 +637,16 @@ function Style (styleType) {
 		return retval;
 	};
 	
-	/* getImageID returns the string "default" if no image has been set. */
+	/* getImageID returns the ID of the first available image if no image has 
+	 * been set, or "default" if there are none. */
 	this.getImageID = function () {
 		if (this.modelField.localStyle.imageID !== null)
 			return this.modelField.localStyle.imageID;
 		else if (this.imageID !== null)
 			return this.imageID;
+		else if (this.availableImages.length > 0) {
+			return this.availableImages[0].ID;
+		}
 		else return "default";
 	};
 	
@@ -687,5 +714,19 @@ function Style (styleType) {
 		this.fabricObject.clipTo = function (ctx) {
 			ctx.rect (x, y, wid, ht);
 		};
+	};
+	
+	/* Return the image object from availableImages that matches id.
+	 * The returne object has the properties id, width, height.
+	 * Returns null if no match. 
+	 */
+	this.findImage = function (id) {
+		for (var i = 0; i < this.availableImages.length; i++) {
+			var img = this.availableImages[i];
+			if (img.ID == id) {
+				return img;
+			}
+		}
+		return null;
 	};
 }

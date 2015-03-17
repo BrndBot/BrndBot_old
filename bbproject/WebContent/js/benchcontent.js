@@ -308,16 +308,24 @@ pickImage: function (btn) {
 	}
 },
 
-galleryDataSource: new kendo.data.DataSource({
-	transport:
-	{
-		read:
-		{
-			url: "GetImagesServlet" ,
-			dataType: "json"
-		}
-	}
-}),
+// Placeholder data source till the images are loaded
+galleryDataSource: new kendo.data.DataSource({data: []}),
+
+// This function is called from bench.js when the images are ready to
+// populate the data source.
+prepareDataSource: function () {
+	benchcontent.galleryDataSource = new kendo.data.DataSource({
+		data: bench.availableImages
+	});
+//	transport:
+//	{
+//		read:
+//		{
+//			url: "GetImagesServlet" ,
+//			dataType: "json"
+//		}
+//	}
+},
 
 
 populateGallery: function (sel) {

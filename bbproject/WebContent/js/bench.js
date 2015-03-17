@@ -15,6 +15,9 @@ var bench = {
 	// The Promotion object representing the promotion to draw.
 	currentPromotion: null,
 	
+	// The array of available images
+	availableImages: null,
+	
 	// An array of StyleSet objects applicable to the promotion.
 	styleSets: null,
 	
@@ -49,12 +52,16 @@ var bench = {
 	    
 	    });
 	
-	    // Get the available images
+	    // Get the available images, and create a Deferred object for things
+	    // that depend on them.
 	    $.ajax({
             type: 'GET',
             dataType: 'json',
-            url: "GetImagesServlet?brndbotimageid=2"	// param 2 is uploaded images
+            url: "GetImagesServlet?brndbotimageid=2"	// param of 2 means uploaded images
 	    }).done (function (imgdata, textStatus, jqXHR) {
+	    	bench.availableImages = imgdata;
+	    	benchcontent.prepareDataSource();
+	    	
 		    // Kendo data source used to retrieve image data for the appropriate gallery
 		    var yourImagesDataSource = new kendo.data.DataSource({
 				data: imgdata,
@@ -72,7 +79,6 @@ var bench = {
 		        dataSource: yourImagesDataSource,
 		        template: kendo.template($("#imageTemplate").html()),
 			    selectable: true,
-			    change: selectYourImage,
 			    dataBound: yourImagesViewSuccess,
 			    complete: yourImagesViewSuccess
 			});
@@ -111,6 +117,13 @@ var bench = {
 				}
 			});
 		
+			// load the promotion and all the styles in bench.js
+			bench.loadPromotion ("${proto_name}");
+
+			// ensure the top of the page is shown
+			document.getElementById("brndbotMain").scrollIntoView();
+		
+
 	    });
 	
 		 
@@ -178,11 +191,6 @@ var bench = {
 			if (dialog)
 				dialog.close();
 	
-	    }
-	
-	    function selectYourImage(e)
-	    {
-	    	alert('hello your image');
 	    }
 	
 	
@@ -451,12 +459,6 @@ var bench = {
 		});
 		
 
-		// load the promotion and all the styles in bench.js
-		bench.loadPromotion ("${proto_name}");
-
-		// ensure the top of the page is shown
-		document.getElementById("brndbotMain").scrollIntoView();
-	
 	},				// end initTheBench
 	
 	// If you click on a selected block, it unselects the block.  This is the 
@@ -618,8 +620,13 @@ var bench = {
 				var canvas = $('#finishedImage1');
 				// Because of the way completion routines are hooked up,
 				// styleSets will now be available.
+				for (var i = 0; i < bench.styleSets.length; i++) {
+					var stlset = bench.styleSets[i];
+					stlset.assignAvailableImages (bench.availableImages);
+				}
 				var defaultStyleSet = bench.styleSets[0];		// TODO find the one named "default" by preference
 				bench.currentPromotion = new Promotion (promotionModel, defaultStyleSet);
+				bench.currentPromotion.assignAvailableImages (bench.availableImages);
 				canvas.attr("width", defaultStyleSet.width);
 				canvas.attr("height", defaultStyleSet.height);
 	
