@@ -324,7 +324,7 @@ All rights reserved by Brndbot, Ltd. 2015
 
 				<% // Here's where the promotion goes
 				%>
-				<canvas id="finishedImage1"></div>
+				<canvas id="finishedImage1" ></div>
 
 				<c:set var="templateEnum" value="3" scope="page"/> 
 
@@ -528,7 +528,7 @@ All rights reserved by Brndbot, Ltd. 2015
 							style="width:98%">#:content#
 						</textarea>
                 </div>
-                <div>Point size</div>
+                <div>Font size</div>
                 <div class="editTextArea" >
                     <input type="number" data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypePointSize(this)" 

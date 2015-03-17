@@ -31,6 +31,8 @@ public class ImageServlet extends HttpServlet {
 	 *  
 	 *  If the img parameter is "default", get the default image.
 	 *  If the img parameter is "logo", get the user's default logo.
+	 *  If the img parameter is "fused", gets the user's fused image
+	 *  (composed promotion).
 	 *  
 	 *  An image may be stored in the database as a mediumblob, or its
 	 *  "name" may be a relative path. Only images in the database
@@ -39,6 +41,7 @@ public class ImageServlet extends HttpServlet {
 	 *  
 	 *  If the parameter "meta" is present, it returns JSON with the
 	 *  metadata rather than image data.
+	 *  
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -60,6 +63,7 @@ public class ImageServlet extends HttpServlet {
 		logger.debug ("Starting ImageServlet post");
 		boolean useDefaultImage = false;
 		boolean userLogo = false;
+		boolean useFusedImage = false;
 		HttpSession session = request.getSession();
 		int userId = SessionUtils.getUserId(session);
 		String imageIdStr = (String)request.getParameter("img"); 
@@ -68,6 +72,8 @@ public class ImageServlet extends HttpServlet {
 			useDefaultImage = true;
 		else if ("logo".equals (imageIdStr))
 			userLogo = true;
+		else if ("fused".equals (imageIdStr))
+			useFusedImage = true;
 		else {
 			try {
 				imageId = Integer.parseInt(imageIdStr);
@@ -80,11 +86,11 @@ public class ImageServlet extends HttpServlet {
 		String metaParam = (String) request.getParameter ("meta");
 		if (metaParam != null) {
 			logger.debug ("Getting metadata, id = {}", imageId);
-			doMetadata (request, response, userId, imageId, userLogo, useDefaultImage);
+			doMetadata (request, response, userId, imageId, userLogo, useDefaultImage, useFusedImage);
 		}
 		else {
 			logger.debug ("Getting image, id = {}", imageId);
-			doImage (request, response, userId, imageId, userLogo, useDefaultImage);
+			doImage (request, response, userId, imageId, userLogo, useDefaultImage, useFusedImage);
 		}
 	}
 	
@@ -93,7 +99,8 @@ public class ImageServlet extends HttpServlet {
 			int userId,
 			int imageId, 
 			boolean userLogo, 
-			boolean useDefaultImage) 
+			boolean useDefaultImage,
+			boolean useFusedImage) 
 					throws ServletException, IOException {
 		DbConnection con = DbConnection.GetDb();
 
@@ -102,6 +109,8 @@ public class ImageServlet extends HttpServlet {
 			imgStream = Image.getDefaultImageStream (userId, con);
 		else if (userLogo)
 			imgStream = Image.getLogoImageStream (userId, con);
+		else if (useFusedImage)
+			imgStream = Image.getFusedImageStream(userId, con);
 		else
 			imgStream = Image.getImageStream(userId, imageId, con);
 		if (imgStream == null) {
@@ -135,14 +144,18 @@ public class ImageServlet extends HttpServlet {
 			int userId,
 			int imageId, 
 			boolean userLogo, 
-			boolean useDefaultImage) 
+			boolean useDefaultImage,
+			boolean useFusedImage) 
 					throws ServletException, IOException {
 		DbConnection con = DbConnection.GetDb();
 
 		Image image;
 		if (useDefaultImage) {
-			logger.debug ("Getting default image");
 			image = Image.getDefaultImage(userId, con);
+		}
+		else if (useFusedImage) {
+			logger.debug ("Getting metadata for fused image");
+			image = Image.getFusedImage(userId, con);
 		}
 		else {
 			// works for both regular images and logos

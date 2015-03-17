@@ -689,10 +689,14 @@ var bench = {
 			  data: { 
 			     imgBase64: imageURL
 			  }
-		}).done(function(o) {
+		}).done(function() {
 			  console.log('saved'); 
-			  // Go to new page here
-			});
+			  window.location.assign ("channel.jsp");
+		}).fail(function (jqXHR, textStatus, errorThrown) {
+			console.log ("exportPresentation failed");
+			if (errorThrown)
+				console.log (errorThrown);
+		});
 	},
 	
 	exportPresError: function (xhr, textStatus, errorThrown) {
@@ -700,8 +704,4 @@ var bench = {
 		console.log (errorThrown);
 	},
 	
-	exportPresSuccess: function (data) {
-		console.log ("Alleged success"),
-		console.log(data);
-	}
 };

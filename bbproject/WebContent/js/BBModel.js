@@ -130,6 +130,7 @@ function Promotion (model, styleSet) {
 		canvasElem.attr("width", this.styleSet.width);
 		canvasElem.attr("height", this.styleSet.height);
 		this.canvas = new fabric.Canvas (location);
+		this.canvas.setBackgroundColor ('#FFFFFF');
 		
 		var styles = this.styleSet.styles;
 		var len = styles.length;

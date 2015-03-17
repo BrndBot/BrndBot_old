@@ -42,9 +42,6 @@ import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
 import com.brndbot.util.AppEnvironment;
 
-/** TODO Need to add MIME type to Image table.
- *  ImageType is the usage type, not the MIME type.
- */
 public class Image implements TableModel 
 {
 	
@@ -80,7 +77,7 @@ public class Image implements TableModel
 		image = null;
 	}
 	
-	/** Consructor that loads up the image from a ResultSet that includes ImageID, UserID,
+	/** Constructor that loads up the image from a ResultSet that includes ImageID, UserID,
 	 *  ImageType, ImageURL, ImageSize, ImageHeight, and ImageWidth. 
 	 *  The ResultSet must already have been "nexted" to the desired entry.
 	 *  The field Image is not included here since it's so big it should
@@ -141,8 +138,36 @@ public class Image implements TableModel
 		return tableName;
 	}
 	
+	@Override
+	public String toString () {
+		StringBuffer sb = new StringBuffer("Image: ");
+		sb.append ("imageWidth = ");
+		sb.append (imageWidth.toString());
+		sb.append ("   imageHeight = ");
+		sb.append (imageHeight.toString());
+		sb.append ("   imageSize = ");
+		sb.append (imageSize.toString());
+		if (mimeType != null) {
+			sb.append ("   mimeType = ");
+			sb.append (mimeType.toString());
+		}
+		sb.append ("   userId = ");
+		sb.append (userId.toString());
+		sb.append ("   imageType = ");
+		sb.append (imageType.toString());
+		return sb.toString();
+	}
 
-//	static final String CS = ", ";
+	/* Delete any old fused images. */
+	public static void deleteFusedImages (int userId, DbConnection con) throws SQLException {
+		PreparedStatement pstmt = con.createPreparedStatement
+				("DELETE FROM images WHERE UserID = ? AND ImageType = ?");
+		pstmt.setInt (1, userId);
+		pstmt.setInt (2, ImageType.FUSED_IMAGE.getValue());
+		pstmt.execute();
+	}
+
+	
 
 	public Integer getImageID() { return imageId; }
 	public void setImageID(int arg) { imageId = arg; } 
@@ -232,6 +257,33 @@ public class Image implements TableModel
 		logger.debug ("returning from save");
 		return DbUtils.getLastInsertID(con);
 	}
+
+	
+	/** Create a new row in the table "images" with the specified data.
+	 *  This version passes an InputStream for the image blob data instead
+	 *  of using the image value.
+	 */
+//	public int saveFromStream(InputStream blobStream, DbConnection con) throws SQLException
+//	{
+//		logger.debug("saveFromStream");
+//		PreparedStatement pstmt;
+//			pstmt = con.createPreparedStatement("INSERT INTO images (" +
+//					"ImageType, UserID, ImageURL, ImageSize, ImageHeight, ImageWidth, ImageName, Image) " +
+//					"VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
+//		pstmt.setInt(1, getImageType().getValue());
+//		pstmt.setInt(2, getUserID().intValue());
+//		pstmt.setString(3, getImageUrl());
+//		pstmt.setInt(4, getImageSize());
+//		pstmt.setInt(5, getImageHeight());
+//		pstmt.setInt(6, getImageWidth());
+//		pstmt.setString(7, getImageName());
+//		pstmt.setBinaryStream(8, blobStream);
+//		// Timestamp is defined by default as current system time 
+//		pstmt.executeUpdate();
+//		pstmt.close();
+//		logger.debug ("returning from save");
+//		return DbUtils.getLastInsertID(con);
+//	}
 
 	/** Returns the total number of images in the database
 	 *  (why was this ever written?) */
@@ -593,7 +645,6 @@ public class Image implements TableModel
 		fos.write(bytes);
 		fos.close();
 	}
-
 	
 	/** Returns the default image for a user. For the moment, this is the
 	 *  oldest image; it may change.
@@ -617,6 +668,34 @@ public class Image implements TableModel
 			}
 		} catch (Exception e) {
 			logger.error ("Exception in getDefaultImage: {}   {}", 
+					e.getClass().getName(),
+					e.getMessage());
+			return null;
+		}
+		return null;		// no images for user ID
+	}
+	
+	static public Image getFusedImage (int userId, DbConnection con) {
+		// Shouldn't be more than one, but it costs nothing to pick the latest
+		PreparedStatement pstmt = con.createPreparedStatement
+				("SELECT ImageID, CreateDateTime FROM images WHERE UserID = ? AND " +
+								"ImageType = ? " +
+								"ORDER BY CreateDateTime DESC");
+		ResultSet rs = null;
+		try {
+			pstmt.setInt (1, userId);
+			pstmt.setInt (2, ImageType.FUSED_IMAGE.getValue());
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				int imageId = rs.getInt(1);
+				Image img = new Image();
+				img.setImageID(imageId);
+				img.setUserID(userId);
+				img.setImageType(ImageType.FUSED_IMAGE);
+				return img;
+			}
+		} catch (Exception e) {
+			logger.error ("Exception in getFusedImage: {}   {}", 
 					e.getClass().getName(),
 					e.getMessage());
 			return null;
@@ -786,6 +865,11 @@ public class Image implements TableModel
 		Image defImage = getDefaultImage(user_id, con);
 		// This has only the image and user IDs
 		return getImageStream (user_id, defImage.getImageID(), con);
+	}
+	
+	static public MimeTypedInputStream getFusedImageStream (int user_id, DbConnection con) {
+		Image fusedImage = getFusedImage (user_id, con);
+		return getImageStream (user_id, fusedImage.getImageID(), con);
 	}
 	
 	/** Returns an OutputStream with the content of the user's default logo.

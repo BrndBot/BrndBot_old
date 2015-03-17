@@ -230,7 +230,14 @@ function Style (styleType) {
 			this.fabricateText (canvas);
 			break;
 		case "image":
-			this.fabricateImage (canvas);
+			var imgData = this.findImage();
+			if (imgData) {
+				var dims = this.fitImage (imgData.width, imgData.height);
+				this.fabricateImage (canvas, dims.width, dims.height);
+			}
+			else {
+				this.fabricateImage (canvas);
+			}
 			break;
 		case "logo":
 			this.fabricateLogo (canvas);
@@ -329,22 +336,22 @@ function Style (styleType) {
 		if (dispWidth) {
 			width = dispWidth;
 			xDisplace = (this.getWidth() - dispWidth) / 2.0;
-			console.log ("xDisplace has been set to " + xDisplace);
 		}
 		else if (imgdata)
 			width = imgdata.width;
 		else
 			width = this.getWidth();
+		
 		if (dispHeight) {
 			height = dispHeight;
 			yDisplace = (this.getHeight() - dispHeight) / 2.0;
-			console.log ("yDisplace has been set to " + yDisplace);
 		}
 		else if (imgdata)
 			height = imgdata.height;
 		else
 			height = this.getHeight();
 		
+		console.log ("width = " + width + "    height = " + height);
 		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
 		var style = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=" + id, function (img) {
@@ -352,8 +359,6 @@ function Style (styleType) {
 			img.selectable = false;
 			img.left = pos.x + xDisplace;
 			img.top = pos.y  + yDisplace;
-			console.log ("x displacement = " + xDisplace);
-			console.log ("width = " + width);
 			img.originX = pos.originx;
 			img.originY = pos.originy;
 			img.width = width;
@@ -721,9 +726,12 @@ function Style (styleType) {
 	 * Returns null if no match. 
 	 */
 	this.findImage = function (id) {
+		if (!id)
+			id = this.getImageID();
 		for (var i = 0; i < this.availableImages.length; i++) {
 			var img = this.availableImages[i];
 			if (img.ID == id) {
+				console.log ("findImage, id = " + id + "  width = " + img.width + "  height = " + img.height);
 				return img;
 			}
 		}

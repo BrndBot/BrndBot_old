@@ -12,6 +12,11 @@ All rights reserved by Brndbot, Ltd. 2015
     <meta charset="utf-8">
 </head>
 <body>
-<div>Under construction</div>
+<div>
+<img src="ImageServlet?img=fused" alt="Composed promotion">
+<p>
+You can save this image in most browsers by right-clicking on it.
+</p>
+</div>
 </body>
 </html>

@@ -211,7 +211,7 @@ public class SaveImageServlet extends HttpServlet
 			break;
 		case FUSED_IMAGE:
 		case STOCK:
-			// What ARE these, anyway???
+			// FUSED_IMAGE is taken care of by SavePromotionServlet
 			break;
 		}
 		logger.debug("Saved Image ID = " + saved_img_id);

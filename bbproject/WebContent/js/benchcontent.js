@@ -113,7 +113,7 @@ updatePrototypePointSize: function(tarea) {
     	}
     }
 
-    /*  Changing the point size with every keystroke probably isn't a
+    /*  Changing the font size with every keystroke probably isn't a
      *  great idea, so we don't put this on timer. */
     tarea.onblur = function() {
         testForChange();
