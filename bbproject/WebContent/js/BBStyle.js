@@ -35,7 +35,7 @@ function StyleSet () {
 		var jsonStyles = jsonObj.styles;
 		for (var i = 0; i < jsonStyles.length; i++) {
 			var jsonStyle = jsonStyles[i];
-			var styl = new Style (jsonStyle.styleType);
+			var styl = new Style (jsonStyle.styleType, this);
 			this.styles[i] = styl;
 			styl.index = i;
 			styl.populateFromJSON (jsonStyle);
@@ -109,13 +109,14 @@ function StyleSet () {
  * where all changes are made. It will also have a fabric.js object
  * associated with it for drawing. These can be replaced when the
  * Style is reused. */
-function Style (styleType) {
+function Style (styleType, styleSet) {
 	this.index = 0;
 	// The ModelField associated with the style
 	this.modelField = null;
 	// The name of the ModelField.
 	this.fieldName = null;
 	this.styleType = styleType;
+	this.styleSet = styleSet;
 	this.width = null;		// width of the frame
 	this.height = null;		// height of the frame
 	this.sourceWidth = null;	// width of the source image
@@ -142,7 +143,7 @@ function Style (styleType) {
 	/* Make a copy of the Style. 
 	 */
 	this.copy = function () {
-		var retval = new Style(this.styleType);
+		var retval = new Style(this.styleType, this.styleSet);
 		retval.index = this.index;
 		retval.fieldName = this.fieldName;
 		retval.width = this.width;
@@ -216,7 +217,7 @@ function Style (styleType) {
 		// If the model field already has a local style, leave it;
 		// otherwise give it a starter local style.
 		if (this.modelField && !this.modelField.localStyle)
-			this.modelField.localStyle = new Style();
+			this.modelField.localStyle = new Style(this.styleType, this.styleSet);
 	};
 
 
@@ -260,21 +261,31 @@ function Style (styleType) {
 		var weight = this.isBold() ? "bold" : "normal";
 		var fstyle = this.isItalic() ? "italic" : "normal";
 		
+		// The X position depends on the alignment.
+		// For right-aligned text, it's the right edge. For centered text,
+		// it's the center.
+		var xpos = pos.x;
+		var alignment = this.getAlignment();
+		if (alignment == "right")
+			xpos = pos.x + this.getWidth();
+		else if (alignment == "center")
+			xpos = pos.x + this.getWidth() / 2;
+		
 		var text = new fabric.Text(this.getText(), {
 			hasControls: false,
 			selectable: false,
 			fontSize: this.getPointSize(),
 			fontFamily: this.getTypeface(),
 			fill: this.getColor(),
-			left: pos.x,
+			left: xpos,
 			top: pos.y,
-			originX: pos.originx,
-			originY: pos.originy,
+			originX: "left",
+			originY: "top",
 			width: this.getWidth(),
 			height: this.getHeight(),
 			fontWeight: weight,
 			fontStyle: fstyle,
-			alignment: this.getAlignment()
+			textAlign: alignment
 		});
 		
 		var dropShadowH = this.getDropShadowH();
@@ -307,18 +318,24 @@ function Style (styleType) {
 			height: ht,
 			left: pos.x,
 			top: pos.y,
-			originX: pos.originx,
-			originY: pos.originy,
+			originX: "left",
+			originY: "top",
 			fill: color,
 			globalCompositeOperation: gco,
 			opacity: opacity
 		});
-		if (this.multiply) {
-			
-		}
 		this.fabricObject = rect;
 		canvas.add(rect);
 		canvas.moveTo(rect, this.index);
+		
+		// If there's a drop shadow, it's implemented as an offset rectangle.
+		// We need to compbine the two rectangles into a composite object for
+		// management purposes.
+		var dropShadowH = this.getDropShadowH();
+		var dropShadowV = this.getDropShadowV();
+		if (dropShadowH || dropShadowV) {
+			// TODO Come back to block drop shadow implementation
+		}
 	};
 	
 
@@ -353,6 +370,10 @@ function Style (styleType) {
 		
 		console.log ("width = " + width + "    height = " + height);
 		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
+		var gco = "source-over";
+		if (this.getMultiply())
+			gco = "multiply";
+		
 		var style = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=" + id, function (img) {
 			img.hasControls = false;
@@ -364,7 +385,8 @@ function Style (styleType) {
 			img.width = width;
 			img.height = height;
 			img.opacity = opacity;
-			
+			img.globalCompositeOperation = gco;
+
 			img.clipTo = function (ctx) {
 				ctx.rect (-style.getWidth() / 2, -style.getHeight() / 2, style.getWidth(), style.getHeight());
 			};
@@ -385,8 +407,8 @@ function Style (styleType) {
 			img.selectable = false;
 			img.left = pos.x;
 			img.top = pos.y;
-			img.originX = pos.originx;
-			img.oritinY = pos.originy;
+			img.originX = "left";
+			img.oritinY = "top";
 			img.width = width;
 			img.height = height;
 			style.fabricObject = img;
@@ -412,8 +434,8 @@ function Style (styleType) {
 			obj.height = ht;
 			obj.left = pos.x;
 			obj.top = pos.y;
-			obj.originX = pos.originx;
-			obj.originY = pos.originy;
+			obj.originX = "left";
+			obj.originY = "top";
 			canvas.add(obj);
 			canvas.moveTo(obj, style.index);
 			style.fabricObject = obj;
@@ -624,21 +646,18 @@ function Style (styleType) {
 	};
 
 	/* Function for the x, y, and anchor calculations. Returns an object with 
-	 * fields x, y, and anchor. */
+	 * fields x and y. */
 	this.getPosition = function () {
 		var anchor = this.modelField.localStyle.anchor ? this.modelField.localStyle.anchor : this.anchor;
-		var retval = {x: 0, y: 0, originx: "left", originy: "top" };
+		var retval = {x: 0, y: 0 };
 		retval.x = this.getX();
 		if (anchor == "TR" || anchor == "BR") {
-			retval.originx = "right";
-			retval.x = -retval.x;
+			retval.x = this.styleSet.width - retval.x - this.getWidth();
 		}
 		retval.y = this.getY();
 		if (anchor == "BR" || anchor == "BL") {
-			retval.originy = "bottom";
-			retval.y = -retval.y;
+			retval.y = this.styleSet.height - retval.y - this.getHeight();
 		}
-
 		return retval;
 	};
 	
