@@ -52,7 +52,7 @@ function StyleSet () {
 		retval.width = this.width;
 		retval.height = this.height;
 		retval.styles = [];
-		for (i = 0; i < this.styles.length; i++) {
+		for (var i = 0; i < this.styles.length; i++) {
 			var style = this.styles[i];
 			var copyStyle = style.copy(); 
 			retval.styles.push (style.copy());
@@ -66,30 +66,30 @@ function StyleSet () {
 	 */
 	this.attachToModel = function (model) {
 		var len = this.styles.length;
-		for (i = 0; i < len; i++) {
+		for (var i = 0; i < len; i++) {
 			var style = this.styles[i];
 			style.attachToModel (model);
 		}
 	};
 	
 	/** Find a Style that matches a ModelField, or null */
-	this.findApplicableStyle = function (modelField) {
-		console.log ("findApplicableStyle, field name = " + modelField.name);
-		var fieldName = modelField.name;
-		if (!fieldName)
-			return null;
-		for (var i = 0; i < this.styles.length; i++) {
-			var style = this.styles[i];
-			if (!style)
-				continue;
-			console.log ("Checking style " + style.fieldName);
-			if (style.fieldName == fieldName) {
-				console.log ("Found a style");
-				return style;
-			}
-		}
-		return null;
-	};
+//	this.findApplicableStyle = function (modelField) {
+//		console.log ("findApplicableStyle, field name = " + modelField.name);
+//		var fieldName = modelField.name;
+//		if (!fieldName)
+//			return null;
+//		for (var i = 0; i < this.styles.length; i++) {
+//			var style = this.styles[i];
+//			if (!style)
+//				continue;
+//			console.log ("Checking style " + style.fieldName);
+//			if (style.fieldName == fieldName) {
+//				console.log ("Found a style");
+//				return style;
+//			}
+//		}
+//		return null;
+//	};
 	
 	/** Assign the array of available images to the StyleSet.
 	 *  This has to be done to each StyleSet that's activated.
@@ -124,6 +124,8 @@ function Style (styleType, styleSet) {
 	this.anchor = null;
 	this.offsetX = null;
 	this.offsetY = null;
+	this.text = null;
+	this.defaultText = null;
 	this.typeface = null;
 	this.pointSize = null;
 	this.color = null;
@@ -137,6 +139,7 @@ function Style (styleType, styleSet) {
 	this.dropShadowV = null;
 	this.dropShadowBlur = null;
 	this.imageID = null;
+	this.hCenter = null;
 	this.fabricObject = null;
 	this.availableImages = [];
 	
@@ -153,6 +156,8 @@ function Style (styleType, styleSet) {
 		retval.anchor = this.anchor = "TL";
 		retval.offsetX = this.offsetX;
 		retval.offsetY = this.offsetY;
+		retval.text = this.text;
+		retval.defaultText = this.defaultText;
 		retval.typeface = this.typeface;
 		retval.pointSize = this.pointSize;
 		retval.color = this.color;
@@ -166,6 +171,7 @@ function Style (styleType, styleSet) {
 		retval.dropShadowV = this.dropShadowV;
 		retval.dropShadowBlur = this.dropShadowBlur;
 		retval.imageID = this.imageID;
+		retval.hCenter = this.hCenter;
 		retval.availableImages = this.availableImages;
 		return retval;
 	};
@@ -189,6 +195,7 @@ function Style (styleType, styleSet) {
 		this.dropShadowH = jsonObj.dropShadowH;
 		this.dropShadowV = jsonObj.dropShadowV;
 		this.dropShadowBlur = jsonObj.dropShadowBlur;
+		this.hCenter = jsonObj.hCenter;
 
 		// Text-specific fields.
 		if (this.styleType == "text") {
@@ -207,7 +214,7 @@ function Style (styleType, styleSet) {
 	this.attachToModel  = function (model) {
 		this.model = model;
 		var len = model.fields.length;
-		for (i = 0; i < len; i++) {
+		for (var i = 0; i < len; i++) {
 			var field = model.fields[i];
 			if (field.name == this.fieldName) {
 				this.modelField = field;
@@ -271,6 +278,7 @@ function Style (styleType, styleSet) {
 		else if (alignment == "center")
 			xpos = pos.x + this.getWidth() / 2;
 		
+		// TODO replace this with Textbox when it becomes available in fabric.js
 		var text = new fabric.Text(this.getText(), {
 			hasControls: false,
 			selectable: false,
@@ -324,17 +332,47 @@ function Style (styleType, styleSet) {
 			globalCompositeOperation: gco,
 			opacity: opacity
 		});
-		this.fabricObject = rect;
-		canvas.add(rect);
-		canvas.moveTo(rect, this.index);
 		
 		// If there's a drop shadow, it's implemented as an offset rectangle.
-		// We need to compbine the two rectangles into a composite object for
+		// We need to compbine the two rectangles into a Group object for
 		// management purposes.
 		var dropShadowH = this.getDropShadowH();
 		var dropShadowV = this.getDropShadowV();
 		if (dropShadowH || dropShadowV) {
-			// TODO Come back to block drop shadow implementation
+			// position rect at top left corner of group
+			rect.left = 0;
+			rect.top = 0;
+			var shadowRect = new fabric.Rect ({
+				hasControls: false,
+				selectable: false,
+				width: wid,
+				height: ht,
+				left: dropShadowH,
+				top: dropShadowV,
+				originX: "left",
+				originY: "top",
+				fill: "#000000",
+				globalCompositeOperation: gco,
+				opacity: opacity
+			});
+			var group = new fabric.Group ([shadowRect, rect],
+				{
+				hasControls: false,
+				selectable: false,
+				left: pos.x,
+				top: pos.y,
+				originX: "left",
+				originY: "top"
+				});
+			canvas.add(group);
+			canvas.moveTo(group, this.index);
+		}
+		else {
+			// No drop shadow, just use the Rect object
+			this.fabricObject = rect;
+			canvas.add(rect);
+			canvas.moveTo(rect, this.index);
+
 		}
 	};
 	
@@ -380,8 +418,8 @@ function Style (styleType, styleSet) {
 			img.selectable = false;
 			img.left = pos.x + xDisplace;
 			img.top = pos.y  + yDisplace;
-			img.originX = pos.originx;
-			img.originY = pos.originy;
+			img.originX = "left";
+			img.originY = "top";
 			img.width = width;
 			img.height = height;
 			img.opacity = opacity;
@@ -644,14 +682,29 @@ function Style (styleType, styleSet) {
 	this.setLocalDropShadowBlur = function (b) {
 		this.modelField.localStyle.dropShadowBlur = b;
 	};
+	
+	this.getHCenter = function () {
+		if (this.modelField.localStyle.hCenter !== null)
+			return this.modelField.localStyle.hCenter;
+		else if (this.hCenter !== null)
+			return this.hCenter;
+		else
+			return false;
+	}
 
 	/* Function for the x, y, and anchor calculations. Returns an object with 
 	 * fields x and y. */
 	this.getPosition = function () {
 		var anchor = this.modelField.localStyle.anchor ? this.modelField.localStyle.anchor : this.anchor;
 		var retval = {x: 0, y: 0 };
+		var hCenter = this.getHCenter();
 		retval.x = this.getX();
-		if (anchor == "TR" || anchor == "BR") {
+		if (hCenter) {
+			// hCenter means to center the field horizontally, regardless
+			// of the x position
+			retval.x = (this.styleSet.width - this.getWidth()) / 2;
+		}
+		else if (anchor == "TR" || anchor == "BR") {
 			retval.x = this.styleSet.width - retval.x - this.getWidth();
 		}
 		retval.y = this.getY();

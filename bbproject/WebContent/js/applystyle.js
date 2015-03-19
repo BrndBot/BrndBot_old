@@ -37,7 +37,7 @@ var applyStyle = {
 	findApplicableStyle: function (field, styleSet) {
 		console.log ("findApplicableStyle, field name = " + field.name);
 		var fieldName = field.name;
-		for (i = 0; i < styleSet.styles.length; i++) {
+		for (var i = 0; i < styleSet.styles.length; i++) {
 			var style = styleSet.styles[i];
 			console.log ("Checking style " + style.fieldName);
 			if (style.fieldName == fieldName) {

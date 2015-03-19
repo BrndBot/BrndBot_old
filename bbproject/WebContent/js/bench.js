@@ -637,8 +637,8 @@ var bench = {
 				if (defaultStyleSet.width > bench.MAX_PROMOTION_DIM || defaultStyleSet.height > bench.MAX_PROMOTION_DIM) {
 					var scaleRatio = Math.min (bench.MAX_PROMOTION_DIM / defaultStyleSet.width,
 							bench.MAX_PROMOTION_DIM / defaultStyleSet.height);
-					canvas.css("width", Math.floor(defaultStyleSet.width * scaleRatio));
-					canvas.css("height", Math.floor(defaultStyleSet.height * scaleRatio));
+					canvas.css("width", "" + Math.floor(defaultStyleSet.width * scaleRatio) + "px");
+					canvas.css("height", "" + Math.floor(defaultStyleSet.height * scaleRatio) + "px");
 				}
 			}
 		});	

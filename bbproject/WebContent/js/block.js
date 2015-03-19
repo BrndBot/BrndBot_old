@@ -36,7 +36,7 @@ Block.prototype.getBlockElementIDs = function(i)
 	// *** client-specific block_type. This will be the JSON
 	//     rendition of the promotion prototype, and its fields
 	//     will be used to create an array of elements.
-	for (i = 0; i < this.promo_proto.fields.length; i++) {
+	for (var i = 0; i < this.promo_proto.fields.length; i++) {
 		var field = this.promo_proto.fields[i];
 		// So what exactly does this JavaScript do with a block?
 		// fillValue does ... something.

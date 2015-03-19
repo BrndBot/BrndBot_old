@@ -42,8 +42,8 @@ insertStyles: function (dest) {
 			scaleRatio = Math.min (benchstyle.MAX_STYLE_DIM / styleSet.width,
 								benchstyle.MAX_STYLE_DIM / styleSet.height);
 		}
-		canvas.css("width", Math.floor(styleSet.width * scaleRatio));
-		canvas.css("height", Math.floor(styleSet.height * scaleRatio));
+		canvas.css("width", "" + Math.floor(styleSet.width * scaleRatio) + "px");
+		canvas.css("height", "" + Math.floor(styleSet.height * scaleRatio) + "px");
 	});
 },
 
@@ -74,7 +74,7 @@ styleSetsToDataSource: function (styleSets) {
 	console.log ("styleSetsToDataSource");
 	var retval = [];
 	var len = styleSets.length;
-	for (i = 0; i < len; i++) {
+	for (var i = 0; i < len; i++) {
 		var styleSet = styleSets[i];
 		console.log ("Adding style set " + styleSet.name);
 		var newItem = {name: styleSet.name};
