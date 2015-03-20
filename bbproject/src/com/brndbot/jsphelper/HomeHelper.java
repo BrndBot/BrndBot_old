@@ -33,7 +33,8 @@ public class HomeHelper extends Helper {
 			logger.error ("getRenderDoToday: client is null");
 			return null;
 		}
-		DoTodayRenderer renderer = new DoTodayRenderer (client);
+		/***** TEMPORARY try with DoTodayRenderer2 before renaming back */
+		DoTodayRenderer2 renderer = new DoTodayRenderer2 (client);
 		return renderer.getFragment();
 	}
 

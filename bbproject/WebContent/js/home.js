@@ -29,17 +29,16 @@ $(document).ready(function()
 		/* This sets up the function for all the category buttons. */
 		$('.categoryButton').on('click', function(e)
 		{
-			// NEW APPROACH: Suck in all the categories with a series of
-			// DashboardServlet calls, then populate a table with them, making them
-			// all initially invisible. By assigning appropriate classes,
-			// JQuery calls can show or hide each column as a group.
-			// Or perhaps simpler: Have each TD be a list of the prototypes
-			// for that category, and Kendo-list it. Fewer changes that way too.
 			var dataCat = $(this).attr("data-category");
-			var template = $('template[data-category="' + dataCat + '"]');
-			$('#modelRow').empty();
-			$('#modelRow').append (template.clone().html());
-			$('#modelRow').find('.modelButton').on ('click', handleModelButton);
+			// We just make the corresponding column visible for the category,
+			// and all the others invisible.
+			var modelColumns = $(".modelsTable");
+			modelColumns.each (function () {
+				if ($(this).attr("data-category") == dataCat)
+					$(this).show();
+				else
+					$(this).hide();
+			});
 		});
 		
 		/* This sets the function for all the content badge buttons in one fell swoop.
@@ -50,25 +49,12 @@ $(document).ready(function()
 		 * TODO CHANGE IN SPEC: List the models just by name in a column below the
 		 * category button.
 		 */
-		var handleModelButton = function (e)
+		$('.modelButton').on('click', function(e)
 		{
-			model_name = $(this).attr('data-model');	// set the value for the callback
-	
-			// Kendo data source used to get list data for promotion Prototypes
-			homejs.protosDataSource  = new kendo.data.DataSource({
-				transport: 
-				{
-					read:
-					{
-						type: 'POST',
-						url: "DashboardServlet",
-						dataType: "json",
-					}
-				}
-			});
-			session_mgr.setSession(SESSION_SET, 0, model_name, 0, homejs.showPrototypes);
-			$('#contentType').text (model_name);
-		};
+			var modelName = $(this).attr("data-model");
+			// TODO temp hard-code channel to 2
+			window.location.assign ("edit.jsp?channel=2&proto=" + protoName + "&model=" + modelName);
+		});
 	
 		// init dashboard
 		initDashboard();
@@ -90,22 +76,6 @@ var homejs = {
 	
 	/* Current selection in prototype list */
 	currentItemID: -1,
-	
-	/* Kendo DataSource for listing the prototypes */
-	
-
-//	viewChannels: function ()
-//	{
-//		homejs.fancyShow(homejs.CHANNEL_JSP);
-//	},
-	
-	/* This is called when the "promote" button for a prototype is clicked. */
-	selectProto: function(btn) {	
-		var protoName = $(btn).attr("data-proto");
-		// TODO temp hard-code channel to 2
-		window.location.assign ("edit.jsp?channel=2&proto=" + protoName + "&model=" + model_name);
-		// TODO really should select channel next, but take a shortcut for now.
-	},
 	
 	routeViaChannel: function(db_id)
 	{
