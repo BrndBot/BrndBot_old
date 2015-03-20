@@ -14,7 +14,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.brndbot.db.DbConnection;
+//import com.brndbot.db.DbConnection;
 
 public class SystemProp
 {

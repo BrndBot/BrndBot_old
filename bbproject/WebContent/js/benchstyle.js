@@ -52,8 +52,9 @@ insertStyles: function (dest) {
 updateStyle: function (litem) {
 	var styleSet = benchstyle.elemToLinkedStyleSet (litem);
 	if (styleSet !== null) {
-		console.log ("can switch to style set" + styleSet.name);
+		$('#contentArea').empty();
 		bench.currentPromotion.applyStyleSet (styleSet);
+		benchcontent.insertEditFields ( $('#contentArea'));
 		bench.currentPromotion.redraw('finishedImage1');
 	}
 },

@@ -108,10 +108,10 @@ public class LoginCookie
 		if (useCookie())
 		{
 			//pw = findCookie(COOKIE_PASSWORD);
-			if (pw == null)
-			{
-				pw = "";
-			}
+//			if (pw == null)
+//			{
+//				pw = "";
+//			}
 		}
 		return pw;
 	}

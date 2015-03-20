@@ -5,7 +5,7 @@
  */
 package com.brndbot.block;
 
-import com.brndbot.system.Assert;
+//import com.brndbot.system.Assert;
 
 /**
  *  In this revised version of BlockBase, we do away with all 

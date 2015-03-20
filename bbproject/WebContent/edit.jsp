@@ -170,7 +170,7 @@ All rights reserved by Brndbot, Ltd. 2015
 					<!-- Add new blocks menu.  This is another Kendo widget, so the structure is required to
 					     initialize the widget correctly.
 					 -->
-					<div id="tabstrip" class="rounded">
+					<div id="tabstrip" class="rounded" style="visibility:hidden">
 						<ul>
 							<li class="k-state-active">
 								Generic
@@ -252,7 +252,7 @@ All rights reserved by Brndbot, Ltd. 2015
 			</div>
 			<!-- End add new blocks menu -->
 
-			<div id="addNewBlock">
+			<div id="addNewBlock" style="visibility:hidden">
 				Add New Block
 			</div>
 

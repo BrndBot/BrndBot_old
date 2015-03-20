@@ -688,6 +688,10 @@ var bench = {
 		var colorArray = [];
 		hiddenColorDivs.each (function () {
 			var color = $(this).attr("data-color");
+			// This has leading backslashes for protection in Kendo templates.
+			// Need to strip them.
+			if (color.substring(0,2) == "\\\\")
+				color = color.substring (2);
 			colorArray.push(color);
 		});
 		return colorArray;

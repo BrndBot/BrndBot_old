@@ -121,6 +121,7 @@ function Style (styleType, styleSet) {
 	this.typeface = null;
 	this.pointSize = null;
 	this.color = null;
+	this.paletteSelection = null;
 	this.bold = null;
 	this.italic = null;
 	this.opacity = null;
@@ -153,6 +154,7 @@ function Style (styleType, styleSet) {
 		retval.typeface = this.typeface;
 		retval.pointSize = this.pointSize;
 		retval.color = this.color;
+		retval.paletteSelection = this.paletteSelection;
 		retval.bold = this.bold;
 		retval.italic = this.italic;
 		retval.opacity = this.opacity;
@@ -181,6 +183,7 @@ function Style (styleType, styleSet) {
 		this.offsetX = jsonObj.offsetX;
 		this.offsetY = jsonObj.offsetY;
 		this.color = jsonObj.color;
+		this.paletteSelection = jsonObj.paletteSelection;
 		this.opacity = jsonObj.opacity;
 		this.multiply = jsonObj.multiply;
 		this.svg = jsonObj.svg;
@@ -587,10 +590,19 @@ function Style (styleType, styleSet) {
 	/* getColor returns black as a last resort, so it always returns
 	 * a color string. */
 	this.getColor = function () {
-		if (this.modelField.localStyle.color)
+		var paletteArray = this.styleSet.paletteColors;
+		if (this.modelField.localStyle.paletteSelection) {
+			return paletteArray[this.modelField.localStyle.paletteSelection - 1];
+		}
+		else if (this.paletteSelection) {
+			return paletteArray[this.paletteSelection - 1];
+		}
+		else if (this.modelField.localStyle.color) {
 			return this.modelField.localStyle.color;
-		else if (this.color)
+		}
+		else if (this.color) {
 			return this.color;
+		}
 		else return "#000000";
 	};
 	
