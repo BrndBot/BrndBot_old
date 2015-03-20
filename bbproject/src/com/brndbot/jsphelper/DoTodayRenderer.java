@@ -13,53 +13,43 @@ import com.brndbot.client.ModelCollection;
 import com.brndbot.promo.Client;
 
 /** This renderer populates the "what do you want to
- *  do today?" list with a button for each of the available
- *  categories and shows a row of models for a clicked category.
+ *  do today?" list in home.jsp with a button for each of the available
+ *  categories.
  *  
- */
-public class DoTodayRenderer extends Renderer {
+ *  Below each button is a sub-table with the models for that category.
+ *  It's initially hidden, and will be displayed when the category button
+ *  is clicked.
+ *  
+ */public class DoTodayRenderer extends Renderer {
 
 	final static Logger logger = LoggerFactory.getLogger(DoTodayRenderer.class);
 
-	/* We want to render first the categories, then the models under the selected
-	 * category.
-	 * 
-	 * The bottom row will change, so we can't
-	 * do it in Java. Has to be in JavaScript. So just render the top row 
-	 * (the categories) here.
-	 */
 	public DoTodayRenderer(Client c) {
+		/* We want to render first the categories, then the models under the selected
+		 * category.
+		 * 
+		 * This will be a table with two rows. The top row has the category buttons.
+		 * The bottom row has a table inside each TD, with the models arranged vertically.
+		 */
 		super ();
-		ModelCollection modelCol = c.getModels ();
 		try {
-			// This really shouldn't work from a layout standpoint. 
-			// But see what it does.
+			ModelCollection modelCol = c.getModels ();
+			Element tableElem = new Element ("table");
+			Element firstRowElem = new Element ("tr");
+			tableElem.addContent(firstRowElem);
 			List<String> categories = modelCol.getCategories ();
 			int idx = 0;
 			for (String cat : categories) {
-				renderCategory (cat, idx++);
+				firstRowElem.addContent (renderCategory (cat, idx++));
+			}
+			Element secondRowElem = new Element ("tr");
+			tableElem.addContent (secondRowElem);
+			idx = 0;
+			for (String cat : categories) {
+				secondRowElem.addContent (renderModels (modelCol, cat, idx++));
 			}
 			
-			// Now create templates for each row. These include the tr tag,
-			// since it's slightly more convenient to copy a single element.
-			for (String cat : categories) {
-				Element catTemplate = new Element ("template");
-				catTemplate.setAttribute("data-category", cat);
-				Element modelRow = new Element ("tr");
-				Map<String, Model> catModels = modelCol.getModelsForCategory(cat);
-				for (String modelName : catModels.keySet()) {
-					Element modelCell = new Element ("td");
-					modelRow.addContent(modelCell);
-					Element modelButton = new Element ("button");
-					modelButton.setAttribute ("style", "background-color:#FFBBCC");
-					modelButton.setAttribute ("class", "modelButton");
-					modelButton.setAttribute ("data-model", modelName);
-					modelButton.addContent (modelName);
-					modelCell.addContent (modelButton);
-				}
-				catTemplate.addContent(modelRow);
-				outputter.output (catTemplate, writer);
-			}
+			outputter.output (tableElem, writer);
 		}
 		catch (Exception e) {
 			logger.error ("Exception generating Do Today: {}   {}",
@@ -67,8 +57,10 @@ public class DoTodayRenderer extends Renderer {
 		}
 	}
 
-	/* This puts up the category button and caption for one category. */
-	private void renderCategory (String cat, int idx) throws IOException {
+	/* This generates the category button and caption for one category
+	 * and returns a TD Element for it. */
+	private Element renderCategory (String cat, int idx)  {
+		logger.debug ("renderCategory, cat = {} idx = {}", cat, idx);
 		Element catCell = new Element ("td");
 
 		// Inside the TD, put a table with one row for the button 
@@ -103,24 +95,35 @@ public class DoTodayRenderer extends Renderer {
 		catTable.addContent (nameTR);
 		
 		catCell.addContent (catTable);
-		outputter.output (catCell, writer);
+		return catCell;
+	}
+	
+	/* This generates the model buttons for one category and returns a TD
+	 * element containing a table for it. */
+	private Element renderModels (ModelCollection modelCol, String cat, int idx) {
+		logger.debug ("renderModels, cat = {} idx = {}", cat, idx);
+		Element modelsCell = new Element ("td");
+		
+		Element modelsTable = new Element ("table");
+		modelsTable.setAttribute ("data-category", cat);
+		modelsTable.setAttribute ("class", "modelsTable");
+		modelsCell.addContent (modelsTable);
+		Map<String, Model> catModels = modelCol.getModelsForCategory(cat);
+		for (String modelName : catModels.keySet()) {
+			Element modelRow = new Element ("tr");
+			Element modelCell = new Element ("td");
+			modelsTable.addContent(modelRow);
+			modelRow.addContent(modelCell);
+			Element modelButton = new Element ("button");
+			modelButton.setAttribute ("style", "background-color:#FFBBCC");
+			modelButton.setAttribute ("class", "modelButton");
+			modelButton.setAttribute ("data-model", modelName);
+			modelButton.addContent (modelName);
+			logger.debug ("Added model for {}", modelName);
+			modelCell.addContent (modelButton);
+		}
+		logger.debug ("returning from renderModels");
+		return modelsCell;
 	}
 
-	// This will have to move into JavaScript.
-//	private void renderModel (Model m, int idx) throws IOException {
-//		Element badgeDiv = new Element ("div");
-//		badgeDiv.setAttribute ("id", "Badge" + idx);
-//		badgeDiv.setAttribute ("class", "homeBadge");
-//		Element imgDiv = new Element ("div");
-//		badgeDiv.addContent (imgDiv);
-//		Element badgeGraphic = new Element ("img");
-//		badgeGraphic.setAttribute ("src", "images/" + m.getButtonImage());
-//		badgeGraphic.setAttribute ("class", "homeBadgeButton");
-//		badgeGraphic.setAttribute ("data-model", m.getName());
-//		imgDiv.addContent (badgeGraphic);
-//		Element promptDiv = new Element ("div");
-//		badgeDiv.addContent (promptDiv);
-//		promptDiv.addContent ("Promote " + m.getName());
-//		outputter.output (badgeDiv, writer);
-//	}
 }

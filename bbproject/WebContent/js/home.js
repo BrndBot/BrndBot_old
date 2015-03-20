@@ -51,9 +51,22 @@ $(document).ready(function()
 		 */
 		$('.modelButton').on('click', function(e)
 		{
-			var modelName = $(this).attr("data-model");
+			homejs.model_name = $(this).attr("data-model");
 			// TODO temp hard-code channel to 2
-			window.location.assign ("edit.jsp?channel=2&proto=" + protoName + "&model=" + modelName);
+			// Kendo data source used to get list data for promotion Prototypes
+			homejs.protosDataSource  = new kendo.data.DataSource({
+				transport: 
+				{
+					read:
+					{
+						type: 'POST',
+						url: "DashboardServlet",
+						dataType: "json",
+					}
+				}
+			});
+			session_mgr.setSession(SESSION_SET, 0, homejs.model_name, 0, homejs.showPrototypes);
+			$('#contentType').text (homejs.model_name);
 		});
 	
 		// init dashboard
@@ -106,7 +119,8 @@ var homejs = {
 	
 	
 	
-	/* Display the prototypes for the selected model */
+	/* Display the prototypes for the selected model, or jump directly to
+	 * edit.jsp if there are no prototypes. */
 	showPrototypes: function() 
 		// We use DashboardServlet to get the prototypes. 
 		// model_name was set when the button was clicked.
@@ -124,7 +138,7 @@ var homejs = {
 		}
 		if (!hasRealData) {
 			// Go directly to editor 
-			window.location.assign ("edit.jsp?channel=2&proto=Default&model=" + model_name);
+			window.location.assign ("edit.jsp?channel=2&proto=Default&model=" + homejs.model_name);
 			showit = false;
 		}
 		$("#promoProtosHere").kendoListView({
