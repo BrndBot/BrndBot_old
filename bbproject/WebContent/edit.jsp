@@ -270,8 +270,7 @@ All rights reserved by Brndbot, Ltd. 2015
 			boolean templateVisible = true;
 			boolean isPreview = true;
 			// Must have the palette array, too.  Retrieves the palette set by the user when signed-up.
-			//ArrayList<Palette> paletteArray = User.getUserPalette(benchHelper.getUserId(), benchHelper.getConnection());
-			ArrayList<Palette> paletteArray = benchHelper.getUserPalette ();
+			//ArrayList<Palette> paletteArray = benchHelper.getUserPalette ();
 			String chosenImg = "";
 
 				// Args 2 and 3 are part of the mess regarding image bounding.  All these functions for 
@@ -490,6 +489,11 @@ All rights reserved by Brndbot, Ltd. 2015
 		</div>
 	</div>
 
+	<% /* Invisible holder for palette colors */ %>
+	<c:forEach var="color" items="${benchHelper.userPaletteColors}">
+			<div class="hiddenPalette" data-color="${color}">
+			</div>
+	</c:forEach>
 
 	<script type="text/x-kendo-template" id="galleryTemplate">
 		<li class="gallerypickerfield" style="float:left;padding:20px;list-style-type:none">

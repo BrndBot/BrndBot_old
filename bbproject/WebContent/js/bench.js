@@ -670,6 +670,7 @@ var bench = {
 					var jsonStyleSet = jsonStyleSets[i];
 					var styleSet = new StyleSet();
 					styleSet.populateFromJSON(jsonStyleSets[i]);
+					styleSet.assignPaletteColors(bench.buildPaletteColors());
 					bench.styleSets[i] = styleSet;
 				}
 				console.log (bench.styleSets);
@@ -680,6 +681,19 @@ var bench = {
 		styleDataSource.read();
 	},
 
+	/* Build an array of palette colors, using the data in the divs of class
+	 * hiddenPalette. */
+	buildPaletteColors: function () {
+		var hiddenColorDivs = $(".hiddenPalette");
+		var colorArray = [];
+		hiddenColorDivs.each (function () {
+			var color = $(this).attr("data-color");
+			colorArray.push(color);
+		});
+		return colorArray;
+	},
+	
+	
 	/* Export the presentation to the database. */
 	exportPresentation: function () {
 		var imageURL = bench.currentPromotion.export ();

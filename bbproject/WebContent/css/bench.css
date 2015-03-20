@@ -305,3 +305,6 @@ td.paletteButton button {
 	height:15px;
 }
 
+.hiddenPalette {
+	display:none;
+}

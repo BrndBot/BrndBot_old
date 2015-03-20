@@ -26,6 +26,7 @@ function StyleSet () {
 	this.width = 0;
 	this.height = 0;
 	this.availableImages = [];
+	this.paletteColors = [];
 
 	// Convert JSON data into data for this Model
 	this.populateFromJSON = function (jsonObj) {
@@ -72,24 +73,15 @@ function StyleSet () {
 		}
 	};
 	
-	/** Find a Style that matches a ModelField, or null */
-//	this.findApplicableStyle = function (modelField) {
-//		console.log ("findApplicableStyle, field name = " + modelField.name);
-//		var fieldName = modelField.name;
-//		if (!fieldName)
-//			return null;
-//		for (var i = 0; i < this.styles.length; i++) {
-//			var style = this.styles[i];
-//			if (!style)
-//				continue;
-//			console.log ("Checking style " + style.fieldName);
-//			if (style.fieldName == fieldName) {
-//				console.log ("Found a style");
-//				return style;
-//			}
-//		}
-//		return null;
-//	};
+	/** Assign an array of four palette color strings to the StyleSet.
+	 *  Copies them into the StyleSet's own array rather than sharing
+	 *  the array. */
+	this.assignPaletteColors = function (colors) {
+		this.paletteColors = [];		// reset
+		for (var i = 0; i < colors.length; i++) {
+			this.paletteColors.push(colors[i]);
+		}
+	}
 	
 	/** Assign the array of available images to the StyleSet.
 	 *  This has to be done to each StyleSet that's activated.
