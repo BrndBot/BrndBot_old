@@ -21,6 +21,8 @@ var bench = {
 	// An array of StyleSet objects applicable to the promotion.
 	styleSets: null,
 	
+	// object with logo information: ID, width, height (note odd capitalization)
+	logoData: null,
 
 	// Max width and height for promotion canvas
 	MAX_PROMOTION_DIM: 600,
@@ -52,80 +54,89 @@ var bench = {
 	    
 	    });
 	
-	    // Get the available images, and create a Deferred object for things
-	    // that depend on them.
+	    // Get data on the logo dimensions.
 	    $.ajax({
             type: 'GET',
             dataType: 'json',
-            url: "GetImagesServlet?brndbotimageid=2"	// param of 2 means uploaded images
+            url: "GetImagesServlet?brndbotimageid=5"	// param of 5 means default logo
 	    }).done (function (imgdata, textStatus, jqXHR) {
-	    	bench.availableImages = imgdata;
-	    	benchcontent.prepareDataSource();
+	    	bench.logoData = imgdata[0];
 	    	
-		    // Kendo data source used to retrieve image data for the appropriate gallery
-		    var yourImagesDataSource = new kendo.data.DataSource({
-				data: imgdata,
-		        pageSize: 6
-		    });
-		
-			// Pagination control
-		    $("#yourImagesPager").kendoPager({
-		        dataSource: yourImagesDataSource
-		    });
-		
-			// Assemble images in a list view.  It's setup in the styles that images will rollover to the 
-			//  next line automatically.
-		    $("#yourImagesView").kendoListView({
-		        dataSource: yourImagesDataSource,
-		        template: kendo.template($("#imageTemplate").html()),
-			    selectable: true,
-			    dataBound: yourImagesViewSuccess,
-			    complete: yourImagesViewSuccess
-			});
-		    
-			// placeholder in case it's needed
-		    function yourImagesViewSuccess(e)
-		    {
-		    }
-		
-			// Combo box-like control to select image type (Kendo widget)
-		    $("#imageTypeList").kendoMultiSelect({
-				animation: false,
-				maxSelectedItems: 1,
-				change: function(e)
-				{
-					var str = "" + this.value();
-					str = str.toLowerCase();
-					var image_type = -1;
-					if (str.indexOf("image") != -1)
+		    // Get the available images, and create a Deferred object for things
+		    // that depend on them.
+		    $.ajax({
+	            type: 'GET',
+	            dataType: 'json',
+	            url: "GetImagesServlet?brndbotimageid=2"	// param of 2 means uploaded images
+		    }).done (function (imgdata, textStatus, jqXHR) {
+		    	bench.availableImages = imgdata;
+		    	benchcontent.prepareDataSource();
+		    	
+			    // Kendo data source used to retrieve image data for the appropriate gallery
+			    var yourImagesDataSource = new kendo.data.DataSource({
+					data: imgdata,
+			        pageSize: 6
+			    });
+			
+				// Pagination control
+			    $("#yourImagesPager").kendoPager({
+			        dataSource: yourImagesDataSource
+			    });
+			
+				// Assemble images in a list view.  It's setup in the styles that images will rollover to the 
+				//  next line automatically.
+			    $("#yourImagesView").kendoListView({
+			        dataSource: yourImagesDataSource,
+			        template: kendo.template($("#imageTemplate").html()),
+				    selectable: true,
+				    dataBound: yourImagesViewSuccess,
+				    complete: yourImagesViewSuccess
+				});
+			    
+				// placeholder in case it's needed
+			    function yourImagesViewSuccess(e)
+			    {
+			    }
+			
+				// Combo box-like control to select image type (Kendo widget)
+			    $("#imageTypeList").kendoMultiSelect({
+					animation: false,
+					maxSelectedItems: 1,
+					change: function(e)
 					{
-						image_type = 0;		// placeholder FIXME
-						CURRENT_GALLERY_TAB = 0;
+						var str = "" + this.value();
+						str = str.toLowerCase();
+						var image_type = -1;
+						if (str.indexOf("image") != -1)
+						{
+							image_type = 0;		// placeholder FIXME
+							CURRENT_GALLERY_TAB = 0;
+						}
+						else if (str.indexOf("teacher") != -1)
+						{
+							image_type = 0;
+							CURRENT_GALLERY_TAB = 1;
+						}
+						else if (str.indexOf("logo") != -1)
+						{
+							image_type = 0;
+							CURRENT_GALLERY_TAB = 2;
+						}
+						session_mgr.setImageID(image_type);
+						CURRENT_GALLERY_TAB = -1;
 					}
-					else if (str.indexOf("teacher") != -1)
-					{
-						image_type = 0;
-						CURRENT_GALLERY_TAB = 1;
-					}
-					else if (str.indexOf("logo") != -1)
-					{
-						image_type = 0;
-						CURRENT_GALLERY_TAB = 2;
-					}
-					session_mgr.setImageID(image_type);
-					CURRENT_GALLERY_TAB = -1;
-				}
-			});
-		
-			// load the promotion and all the styles in bench.js
-			bench.loadPromotion ("${proto_name}");
-
-			// ensure the top of the page is shown
-			document.getElementById("brndbotMain").scrollIntoView();
-		
-
-	    });
+				});
+			
+				// load the promotion and all the styles in bench.js
+				bench.loadPromotion ("${proto_name}");
 	
+				// ensure the top of the page is shown
+				document.getElementById("brndbotMain").scrollIntoView();
+			
+	
+		    });		// end uploaded images done function
+	    });			// end logo done function
+
 		 
 	
 		// Initialize the file upload widget
@@ -626,6 +637,7 @@ var bench = {
 				var defaultStyleSet = bench.styleSets[0];		// TODO find the one named "default" by preference
 				bench.currentPromotion = new Promotion (promotionModel, defaultStyleSet);
 				bench.currentPromotion.assignAvailableImages (bench.availableImages);
+				bench.currentPromotion.setLogoData(bench.logoData);
 				canvas.attr("width", defaultStyleSet.width);
 				canvas.attr("height", defaultStyleSet.height);
 	
@@ -669,6 +681,7 @@ var bench = {
 					var jsonStyleSet = jsonStyleSets[i];
 					var styleSet = new StyleSet();
 					styleSet.populateFromJSON(jsonStyleSets[i]);
+					styleSet.logoData = bench.logoData;
 					styleSet.assignPaletteColors(bench.buildPaletteColors());
 					bench.styleSets[i] = styleSet;
 				}

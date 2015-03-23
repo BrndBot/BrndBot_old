@@ -101,9 +101,11 @@ function Promotion (model, styleSet) {
 	this.model = model;
 	// styleSet is a StyleSet
 	this.canvas = null;
+	this.logoData = null;
 	
 	this.applyStyleSet = function (styleSet) {
 		this.styleSet = styleSet;
+		this.styleSet.logoData = this.logoData;
 		// propagate availableImages only if the styleset doesn't have any
 		if (!styleSet.availableImages || styleSet.availableImages.length === 0)
 			styleSet.assignAvailableImages (this.availableImages);
@@ -121,6 +123,14 @@ function Promotion (model, styleSet) {
 		this.availableImages = imgs;
 		styleSet.assignAvailableImages (imgs);
 	};
+	
+	this.setLogoData = function (dta) {
+		this.logoData = dta;
+		if (this.styleSet)
+			this.styleSet.logoData = dta;
+	};
+	
+	/* 
 	
 	this.assignAvailableImages ([]);
 	

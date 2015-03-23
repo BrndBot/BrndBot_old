@@ -43,7 +43,8 @@ public class GetImagesServlet extends HttpServlet
 	/** This gets a JSON array of references to images 
 	 *  that are listed in the database for the user.
 	 *  
-	 *  The URL parameter is a small integer representing the kind of image.
+	 *  The URL parameter brndbotimageid is a small integer representing the kind of image.
+	 *  Default is user upload (2).
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
@@ -52,7 +53,17 @@ public class GetImagesServlet extends HttpServlet
 		HttpSession session = request.getSession();
 		int user_id = SessionUtils.getUserId(session);
 
-		ImageType image_type = ImageType.USER_UPLOAD;
+		ImageType image_type = null;
+		String param = request.getParameter("brndbotimageid");
+		if (param != null) {
+			try {
+				int intType = Integer.parseInt (param);
+				image_type = ImageType.getByItemNumber(intType);
+			}
+			catch (Exception e) {}
+		}
+		if (image_type == null)
+			image_type = ImageType.USER_UPLOAD;
 
 		DbConnection con = DbConnection.GetDb();
 		JSONArray json_array = null;

@@ -27,6 +27,7 @@ function StyleSet () {
 	this.height = 0;
 	this.availableImages = [];
 	this.paletteColors = [];
+	this.logoData = null;
 
 	// Convert JSON data into data for this Model
 	this.populateFromJSON = function (jsonObj) {
@@ -238,14 +239,20 @@ function Style (styleType, styleSet) {
 			var imgData = this.findImage();
 			if (imgData) {
 				var dims = this.fitImage (imgData.width, imgData.height);
-				this.fabricateImage (canvas, dims.width, dims.height);
+				this.fabricateImage (canvas, dims);
 			}
 			else {
 				this.fabricateImage (canvas);
 			}
 			break;
 		case "logo":
-			this.fabricateLogo (canvas);
+			if (this.styleSet.logoData) {
+				var logoDims = this.fitImage (this.styleSet.logoData.width, this.styleSet.logoData.height);
+				this.fabricateLogo (canvas, logoDims.width, logoDims.height);
+			}
+			else {
+				this.fabricateLogo (canvas);
+			}
 			break;
 		case "block":
 			this.fabricateBlock (canvas);
@@ -383,7 +390,7 @@ function Style (styleType, styleSet) {
 	 *   These dimensions should be at least as large as the style dimensions
 	 *   and should preserve the original image's aspect ratio.
 	 */
-	this.fabricateImage = function  (canvas, dispWidth, dispHeight) {
+	this.fabricateImage = function  (canvas, dispDims) {
 		console.log ("fabricateImage");
 		var pos = this.getPosition();
 		// Amount to displace the origin, if the display dimensions differ
@@ -394,25 +401,24 @@ function Style (styleType, styleSet) {
 		var height;
 		var id = this.getImageID();
 		var imgdata = this.findImage (id);
-		if (dispWidth) {
-			width = dispWidth;
-			xDisplace = (this.getWidth() - dispWidth) / 2.0;
+		if (dispDims && dispDims.width) {
+			width = dispDims.width;
+			xDisplace = dispDims.x + (this.getWidth() - dispDims.width) / 2.0;
 		}
 		else if (imgdata)
 			width = imgdata.width;
 		else
 			width = this.getWidth();
 		
-		if (dispHeight) {
-			height = dispHeight;
-			yDisplace = (this.getHeight() - dispHeight) / 2.0;
+		if (dispDims && dispDims.height) {
+			height = dispDims.height;
+			yDisplace = dispDims.y + (this.getHeight() - dispDims.height) / 2.0;
 		}
 		else if (imgdata)
 			height = imgdata.height;
 		else
 			height = this.getHeight();
 		
-		console.log ("width = " + width + "    height = " + height);
 		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
 		var gco = "source-over";
 		if (this.getMultiply())
@@ -440,21 +446,42 @@ function Style (styleType, styleSet) {
 		});
 	};
 	
-	this.fabricateLogo = function  (canvas) {
+	this.fabricateLogo = function  (canvas, dispWidth, dispHeight) {
 		console.log ("fabricateLogo");
 		var pos = this.getPosition();
-		var width = this.getWidth();
-		var height = this.getHeight();
+		// Amount to displace the origin, if the display dimensions differ
+		// from the style dimensions
+		var xDisplace = 0;
+		var yDisplace = 0;
+		var width;
+		var height;
+		if (dispWidth) {
+			width = dispWidth;
+			xDisplace = (this.getWidth() - dispWidth) / 2.0;
+		}
+		else
+			width = this.getWidth();
+		
+		if (dispHeight) {
+			height = dispHeight;
+			yDisplace = (this.getHeight() - dispHeight) / 2.0;
+		}
+		else
+			height = this.getHeight();
+
 		var style = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=logo", function (img) {
 			img.hasControls = false;
 			img.selectable = false;
-			img.left = pos.x;
-			img.top = pos.y;
+			img.left = pos.x + xDisplace;
+			img.top = pos.y  + yDisplace;
 			img.originX = "left";
 			img.oritinY = "top";
 			img.width = width;
 			img.height = height;
+			img.clipTo = function (ctx) {
+				ctx.rect (-style.getWidth() / 2, -style.getHeight() / 2, style.getWidth(), style.getHeight());
+			};
 			style.fabricObject = img;
 			canvas.add(img);
 			canvas.moveTo(img, style.index);
@@ -598,14 +625,27 @@ function Style (styleType, styleSet) {
 		this.modelField.localStyle.height = h;
 	};
 	
+	this.getMaskRect = function () {
+		if (this.modelField.localStyle.maskRect !== null) {
+			return this.modelField.localStyle.maskRect;
+		}
+		else if (this.maskRect) {
+			// I don't think we ever set the maskRect of the primary style,
+			// but follow the pattern anyway.
+			return this.maskRect;
+		}
+		else
+			return null;
+	};
+	
 	/* Set the masking rectangle. This doesn't do anything until the next time
 	 * the image is drawn.
 	 */
 	this.setLocalMask = function (x, y, wid, ht) {
 		this.modelField.localStyle.maskRect = { x: x,
 				y: y,
-				w: wid,
-				h: ht};
+				width: wid,
+				height: ht};
 	};
 
 	/* getColor returns black as a last resort, so it always returns
@@ -746,7 +786,7 @@ function Style (styleType, styleSet) {
 			return this.modelField.localStyle.imageID;
 		else if (this.imageID !== null)
 			return this.imageID;
-		else if (this.availableImages.length > 0) {
+		else if (this.availableImages && this.availableImages.length > 0) {
 			return this.availableImages[0].ID;
 		}
 		else return "default";
@@ -769,7 +809,8 @@ function Style (styleType, styleSet) {
 	};
 	
 	/* Calculate the display size of the image based on its source width and height.
-	 * Return an object with properties width and height.
+	 * Return an object with properties x, y, width and height.
+	 * x and y can be nonzero if there's a maskRect.
 	 * We apply Procrustean logic to the image. Whether it's too
 	 * big or too small, size it to the smallest size that will 
 	 * fill the rectangle given by width and height, centering
@@ -777,11 +818,19 @@ function Style (styleType, styleSet) {
 	this.fitImage = function (w, h) {
 		this.sourceWidth = w;
 		this.sourceHeight = h;
-		var retval = {};
+		this.sourceX = 0;
+		this.sourceY = 0;
+		var retval = {x: 0, y: 0};
+		if (maskRect) {
+			// Hmm ... I need to do this first, don't I, so it knows
+			// which dimension it has to trim.
+			this.sourceWidth = maskRect.width;
+			this.sourceHeight = maskRect.height;
+			retval.x = maskRect.x;
+			retval.y = maskRect.y;
+		}
+
 		// TODO Doesn't mask to frame yet.
-		// First hack. Don't adjust the position, just fix the dimensions.
-		// This will later become a separate function to handle the
-		// initial image, or else we'll always call fitImage.
 		var widthRatio = this.sourceWidth / this.width;
 		var heightRatio = this.sourceHeight / this.height;
 		if (widthRatio < heightRatio) {
@@ -795,8 +844,7 @@ function Style (styleType, styleSet) {
 			retval.height = this.height;
 			retval.width = this.sourceWidth * (this.height / this.sourceHeight);
 		}
-		console.log ("New drawing width: " + retval.width);
-		console.log ("New drawing height: " + retval.height);
+		var maskRect = this.getMaskRect();
 		return retval;
 	};
 	
@@ -827,6 +875,8 @@ function Style (styleType, styleSet) {
 	this.findImage = function (id) {
 		if (!id)
 			id = this.getImageID();
+		if (!this.availableImages)
+			return null;
 		for (var i = 0; i < this.availableImages.length; i++) {
 			var img = this.availableImages[i];
 			if (img.ID == id) {
