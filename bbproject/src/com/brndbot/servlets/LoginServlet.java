@@ -78,17 +78,21 @@ public class LoginServlet extends HttpServlet
 		
 		DbConnection con = DbConnection.GetDb();
 
-		int user_id = User.Login(email_address, password, con);
-		if (user_id == 0)
-		{
-			logger.info("Failed login em: " + email_address /* + ", pw: " + password*/);
-			con.close();
-			response.sendRedirect("index.jsp");
-			return;
+		int user_id;
+		try {
+			user_id = User.Login(email_address, password, con);
+			if (user_id == 0)
+			{
+				logger.info("Failed login em: " + email_address /* + ", pw: " + password*/);
+				response.sendRedirect("index.jsp");
+				return;
+			}
+	
+			session.setAttribute(SessionUtils.IS_PRIV, User.isPrivileged(user_id, con));
 		}
-
-		session.setAttribute(SessionUtils.IS_PRIV, User.isPrivileged(user_id, con));
-		con.close();
+		finally {
+			con.close();
+		}
 
 		// Success!
 //		session.setAttribute(ParamConstants.EMPLOYER_TYPE, RecruiterTable.fetchEmployerType(user_id));

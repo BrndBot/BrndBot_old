@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.client.ClientInterface;
-import com.brndbot.client.ModelCollection;
+//import com.brndbot.client.ModelCollection;
 import com.brndbot.client.Promotion;
 
 public class NullClientInterface implements ClientInterface {
@@ -18,7 +18,7 @@ public class NullClientInterface implements ClientInterface {
 
 	final static Logger logger = LoggerFactory.getLogger(NullClientInterface.class);
 
-	private ModelCollection mCollection = new ModelCollection ();
+	//private ModelCollection mCollection = new ModelCollection ();
 	private Map<String, Promotion> promotionPrototypes = new HashMap<>();
 	
 	public NullClientInterface() {

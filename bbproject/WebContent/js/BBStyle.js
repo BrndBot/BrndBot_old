@@ -116,6 +116,7 @@ function Style (styleType, styleSet) {
 	this.anchor = null;
 	this.offsetX = null;
 	this.offsetY = null;
+	this.maskRect = null;
 	this.text = null;
 	this.defaultText = null;
 	this.typeface = null;
@@ -149,6 +150,7 @@ function Style (styleType, styleSet) {
 		retval.anchor = this.anchor = "TL";
 		retval.offsetX = this.offsetX;
 		retval.offsetY = this.offsetY;
+		retval.maskRect = this.maskRect;
 		retval.text = this.text;
 		retval.defaultText = this.defaultText;
 		retval.typeface = this.typeface;
@@ -372,6 +374,15 @@ function Style (styleType, styleSet) {
 	};
 	
 
+	/** Draw the image. fitImage should already have been called to
+	 *  set the values of dispWidth and dispHeight.
+	 *  
+	 *   dispWidth: the width at which the image should be drawn
+	 *   dispHeight: the height at which the image should be drawn
+	 *   
+	 *   These dimensions should be at least as large as the style dimensions
+	 *   and should preserve the original image's aspect ratio.
+	 */
 	this.fabricateImage = function  (canvas, dispWidth, dispHeight) {
 		console.log ("fabricateImage");
 		var pos = this.getPosition();
@@ -586,6 +597,16 @@ function Style (styleType, styleSet) {
 	this.setLocalHeight = function (h) {
 		this.modelField.localStyle.height = h;
 	};
+	
+	/* Set the masking rectangle. This doesn't do anything until the next time
+	 * the image is drawn.
+	 */
+	this.setLocalMask = function (x, y, wid, ht) {
+		this.modelField.localStyle.maskRect = { x: x,
+				y: y,
+				w: wid,
+				h: ht};
+	};
 
 	/* getColor returns black as a last resort, so it always returns
 	 * a color string. */
@@ -785,17 +806,19 @@ function Style (styleType, styleSet) {
 	 * 
 	 * The x and y arguments are relative to the top left of the image.
 	 */
-	this.crop = function (x, y, wid, ht) {
-		// We have to translate the coordinates to center-based coordinates.
-		// This is a slightly brute-force approach, but the fabric functions
-		// don't do what I expect.
-		x -= this.fabricObject.width / 2;
-		y -= this.fabricObject.height / 2;
-		console.log ("Cropping to " + x + ", " + y + ", " + wid + ", " + ht);
-		this.fabricObject.clipTo = function (ctx) {
-			ctx.rect (x, y, wid, ht);
-		};
-	};
+//	this.crop = function (x, y, wid, ht) {
+//		// We have to translate the coordinates to center-based coordinates.
+//		// This is a slightly brute-force approach, but the fabric functions
+//		// don't do what I expect.
+//		x -= this.fabricObject.width / 2;
+//		y -= this.fabricObject.height / 2;
+//		console.log ("Cropping to " + x + ", " + y + ", " + wid + ", " + ht);
+//		this.fabricObject.clipTo = function (ctx) {
+//			ctx.rect (x, y, wid, ht);
+//		};
+//	};
+
+
 	
 	/* Return the image object from availableImages that matches id.
 	 * The returne object has the properties id, width, height.

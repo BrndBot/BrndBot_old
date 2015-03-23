@@ -613,7 +613,6 @@ var bench = {
 			},
 			change: 
 			function (e) {
-				console.log ("got promotion data");
 				promotionData = promotionDataSource.data()[0];
 				promotionModel = new Model ();
 				promotionModel.populateFromJSON (promotionData);

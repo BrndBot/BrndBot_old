@@ -56,6 +56,13 @@ updateStyle: function (litem) {
 		bench.currentPromotion.applyStyleSet (styleSet);
 		benchcontent.insertEditFields ( $('#contentArea'));
 		bench.currentPromotion.redraw('finishedImage1');
+		var canvas = $('#finishedImage1');
+		if (styleSet.width > bench.MAX_PROMOTION_DIM || styleSet.height > bench.MAX_PROMOTION_DIM) {
+			var scaleRatio = Math.min (bench.MAX_PROMOTION_DIM / styleSet.width,
+					bench.MAX_PROMOTION_DIM / styleSet.height);
+			canvas.css("width", "" + Math.floor(styleSet.width * scaleRatio) + "px");
+			canvas.css("height", "" + Math.floor(styleSet.height * scaleRatio) + "px");
+		}	
 	}
 },
 

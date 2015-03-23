@@ -258,20 +258,17 @@ closeCrop: function () {
 applyCrop: function (coords) {
 	var styl = benchcontent.cropper.style;
 	var origSize = styl.fabricObject.getOriginalSize();
+	styl.setLocalMask (coords.x, coords.y, coords.w, coords.h);
 	
 	// Scale to the display size of the image
-	var scaleX = styl.fabricObject.width / origSize.width;
-	var scaleY = styl.fabricObject.height / origSize.height;
-	coords.x *= scaleX;
-	coords.y *= scaleY;
-	coords.w *= scaleX;
-	coords.h *= scaleY;
-	console.log ("scaled crop x: " + coords.x);
-	console.log ("scaled crop y: " + coords.y);
-	console.log ("scaled crop width: " + coords.w);
-	console.log ("scaled crop height: " + coords.h);
+//	var scaleX = styl.fabricObject.width / origSize.width;
+//	var scaleY = styl.fabricObject.height / origSize.height;
+//	coords.x *= scaleX;
+//	coords.y *= scaleY;
+//	coords.w *= scaleX;
+//	coords.h *= scaleY;
 	
-	styl.crop(coords.x, coords.y, coords.w, coords.h);
+//	styl.crop(coords.x, coords.y, coords.w, coords.h);
 	bench.currentPromotion.canvas.renderAll();
 },
 

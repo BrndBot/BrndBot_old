@@ -129,7 +129,10 @@ function Promotion (model, styleSet) {
 		var canvasElem = $('#' + location);
 		canvasElem.attr("width", this.styleSet.width);
 		canvasElem.attr("height", this.styleSet.height);
-		this.canvas = new fabric.Canvas (location);
+		if (this.canvas)
+			this.canvas.clear();
+		else
+			this.canvas = new fabric.Canvas (location);
 		this.canvas.setBackgroundColor ('#FFFFFF');
 		
 		var styles = this.styleSet.styles;
