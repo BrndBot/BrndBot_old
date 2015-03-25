@@ -217,13 +217,13 @@ cropWin: null,
 showCrop: function (btn) {
 	var style = benchcontent.elemToLinkedStyle(btn);
 	var img = $("#cropWindow .cropImage");
-	img.attr ("src", "ImageServlet?img=default");
+	img.attr ("src", "ImageServlet?img=" + style.getImageID());
 	if (benchcontent.cropWin) {
 		benchcontent.cropWin.data("kendoWindow").open();
 	}
 	else {
 		benchcontent.cropWin = $("#cropWindow").kendoWindow ({
-			actions: ["Custom", "Minimize", "Maximize", "Close"],
+			actions: ["Minimize", "Close"],
 			title: "Crop Image",
 			draggable: true,
 			modal: true,
@@ -257,8 +257,20 @@ closeCrop: function () {
 /* Apply the cropping from Jcrop */
 applyCrop: function (coords) {
 	var styl = benchcontent.cropper.style;
-	var origSize = styl.fabricObject.getOriginalSize();
-	styl.setLocalMask (coords.x, coords.y, coords.w, coords.h);
+	// need to convert from window coordinates to source coordinates.
+	var img = $("#cropWindow > img");
+	var dispWid = img.width();
+	var dispHt = img.height();
+	var widRatio = styl.sourceWidth / dispWid;
+	var htRatio = styl.sourceHeight / dispHt;
+	// Should both be the same, but be picky
+	var cropx = coords.x * widRatio;
+	var cropy = coords.y * htRatio;
+	var cropw = coords.w * widRatio;
+	var croph = coords.h * htRatio;
+	
+	//var origSize = styl.fabricObject.getOriginalSize();
+	styl.drawToMask (cropx, cropy, cropw, croph);
 	
 	// Scale to the display size of the image
 //	var scaleX = styl.fabricObject.width / origSize.width;
@@ -340,12 +352,8 @@ useClickedImage: function (e) {
     var index = this.select().index();
     var item = this.dataSource.view()[index];
     var id = item.ID;
-    var w = item.width;
-    var h = item.height;
-    console.log ("w = " + w);
-    console.log ("h = " + h);
     var style = benchcontent.galleryTarget.style;
-    style.setLocalImageID (id, w, h);
+    style.setLocalImageID (id, item.width, item.height);
     bench.currentPromotion.canvas.renderAll();
 },
 

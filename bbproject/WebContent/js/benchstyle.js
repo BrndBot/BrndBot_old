@@ -50,12 +50,18 @@ insertStyles: function (dest) {
 /** Update the promotion style to the one given in the list item
  *  that was just clicked. */
 updateStyle: function (litem) {
+	//var oldStyleSet = bench.currentPromotion.styleSet;
+	//oldStyleSet.killFabricObjects();
+	bench.currentPromotion.wipeClean();
+	
 	var styleSet = benchstyle.elemToLinkedStyleSet (litem);
 	if (styleSet !== null) {
+		styleSet = styleSet.copyForDisplay();		// ** will this help things?
 		$('#contentArea').empty();
 		bench.currentPromotion.applyStyleSet (styleSet);
 		benchcontent.insertEditFields ( $('#contentArea'));
-		bench.currentPromotion.redraw('finishedImage1');
+		//bench.currentPromotion.redraw('finishedImage1');
+		bench.currentPromotion.draw('finishedImage1');
 		var canvas = $('#finishedImage1');
 		if (styleSet.width > bench.MAX_PROMOTION_DIM || styleSet.height > bench.MAX_PROMOTION_DIM) {
 			var scaleRatio = Math.min (bench.MAX_PROMOTION_DIM / styleSet.width,

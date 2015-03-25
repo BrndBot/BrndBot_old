@@ -44,6 +44,18 @@ function StyleSet () {
 		}
 	};
 	
+	/* Call this before switching style sets to delete all existing fabric objects.
+	 */
+	this.killFabricObjects = function () {
+		for (var i = 0; i < this.styles.length; i++) {
+			var style = this.styles[i];
+			if (style.fabricObject) {
+				style.fabricObject.remove();
+				style.fabricObject = null;
+			}
+		}
+	};
+	
 	/* Make a copy that will be suitable for a separate display. This
 	 * means all styles are copied, but local styles are SHARED, so
 	 * that a change in one will affect the other.
@@ -117,7 +129,18 @@ function Style (styleType, styleSet) {
 	this.anchor = null;
 	this.offsetX = null;
 	this.offsetY = null;
-	this.maskRect = null;
+	
+	/* The drawing of an image or logo is defined by displayDims and the style's dimensions. 
+	 * 
+	 * displayDims gives the dimensions of the whole image as drawn on the canvas, in canvas
+	 * coordinates. It will always be masked to the style's dimensions.
+	 */
+	this.displayDims = {
+			x: 0,
+			y: 0,
+			width: 0,
+			height: 0
+	};	// The eimensions of the whole image as scaled to the canvas
 	this.text = null;
 	this.defaultText = null;
 	this.typeface = null;
@@ -151,7 +174,7 @@ function Style (styleType, styleSet) {
 		retval.anchor = this.anchor = "TL";
 		retval.offsetX = this.offsetX;
 		retval.offsetY = this.offsetY;
-		retval.maskRect = this.maskRect;
+		retval.displayDims = this.displayDims;
 		retval.text = this.text;
 		retval.defaultText = this.defaultText;
 		retval.typeface = this.typeface;
@@ -224,6 +247,16 @@ function Style (styleType, styleSet) {
 		if (this.modelField && !this.modelField.localStyle)
 			this.modelField.localStyle = new Style(this.styleType, this.styleSet);
 	};
+	
+	/* Image styles only: Update drawing to use the specified cropping dims. */
+	this.drawToMask = function (x, y, w, h) {
+		this.fitImageToMask (x, y, w, h);
+		// Remove old canvas object
+		if (this.fabricObject) {
+			this.fabricObject.remove ();
+		}
+		this.fabricateImage(this.canvas);
+	}
 
 
 	/* Draw a Style's ModelField under the control of this style. */
@@ -238,21 +271,25 @@ function Style (styleType, styleSet) {
 		case "image":
 			var imgData = this.findImage();
 			if (imgData) {
-				var dims = this.fitImage (imgData.width, imgData.height);
-				this.fabricateImage (canvas, dims);
+				this.sourceWidth = imgData.width;
+				this.sourceHeight = imgData.height;
 			}
 			else {
-				this.fabricateImage (canvas);
+				// All wrong, but give it something.
+				alert ("No imgData");
+				this.sourceWidth = 100;
+				this.sourceHeight = 100;
 			}
+			this.fitImageToMask ();
+			this.fabricateImage (canvas);
 			break;
 		case "logo":
 			if (this.styleSet.logoData) {
-				var logoDims = this.fitImage (this.styleSet.logoData.width, this.styleSet.logoData.height);
-				this.fabricateLogo (canvas, logoDims.width, logoDims.height);
+				this.sourceWidth = this.styleSet.logoData.width;
+				this.sourceHeight = this.styleSet.logoData.height;
 			}
-			else {
-				this.fabricateLogo (canvas);
-			}
+			this.fitImageToMask();
+			this.fabricateLogo (canvas);
 			break;
 		case "block":
 			this.fabricateBlock (canvas);
@@ -381,64 +418,58 @@ function Style (styleType, styleSet) {
 	};
 	
 
-	/** Draw the image. fitImage should already have been called to
-	 *  set the values of dispWidth and dispHeight.
+	/** Draw the image. displayDims governs the positioning and size.
 	 *  
-	 *   dispWidth: the width at which the image should be drawn
-	 *   dispHeight: the height at which the image should be drawn
+	 *   displayDims properties:
+	 *   width: the width at which the image should be drawn
+	 *   height: the height at which the image should be drawn
+	 *   x: The x offset of the left edge of the masked rectangle
+	 *   y: The y offset of the top of the masked rectangle
+	 *   
+	 *   If dispDims is missing ... something is still wrong here! What DOES it do?
 	 *   
 	 *   These dimensions should be at least as large as the style dimensions
 	 *   and should preserve the original image's aspect ratio.
 	 */
-	this.fabricateImage = function  (canvas, dispDims) {
+	this.fabricateImage = function  (canvas) {
 		console.log ("fabricateImage");
+		var dispDims = this.displayDims;	// Just for brevity
 		var pos = this.getPosition();
-		// Amount to displace the origin, if the display dimensions differ
-		// from the style dimensions
-		var xDisplace = 0;
-		var yDisplace = 0;
-		var width;
-		var height;
 		var id = this.getImageID();
 		var imgdata = this.findImage (id);
-		if (dispDims && dispDims.width) {
-			width = dispDims.width;
-			xDisplace = dispDims.x + (this.getWidth() - dispDims.width) / 2.0;
-		}
-		else if (imgdata)
-			width = imgdata.width;
-		else
-			width = this.getWidth();
-		
-		if (dispDims && dispDims.height) {
-			height = dispDims.height;
-			yDisplace = dispDims.y + (this.getHeight() - dispDims.height) / 2.0;
-		}
-		else if (imgdata)
-			height = imgdata.height;
-		else
-			height = this.getHeight();
-		
 		var opacity = this.getOpacity () * 0.01;	// Convert 0-100 to 0-1
 		var gco = "source-over";
 		if (this.getMultiply())
 			gco = "multiply";
 		
+		// Calculate the mask rectangle relative to the image, then
+		// convert it to fabric's silly coordinate system in which 0,0
+		// is the center of the image.
+		// The mask is the style's dimensions, because of the way we set it up.
+		
+		var clipX = pos.x - dispDims.x;
+		var clipY = pos.y - dispDims.y;
+		var clipW = this.getWidth();
+		var clipH = this.getHeight();
+		
+		clipX -= dispDims.width / 2;
+		clipY -= dispDims.height / 2;
+		
 		var style = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=" + id, function (img) {
 			img.hasControls = false;
 			img.selectable = false;
-			img.left = pos.x + xDisplace;
-			img.top = pos.y  + yDisplace;
+			img.left = dispDims.x;
+			img.top = dispDims.y;
 			img.originX = "left";
 			img.originY = "top";
-			img.width = width;
-			img.height = height;
+			img.width = dispDims.width;
+			img.height = dispDims.height;
 			img.opacity = opacity;
 			img.globalCompositeOperation = gco;
 
 			img.clipTo = function (ctx) {
-				ctx.rect (-style.getWidth() / 2, -style.getHeight() / 2, style.getWidth(), style.getHeight());
+				ctx.rect (clipX, clipY, clipW, clipH);
 			};
 			style.fabricObject = img;
 			canvas.add(img);
@@ -446,39 +477,22 @@ function Style (styleType, styleSet) {
 		});
 	};
 	
-	this.fabricateLogo = function  (canvas, dispWidth, dispHeight) {
+	
+	this.fabricateLogo = function  (canvas) {
 		console.log ("fabricateLogo");
+		var dispDims = this.displayDims;	// Just for brevity
 		var pos = this.getPosition();
-		// Amount to displace the origin, if the display dimensions differ
-		// from the style dimensions
-		var xDisplace = 0;
-		var yDisplace = 0;
-		var width;
-		var height;
-		if (dispWidth) {
-			width = dispWidth;
-			xDisplace = (this.getWidth() - dispWidth) / 2.0;
-		}
-		else
-			width = this.getWidth();
-		
-		if (dispHeight) {
-			height = dispHeight;
-			yDisplace = (this.getHeight() - dispHeight) / 2.0;
-		}
-		else
-			height = this.getHeight();
 
 		var style = this;
 		var img = fabric.Image.fromURL("ImageServlet?img=logo", function (img) {
 			img.hasControls = false;
 			img.selectable = false;
-			img.left = pos.x + xDisplace;
-			img.top = pos.y  + yDisplace;
+			img.left = dispDims.x;
+			img.top = dispDims.y;
 			img.originX = "left";
 			img.oritinY = "top";
-			img.width = width;
-			img.height = height;
+			img.width = dispDims.width;
+			img.height = dispDims.height;
 			img.clipTo = function (ctx) {
 				ctx.rect (-style.getWidth() / 2, -style.getHeight() / 2, style.getWidth(), style.getHeight());
 			};
@@ -595,6 +609,12 @@ function Style (styleType, styleSet) {
 		this.modelField.localStyle.offsetY = y;
 	};
 	
+	/* Set the dimensions of the source image. */
+	this.setSourceDims = function (w, h) {
+		this.sourceWidth = w;
+		this.sourceHeight = h;
+	}
+	
 	this.getWidth = function () {
 		if (this.modelField.localStyle.width !== null) {
 			return this.modelField.localStyle.width;
@@ -625,29 +645,6 @@ function Style (styleType, styleSet) {
 		this.modelField.localStyle.height = h;
 	};
 	
-	this.getMaskRect = function () {
-		if (this.modelField.localStyle.maskRect !== null) {
-			return this.modelField.localStyle.maskRect;
-		}
-		else if (this.maskRect) {
-			// I don't think we ever set the maskRect of the primary style,
-			// but follow the pattern anyway.
-			return this.maskRect;
-		}
-		else
-			return null;
-	};
-	
-	/* Set the masking rectangle. This doesn't do anything until the next time
-	 * the image is drawn.
-	 */
-	this.setLocalMask = function (x, y, wid, ht) {
-		this.modelField.localStyle.maskRect = { x: x,
-				y: y,
-				width: wid,
-				height: ht};
-	};
-
 	/* getColor returns black as a last resort, so it always returns
 	 * a color string. */
 	this.getColor = function () {
@@ -799,55 +796,136 @@ function Style (styleType, styleSet) {
 		if (this.fabricObject) {
 			this.fabricObject.remove ();
 		}
-		if (width && height) {
-			displayDims = this.fitImage (width, height);
-			this.fabricateImage (this.canvas, displayDims.width, displayDims.height);
-		}
-		else {
-			this.fabricateImage (this.canvas);
-		}
+//		if (width && height) {
+//			this.displayDims = this.fitImage (width, height);
+//		}
+		// Recalculate dimensions. Any previous masking goes away.
+		this.fitImageToMask();
+		this.fabricateImage (this.canvas);
 	};
 	
 	/* Calculate the display size of the image based on its source width and height.
+	 * Doesn't take masking into account.
+	 * 
 	 * Return an object with properties x, y, width and height.
-	 * x and y can be nonzero if there's a maskRect.
-	 * We apply Procrustean logic to the image. Whether it's too
-	 * big or too small, size it to the smallest size that will 
-	 * fill the rectangle given by width and height, centering
-	 * it in the other dimension. */
-	this.fitImage = function (w, h) {
-		this.sourceWidth = w;
-		this.sourceHeight = h;
-		this.sourceX = 0;
-		this.sourceY = 0;
-		var retval = {x: 0, y: 0};
-		if (maskRect) {
-			// Hmm ... I need to do this first, don't I, so it knows
-			// which dimension it has to trim.
-			this.sourceWidth = maskRect.width;
-			this.sourceHeight = maskRect.height;
-			retval.x = maskRect.x;
-			retval.y = maskRect.y;
+	 * 
+	 * We apply Procrustean logic to the image. 
+	 * The image will be proportionally stretched or shrunk such that the
+	 * masked portion (the whole image if maskRect is null) will exactly fill the
+	 * style's display rectangle in one dimension and fill or overflow it in the
+	 * other.  
+	 * 
+	 * Explained another way: No blank space outside the image, and no portion 
+	 * outside the mask rectangle will ever be drawn, but as much as possible of
+	 * the image will be drawn subject to this constraint, and the clipping will
+	 * be symmetric.
+	 * 
+	 * The returned value will be a rectangle in display coordinates with the
+	 * following meaning:
+	 * 
+	 * x: x offset at which to start drawing relative to the left of the drawing
+	 *     frame. Always 0 or negative.
+	 * y: y offset at which to start drawing relative to the top of the drawing
+	 *     frame. Always 0 or negative.
+	 * 
+	 */
+//	this.fitImage = function (w, h) {
+//		this.sourceWidth = w;
+//		this.sourceHeight = h;
+//		this.sourceX = 0;
+//		this.sourceY = 0;
+//		var width = this.getWidth();
+//		var height = this.getHeight();
+//		var retval = {x: 0, y: 0, width: 0, height: 0};
+//		var widthRatio = this.sourceWidth / this.width;
+//		var heightRatio = this.sourceHeight / this.height;
+//		if (widthRatio < heightRatio) {
+//			// We'll fill the horizontal and overflow the vertical
+//			retval.width = width;
+//			retval.height = this.sourceHeight * (width / this.sourceWidth);
+//			retval.y = -(retval.height - height) / 2;
+//		}
+//		else {
+//			// Fill the vertical and overflow the horizontal, or fit perfectly
+//			retval.height = height;
+//			retval.width = this.sourceWidth * (height / this.sourceHeight);
+//			retval.x = -(retval.width - width) / 2;
+//		}
+//		return retval;
+//	};
+	
+	/* Set displayDims so as to set a masking rectangle, then redraw.
+	 * 
+	 * The arguments are the dimensions of the masking rectangle in source
+	 * image coordinates.
+	 * 
+	 * This means redefining displayDims (which the return value is usually set to)
+	 * so that what's in the rectangle will be just what's in the
+	 * mask. Assumes that sourceWidth and sourceHeight have been set.
+	 * Forces a redraw.
+	 * 
+	 * If no arguments are given, we mask to the full image.
+	 */
+	this.fitImageToMask = function (maskX, maskY, maskW, maskH) {
+		// Messy, but not to bad if done a step at a time.
+		
+		// Set defaults if no arguments
+		if (typeof maskX == 'undefined') {
+			maskX = 0;
+			maskY = 0;
+			maskW = this.sourceWidth;
+			maskH = this.sourceHeight;
 		}
-
-		// TODO Doesn't mask to frame yet.
-		var widthRatio = this.sourceWidth / this.width;
-		var heightRatio = this.sourceHeight / this.height;
-		if (widthRatio < heightRatio) {
-			// We'll fill the horizontal and overflow the vertical
-			retval.width = this.width;
-			retval.height = this.sourceHeight * (this.width / this.sourceWidth);
-			// probably need to redraw
+		// First, let's get a "true" mask that reflects what we can actually show,
+		// given that we may have to cut back one dimension or the other of the
+		// user-supplied mask.
+		var maskAspectRatio = maskH / maskW;
+		var width = this.getWidth();		// style's width and height
+		var height = this.getHeight();
+		var pos = this.getPosition();
+		var widthScale = maskW / width;		// Scaling factor to fit full width
+		var heightScale = maskH / height;
+		var styleAspectRatio = height / width;
+		
+		if (styleAspectRatio > maskAspectRatio) {
+			// we have to eliminate some of the sides.
+			var newMaskW = maskH / styleAspectRatio;
+			maskX += (maskW - newMaskW) / 2;
+			maskW = newMaskW;
 		}
 		else {
-			// Fill the vertical and overflow the horizontal, or fit perfectly
-			retval.height = this.height;
-			retval.width = this.sourceWidth * (this.height / this.sourceHeight);
+			// exact proportions, or else eliminate some top & bottom
+			var newMaskH = maskW * styleAspectRatio;
+			maskY += (maskH - newMaskH) / 2;
+			maskH = newMaskH;
 		}
-		var maskRect = this.getMaskRect();
-		return retval;
+		
+		// We now have a mask, still in original image coordinates,
+		// that reflects what will actually be seen.
+		// Now our scale factor is the ratio of the style width to mask width,
+		// which is equal to the ratio of style height to mask height;
+		var scaleFactor = width / maskW;
+		
+		// Now scale the mask to the style coordinates.
+		maskX *= scaleFactor;
+		maskY *= scaleFactor;
+		maskW *= scaleFactor;
+		maskH *= scaleFactor;
+		
+		// The display dimensions are the source dimensions multiplied by
+		// the same scaleFactor.
+		this.displayDims.width = this.sourceWidth * scaleFactor;
+		this.displayDims.height = this.sourceHeight * scaleFactor;
+		
+		// Finally the X and Y position.
+		
+		this.displayDims.x = pos.x - maskX;
+		this.displayDims.y = pos.y - maskY;
+		
+		//this.fabricateImage(this.canvas);
 	};
-	
+
+
 	/* Crop the field to a specified rectangle. This works only for ...
 	 * well, right now, it doesn't work for anything, but it should
 	 * for images and maybe logos.

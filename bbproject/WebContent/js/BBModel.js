@@ -107,8 +107,11 @@ function Promotion (model, styleSet) {
 		this.styleSet = styleSet;
 		this.styleSet.logoData = this.logoData;
 		// propagate availableImages only if the styleset doesn't have any
-		if (!styleSet.availableImages || styleSet.availableImages.length === 0)
-			styleSet.assignAvailableImages (this.availableImages);
+		if (!styleSet.availableImages || styleSet.availableImages.length === 0) {
+			if (this.availableImages) {
+				styleSet.assignAvailableImages (this.availableImages);
+			}
+		}
 
 		styleSet.attachToModel (model);
 		
@@ -130,9 +133,12 @@ function Promotion (model, styleSet) {
 			this.styleSet.logoData = dta;
 	};
 	
-	/* 
-	
-	this.assignAvailableImages ([]);
+	this.wipeClean = function () {
+		if (this.canvas) {
+			this.styleSet.killFabricObjects();
+			this.canvas.clear();
+		}
+	}
 	
 	/* Draw a Promotion. The argument is the ID of a canvas element. */
 	this.draw = function (location) {
