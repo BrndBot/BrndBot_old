@@ -45,6 +45,7 @@ styleToSourceData: function (styleSet) {
 		fielddata.fieldname = field.name;
 		fielddata.x = style.getX().toString();
 		fielddata.y = style.getY().toString();
+		fielddata.styleType = style.styleType;
 		fielddata.width = style.getWidth().toString();
 		fielddata.height = style.getHeight().toString();
 		srcdata.push(fielddata);
@@ -156,6 +157,13 @@ updateHeight: function(tarea) {
         tarea.onblur = null;
     };
 
+},
+
+/* Callback function to complete setting the color from a
+ * ColorSelector */
+setColor: function (style, color ) {
+	style.setLocalColor (color);
+	style.fabricObject.fill = color;
 },
 
 elemToLinkedStyle: function (elem) {

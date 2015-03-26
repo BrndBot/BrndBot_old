@@ -337,9 +337,9 @@ function Style (styleType, styleSet) {
 			textAlign: alignment
 		});
 		
-		var dropShadowH = this.getDropShadowH();
-		var dropShadowV = this.getDropShadowV();
-		if (dropShadowH  || dropShadowV ) {
+		if (this.hasDropShadow ()) {
+			var dropShadowH = this.getDropShadowH();
+			var dropShadowV = this.getDropShadowV();
 			text.shadow = new fabric.Shadow ();
 			text.shadow.blur = this.getDropShadowBlur();
 			text.shadow.offsetX = dropShadowH;
@@ -373,48 +373,56 @@ function Style (styleType, styleSet) {
 			globalCompositeOperation: gco,
 			opacity: opacity
 		});
-		
+
+		if (this.hasDropShadow ()) {
+			var dropShadowH = this.getDropShadowH();
+			var dropShadowV = this.getDropShadowV();
+			rect.shadow = new fabric.Shadow ();
+			rect.shadow.blur = this.getDropShadowBlur();
+			rect.shadow.offsetX = dropShadowH;
+			rect.shadow.offsetY = dropShadowV;
+		}
+
 		// If there's a drop shadow, it's implemented as an offset rectangle.
 		// We need to compbine the two rectangles into a Group object for
 		// management purposes.
-		var dropShadowH = this.getDropShadowH();
-		var dropShadowV = this.getDropShadowV();
-		if (dropShadowH || dropShadowV) {
-			// position rect at top left corner of group
-			rect.left = 0;
-			rect.top = 0;
-			var shadowRect = new fabric.Rect ({
-				hasControls: false,
-				selectable: false,
-				width: wid,
-				height: ht,
-				left: dropShadowH,
-				top: dropShadowV,
-				originX: "left",
-				originY: "top",
-				fill: "#000000",
-				globalCompositeOperation: gco,
-				opacity: opacity
-			});
-			var group = new fabric.Group ([shadowRect, rect],
-				{
-				hasControls: false,
-				selectable: false,
-				left: pos.x,
-				top: pos.y,
-				originX: "left",
-				originY: "top"
-				});
-			canvas.add(group);
-			canvas.moveTo(group, this.index);
-		}
-		else {
-			// No drop shadow, just use the Rect object
-			this.fabricObject = rect;
-			canvas.add(rect);
-			canvas.moveTo(rect, this.index);
+//		if (this.hasDropShadow()) {
+//			var dropShadowH = this.getDropShadowH();
+//			var dropShadowV = this.getDropShadowV();
+//			// position rect at top left corner of group
+//			rect.left = 0;
+//			rect.top = 0;
+//			var shadowRect = new fabric.Rect ({
+//				hasControls: false,
+//				selectable: false,
+//				width: wid,
+//				height: ht,
+//				left: dropShadowH,
+//				top: dropShadowV,
+//				originX: "left",
+//				originY: "top",
+//				fill: "#000000",
+//				globalCompositeOperation: gco,
+//				opacity: opacity
+//			});
+//			var group = new fabric.Group ([shadowRect, rect],
+//				{
+//				hasControls: false,
+//				selectable: false,
+//				left: pos.x,
+//				top: pos.y,
+//				originX: "left",
+//				originY: "top"
+//				});
+//			canvas.add(group);
+//			canvas.moveTo(group, this.index);
+//			this.fabricObject = group;
+//		}
+//		else {
+		this.fabricObject = rect;
+		canvas.add(rect);
+		canvas.moveTo(rect, this.index);
 
-		}
 	};
 	
 
@@ -664,8 +672,16 @@ function Style (styleType, styleSet) {
 		else return "#000000";
 	};
 	
+	/* This operates on the fabricObject to update the color. 
+	 * In the case of a Block, there's an extra complication, since
+	 * it might have a group object with a drop shadow. */
 	this.setLocalColor = function (c) {
 		this.modelField.localStyle.color = c;
+		if (this.styleType == "block") {
+			if (this.hasDropShadow()) {
+				// It's a group, and we have to fish out the second rect. XYZZY 
+			}
+		}
 	};
 	
 	this.getMultiply = function () {
@@ -728,7 +744,7 @@ function Style (styleType, styleSet) {
 	this.setLocalDropShadowH = function (h) {
 		this.modelField.localStyle.dropShadowH = h;
 	};
-
+	
 	this.getDropShadowV = function () {
 		return (this.modelField.localStyle.dropShadowV !== null) ? this.modelField.localStyle.dropShadowV : this.dropShadowV;
 	};
@@ -745,6 +761,10 @@ function Style (styleType, styleSet) {
 		this.modelField.localStyle.dropShadowBlur = b;
 	};
 	
+	this.hasDropShadow = function () {
+		return this.getDropShadowH() !== null && this.getDropShadowV !== null;
+	};
+
 	this.getHCenter = function () {
 		if (this.modelField.localStyle.hCenter !== null)
 			return this.modelField.localStyle.hCenter;
@@ -796,9 +816,6 @@ function Style (styleType, styleSet) {
 		if (this.fabricObject) {
 			this.fabricObject.remove ();
 		}
-//		if (width && height) {
-//			this.displayDims = this.fitImage (width, height);
-//		}
 		// Recalculate dimensions. Any previous masking goes away.
 		this.fitImageToMask();
 		this.fabricateImage (this.canvas);

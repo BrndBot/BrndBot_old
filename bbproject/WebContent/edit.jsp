@@ -90,6 +90,7 @@ All rights reserved by Brndbot, Ltd. 2015
     <script type="text/javascript" src="scripts/jquery.Jcrop.min.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
+    <script type="text/javascript" src="js/ColorSelector.js"></script>
     <script type="text/javascript" src="js/BBModel.js"></script>
     <script type="text/javascript" src="js/BBStyle.js"></script>
     <script type="text/javascript" src="js/bench.js"></script>
@@ -563,7 +564,7 @@ All rights reserved by Brndbot, Ltd. 2015
 					<label>Color
 						<button type="button" data-linkedfield="#:fieldid#" 
 							style="width:30px;height:15px;background-color:\\#CC2222"
-							onclick="benchcontent.showHideColorSelect(this)"></button>
+							onclick="benchcontent.colorSelector.showHideColorSelect(this)"></button>
 					</label>
 				</div>
 				<div id="#:fieldid#-select" style="display:none">
@@ -574,7 +575,7 @@ All rights reserved by Brndbot, Ltd. 2015
 								<button type="button" style="background-color:${color}"
 									data-linkedfield="#:fieldid#"
 									data-color="${color}"
-									onclick="benchcontent.setToPaletteColor(this)">
+									onclick="benchcontent.colorSelector.setToPaletteColor(this, benchcontent.setColor)">
 								</button>
 							</td>
 						</c:forEach>
@@ -582,12 +583,12 @@ All rights reserved by Brndbot, Ltd. 2015
 						<tr>
 						<td class="paletteButton">
 							<button type="button" style="width:40px;height:15px;font-size:60%;" 
-									name="color" onclick="benchcontent.showHideColorPicker(this)">
+									name="color" onclick="benchcontent.colorSelector.showHideColorPicker(this)">
 								Custom
 							</button>
 						</td><td colspan="2">
 							<input style="height:15px;display:none" type="color" 
-								onchange="benchcontent.setToInputColor(this)"
+								onchange="benchcontent.colorSelector.setToInputColor(this, benchcontent.setColor)"
 								data-linkedfield="#:fieldid#">
 						</td>
 					</tr></table>
@@ -649,6 +650,43 @@ All rights reserved by Brndbot, Ltd. 2015
 		</tr>
 		</table>
 	</div>
+	
+	# if (styleType == 'block') {   #
+		<div>
+			<label>Color
+				<button type="button" data-linkedfield="#:fieldid#" 
+					style="width:30px;height:15px;background-color:\\#CC2222"
+					onclick="benchdesign.colorSelector.showHideColorSelect(this)"></button>
+			</label>
+		</div>
+		<div id="#:fieldid#-select" style="display:none">
+			<table>
+				<tr>
+				<c:forEach var="color" items="${benchHelper.userPaletteColors}">
+					<td class="paletteButton">
+						<button type="button" style="background-color:${color}"
+							data-linkedfield="#:fieldid#"
+							data-color="${color}"
+							onclick="benchdesign.colorSelector.setToPaletteColor(this, benchdesign.setColor)">
+						</button>
+					</td>
+				</c:forEach>
+				</tr>
+				<tr>
+				<td class="paletteButton">
+					<button type="button" style="width:40px;height:15px;font-size:60%;" 
+							name="color" onclick="benchdesign.colorSelector.showHideColorPicker(this)">
+						Custom
+					</button>
+				</td><td colspan="2">
+					<input style="height:15px;display:none" type="color" 
+						onchange="benchdesign.colorSelector.setToInputColor(this, benchdesign.setColor)"
+						data-linkedfield="#:fieldid#">
+				</td>
+			</tr></table>
+		</div>
+        <p>&nbsp;</p>	
+	# } #		<!-- block -->
 </script>
 
 <script type="text/x-kendo-template" id="styleFieldsTemplate">

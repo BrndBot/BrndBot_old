@@ -35,7 +35,7 @@ var bench = {
 		//  to editor HTML fields by ID.
 		// initFieldMap();
 	
-	// left side tab control
+		// left side tab control
 		$("#tabstrip").kendoTabStrip({
 	        animation:  {
 	            open: {
@@ -44,7 +44,7 @@ var bench = {
 	        }
 	    });
 	
-	// right side tab control
+		// right side tab control
 	    $("#tabstrip2").kendoTabStrip({
 	        animation:  {
 	            open: {
@@ -53,6 +53,10 @@ var bench = {
 	        }
 	    
 	    });
+	    
+	    // Set up ColorSelectors
+	    benchcontent.colorSelector = new ColorSelector ();
+	    benchdesign.colorSelector = new ColorSelector();
 	
 	    // Get data on the logo dimensions.
 	    $.ajax({
@@ -277,6 +281,7 @@ var bench = {
 		        	i = dataItems.length;
 		        }
 			}
+			
 	
 			// Close the popup
 			var dialog = $("#contentPopup").data("kendoWindow");
@@ -291,25 +296,6 @@ var bench = {
 			addTextBlock(false, true);
 		});
 	
-		$('#genericTextBlockLink').on('click', function(e)
-		{
-	//		addFooterBlock();
-		});
-	
-		$('#genericImageBlockLink').on('click', function(e)
-		{
-	//		addFooterBlock();
-		});
-	
-		$('#genericVideoBlockLink').on('click', function(e)
-		{
-	//		addFooterBlock();
-		});
-	
-		$('#newWebBlockLink').on('click', function(e)
-		{
-	//		addFooterBlock();
-		});
 	
 		$('#closeContentPopup').on('click', function(event)
 		{
