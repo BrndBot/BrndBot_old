@@ -60,6 +60,7 @@ updateStyle: function (litem) {
 		$('#contentArea').empty();
 		bench.currentPromotion.applyStyleSet (styleSet);
 		benchcontent.insertEditFields ( $('#contentArea'));
+		benchdesign.insertEditFields ( $('#designArea'));
 		//bench.currentPromotion.redraw('finishedImage1');
 		bench.currentPromotion.draw('finishedImage1');
 		var canvas = $('#finishedImage1');
@@ -69,6 +70,10 @@ updateStyle: function (litem) {
 			canvas.css("width", "" + Math.floor(styleSet.width * scaleRatio) + "px");
 			canvas.css("height", "" + Math.floor(styleSet.height * scaleRatio) + "px");
 		}	
+		else {
+			canvas.css("width", "" + Math.floor(styleSet.width) + "px");
+			canvas.css("height", "" + Math.floor(styleSet.height) + "px");
+		}
 	}
 },
 

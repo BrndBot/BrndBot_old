@@ -44,6 +44,7 @@ function StyleSet () {
 		}
 	};
 	
+	
 	/* Call this before switching style sets to delete all existing fabric objects.
 	 */
 	this.killFabricObjects = function () {
@@ -227,6 +228,21 @@ function Style (styleType, styleSet) {
 		}
 		this.alignment = jsonObj.alignment;
 	};
+
+	/* Return the Style's position (0-based) in its StyleSet. Not the same
+	 * as index, which is display stacking order. If it can't be found
+	 * in the StyleSet, return -1. 
+	 */
+	this.positionInStyleSet = function () {
+		if (!this.styleSet)
+			return -1;
+		for (var i = 0; i < this.styleSet.styles.length; i++) {
+			var style = this.styleSet.styles[i];
+			if (style === this)
+				return i;
+		}
+		return -1;
+	};
 	
 	/* Attach the style to the matching field in the model.
 	 * When we do this, we also make a localStyle that can
@@ -383,42 +399,6 @@ function Style (styleType, styleSet) {
 			rect.shadow.offsetY = dropShadowV;
 		}
 
-		// If there's a drop shadow, it's implemented as an offset rectangle.
-		// We need to compbine the two rectangles into a Group object for
-		// management purposes.
-//		if (this.hasDropShadow()) {
-//			var dropShadowH = this.getDropShadowH();
-//			var dropShadowV = this.getDropShadowV();
-//			// position rect at top left corner of group
-//			rect.left = 0;
-//			rect.top = 0;
-//			var shadowRect = new fabric.Rect ({
-//				hasControls: false,
-//				selectable: false,
-//				width: wid,
-//				height: ht,
-//				left: dropShadowH,
-//				top: dropShadowV,
-//				originX: "left",
-//				originY: "top",
-//				fill: "#000000",
-//				globalCompositeOperation: gco,
-//				opacity: opacity
-//			});
-//			var group = new fabric.Group ([shadowRect, rect],
-//				{
-//				hasControls: false,
-//				selectable: false,
-//				left: pos.x,
-//				top: pos.y,
-//				originX: "left",
-//				originY: "top"
-//				});
-//			canvas.add(group);
-//			canvas.moveTo(group, this.index);
-//			this.fabricObject = group;
-//		}
-//		else {
 		this.fabricObject = rect;
 		canvas.add(rect);
 		canvas.moveTo(rect, this.index);
@@ -504,6 +484,16 @@ function Style (styleType, styleSet) {
 			img.clipTo = function (ctx) {
 				ctx.rect (-style.getWidth() / 2, -style.getHeight() / 2, style.getWidth(), style.getHeight());
 			};
+
+			if (style.hasDropShadow ()) {
+				var dropShadowH = style.getDropShadowH();
+				var dropShadowV = style.getDropShadowV();
+				img.shadow = new fabric.Shadow ();
+				img.shadow.blur = style.getDropShadowBlur();
+				img.shadow.offsetX = dropShadowH;
+				img.shadow.offsetY = dropShadowV;
+			}
+
 			style.fabricObject = img;
 			canvas.add(img);
 			canvas.moveTo(img, style.index);

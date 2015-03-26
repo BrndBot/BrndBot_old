@@ -563,7 +563,8 @@ All rights reserved by Brndbot, Ltd. 2015
 				<div>
 					<label>Color
 						<button type="button" data-linkedfield="#:fieldid#" 
-							style="width:30px;height:15px;background-color:\\#CC2222"
+							class="colorSelectButton"
+							style="background-color:#:color#"
 							onclick="benchcontent.colorSelector.showHideColorSelect(this)"></button>
 					</label>
 				</div>
@@ -655,7 +656,8 @@ All rights reserved by Brndbot, Ltd. 2015
 		<div>
 			<label>Color
 				<button type="button" data-linkedfield="#:fieldid#" 
-					style="width:30px;height:15px;background-color:\\#CC2222"
+					class="colorSelectButton"
+					style="background-color:#:color#"
 					onclick="benchdesign.colorSelector.showHideColorSelect(this)"></button>
 			</label>
 		</div>

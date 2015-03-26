@@ -300,6 +300,11 @@ td.paletteButton {
 	padding:3px
 }
 
+button.colorSelectButton {
+	width:30px;
+	height:15px;
+}
+
 td.paletteButton button {
 	width:30px;
 	height:15px;

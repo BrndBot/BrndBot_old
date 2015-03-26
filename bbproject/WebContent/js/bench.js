@@ -637,6 +637,10 @@ var bench = {
 					canvas.css("width", "" + Math.floor(defaultStyleSet.width * scaleRatio) + "px");
 					canvas.css("height", "" + Math.floor(defaultStyleSet.height * scaleRatio) + "px");
 				}
+				else {
+					canvas.css("width", "" + Math.floor(defaultStyleSet.width) + "px");
+					canvas.css("height", "" + Math.floor(defaultStyleSet.height) + "px");
+				}
 			}
 		});	
 		bench.loadStyles (promotionDataSource);

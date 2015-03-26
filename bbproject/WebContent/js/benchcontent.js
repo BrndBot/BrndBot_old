@@ -51,6 +51,7 @@ stylesToSourceData: function (styleSet) {
 			fielddata.styleType = "text";
 			fielddata.italicChecked = style.isItalic() ? "checked" : "";
 			fielddata.boldChecked = style.isBold() ? "checked" : "";
+			fielddata.color = style.getColor();
 			srcdata.push(fielddata);
 		}
 		else if (style.styleType == "image") {
@@ -123,50 +124,15 @@ updatePrototypePointSize: function(tarea) {
 
 },
 
-/* This is for showing and hiding the group of palette buttons
- * and the Custom button. It doesn't affect the state of the
- * color picker. */
-//showHideColorSelect: function (input) {
-//	var fieldid = $(input).attr("data-linkedfield");
-//	var buttondiv = $('#' + fieldid + "-select");
-//	buttondiv.toggle();
-//	bench.currentPromotion.canvas.renderAll();
-//},
-
-/* This is for the Custom button in the color controls.
- * btn is a button in a td, and the color picker is in
- * the next td. */
-//showHideColorPicker: function (btn) {
-//	var picker = $(btn).parent().parent().find("input");
-//	var style = benchcontent.elemToLinkedStyle(picker);
-//	picker.prop("defaultValue", style.getColor());
-//	picker.toggle();
-//},
-
 /* Callback function to complete setting the color from a
  * ColorSelector */
 setColor: function (style, color ) {
 	style.setLocalColor (color);
 	style.fabricObject.fill = color;
+	var fieldid = style.positionInStyleSet().toString();
+	var btn = $(".colorSelectButton[data-linkedfield='" + fieldid + "']");
+	btn.css("background-color", color);
 },
-
-/* Set field to the color indicated by a palette button */
-//setToPaletteColor: function (input) {
-//	var style = benchcontent.elemToLinkedStyle(input);
-//	var color = $(input).attr("data-color");
-//	style.setLocalColor (color);
-//	style.fabricObject.fill = color;
-//	bench.currentPromotion.canvas.renderAll();
-//},
-
-/* Set field to the color indicated by the color picker */
-//setToInputColor: function (input) {
-//	var style = benchcontent.elemToLinkedStyle(input);
-//	var color = $(input).val();
-//	style.setLocalColor(color);
-//	style.fabricObject.fill = color;
-//	bench.currentPromotion.canvas.renderAll();
-//},
 
 /* This is called by an onchange event, so we already know there's a change */
 updatePrototypeItalic: function (cbox) {

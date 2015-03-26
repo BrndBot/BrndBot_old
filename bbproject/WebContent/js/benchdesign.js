@@ -48,6 +48,7 @@ styleToSourceData: function (styleSet) {
 		fielddata.styleType = style.styleType;
 		fielddata.width = style.getWidth().toString();
 		fielddata.height = style.getHeight().toString();
+		fielddata.color = style.getColor();
 		srcdata.push(fielddata);
 	}
 	return srcdata;
@@ -164,6 +165,9 @@ updateHeight: function(tarea) {
 setColor: function (style, color ) {
 	style.setLocalColor (color);
 	style.fabricObject.fill = color;
+	var fieldid = style.positionInStyleSet().toString();
+	var btn = $(".colorSelectButton[data-linkedfield='" + fieldid + "']");
+	btn.css("background-color", color);
 },
 
 elemToLinkedStyle: function (elem) {
