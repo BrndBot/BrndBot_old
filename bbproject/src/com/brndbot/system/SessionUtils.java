@@ -39,9 +39,7 @@ public class SessionUtils
 	static final public String USER_ID = "brndbotuser_id";
 	static final public String IS_PRIV = "brndbotis_priv";
 	
-	/** I have no idea how sessions were being managed before. It seems
-	 *  JDOM was being used to serialize everything, which is silly.
-	 *  Define a SessionData object and use that instead. */
+
 	public static void saveSessionData 
 				(HttpServletRequest req, String name, Object data) {
 		HttpSession session = req.getSession ();

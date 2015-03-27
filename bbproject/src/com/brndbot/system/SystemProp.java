@@ -33,10 +33,8 @@ public class SystemProp
 	static final public String ASSETS = "assets";
 	/* The directory for local files, usually /var/brndbot */
 	static final public String LOCAL_ASSETS = "localassets";
-	static final public String MINDBODY_NAME = "mindbody.name";
-	static final public String MINDBODY_KEY = "mindbody.key";
-	static final public String MINDBODY_STUDIOID = "mindbody.studioid";
 	static final public String PHP_SERVER_PAGE = "php.server.page";
+	static final public String DEBUG_MODE = "app.debug";
 
 	private static Properties _properties;
 

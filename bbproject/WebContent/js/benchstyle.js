@@ -17,7 +17,7 @@
 var benchstyle = {
 		
 	// Max width and height for promotion canvas
-	MAX_STYLE_DIM: 135,
+	MAX_STYLE_DIM: 200,
 /** Insert the fields in the content tab needed to edit a promotion. 
  *  src  JQuery selector for the div into which the fields
  *       will be inserted

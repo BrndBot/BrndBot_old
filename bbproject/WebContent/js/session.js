@@ -60,16 +60,15 @@ Session.prototype.setImageID = function(image_id)
 	$.ajax({
         type: 'POST',
         dataType: 'json',
-        url: 'SetSessionServlet?action=image&' + SESSION_IMAGE_ID_KEY + '=' + image_id,
-        success: function(data)
-        {
-        	SESSION_IMAGE_ID = parseInt(data[SESSION_IMAGE_ID_KEY]);
-        },
-        error: function (xhr, ajaxOptions, thrownError)
-        {
-        	alert('The call to Brndbot server failed: ' + xhr.status);
-        }
-    });
+        url: 'SetSessionServlet?action=image&' + SESSION_IMAGE_ID_KEY + '=' + image_id
+    }).done (function (data) {
+    	SESSION_IMAGE_ID = parseInt(data[SESSION_IMAGE_ID_KEY]);
+    }). fail (function (xhr, ajaxOptions, thrownError) {
+    	if (xhr.status == 401) 
+    		Session.redirectToLogin();
+    	else
+    		alert('The call to Brndbot server failed: ' + xhr.status);
+	});
 };
 
 Session.prototype.setSession = function(action, channel_type, content_type, database_id, refreshCallback)
@@ -106,14 +105,12 @@ Session.prototype.setSession = function(action, channel_type, content_type, data
         	{
         		refreshCallback(SESSION_DATABASE_ID);
         	}	
-        },
-		statusCode: {
-			401: function() {
-			  Session.redirectToLogin();
-			}
-		}
+        }
     }).fail ( function (jqXHR, textStatus, errorThrown) {
-        	alert('The call to Brndbot server failed: ' + xhr.status);
+    	if (jqXHR.status == 401)
+    		Session.redirectToLogin();
+    	else
+    		alert('The call to Brndbot server failed: ' + jqXHR.status);
     });
 };
 

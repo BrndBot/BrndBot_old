@@ -35,14 +35,7 @@ var bench = {
 		//  to editor HTML fields by ID.
 		// initFieldMap();
 	
-		// left side tab control
-		$("#tabstrip").kendoTabStrip({
-	        animation:  {
-	            open: {
-	                effects: "fadeIn"
-	            }
-	        }
-	    });
+
 	
 		// right side tab control
 	    $("#tabstrip2").kendoTabStrip({
@@ -652,6 +645,10 @@ var bench = {
 					canvas.css("width", "" + Math.floor(defaultStyleSet.width) + "px");
 					canvas.css("height", "" + Math.floor(defaultStyleSet.height) + "px");
 				}
+			},
+			error: function (xhr) {
+				if (xhr && (xhr.statusCode() == 401))
+						bench.redirectToLogin();
 			}
 		});	
 		bench.loadStyles (promotionDataSource);
@@ -689,6 +686,10 @@ var bench = {
 				console.log (bench.styleSets);
 				// This guarantees both styles and promotion are available for drawing.
 				dataSource.read ();
+			},
+			error: function (xhr) {
+				if (xhr && (xhr.statusCode() == 401))
+						bench.redirectToLogin();
 			}
 		});
 		styleDataSource.read();

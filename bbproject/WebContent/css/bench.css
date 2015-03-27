@@ -7,9 +7,13 @@
 #leftSideBar {
 	position:fixed;
 	left: 1%;
-	top: 6.5rem;
+	top: 0rem;
 	z-index: 2;
-	width:11rem;
+	width:6rem;
+}
+
+ul.leftButtons {
+	list-style-type: none;
 }
 
 .rounded
@@ -232,6 +236,37 @@
 	text-align: center;
 }
 
+#tabstrip ul
+{
+	list-style-type: none;
+	padding: 0px;
+}
+
+#tabstrip ul li
+{
+	width: 6rem;
+	height: 4rem;
+	text-align:center;	
+}
+
+#tabstrip a
+{
+	text-decoration: none;
+	color: black;
+}
+
+#tabstrip table
+{
+	width:100%;
+}
+
+#tabstrip td
+{
+	text-align:center;
+	font-family: sans-serif;
+	font-size: 0.55rem;	
+}
+
 .k-tabstrip-items .k-tab-on-top .k-link
 {
 	background-color: white;
@@ -273,8 +308,8 @@
 }
 
 li.stylefield {
-	width:50%;
-	height: 180px;
+	width:100%;
+	height: 200px;
 	float:left;
 	list-style-type: none;
 }

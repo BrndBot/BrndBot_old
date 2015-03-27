@@ -63,6 +63,10 @@ $(document).ready(function()
 						url: "DashboardServlet",
 						dataType: "json",
 					}
+				},
+				error: function (xhr) {
+					if (xhr && (xhr.statusCode() == 401))
+							homejs.redirectToLogin();
 				}
 			});
 			session_mgr.setSession(SESSION_SET, 0, homejs.model_name, 0, homejs.showPrototypes);
@@ -190,6 +194,11 @@ var homejs = {
 		console.log ("showNormalImage");
 		var img = $(button).find("img");
 		img.attr("src", img.attr("data-normalsrc"));
+	},
+	
+	redirectToLogin: function () {
+		window.location.assign("index.jsp");
 	}
+
 
 };

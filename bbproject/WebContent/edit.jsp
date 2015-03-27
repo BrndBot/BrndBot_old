@@ -15,6 +15,7 @@ All rights reserved by Brndbot, Ltd. 2015
 <%@ page import="com.brndbot.client.ClientInterface" %>
 <%@ page import="com.brndbot.system.Assert" %>
 <%@ page import="com.brndbot.system.SessionUtils" %>
+<%@ page import="com.brndbot.system.SystemProp" %>
 <%@ page import="com.brndbot.system.Utils" %>
 <%@ page import="com.brndbot.db.ImageType" %>
 <%@ page import="com.brndbot.db.Palette" %>
@@ -57,6 +58,11 @@ All rights reserved by Brndbot, Ltd. 2015
 	<c:set var="sessionOK" value="0" scope="page"/>
 	<c:redirect url="index.jsp"/>
 </c:if>
+
+<%
+/* Get a system property to decide whether the debug features are on. 1 means they're on. */
+%>
+<c:set var="debug_mode" value="<%= SystemProp.get(SystemProp.DEBUG_MODE) != null ? 1 : 0 %>" scope="page"/>
 <% 
 /* Get parameters */
 %>
@@ -125,9 +131,6 @@ All rights reserved by Brndbot, Ltd. 2015
 	<jsp:setProperty name="starting_block" property="name" value="${proto_name}"/>
 </jsp:useBean>
 	<div id="brndbotMain" style="background-color:#f4f4f4;">
-		<div id="brndbotHeader">
-			&nbsp;
-		</div> <!-- brndbotHeader -->
 		<div id="benchBody">
 
 			<div id="leftSideBar">
@@ -168,65 +171,42 @@ All rights reserved by Brndbot, Ltd. 2015
 							</div>
 						</div>		<!-- tabstrip2 -->
 					</div>			<!-- editorDiv -->
-					<!-- Add new blocks menu.  This is another Kendo widget, so the structure is required to
-					     initialize the widget correctly.
+					<!-- New left sidebar. Borderless design.
 					 -->
-					<div id="tabstrip" class="rounded" style="visibility:hidden">
+					<div id="tabstrip">
 						<ul>
-							<li class="k-state-active">
-								Generic
-							</li>
-						</ul>
-						<div>
-							<!-- The images for each choice come from the styles. -->
-							<!-- ****** REPLACE THIS WITH A SERIES OF LINKS BASED ON 
-							     THE AVAILABLE MODELS
-							-->
-							<div class="linkText" style="padding-left:0.1rem;">
-								<c:out escapeXml="false" value="${benchHelper.renderModelLinks}"/>
+							<li><img src="images/logos/1-brndbot-robot.png" alt="brndbot robot" width="30px">
+							
 
-								<div id="newSocialLink" class="formSpacerLite addLink">
-									Social Buttons
-								</div>
-								<div id="newTextLink" class="formSpacerLite addLink">
-									Intro Header
-								</div>
-								<div id="newGraphicLink" class="formSpacerLite addLink">
-									Logo Header
-								</div>
-								<div id="newFooterLink" class="formSpacerLite addLink">
-									Footer
-								</div>
-							</div>		<!-- linkText -->
-						</div>
-						<div>
-							<div class="linkText" style="padding-left:0.1rem;">
-								<div id="genericTextBlockLink" class="formSpacerLite addLink">
-									Text
-								</div>
-								<div id="genericImageBlockLink" class="formSpacerLite addLink">
-									Pictures / Images
-								</div>
-								<div id="genericWebBlockLink" class="formSpacerLite addLink">
-									Web site link
-								</div>
-								<div class="formSpacerLite addLink">
-									&nbsp;
-								</div>
-								<div class="formSpacerLite addLink">
-									&nbsp;
-								</div>
-								<div class="formSpacerLite addLink">
-									&nbsp;
-								</div>
-								<div class="formSpacerLite addLink">
-									&nbsp;
-								</div>
-								<div class="formSpacerLite addLink">
-									&nbsp;
-								</div>
-							</div>
-						</div>
+							<li>
+							<a href="home.jsp">
+							<table>
+							<tr><td><img src="images/DummyIcon.png" alt="brndbot robot" ></td></tr>
+							<tr><td>HOME</td></tr>
+							</table>
+							</a>
+
+							<li><table>
+							<tr><td><img src="images/DummyIcon.png" alt="brndbot robot" ></td></tr>
+							<tr><td>EMAIL</td></tr>
+							</table>
+
+							<li><table>
+							<tr><td><img src="images/DummyIcon.png" alt="brndbot robot" ></td></tr>
+							<tr><td>SOCIAL</td></tr>
+							</table>
+
+							<li><table>
+							<tr><td><img src="images/DummyIcon.png" alt="brndbot robot" ></td></tr>
+							<tr><td>BLOGGING</td></tr>
+							</table>
+
+							<li><table>
+							<tr><td><img src="images/DummyIcon.png" alt="brndbot robot" ></td></tr>
+							<tr><td>IMAGE GALLERY</td></tr>
+							</table>
+						</ul>
+						
 					</div>
 
 	 				<div id="addNewBlock2">
@@ -253,9 +233,6 @@ All rights reserved by Brndbot, Ltd. 2015
 			</div>
 			<!-- End add new blocks menu -->
 
-			<div id="addNewBlock" style="visibility:hidden">
-				Add New Block
-			</div>
 
 			<div class="rounded benchHeader">
 
@@ -619,39 +596,53 @@ All rights reserved by Brndbot, Ltd. 2015
 
 <script type="text/x-kendo-template" id="designFieldsTemplate">
 	<div>
-		<div style="font-weight:bold">#:fieldname#</div>
-		<table>
-		<tr>
-			<td>X</td>
-			<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
-					onfocus="benchdesign.updateXPos(this)" 
-						style="width:98%" value="#:x#">
-			</td>
-		</tr>
-		<tr>
-			<td>Y</td>
-			<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
-					onfocus="benchdesign.updateYPos(this)" 
-						style="width:98%" value="#:y#">
-			</td>
-		</tr>
-		<tr>
-			<td>Width</td>
-			<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
-					onfocus="benchdesign.updateWidth(this)" 
-						style="width:98%" value="#:width#"
-			</td>
-		</tr>
-		<tr>
-			<td>Height</td>
-			<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
-					onfocus="benchdesign.updateHeight(this)" 
-						style="width:98%" value="#:height#"
-			</td>
-		</tr>
-		</table>
-	</div>
-	
+		<!-- We have this complicated ugliness because we don't want just the header
+		    for blocks in non-debug mode, when nothing would be under them -->
+		<c:choose>
+		<c:when test="${debug_mode != 0}">
+			<div style="font-weight:bold">#:fieldname#</div>
+		</c:when>
+		<c:otherwise>
+			# if (styleType == 'block') {   #
+				<div style="font-weight:bold">#:fieldname#</div>
+			# } #		<!-- block -->
+		</c:otherwise>
+		</c:choose>
+		
+		<c:if test="${debug_mode != 0}">
+			<table>
+			<tr>
+				<td>X</td>
+				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+						onfocus="benchdesign.updateXPos(this)" 
+							style="width:98%" value="#:x#">
+				</td>
+			</tr>
+			<tr>
+				<td>Y</td>
+				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+						onfocus="benchdesign.updateYPos(this)" 
+							style="width:98%" value="#:y#">
+				</td>
+			</tr>
+			<tr>
+				<td>Width</td>
+				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+						onfocus="benchdesign.updateWidth(this)" 
+							style="width:98%" value="#:width#"
+				</td>
+			</tr>
+			<tr>
+				<td>Height</td>
+				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+						onfocus="benchdesign.updateHeight(this)" 
+							style="width:98%" value="#:height#"
+				</td>
+			</tr>
+			</table>
+		</c:if>
+		</div>
+
 	# if (styleType == 'block') {   #
 		<div>
 			<label>Color
