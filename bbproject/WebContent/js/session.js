@@ -36,13 +36,16 @@ Session.prototype.storeBlocks = function(blocks, refreshCallback)
         dataType: 'json',
         url: 'SetSessionServlet' + args,
         data: blockForm.serialize(), // serializes the form's elements.
-        success: function(data)
-        {
-        	if (refreshCallback)
-        	{
-        		refreshCallback();
-        	}	
-        }
+		statusCode: {
+			401: function() {
+			  Session.redirectToLogin();
+			}
+		}
+    }).done (function () {
+    	if (refreshCallback)
+    	{
+    		refreshCallback();
+    	}	
     });
 };
 
@@ -104,11 +107,18 @@ Session.prototype.setSession = function(action, channel_type, content_type, data
         		refreshCallback(SESSION_DATABASE_ID);
         	}	
         },
-        error: function (xhr, ajaxOptions, thrownError)
-        {
+		statusCode: {
+			401: function() {
+			  Session.redirectToLogin();
+			}
+		}
+    }).fail ( function (jqXHR, textStatus, errorThrown) {
         	alert('The call to Brndbot server failed: ' + xhr.status);
-        }
     });
+};
+
+Session.redirectToLogin = function () {
+	window.location.assign("index.jsp");
 };
 
 function validChannel()

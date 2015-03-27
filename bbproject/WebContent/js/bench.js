@@ -62,7 +62,13 @@ var bench = {
 	    $.ajax({
             type: 'GET',
             dataType: 'json',
-            url: "GetImagesServlet?brndbotimageid=5"	// param of 5 means default logo
+            url: "GetImagesServlet?brndbotimageid=5",	// param of 5 means default logo
+            statusCode: {
+                401: function() {
+                  bench.redirectToLogin();
+                }
+            }
+
 	    }).done (function (imgdata, textStatus, jqXHR) {
 	    	bench.logoData = imgdata[0];
 	    	
@@ -71,7 +77,12 @@ var bench = {
 		    $.ajax({
 	            type: 'GET',
 	            dataType: 'json',
-	            url: "GetImagesServlet?brndbotimageid=2"	// param of 2 means uploaded images
+	            url: "GetImagesServlet?brndbotimageid=2",	// param of 2 means uploaded images
+	            statusCode: {
+	                401: function() {
+	                  bench.redirectToLogin();
+	                }
+	            }
 		    }).done (function (imgdata, textStatus, jqXHR) {
 		    	bench.availableImages = imgdata;
 		    	benchcontent.prepareDataSource();
@@ -708,6 +719,11 @@ var bench = {
 			  url: 'SavePromotionServlet',
 			  data: { 
 			     imgBase64: imageURL
+			  },
+			  statusCode: {
+				  401: function() {
+					  bench.redirectToLogin();
+				  }
 			  }
 		}).done(function() {
 			  console.log('saved'); 
@@ -723,5 +739,9 @@ var bench = {
 		console.log ("Error: " + textStatus);
 		console.log (errorThrown);
 	},
+	
+	redirectToLogin: function () {
+		window.location.assign("index.jsp");
+	}
 	
 };
