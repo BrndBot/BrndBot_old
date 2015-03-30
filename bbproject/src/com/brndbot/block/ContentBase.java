@@ -7,11 +7,7 @@ package com.brndbot.block;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//import java.sql.Statement;
-//import java.util.ArrayList;
 
-//import com.brndbot.db.DbConnection;
-//import com.brndbot.db.DbUtils;
 
 public class ContentBase
 {

@@ -201,10 +201,13 @@ All rights reserved by Brndbot, Ltd. 2015
 							<tr><td>BLOGGING</td></tr>
 							</table>
 
-							<li><table>
+							<li>
+							<a href="images.jsp">
+							<table>
 							<tr><td><img src="images/DummyIcon.png" alt="brndbot robot" ></td></tr>
 							<tr><td>IMAGE GALLERY</td></tr>
 							</table>
+							</a>
 						</ul>
 						
 					</div>

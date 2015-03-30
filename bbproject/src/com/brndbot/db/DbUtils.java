@@ -63,12 +63,16 @@ public class DbUtils
 		}
 	}
 
+	/** Close a Statement and a ResultSet. Null-safe.
+	 */
 	static public void close(Statement stmt, ResultSet rs)
 	{
 		close(rs);
 		close(stmt);
 	}
 
+	/** Close a PreparedStatement and a ResultSet. Null-safe.
+	 */
 	static public void close(PreparedStatement pstmt, ResultSet rs)
 	{
 		close(rs);
@@ -88,6 +92,7 @@ public class DbUtils
 		}
 		else
 		{
+			stmt.close();
 			throw new SQLException("getLastInsertID did not return an ID!"); 
 		}
 		return last_id;

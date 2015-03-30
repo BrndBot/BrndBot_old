@@ -12,10 +12,8 @@ import com.brndbot.client.BlockField;
 import com.brndbot.client.style.BlockStyle;
 import com.brndbot.client.ButtonField;
 import com.brndbot.client.ImageField;
-import com.brndbot.client.style.ImageStyle;
 import com.brndbot.client.LogoField;
 import com.brndbot.client.style.LogoStyle;
-//import com.brndbot.client.Model;
 import com.brndbot.client.ModelField;
 import com.brndbot.client.Promotion;
 import com.brndbot.client.SVGField;
@@ -25,7 +23,6 @@ import com.brndbot.client.TextField;
 import com.brndbot.client.style.Style;
 import com.brndbot.client.style.TextStyle;
 import com.brndbot.client.style.TextStyle.Alignment;
-//import com.brndbot.client.ModelField.StyleType;
 import com.brndbot.db.Palette;
 
 /**

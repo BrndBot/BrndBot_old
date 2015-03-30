@@ -237,14 +237,7 @@ public class User implements TableModel
 	
 	}
 	
-	
-	static public void Delete(int user_id, DbConnection con)
-			throws SQLException
-	{
-		// TODO WHAT!!!!????  This will delete ALL users!!!!
-		String sql = "DELETE FROM user";// WHERE UserID = " + user_id + ";";
-		con.ExecuteDB(sql, false);
-	}
+
 
 	static public boolean doesEmailExist(String email, DbConnection con)
 	{

@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.UserLogo;
 import com.brndbot.system.SessionUtils;
-import com.brndbot.system.Utils;
 
 /** This provides the functionality for the "Remove" result of a kendo file
  *  upload.

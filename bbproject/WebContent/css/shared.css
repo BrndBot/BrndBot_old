@@ -1,6 +1,6 @@
 
 @font-face {
-	font-family: proxima-nova;
+	font-family: 'Open Sans', sans-serif;
 }
 
 .topRow {
@@ -47,7 +47,7 @@
     background-color:white;
     min-height:50rem;
     overflow: hidden;
-    font-family: proxima-nova;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .formHeader {

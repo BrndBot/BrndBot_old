@@ -84,11 +84,16 @@ public class Palette implements TableModel
 		String sql = "INSERT INTO palettes (UserID, Sequence, IsSuggested, Color) VALUES (?, ?, ?, ?)";
 //				+ user_id + ", " + i + ", " + (isSuggested ? "1" : "0") + ", \"" + palette[i] + "\");"
 		PreparedStatement pstmt = con.createPreparedStatement (sql);
-		pstmt.setInt(1, _user_id);
-		pstmt.setInt(2, _sequence);
-		pstmt.setInt(3, (_is_suggested ? 1 : 0));
-		pstmt.setString(4, _color);
-		pstmt.execute();
+		try {
+			pstmt.setInt(1, _user_id);
+			pstmt.setInt(2, _sequence);
+			pstmt.setInt(3, (_is_suggested ? 1 : 0));
+			pstmt.setString(4, _color);
+			pstmt.execute();
+		}
+		finally {
+			pstmt.close();
+		}
 		//ResultSet rs = con.QueryDB(sql, pstmt);
 		//rs.close();
 	}
@@ -110,6 +115,7 @@ public class Palette implements TableModel
 					list.add(new Palette(rs.getString("Color")));
 				}
 			}
+			rs.close();
 		} 
 		catch (SQLException e) 
 		{
@@ -125,8 +131,6 @@ public class Palette implements TableModel
 			list.add(new Palette("#ff0000"));
 			list.add(new Palette("#00ff00"));
 			list.add(new Palette("#0000ff"));
-			//list.add(new Palette("#000000"));
-			//list.add(new Palette("#000000"));
 		}
 		if (pstmt != null) {
 			try {
@@ -145,6 +149,7 @@ public class Palette implements TableModel
 					("DELETE FROM palettes WHERE UserID = ?");
 		pstmt.setInt (1, user_id);
 		pstmt.execute();
+		pstmt.close();
 	}
 	
 	/** Delete only suggested or non-suggested palettes */
@@ -158,5 +163,6 @@ public class Palette implements TableModel
 		pstmt.setInt (1, user_id);
 		pstmt.setInt (2, (isSuggested ? 1 : 0));
 		pstmt.execute();
+		pstmt.close();
 	}
 }

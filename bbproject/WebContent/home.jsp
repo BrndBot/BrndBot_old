@@ -44,6 +44,8 @@ prototypes to select, and the user picks one for processing in the editor (bench
 %>
 
 <head>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    
     <title>Brndbot</title>
     <meta charset="utf-8">
 	<script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
@@ -57,7 +59,8 @@ prototypes to select, and the user picks one for processing in the editor (bench
     <link href="css/home.css" rel="stylesheet">
 	<link href="css/klist.css" rel="stylesheet">
     <link href="css/content.css" rel="stylesheet">
-
+    
+	
     <script type="text/javascript" src="scripts/jquery-2.1.3.js"></script>
     <script type="text/javascript" src="scripts/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="scripts/jquery-ui.min.js"></script>

@@ -3,7 +3,6 @@ package com.brndbot.servlets;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -80,6 +79,9 @@ public class SavePromotionServlet extends HttpServlet {
 		catch (Exception e) {
 			logger.error ("Error reading bytes in memory??");
 		}
+		finally {
+			instrm.close();
+		}
 		byte[] imgBytes = baos.toByteArray();
 		
 		// Have to run it through an input stream again to make a
@@ -111,21 +113,6 @@ public class SavePromotionServlet extends HttpServlet {
 		finally {
 			con.close();
 		}
-//		FileOutputStream outstrm = new FileOutputStream ("/home/gary/temp/test1.jpg");
-//		try {
-//			byte[] buf = new byte[2048];
-//			for (;;) {
-//				int bytesRead = instrm.read(buf);
-//				logger.debug ("Read {} bytes", bytesRead);
-//				if (bytesRead <= 0)
-//					break;
-//				outstrm.write (buf, 0, bytesRead);
-//			}
-//		}
-//		finally {
-//			instrm.close ();
-//			outstrm.close();
-//		}
 	}
 
 	

@@ -165,6 +165,7 @@ public class Image implements TableModel
 		pstmt.setInt (1, userId);
 		pstmt.setInt (2, ImageType.FUSED_IMAGE.getValue());
 		pstmt.execute();
+		pstmt.close();
 	}
 
 	
@@ -463,8 +464,7 @@ public class Image implements TableModel
 		}
 		finally 
 		{
-			if (rs != null)
-				DbUtils.close(pstmt, rs);
+			DbUtils.close(pstmt, rs);
 		}
 		return image;
 	}
@@ -494,8 +494,7 @@ public class Image implements TableModel
 		}
 		finally 
 		{
-			if (rs != null)
-				DbUtils.close(pstmt, rs);
+			DbUtils.close(pstmt, rs);
 		}
 		return retList;
 	}
@@ -672,6 +671,9 @@ public class Image implements TableModel
 					e.getMessage());
 			return null;
 		}
+		finally {
+			DbUtils.close(pstmt, rs);
+		}
 		return null;		// no images for user ID
 	}
 	
@@ -699,6 +701,9 @@ public class Image implements TableModel
 					e.getClass().getName(),
 					e.getMessage());
 			return null;
+		}
+		finally {
+			DbUtils.close (pstmt, rs);
 		}
 		return null;		// no images for user ID
 	}
@@ -774,7 +779,6 @@ public class Image implements TableModel
 		}
 		finally {
 			try {
-				// Is it safe to close these before the InputStream has been read?
 				pstmt.close ();
 				if (rs != null)
 					rs.close();
