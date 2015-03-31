@@ -193,7 +193,7 @@ public class BenchHelper extends Helper {
 	
 	public void setChannel (int c) {
 		channel = c;
-		chEnum = ChannelEnum.create(c);
+		chEnum = ChannelEnum.getByValue(c);
 	}
 	
 	/** Returns the maximum logo width, which is determined by the channel. */

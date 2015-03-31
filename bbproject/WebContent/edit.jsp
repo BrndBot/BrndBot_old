@@ -35,6 +35,7 @@ All rights reserved by Brndbot, Ltd. 2015
 %>
 
 <head>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <title>Brndbot Builder</title>
     <meta charset="utf-8">
 
@@ -49,8 +50,9 @@ All rights reserved by Brndbot, Ltd. 2015
     <link href="css/klist.css" rel="stylesheet">
 	
 	<!--  These include the Adobe Proximo Nova font -->
-	<script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
+	<!-- <script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	-->
 
 <c:set var="sessionOK" value="1" scope="page"/>
 
@@ -70,8 +72,8 @@ All rights reserved by Brndbot, Ltd. 2015
 <c:set var="proto_name" value='${param.proto}' scope="page" />
 <c:set var="model_name" value='${param.model}' scope="page" />
 
-<c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %>" scope="page"/>
-<c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %>" scope="page"/>
+<c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL.getValue() %>" scope="page"/>
+<c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK.getValue() %>" scope="page"/>
 <c:if test="${tmp_channel <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
 	<c:redirect url="home.jsp"/>
@@ -120,7 +122,6 @@ All rights reserved by Brndbot, Ltd. 2015
 		//  same enumerated class variables.
 		var EMAIL_CHANNEL = <jsp:text>${channel_email}</jsp:text>;
 		var FACEBOOK_CHANNEL = <jsp:text>${channel_facebook}</jsp:text>;
-		var CHANNEL = ${tmp_channel};
 	</script>
 
 </head>
@@ -145,9 +146,6 @@ All rights reserved by Brndbot, Ltd. 2015
 									Content
 								</li>
 								<li>
-									Design
-								</li>
-								<li>
 									Style
 								</li>
 							</ul>
@@ -157,12 +155,6 @@ All rights reserved by Brndbot, Ltd. 2015
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>							
-							<div> <!-- Design tab -->
-								<div class="editTab" >
-									<div id="designArea"><!--edit fields for design go here--></div>
-								</div>
-								<div style="clear:both;line-height:0rem;">&nbsp;</div>
-							</div>
 							<div> <!-- Layout tab -->
 								<div class="editTab" >
 								  <ul id="styleArea"><!--styles go here--></ul></div>
@@ -444,7 +436,6 @@ All rights reserved by Brndbot, Ltd. 2015
 	</script>
 
 	<script type="text/javascript" src="js/benchcontent.js"></script>
-	<script type="text/javascript" src="js/benchdesign.js"></script>
 	<script type="text/javascript" src="js/benchstyle.js"></script>
 <script type="text/javascript">
 // This is the "style" implementation.  The design and implementation of the "style" (aka "layout variation")
@@ -466,8 +457,9 @@ All rights reserved by Brndbot, Ltd. 2015
      Big, but apparently you can't put a Kendo template in a separate file. -->
 <script type="text/x-kendo-template" id="contentFieldsTemplate">
 	<div>
+		<div style="font-weight:bold">#:fieldname#</div>
+
 		# if (styleType == 'text') {   #
-				<div style="font-weight:bold">#:fieldname#</div>
                 <div class="editTextArea" >
                         <textarea data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
@@ -538,7 +530,6 @@ All rights reserved by Brndbot, Ltd. 2015
                 <p>&nbsp;</p>	
 		# } #		<!-- text -->
 		# if (styleType == 'image') {   #
-				<div style="font-weight:bold">#:fieldname#</div>
 				<table><tr>
 				<td>
 				<button type="button" style="width:70px;height:20px;font-size:85%;" 
@@ -555,6 +546,77 @@ All rights reserved by Brndbot, Ltd. 2015
 				</td>
 				</tr></table>
 		# } #		<!-- image -->
+		# if (styleType == 'block') {   #
+		<div>
+			<label>Color
+				<button type="button" data-linkedfield="#:fieldid#" 
+					class="colorSelectButton"
+					style="background-color:#:color#"
+					onclick="benchcontent.colorSelector.showHideColorSelect(this)"></button>
+			</label>
+		</div>
+		<div id="#:fieldid#-select" style="display:none">
+			<table>
+				<tr>
+				<c:forEach var="color" items="${benchHelper.userPaletteColors}">
+					<td class="paletteButton">
+						<button type="button" style="background-color:${color}"
+							data-linkedfield="#:fieldid#"
+							data-color="${color}"
+							onclick="benchcontent.colorSelector.setToPaletteColor(this, benchcontent.setColor)">
+						</button>
+					</td>
+				</c:forEach>
+				</tr>
+				<tr>
+				<td class="paletteButton">
+					<button type="button" style="width:40px;height:15px;font-size:60%;" 
+							name="color" onclick="benchcontent.colorSelector.showHideColorPicker(this)">
+						Custom
+					</button>
+				</td><td colspan="2">
+					<input style="height:15px;display:none" type="color" 
+						onchange="benchcontent.colorSelector.setToInputColor(this, benchcontent.setColor)"
+						data-linkedfield="#:fieldid#">
+				</td>
+			</tr></table>
+		</div>
+        <p>&nbsp;</p>	
+		# } #		<!-- block -->
+		<% /* Debug feature: Adjust block size */ %>
+		<c:if test="${debug_mode != 0}">
+			<table>
+			<tr>
+				<td>X</td>
+				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+						onfocus="benchcontent.updateXPos(this)" 
+							style="width:98%" value="#:x#">
+				</td>
+			</tr>
+			<tr>
+				<td>Y</td>
+				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+						onfocus="benchcontent.updateYPos(this)" 
+							style="width:98%" value="#:y#">
+				</td>
+			</tr>
+			<tr>
+				<td>Width</td>
+				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+						onfocus="benchcontent.updateWidth(this)" 
+							style="width:98%" value="#:width#"
+				</td>
+			</tr>
+			<tr>
+				<td>Height</td>
+				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
+						onfocus="benchcontent.updateHeight(this)" 
+							style="width:98%" value="#:height#"
+				</td>
+			</tr>
+			</table>
+		</c:if>
+
 	</div>
 </script>
 

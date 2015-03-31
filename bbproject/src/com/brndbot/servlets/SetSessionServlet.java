@@ -179,11 +179,9 @@ public class SetSessionServlet extends HttpServlet
 			channel = Utils.getIntParameter(request, SessionUtils.CHANNEL_KEY);
 			if (channel > 0)
 			{
-				ChannelEnum ch_enum = ChannelEnum.create(channel);
+				ChannelEnum ch_enum = ChannelEnum.getByValue(channel);
 				System.out.println("Set non-zero channel to: " + channel + ", " + ch_enum.getItemText());
-				if (channel != ChannelEnum.EMAIL.getValue() &&
-					channel != ChannelEnum.FACEBOOK.getValue() &&
-					channel != ChannelEnum.TWITTER.getValue())
+				if (ch_enum == ChannelEnum.CH_NONE)
 				{
 					logger.debug("Unexpected channel: " + channel);
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

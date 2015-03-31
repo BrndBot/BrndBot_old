@@ -1,5 +1,8 @@
 /* homecontent.js, formerly content.js
  * 
+ * 
+ * OBSOLETE -- I think
+ * 
  * In spite of its name, this is for home.jsp, not for the editor.
  * It has no connection to content.jsp. */
 

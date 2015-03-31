@@ -41,26 +41,35 @@ stylesToSourceData: function (styleSet) {
 		var field = style.modelField;
 		if (!field)
 			continue;
+		var fielddata = {};
+		fielddata.fieldid = i.toString();
+		fielddata.fieldname = field.name;
+		fielddata.x = style.getX().toString();
+		fielddata.y = style.getY().toString();
+		fielddata.width = style.getWidth().toString();
+		fielddata.height = style.getHeight().toString();
+		fielddata.styleType = style.styleType;
+		
 		if (style.styleType == "text") {
 			// Text content ModelField
-			var fielddata = {};
-			fielddata.fieldid = i.toString();
-			fielddata.fieldname = field.name;
 			fielddata.content = style.getText();
 			fielddata.ptsize = style.getPointSize().toString();
-			fielddata.styleType = "text";
 			fielddata.italicChecked = style.isItalic() ? "checked" : "";
 			fielddata.boldChecked = style.isBold() ? "checked" : "";
 			fielddata.color = style.getColor();
-			srcdata.push(fielddata);
 		}
 		else if (style.styleType == "image") {
-			var fielddata = {};
 			fielddata.fieldid = i.toString();
 			fielddata.fieldname = field.name;
-			fielddata.styleType = "image";
-			srcdata.push(fielddata);
 		}
+		else if (style.styleType == "block") {
+			fielddata.color = style.getColor();
+		}
+		else if (style.styleType == "logo") {
+		}
+		else if (style.styleType == "svg") {
+		}
+		srcdata.push(fielddata);
 	}
 	return srcdata;
 },
@@ -168,6 +177,112 @@ updatePrototypeTypeface: function (sel) {
    		style.fabricObject.setFontFamily (typeface);
 		bench.currentPromotion.canvas.renderAll();
    	}
+},
+
+updateXPos: function(tarea) {
+
+    function testForChange() {
+    	var style = benchcontent.elemToLinkedStyle($(tarea));
+    	if (!isNaN (tarea.value)) {
+    		var newpos = Number(tarea.value);
+    		if (newpos != style.getX ()) {
+    			style.setLocalX(Number (tarea.value));
+    			//TODO this assumes a top left anchor. Need to adjust for the various cases.
+    			style.fabricObject.setLeft(Number(style.getX()));
+    			bench.currentPromotion.canvas.renderAll();
+    		}
+    	}
+    	else {
+    		// Restore to last good value
+    		$(tarea).val (style.getX().toString());
+    	}
+    }
+
+    tarea.onblur = function() {
+        testForChange();
+        tarea.onblur = null;
+    };
+
+},
+
+
+updateYPos: function(tarea) {
+
+    function testForChange() {
+    	var style = benchcontent.elemToLinkedStyle($(tarea));
+    	if (!isNaN (tarea.value)) {
+    		var newpos = Number(tarea.value);
+    		if (newpos != style.getY ()) {
+    			style.setLocalY(Number (tarea.value));
+    			//TODO this assumes a top left anchor. Need to adjust for the various cases.
+    			style.fabricObject.setTop(Number(style.getY()));
+    			bench.currentPromotion.canvas.renderAll();
+    		}
+    	}
+    	else {
+    		// Restore to last good value
+    		$(tarea).val (style.getY().toString());
+    	}
+    }
+
+    tarea.onblur = function() {
+        testForChange();
+        tarea.onblur = null;
+    };
+
+},
+
+updateWidth: function(tarea) {
+
+    function testForChange() {
+    	var style = benchcontent.elemToLinkedStyle($(tarea));
+    	if (!isNaN (tarea.value)) {
+    		var newwid = Number(tarea.value);
+    		if (newwid != style.getWidth ()) {
+    			style.setLocalWidth(Number (tarea.value));
+    			//TODO this assumes a top left anchor. Need to adjust for the various cases.
+    			style.fabricObject.setWidth(Number(style.getWidth()));
+    			bench.currentPromotion.canvas.renderAll();
+    		}
+    	}
+    	else {
+    		// Restore to last good value
+    		$(tarea).val (style.getWidth().toString());
+    	}
+    }
+
+    tarea.onblur = function() {
+        testForChange();
+        tarea.onblur = null;
+    };
+
+},
+
+updateHeight: function(tarea) {
+
+    function testForChange() {
+    	var style = benchcontent.elemToLinkedStyle($(tarea));
+//    	var field = bench.currentPromotion.model.findFieldByName (target);
+    	if (!isNaN (tarea.value)) {
+    		var newht = Number(tarea.value);
+    		if (newht != style.getHeight ()) {
+    			style.setLocalHeight(Number (tarea.value));
+    			//TODO this assumes a top left anchor. Need to adjust for the various cases.
+    			style.fabricObject.setHeight(Number(style.getHeight()));
+    			bench.currentPromotion.canvas.renderAll();
+    		}
+    	}
+    	else {
+    		// Restore to last good value
+    		$(tarea).val (style.getHeight().toString());
+    	}
+    }
+
+    tarea.onblur = function() {
+        testForChange();
+        tarea.onblur = null;
+    };
+
 },
 
 highlightTextArea: function (tarea) {

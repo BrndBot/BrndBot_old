@@ -33,7 +33,7 @@ public class BlockBase
 			String desc,
 			String short_description)
 	{
-		channelType = ChannelEnum.create(channel_type.getValue());
+		channelType = channel_type;
 //		_block_type = BlockType.create(block_type.getValue().intValue());
 		_database_id = new Integer(database_id);
 		name = nam;
@@ -43,7 +43,7 @@ public class BlockBase
 
 	public BlockBase(BlockBase b)
 	{
-		channelType = ChannelEnum.create(b.channelType.getValue());
+		channelType = b.channelType;
 //		_block_type = BlockType.create(b._block_type.getValue().intValue());
 //		Assert.that(b._database_id.intValue() > 0, "Database ID is zero for the block.");
 		_database_id = new Integer(b._database_id.intValue());

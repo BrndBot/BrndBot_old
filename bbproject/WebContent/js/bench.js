@@ -49,7 +49,7 @@ var bench = {
 	    
 	    // Set up ColorSelectors
 	    benchcontent.colorSelector = new ColorSelector ();
-	    benchdesign.colorSelector = new ColorSelector();
+	    //benchdesign.colorSelector = new ColorSelector();
 	
 	    // Get data on the logo dimensions.
 	    $.ajax({
@@ -633,7 +633,7 @@ var bench = {
 	
 				bench.currentPromotion.draw ('finishedImage1');
 				benchcontent.insertEditFields ( $('#contentArea'));
-				benchdesign.insertEditFields ( $('#designArea'));
+				//benchdesign.insertEditFields ( $('#designArea'));
 				benchstyle.insertStyles ( $('#styleArea'));
 				if (defaultStyleSet.width > bench.MAX_PROMOTION_DIM || defaultStyleSet.height > bench.MAX_PROMOTION_DIM) {
 					var scaleRatio = Math.min (bench.MAX_PROMOTION_DIM / defaultStyleSet.width,

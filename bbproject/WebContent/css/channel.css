@@ -1,0 +1,13 @@
+@CHARSET "UTF-8";
+
+.spaceMe
+{
+	text-align:center;
+	padding-bottom:2rem
+}
+
+#leftColumn
+{
+	width:15.625rem;
+	float:left;
+}

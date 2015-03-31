@@ -27,13 +27,6 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL %>" scope="page"/>
-<c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK %>" scope="page"/>
-
-<script type="text/javascript">
-	var EMAIL_CHANNEL = ${channel_email};
-	var FACEBOOK_CHANNEL = ${channel_facebook};
-</script>
 <% /*
 
 This page presents the promotion categories that are available and lets the user choose one,
@@ -68,7 +61,6 @@ prototypes to select, and the user picks one for processing in the editor (bench
     <script type="text/javascript" src="js/sidebar.js"></script>
 	<script type="text/javascript" src="js/session.js"></script>
     <script type="text/javascript" src="js/home.js"></script>
-	<script type="text/javascript" src="js/homecontent.js"></script>
 
 </head>
 <body>
@@ -78,10 +70,6 @@ prototypes to select, and the user picks one for processing in the editor (bench
 	<c:redirect url="index.jsp"/>
 </c:if>
 
-<%
-	logger.debug ("User ID = {}", session.getAttribute("brndbotuser_id"));
-	logger.debug ("Org = {}", session.getAttribute("brndbotorg"));
-%>
 
 <jsp:useBean id="homeHelper" 
 		class="com.brndbot.jsphelper.HomeHelper" 

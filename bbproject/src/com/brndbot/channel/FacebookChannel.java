@@ -14,7 +14,7 @@ public class FacebookChannel extends Channel {
 	}
 	
 	public ChannelEnum getChannelEnum () {
-		return ChannelEnum.FACEBOOK;
+		return ChannelEnum.CH_FACEBOOK;
 	}
 
 }

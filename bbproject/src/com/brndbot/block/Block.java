@@ -44,7 +44,7 @@ public class Block extends BlockBase
 	 *  may become obsolete.
 	 */
 	public Block () {
-		super (ChannelEnum.UNDEFINED,
+		super (ChannelEnum.CH_NONE,
 				-1,
 				"",
 				"",

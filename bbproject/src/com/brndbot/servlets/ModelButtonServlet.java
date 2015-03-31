@@ -37,10 +37,12 @@ public class ModelButtonServlet extends HttpServlet {
         super();
     }
 	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug ("Entering ModelButtonServlet");
 		HttpSession session = request.getSession();
