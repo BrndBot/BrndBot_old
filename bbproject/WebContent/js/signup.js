@@ -406,7 +406,7 @@ function goHome()
 
 function skipPalette()
 {
-	document.getElementById('brndbotHeader').scrollIntoView();
+//	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#paletteForkPane').hide();
 	$('#lookPane').show();
 	$('#lookPane2').show();
@@ -415,16 +415,15 @@ function skipPalette()
 
 function viewPalette()
 {
-	document.getElementById('brndbotHeader').scrollIntoView();
+//	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#paletteForkPane').hide();
 	$('#palettePane').show();
 }
 
 function unforkToLook()
 {
-	document.getElementById('brndbotHeader').scrollIntoView();
+//	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#palettePane').hide();
-//	$('#posSelectPane').show();
 	$('#lookPane').show();
 	$('#lookPane2').show();
 	savePalette();
@@ -432,7 +431,7 @@ function unforkToLook()
 
 function posSelected()
 {
-	document.getElementById('brndbotHeader').scrollIntoView();
+//	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#posSelectPane').hide();
 	$('#lookPane').show();
 	$('#lookPane2').show();
@@ -557,7 +556,7 @@ function onLogoUploadSuccess(e)
 
 function createMyAccount(e)
 {
-	document.getElementById('brndbotHeader').scrollIntoView();
+//	document.getElementById('brndbotHeader').scrollIntoView();
 
 	var scrollTo = 'signUpDiv';
 	// Validate email and password
@@ -655,7 +654,7 @@ function dataEntryError(errorMsg, scrollTo)
 
 function updateAccount(e)
 {
-	document.getElementById('brndbotHeader').scrollIntoView();
+//	document.getElementById('brndbotHeader').scrollIntoView();
 
 	$('#registerNewUser').hide();
 	$('#tellUsAboutYourself').hide();
@@ -665,7 +664,7 @@ function updateAccount(e)
 
 function updateSocials(e)
 {
-	document.getElementById('brndbotHeader').scrollIntoView();
+//	document.getElementById('brndbotHeader').scrollIntoView();
 
 	// order of these 2 calls and error handling not very good
 	displayForLogo(true);
@@ -690,7 +689,7 @@ function displayForLogo(forLogo)
 
 function updateLogo(e)
 {
-	document.getElementById('brndbotHeader').scrollIntoView();
+//	document.getElementById('brndbotHeader').scrollIntoView();
 
 	$('#talkColor').hide();
 	$('#paletteForkPane').show();

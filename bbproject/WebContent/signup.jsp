@@ -43,9 +43,7 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 	int toLogo = Utils.getIntParameter(request, "toLogo");
 %>
 <div id="brndbotMain">
-	<div id="brndbotHeader">
-		&nbsp;
-	</div> <!-- brndbotHeader -->
+
 	<div id="brndbotBody">
 
 		<div id="registerNewUser" style="display:none;">

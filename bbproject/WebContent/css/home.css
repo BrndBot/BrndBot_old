@@ -17,10 +17,24 @@
 	text-align: center;
 }
 
+.modelTable td {
+	width:125px;
+	max-width:125px;	
+}
+
 .categoryButton {
 	padding: 0;
 	border: none;
 	background: none;
+}
+
+.modelHeader {
+	font-size: 0.7rem;
+}
+
+.modelButton {
+	cursor: pointer; 
+	font-size: 0.7rem;
 }
 
 #brndbotDashMain {

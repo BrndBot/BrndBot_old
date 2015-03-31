@@ -25,15 +25,6 @@
 	width: 100%;
 }
 
-#brndbotHeader {
-    width:100%;
-    background-color:#3c3d41;
-    border-bottom: 0.175rem solid #c6c4c4;
-    height: 3rem;
-	background-image: url('/brndbot/images/HeaderLogo.png');
-	background-repeat: no-repeat;
-	background-position: left center;
-}
 
 #brndbotSlimHeader {
     width:100%;
@@ -286,4 +277,35 @@ textarea {
 	.k-pager-wrap .k-link, .k-grouping-header .k-group-indicator
 {
 	border-width: 0px;
+}
+
+#tabstrip ul
+{
+	list-style-type: none;
+	padding: 0px;
+}
+
+#tabstrip ul li
+{
+	width: 6rem;
+	height: 4rem;
+	text-align:center;	
+}
+
+#tabstrip a
+{
+	text-decoration: none;
+	color: black;
+}
+
+#tabstrip table
+{
+	width:100%;
+}
+
+#tabstrip td
+{
+	text-align:center;
+	font-family: sans-serif;
+	font-size: 0.55rem;	
 }

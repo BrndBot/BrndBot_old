@@ -55,7 +55,6 @@ prototypes to select, and the user picks one for processing in the editor (bench
     <link href="styles/kendo.rtl.min.css" rel="stylesheet">
     <link href="styles/kendo.flat.min.css" rel="stylesheet">
     <link href="css/shared.css" rel="stylesheet">
-    <link href="css/sidebar.css" rel="stylesheet">
     <link href="css/home.css" rel="stylesheet">
 	<link href="css/klist.css" rel="stylesheet">
     <link href="css/content.css" rel="stylesheet">
@@ -100,9 +99,7 @@ prototypes to select, and the user picks one for processing in the editor (bench
 
 
 <div id="brndbotMain">
-	<div id="brndbotHeader">
-		&nbsp;
-	</div> <!-- brndbotHeader -->
+
 
 	<div id="brndbotDashBody">
 
@@ -117,7 +114,7 @@ prototypes to select, and the user picks one for processing in the editor (bench
 				</table>
 			</div>
 
-			<%@include file="sidebar.jsp" %>
+		<%@include file="sidebar.jsp" %>
 
 		</div>
 

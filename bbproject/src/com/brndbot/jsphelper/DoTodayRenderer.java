@@ -34,6 +34,7 @@ import com.brndbot.promo.Client;
 		try {
 			ModelCollection modelCol = c.getModels ();
 			Element tableElem = new Element ("table");
+			tableElem.setAttribute ("class", "modelTable");
 			Element firstRowElem = new Element ("tr");
 			tableElem.addContent(firstRowElem);
 			List<String> categories = modelCol.getCategories ();
@@ -73,8 +74,6 @@ import com.brndbot.promo.Client;
 		catButton.setAttribute ("data-category", cat);
 		catButton.setAttribute ("onmouseover", "homejs.showHoverImage(this);");
 		catButton.setAttribute ("onmouseout", "homejs.showNormalImage(this);");
-		//catButton.setAttribute ("style", "background-color:#BBBBFF");
-		//catButton.addContent ("Promote " + cat);
 		Element buttonImage = new Element ("img");
 		buttonImage.setAttribute ("alt", "Promote " + cat);
 		buttonImage.setAttribute ("src", "ModelButtonServlet?category=" + cat);
@@ -108,18 +107,27 @@ import com.brndbot.promo.Client;
 		modelsTable.setAttribute ("class", "modelsTable");
 		modelsCell.addContent (modelsTable);
 		Map<String, Model> catModels = modelCol.getModelsForCategory(cat);
+		
+		// Add the descriptive text
+		Element headerRow = new Element ("tr");
+		Element headerCell = new Element ("td");
+		modelsTable.addContent (headerRow);
+		headerRow.addContent (headerCell);
+		headerCell.setAttribute ("class", "modelHeader");
+		headerCell.addContent ("Select promotion");
+		
+		// Add the model buttons
 		for (String modelName : catModels.keySet()) {
 			Element modelRow = new Element ("tr");
 			Element modelCell = new Element ("td");
 			modelsTable.addContent(modelRow);
 			modelRow.addContent(modelCell);
-			Element modelButton = new Element ("button");
-			modelButton.setAttribute ("style", "background-color:#FFBBCC");
-			modelButton.setAttribute ("class", "modelButton");
-			modelButton.setAttribute ("data-model", modelName);
-			modelButton.addContent (modelName);
+			Element modelItem = new Element ("span");
+			modelItem.setAttribute ("class", "modelButton");
+			modelItem.setAttribute ("data-model", modelName);
+			modelItem.addContent (modelName);
 			logger.debug ("Added model for {}", modelName);
-			modelCell.addContent (modelButton);
+			modelCell.addContent (modelItem);
 		}
 		logger.debug ("returning from renderModels");
 		return modelsCell;

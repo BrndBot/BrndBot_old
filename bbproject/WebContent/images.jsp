@@ -39,9 +39,7 @@
 <c:if test="${sessionOK != 0}">	<!-- encompasses whole rest of body -->
 
 <div id="brndbotMain">
-	<div id="brndbotHeader">
-		&nbsp;
-	</div> <!-- brndbotHeader -->
+
 
 	<form method="post">
 		<div class="demo-section k-header">
