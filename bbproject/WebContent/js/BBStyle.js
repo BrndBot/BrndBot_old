@@ -304,7 +304,7 @@ function Style (styleType, styleSet) {
 				this.sourceWidth = this.styleSet.logoData.width;
 				this.sourceHeight = this.styleSet.logoData.height;
 			}
-			this.fitImageToMask();
+			this.fitLogo();
 			this.fabricateLogo (canvas);
 			break;
 		case "block":
@@ -481,9 +481,9 @@ function Style (styleType, styleSet) {
 			img.oritinY = "top";
 			img.width = dispDims.width;
 			img.height = dispDims.height;
-			img.clipTo = function (ctx) {
-				ctx.rect (-style.getWidth() / 2, -style.getHeight() / 2, style.getWidth(), style.getHeight());
-			};
+//			img.clipTo = function (ctx) {
+//				ctx.rect (-style.getWidth() / 2, -style.getHeight() / 2, style.getWidth(), style.getHeight());
+//			};
 
 			if (style.hasDropShadow ()) {
 				var dropShadowH = style.getDropShadowH();
@@ -933,23 +933,35 @@ function Style (styleType, styleSet) {
 	};
 
 
-	/* Crop the field to a specified rectangle. This works only for ...
-	 * well, right now, it doesn't work for anything, but it should
-	 * for images and maybe logos.
-	 * 
-	 * The x and y arguments are relative to the top left of the image.
+	/*  Fit the logo in its allotted space. It's like fitImageToMask,
+	 *  except there's no mask (so we always use the mask = frame case),
+	 *  and we do an inside fit rather than an outside fit.
 	 */
-//	this.crop = function (x, y, wid, ht) {
-//		// We have to translate the coordinates to center-based coordinates.
-//		// This is a slightly brute-force approach, but the fabric functions
-//		// don't do what I expect.
-//		x -= this.fabricObject.width / 2;
-//		y -= this.fabricObject.height / 2;
-//		console.log ("Cropping to " + x + ", " + y + ", " + wid + ", " + ht);
-//		this.fabricObject.clipTo = function (ctx) {
-//			ctx.rect (x, y, wid, ht);
-//		};
-//	};
+	this.fitLogo = function () {
+		var width = this.getWidth();
+		var height = this.getHeight();
+		var styleRatio = height / width;
+		var logoRatio = this.sourceHeight / this.sourceWidth;
+		this.displayDims.width = width;
+		this.displayDims.height = height;
+		
+		
+		if (styleRatio > logoRatio) {
+			// We have a "tall" style compared to the logo, so fit the logo width
+			// to the style.
+			this.displayDims.height = this.sourceHeight * (width / this.sourceWidth);
+			this.displayDims.width = width;
+			this.displayDims.x = 0;
+			this.displayDims.y = (this.sourceHeight - this.displayDims.height) / 2;
+		}
+		else {
+			// We have a "wide" style or a perfect fit. Fit to the height.
+			this.displayDims.width = this.sourceWidth * (height / this.sourceHeight);
+			this.displayDims.height = height;
+			this.displayDims.x = (this.sourceWidth - this.displayDims.width) / 2;
+			this.displayDims.y = 0;
+		}
+	}
 
 
 	

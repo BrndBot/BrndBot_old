@@ -69,7 +69,7 @@ If no model has been selected, it forces the user back to home.jsp.
 		class="com.brndbot.jsphelper.ChannelHelper" 
 		scope="page">
 	<jsp:setProperty name="channelHelper" property="userId" value="${sessionScope.brndbotuser_id}"/>
-	<jsp:setProperty name="channelHelper" property="organization" value="${sessionScope.brndbotorg}"/>
+	<jsp:setProperty name="channelHelper" property="modelName" value="${param.model}"/>
 </jsp:useBean>
 
 </head>
@@ -91,6 +91,7 @@ If no model has been selected, it forces the user back to home.jsp.
 <script type="text/javascript">
 	var protoName = "${proto_name}";
 	var modelName = "${model_name}";
+	console.log ("model_name = " + modelName);
 </script>
 <div id="brndbotMain">
 

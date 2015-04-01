@@ -139,6 +139,26 @@ All rights reserved by Brndbot, Ltd. 2015
 					<!--  This is a Kendo UI widget for a tab control.  It follows a specific structure
 					       required by the widget.
 					-->
+					<%@include file="sidebar.jsp" %>
+
+					<!--  These are positioned using the position:relative for the parent style, and the 
+					      position:absolute for these children styles.  This allows positioning of these child
+					      divs in an absolute position relative to the parent.  Meaning, always exactly positioned
+					      in a certain spot relative to wherever the parent resides.  This positioning uses top, bottom, right
+					      and left.
+					 -->
+					<div id="applyDiv2">
+						<button id="checkOutButton" onclick="bench.exportPresentation();" 
+							style="font-size: 1rem;width:8rem" class="orangeButton" >
+						Continue
+						</button>
+					</div>
+
+
+
+				</div>
+			</div>
+
 					<div class="editorDiv">
 						<div id="tabstrip2" class="rounded">
 							<ul class="tabs">
@@ -163,32 +183,6 @@ All rights reserved by Brndbot, Ltd. 2015
 							</div>
 						</div>		<!-- tabstrip2 -->
 					</div>			<!-- editorDiv -->
-					<%@include file="sidebar.jsp" %>
-
-	 				<div id="addNewBlock2">
-	 					<div style="text:center">
-							Edit<span id="editType"></span>
-						</div>
-					</div>
-					<!--  These are positioned using the position:relative for the parent style, and the 
-					      position:absolute for these children styles.  This allows positioning of these child
-					      divs in an absolute position relative to the parent.  Meaning, always exactly positioned
-					      in a certain spot relative to wherever the parent resides.  This positioning uses top, bottom, right
-					      and left.
-					 -->
-					<div id="applyDiv2">
-						<button id="checkOutButton" onclick="bench.exportPresentation();" 
-							style="font-size: 1rem;width:8rem" class="orangeButton" >
-						Continue
-						</button>
-					</div>
-
-
-
-				</div>
-			</div>
-			<!-- End add new blocks menu -->
-
 
 			<div class="rounded benchHeader">
 

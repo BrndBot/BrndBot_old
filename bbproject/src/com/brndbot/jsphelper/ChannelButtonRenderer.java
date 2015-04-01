@@ -2,6 +2,7 @@ package com.brndbot.jsphelper;
 
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,14 +32,26 @@ public class ChannelButtonRenderer extends Renderer {
 		super ();
 		
 		Map<String, StyleSet> styleSetMap = null;
+		// Check which channels are represented in the styles
+		
 		try {
+			if (client == null)
+				logger.debug ("Client is null!");
 			styleSetMap = client.getStyleSets(modelName);
+			if (styleSetMap == null)
+				logger.debug ("styleSetMap is null!");
+			logger.debug ("Got style set map with {} elements", styleSetMap.size()); 
 			for (StyleSet ss : styleSetMap.values()) {
-				if ("Facebook".equals (ss.getChannel())) {
-					hasFacebook = true;
-				}
-				if ("Twitter".equals (ss.getChannel())) {
-					hasTwitter = true;
+				Set<String> channels = ss.getChannels ();
+				for (String channel : channels) {
+					if ("Facebook".equals (channel)) {
+						hasFacebook = true;
+						logger.debug ("Found a facebook style");
+					}
+					if ("Twitter".equals (channel)) {
+						hasTwitter = true;
+						logger.debug ("Found a twitter style");
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -74,13 +87,16 @@ public class ChannelButtonRenderer extends Renderer {
 	private Element renderChannel (String chan, int idx)  {
 		logger.debug ("renderChannel, cat = {} idx = {}", chan, idx);
 		Element chanCell = new Element ("td");
+		ChannelEnum chEnum = ChannelEnum.getByText(chan);
+		if (chEnum == ChannelEnum.CH_NONE)
+			return chanCell;
 
 		// Inside the TD, put a table with one row for the button 
 		// and one for the name.
 		Element chanTable = new Element ("table");
 		Element buttonTR = new Element ("tr");
 		Element buttonTD = new Element ("td");
-		Element chanButton = generateButton (ChannelEnum.CH_TWITTER, idx);
+		Element chanButton = generateButton (chEnum, idx);
 		buttonTD.addContent (chanButton);
 		buttonTR.addContent (buttonTD);
 		chanTable.addContent (buttonTR);

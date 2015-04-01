@@ -36,13 +36,13 @@ var channeljs = {
 	/* Set a button to its hover state. */
 	showHoverImage: function (button) {
 		var img = $(button).find("img");
-//		img.attr("src", img.attr("data-hoversrc"));
+		img.attr("src", img.attr("data-hoversrc"));
 	},
 		
 	/* Set a button to its non-hover state */
 	showNormalImage: function (button) {
 		var img = $(button).find("img");
-//		img.attr("src", img.attr("data-normalsrc"));
+		img.attr("src", img.attr("data-normalsrc"));
 	},
 
 };
