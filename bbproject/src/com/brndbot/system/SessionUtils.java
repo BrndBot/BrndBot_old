@@ -25,6 +25,7 @@ public class SessionUtils
 	public static String GET = "get";
 	public static String BLOCKS = "blocks";
 	public static String IMAGE = "image";
+	public static String TEST = "test";
 
 	// Session data keys
 	public static String CONTENT_KEY = "brndbotcontent";

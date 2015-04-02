@@ -25,6 +25,21 @@ function Session ()
 {
 }
 
+/* Check if session is still valid. Redirects to login if not. */
+Session.prototype.checkSession = function () {
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: "SetSessionServlet?action=test",	// param of 5 means default logo
+        statusCode: {
+            401: function() {
+              bench.redirectToLogin();
+            }
+        }
+    });
+};
+
+
 // "blocks" is the blockStack array from the editor/builder pages
 Session.prototype.storeBlocks = function(blocks, refreshCallback)
 {

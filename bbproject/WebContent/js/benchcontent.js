@@ -378,6 +378,7 @@ galleryWin: null,
 /* Bring up the image gallery for a selected iamge */
 /* Bring up a cropping modal window for the specified image */
 pickImage: function (btn) {
+	session_mgr.checkSession();	// redirect to login if expired
 	var style = benchcontent.elemToLinkedStyle(btn);
 	benchcontent.galleryTarget = { style: style };
 	if (benchcontent.galleryWin) {

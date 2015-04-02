@@ -96,6 +96,7 @@ All rights reserved by Brndbot, Ltd. 2015
     <script type="text/javascript" src="scripts/kendo.all.min.js"></script>
     <script type="text/javascript" src="scripts/fabric.min.js"></script>
     <script type="text/javascript" src="scripts/jquery.Jcrop.min.js"></script>
+	<script type="text/javascript" src="js/session.js"></script>
     <script type="text/javascript" src="js/block.js"></script>
     <script type="text/javascript" src="js/fieldmap.js"></script>
     <script type="text/javascript" src="js/ColorSelector.js"></script>
@@ -614,93 +615,7 @@ All rights reserved by Brndbot, Ltd. 2015
 	</div>
 </script>
 
-<script type="text/x-kendo-template" id="designFieldsTemplate">
-	<div>
-		<!-- We have this complicated ugliness because we don't want just the header
-		    for blocks in non-debug mode, when nothing would be under them -->
-		<c:choose>
-		<c:when test="${debug_mode != 0}">
-			<div style="font-weight:bold">#:fieldname#</div>
-		</c:when>
-		<c:otherwise>
-			# if (styleType == 'block') {   #
-				<div style="font-weight:bold">#:fieldname#</div>
-			# } #		<!-- block -->
-		</c:otherwise>
-		</c:choose>
-		
-		<c:if test="${debug_mode != 0}">
-			<table>
-			<tr>
-				<td>X</td>
-				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
-						onfocus="benchdesign.updateXPos(this)" 
-							style="width:98%" value="#:x#">
-				</td>
-			</tr>
-			<tr>
-				<td>Y</td>
-				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
-						onfocus="benchdesign.updateYPos(this)" 
-							style="width:98%" value="#:y#">
-				</td>
-			</tr>
-			<tr>
-				<td>Width</td>
-				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
-						onfocus="benchdesign.updateWidth(this)" 
-							style="width:98%" value="#:width#"
-				</td>
-			</tr>
-			<tr>
-				<td>Height</td>
-				<td><input type="number" class="editTextArea" data-linkedfield="#:fieldid#"
-						onfocus="benchdesign.updateHeight(this)" 
-							style="width:98%" value="#:height#"
-				</td>
-			</tr>
-			</table>
-		</c:if>
-		</div>
 
-	# if (styleType == 'block') {   #
-		<div>
-			<label>Color
-				<button type="button" data-linkedfield="#:fieldid#" 
-					class="colorSelectButton"
-					style="background-color:#:color#"
-					onclick="benchdesign.colorSelector.showHideColorSelect(this)"></button>
-			</label>
-		</div>
-		<div id="#:fieldid#-select" style="display:none">
-			<table>
-				<tr>
-				<c:forEach var="color" items="${benchHelper.userPaletteColors}">
-					<td class="paletteButton">
-						<button type="button" style="background-color:${color}"
-							data-linkedfield="#:fieldid#"
-							data-color="${color}"
-							onclick="benchdesign.colorSelector.setToPaletteColor(this, benchdesign.setColor)">
-						</button>
-					</td>
-				</c:forEach>
-				</tr>
-				<tr>
-				<td class="paletteButton">
-					<button type="button" style="width:40px;height:15px;font-size:60%;" 
-							name="color" onclick="benchdesign.colorSelector.showHideColorPicker(this)">
-						Custom
-					</button>
-				</td><td colspan="2">
-					<input style="height:15px;display:none" type="color" 
-						onchange="benchdesign.colorSelector.setToInputColor(this, benchdesign.setColor)"
-						data-linkedfield="#:fieldid#">
-				</td>
-			</tr></table>
-		</div>
-        <p>&nbsp;</p>	
-	# } #		<!-- block -->
-</script>
 
 <script type="text/x-kendo-template" id="styleFieldsTemplate">
 	<li class="stylefield" data-linkedstyle="#:name#"

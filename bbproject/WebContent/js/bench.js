@@ -1,5 +1,6 @@
 // bench.js - common javascript code for all the editors in BrndBot
 
+var session_mgr = new Session();
 
 var bench = {
 	// used to reinitialize the upload image button

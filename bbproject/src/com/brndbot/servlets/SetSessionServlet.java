@@ -67,6 +67,17 @@ public class SetSessionServlet extends HttpServlet
 		String action = Utils.getStringParameter(request, "action").toLowerCase();
 
 		logger.debug("Session ACTION: " + action);
+		if (action.equals(SessionUtils.TEST)) {
+			// Check if the session is active. Return OK if it is, unauthorized if it isn't.
+			int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
+			if (user_id == 0) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			}
+			else {
+				response.setStatus(HttpServletResponse.SC_OK);
+			}
+			return;
+		}
 		if (action.equals(SessionUtils.IMAGE))
 		{
 			// Set the image type into the session
