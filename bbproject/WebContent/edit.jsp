@@ -161,28 +161,32 @@ All rights reserved by Brndbot, Ltd. 2015
 			</div>
 
 					<div class="editorDiv">
-						<div id="tabstrip2" class="rounded">
-							<ul class="tabs">
-								<li class="k-state-active">
-									Content
-								</li>
-								<li>
-									Style
-								</li>
+						<div id="tabstrip2" class="rounded" style="float:left">
+							<ul class="tabs" style="display:none">
 							</ul>
 							<div>
-								<div class="editTab" >
+								<div class="editTab" id="contentPane">
 									<div id="contentArea" ><!--edit fields go here--></div>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>							
 							<div> <!-- Layout tab -->
-								<div class="editTab" >
-								  <ul id="styleArea"><!--styles go here--></ul></div>
+								<div class="editTab" id="stylePane" style="display:none">
+								  <ul id="styleArea"><!--styles go here--></ul>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>
 						</div>		<!-- tabstrip2 -->
+						<div style="float:right;position:relative;width:5rem">
+							<table>
+								<tr>
+								<td style="text-align:center;cursor:pointer" id="contentTabButton">Edit</td>
+								</tr><tr>
+								<td style="text-align:center;cursor:pointer" id="styleTabButton">Style</td>
+								</tr>
+							</table>
+						</div>
+						<div style="float:none"></div>
 					</div>			<!-- editorDiv -->
 
 			<div class="rounded benchHeader">

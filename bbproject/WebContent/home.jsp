@@ -92,15 +92,6 @@ prototypes to select, and the user picks one for processing in the editor (bench
 	<div id="brndbotDashBody">
 
 		<div  id="leftColumn">
-			<div class="topRow">
-				<table id="imageWrapper2" class="super-centered">
-					<tr>
-			    		<td align="center" valign="middle">
-							<c:out escapeXml="false" value="${homeHelper.boundLogo}"/>
-						</td>
-					</tr>
-				</table>
-			</div>
 
 		<%@include file="sidebar.jsp" %>
 
@@ -113,11 +104,8 @@ prototypes to select, and the user picks one for processing in the editor (bench
 					<div class="spaceMe">
 						<div style="text-align:left;">
 							<div class="formHeader formSpacer">
-								Hey there!<br />
+								Hi ${homeHelper.organization}!<br />
 								What would you like to do today?
-							</div>
-							<div class="formLabelFor formSpacer" style="font-variant: normal;">
-								Add text and instruction here.
 							</div>
 						</div>
 					</div>

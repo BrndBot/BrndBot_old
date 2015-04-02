@@ -32,21 +32,18 @@ var bench = {
 	//  to all editor.  The functions called are typically editor-specific.
 	initTheBench: function() 
 	{
-		// Create enough room for all the field arrays and define the map that correlates data fields 
-		//  to editor HTML fields by ID.
-		// initFieldMap();
-	
 
-	
-		// right side tab control
-	    $("#tabstrip2").kendoTabStrip({
-	        animation:  {
-	            open: {
-	                effects: "fadeIn"
-	            }
-	        }
-	    
-	    });
+		
+		// Tab selection buttons
+		$("#contentTabButton").on('click', function (e) {
+			$('#stylePane').hide();
+			$('#contentPane').show();
+		});
+		
+		$("#styleTabButton").on('click', function (e) {
+			$('#contentPane').hide();
+			$('#stylePane').show();
+		});
 	    
 	    // Set up ColorSelectors
 	    benchcontent.colorSelector = new ColorSelector ();
@@ -314,33 +311,6 @@ var bench = {
 			dialog.close();
 		});
 	
-		// Make the popup window for the 3 main content types appear
-	//	function showPopup(e, listID)
-	//	{
-	//		// Show the correct list, hide the others
-	//		(listID == 'classHere') ? $('#classHere').show() : $('#classHere').hide(); 
-	//		(listID == 'staffHere') ? $('#staffHere').show() : $('#staffHere').hide(); 
-	//		(listID == 'workshopHere') ? $('#workshopHere').show() : $('#workshopHere').hide(); 
-	//
-	//		var myWin = $("#contentPopup");
-	//		// If not initalized, init and show
-	//		if (!myWin.data("kendoWindow"))
-	//		{
-	//			var dialog = myWin.kendoWindow({
-	//				title: false,
-	//				visible: false,
-	//				modal: true
-	//			}).data("kendoWindow");
-	//		    dialog.center().open();
-	//		    $('body').blur();
-	//		} 
-	//		else 
-	//	    {
-	//	        // reopening window
-	//			myWin.data("kendoWindow").center().open(); // open the window
-	//		    $('body').blur();
-	//	    }
-	//	}
 	
 		// Button to popup the image gallery
 		$('.viewImageGallery').each(function ()
@@ -465,64 +435,64 @@ var bench = {
 	
 	// If you click on a selected block, it unselects the block.  This is the 
 	//  function that unselects a selected block.
-	unselectLastSelectedBlock: function()
-	{
-		var lastOne = 'x';
-		if (bench.lastSelectedBlock)
-		{
-			lastOne = bench.lastSelectedBlock.substring(1);
-			var stackIdx = bench.isolateEnum(bench.lastSelectedBlock);
-			// Reverse things out for the last selected block
-	
-			$(bench.lastSelectedBlock).css('border-width','0rem');
-			if (bench.lastSelectedBlock.lastIndexOf('#graphicBlock', 0) !== -1)
-			{
-				$(bench.lastSelectedBlock).css('border-bottom','0.1875rem solid #3d474a');
-			}
-			if (stackIdx > 0)
-			{
-				$(bench.lastSelectedBlock + 'SortUpBtn').css('display', 'none');
-				$(bench.lastSelectedBlock + 'SortDownBtn').css('display', 'none');
-				$('#editType').html('');
-			}
-			$(bench.lastSelectedBlock + 'TrashBtn').css('display', 'none');
-			var baseID = bench.prepEditID(bench.lastSelectedBlock);
-			bench.hideBlock(baseID);
-		}
-		return lastOne;
-	},
+//	unselectLastSelectedBlock: function()
+//	{
+//		var lastOne = 'x';
+//		if (bench.lastSelectedBlock)
+//		{
+//			lastOne = bench.lastSelectedBlock.substring(1);
+//			var stackIdx = bench.isolateEnum(bench.lastSelectedBlock);
+//			// Reverse things out for the last selected block
+//	
+//			$(bench.lastSelectedBlock).css('border-width','0rem');
+//			if (bench.lastSelectedBlock.lastIndexOf('#graphicBlock', 0) !== -1)
+//			{
+//				$(bench.lastSelectedBlock).css('border-bottom','0.1875rem solid #3d474a');
+//			}
+//			if (stackIdx > 0)
+//			{
+//				$(bench.lastSelectedBlock + 'SortUpBtn').css('display', 'none');
+//				$(bench.lastSelectedBlock + 'SortDownBtn').css('display', 'none');
+//				$('#editType').html('');
+//			}
+//			$(bench.lastSelectedBlock + 'TrashBtn').css('display', 'none');
+//			var baseID = bench.prepEditID(bench.lastSelectedBlock);
+//			bench.hideBlock(baseID);
+//		}
+//		return lastOne;
+//	},
 	
 	// Function that affects the removal of an item from the stack.  Has to handle
 	//  the blockStack data array as well as the display templates
-	trashBlockClicked: function (e, id, scrollIntoView)
-	{
-		var stackIdx = bench.isolateEnum(id) - 1;
-		var blockRoot = id.substr(0, id.length - 8);
-		// -1 means its not enumerated, not in the stack
-		if (stackIdx == -1)
-		{
-			// should never happen
-			alert('this should never happen, contact tech support.');
-		}
-		else
-		{
-	//		$('#' + blockRoot).hide();
-			$('#' + blockStack[stackIdx].blockID).hide();
-			blockStack.splice(stackIdx, 1); // delete item
-			// walk the rest of the blocks to 'slide' them up
-			var finalID = null;
-			for (var i = stackIdx; i < blockStack.length; i++)
-			{
-				finalID = blockStack[i].getBlockID();
-				$('#' + finalID).hide();
-				bench.fillBlock(i + 1, blockStack[i], true);
-			}
-			if (scrollIntoView && stackIdx > 0)
-				document.getElementById(blockStack[stackIdx].getBlockID()).scrollIntoView();
-		}
-		if (e)
-			e.preventDefault();
-	},
+//	trashBlockClicked: function (e, id, scrollIntoView)
+//	{
+//		var stackIdx = bench.isolateEnum(id) - 1;
+//		var blockRoot = id.substr(0, id.length - 8);
+//		// -1 means its not enumerated, not in the stack
+//		if (stackIdx == -1)
+//		{
+//			// should never happen
+//			alert('this should never happen, contact tech support.');
+//		}
+//		else
+//		{
+//	//		$('#' + blockRoot).hide();
+//			$('#' + blockStack[stackIdx].blockID).hide();
+//			blockStack.splice(stackIdx, 1); // delete item
+//			// walk the rest of the blocks to 'slide' them up
+//			var finalID = null;
+//			for (var i = stackIdx; i < blockStack.length; i++)
+//			{
+//				finalID = blockStack[i].getBlockID();
+//				$('#' + finalID).hide();
+//				bench.fillBlock(i + 1, blockStack[i], true);
+//			}
+//			if (scrollIntoView && stackIdx > 0)
+//				document.getElementById(blockStack[stackIdx].getBlockID()).scrollIntoView();
+//		}
+//		if (e)
+//			e.preventDefault();
+//	},
 	
 	hideBlock: function (baseID)
 	{

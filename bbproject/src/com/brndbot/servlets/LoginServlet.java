@@ -95,11 +95,11 @@ public class LoginServlet extends HttpServlet
 		}
 
 		// Success!
-//		session.setAttribute(ParamConstants.EMPLOYER_TYPE, RecruiterTable.fetchEmployerType(user_id));
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
 		session.removeAttribute(SessionUtils.LOGIN_ERROR);
 		Client client = Client.getClient (session);		// Load up the client
 		SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client);
+		SessionUtils.saveSessionData (request, SessionUtils.ORGANIZATION, client.getOrganizationName());
 
 		response.sendRedirect("home.jsp");
 		return;

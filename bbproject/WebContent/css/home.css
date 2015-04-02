@@ -18,8 +18,13 @@
 }
 
 .modelTable td {
-	width:125px;
-	max-width:125px;	
+	width:154px;
+	max-width:154px;	
+}
+
+.selectPromoText {
+	font-size: 15px;
+	color: #9E9EA3;
 }
 
 .categoryButton {
@@ -28,13 +33,23 @@
 	background: none;
 }
 
+.categoryButton img {
+	width: 94px;
+}
+
+.categoryName {
+	font-size: 13px;
+	color: #6A6463;
+}
+
 .modelHeader {
 	font-size: 0.7rem;
 }
 
 .modelButton {
 	cursor: pointer; 
-	font-size: 0.7rem;
+	font-size: 20px;
+	color: #5D5D5D;
 }
 
 #brndbotDashMain {

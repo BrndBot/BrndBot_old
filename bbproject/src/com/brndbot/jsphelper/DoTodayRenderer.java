@@ -62,6 +62,7 @@ import com.brndbot.promo.Client;
 	private Element renderCategory (String cat, int idx)  {
 		logger.debug ("renderCategory, cat = {} idx = {}", cat, idx);
 		Element catCell = new Element ("td");
+		catCell.setAttribute ("class", "categoryTD");
 
 		// Inside the TD, put a table with one row for the button 
 		// and one for the name.
@@ -87,7 +88,7 @@ import com.brndbot.promo.Client;
 		// Now a row for the name
 		Element nameTR = new Element ("tr");
 		Element nameTD = new Element ("td");
-		// TODO style nameTD
+		nameTD.setAttribute ("class", "categoryName");
 		nameTD.addContent (cat);
 		nameTR.addContent (nameTD);
 		catTable.addContent (nameTR);
@@ -115,6 +116,7 @@ import com.brndbot.promo.Client;
 		headerRow.addContent (headerCell);
 		headerCell.setAttribute ("class", "modelHeader");
 		headerCell.addContent ("Select promotion");
+		headerCell.setAttribute ("class", "selectPromoText");
 		
 		// Add the model buttons
 		for (String modelName : catModels.keySet()) {

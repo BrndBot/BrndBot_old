@@ -185,6 +185,10 @@ public class Client implements Serializable {
 		}
 	}
 	
+	public String getOrganizationName () {
+		return organizationName;
+	}
+	
 	public BrandIdentity getBrandIdentity () {
 		return brandIdentity;
 	}
