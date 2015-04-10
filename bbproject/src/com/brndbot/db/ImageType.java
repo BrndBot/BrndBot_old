@@ -15,51 +15,16 @@ import java.util.Map;
 public enum ImageType
 {
 	ALTERNATE_LOGO (1, "Logo", "images\\uploads\\logos\\",
-			300000L),
+			4194304L),
 	USER_UPLOAD (2, "Uploaded by user", "images\\uploads\\user\\",
-			300000L),
+			4194304L),
 	STOCK (3, "Stock image", "images\\uploads\\brndbot\\",
-			300000L),
+			4194304L),
 	DEFAULT_LOGO (5, "Default Logo", "images\\uploads\\logos\\",
-			300000L),
+			4194304L),
 	// When we take HTML and convert to a single image, this is the type for those
 	FUSED_IMAGE (6, "Fused Image", "images\\htmlimages\\",
-			500000L);
-//	final static ImageType[] _ENUMS;
-//
-//	public final static ImageType ALTERNATE_LOGO = 
-//			new ImageType(new Integer(1), "Logo", "images\\uploads\\logos\\",
-//					300000L);
-//
-//	public final static ImageType USER_UPLOAD = 
-//			new ImageType(new Integer(2), "Uploaded by user", "images\\uploads\\user\\",
-//					300000L);
-//
-//	public final static ImageType STOCK = 
-//			new ImageType(new Integer(3), "Stock image", "images\\uploads\\brndbot\\",
-//					300000L);
-//
-//	public final static ImageType DEFAULT_LOGO = 
-//			new ImageType(new Integer(5), "Default Logo", "images\\uploads\\logos\\",
-//					300000L);
-//
-//	// When we take HTML and convert to a single image, this is the type for those
-//	public final static ImageType FUSED_IMAGE = 
-//			new ImageType(new Integer(6), "Fused Image", "images\\htmlimages\\",
-//					500000L);
-//
-//	static
-//    {
-//        ArrayList<ImageType> enums = new ArrayList<ImageType>( );
-//
-//        enums.add(ALTERNATE_LOGO);
-//        enums.add(USER_UPLOAD);
-//        enums.add(STOCK);
-//        enums.add(DEFAULT_LOGO);
-//        enums.add(FUSED_IMAGE);
-//    	_ENUMS = (ImageType[])enums.
-//            toArray(new ImageType[enums.size()]);
-//    }
+			8388608L);
 
     // Data
     final Integer _item_number;

@@ -154,6 +154,7 @@ function Style (styleType, styleSet) {
 	this.multiply = null;
 	this.alignment = null;
 	this.svg = null;
+	this.dropShadowEnabled = true;
 	this.dropShadowH = null;
 	this.dropShadowV = null;
 	this.dropShadowBlur = null;
@@ -188,6 +189,7 @@ function Style (styleType, styleSet) {
 		retval.multiply = this.multiply;
 		retval.alignment = this.alignment;
 		retval.svg = this.svg;
+		retval.dropShadowEnabled = this.dropShadowEnabled;
 		retval.dropShadowH = this.dropShadowH;
 		retval.dropShadowV = this.dropShadowV;
 		retval.dropShadowBlur = this.dropShadowBlur;
@@ -217,6 +219,7 @@ function Style (styleType, styleSet) {
 		this.dropShadowH = jsonObj.dropShadowH;
 		this.dropShadowV = jsonObj.dropShadowV;
 		this.dropShadowBlur = jsonObj.dropShadowBlur;
+		this.dropShadowEnabled = this.dropShadowH !== null && this.dropShadowV !== null;
 		this.hCenter = jsonObj.hCenter;
 
 		// Text-specific fields.
@@ -242,6 +245,23 @@ function Style (styleType, styleSet) {
 				return i;
 		}
 		return -1;
+	};
+	
+	/* Call this to update the fabric object after changing the
+	 * drop shadow parameters.
+	 */
+	this.updateDropShadow = function () {
+		if (!this.hasDropShadow ()) {
+			// May have to remove drop shadow
+			this.fabricObject.shadow = null;
+		}
+		else {
+			var fobj = this.fabricObject;
+			fobj.shadow = new fabric.Shadow ();
+			fobj.shadow = new fabric.Shadow ();
+			fobj.shadow.blur = this.getDropShadowBlur();
+			fobj.shadow.offsetX = this.getDropShadowH();
+			fobj.shadow.offsetY = this.getDropShadowV();		}
 	};
 	
 	/* Attach the style to the matching field in the model.
@@ -669,7 +689,7 @@ function Style (styleType, styleSet) {
 		this.modelField.localStyle.color = c;
 		if (this.styleType == "block") {
 			if (this.hasDropShadow()) {
-				// It's a group, and we have to fish out the second rect. XYZZY 
+				// It's a group, and we have to fish out the second rect. TODO?
 			}
 		}
 	};
@@ -728,6 +748,8 @@ function Style (styleType, styleSet) {
 	};
 	
 	this.getDropShadowH = function () {
+		if (!this.hasDropShadow())
+			return null;
 		return (this.modelField.localStyle.dropShadowH !== null) ? this.modelField.localStyle.dropShadowH : this.dropShadowH;
 	};
 	
@@ -736,6 +758,8 @@ function Style (styleType, styleSet) {
 	};
 	
 	this.getDropShadowV = function () {
+		if (!this.hasDropShadow())
+			return null;
 		return (this.modelField.localStyle.dropShadowV !== null) ? this.modelField.localStyle.dropShadowV : this.dropShadowV;
 	};
 
@@ -744,6 +768,8 @@ function Style (styleType, styleSet) {
 	};
 
 	this.getDropShadowBlur = function () {
+		if (!this.hasDropShadow())
+			return null;
 		return (this.modelField.localStyle.dropShadowBlur !== null) ? this.modelField.localStyle.dropShadowBlur : this.dropShadowBlur;
 	};
 
@@ -751,8 +777,18 @@ function Style (styleType, styleSet) {
 		this.modelField.localStyle.dropShadowBlur = b;
 	};
 	
+	this.setLocalDropShadowEnabled = function (b) {
+		// Takes true or false
+		this.modelField.localStyle.dropShadowEnabled = b;
+	}
+	
 	this.hasDropShadow = function () {
-		return this.getDropShadowH() !== null && this.getDropShadowV !== null;
+		if (this.modelField.localStyle.dropShadowEnabled !== null)
+			return this.modelField.localStyle.dropShadowEnabled;
+		else if (this.dropShadowEnabled !== null)
+			return this.dropShadowEnabled;
+		else
+			return false;
 	};
 
 	this.getHCenter = function () {

@@ -97,7 +97,7 @@ prototypes to select, and the user picks one for processing in the editor (bench
 
 		</div>
 
-		<div class="unit size1of2" style="padding-left:9.4375rem;padding-top:3rem">
+		<div style="padding-left:9.4375rem;padding-top:3rem">
 			<div style="width:100%">
 
 				<div id="homeJsp">
@@ -109,14 +109,9 @@ prototypes to select, and the user picks one for processing in the editor (bench
 							</div>
 						</div>
 					</div>
-					<div class="spaceMe">
+					<div class="spaceMe" id="modelTableHolder" style="position:relative">
 						<% /* The buttons are inserted here for picking a model */ %>
-						<table><tr>
 						<c:out escapeXml="false" value="${homeHelper.renderDoToday}"/>
-						</tr>
-						<% /* Second row is the buttons for the category */ %>
-						<tr id="modelRow"></tr>
-						</table>
 					</div>
 					<div style="clear:both">&nbsp;</div>
 				</div>

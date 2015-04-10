@@ -99,6 +99,11 @@ If no model has been selected, it forces the user back to home.jsp.
 		<%@include file="sidebar.jsp" %>
 	</div>
 
+	<c:if test="${channelHelper.numberAvailableChannels == 0}">
+		<div class="errorMsg">
+		No channels are available for this model.
+		</div>
+	</c:if>
 	<div class="unit spaceMe">
 		<% /* The buttons are inserted here for picking a channel */ %>
 		<table><tr>

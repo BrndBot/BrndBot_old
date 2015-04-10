@@ -56,6 +56,11 @@ stylesToSourceData: function (styleSet) {
 			fielddata.ptsize = style.getPointSize().toString();
 			fielddata.italicChecked = style.isItalic() ? "checked" : "";
 			fielddata.boldChecked = style.isBold() ? "checked" : "";
+			fielddata.dropShadowChecked = style.hasDropShadow() ? "checked" : "";
+			fielddata.dropShadowH = style.getDropShadowH() ? style.getDropShadowH() : "0";
+			fielddata.dropShadowV = style.hasDropShadow() ? style.getDropShadowV() : "0";
+			fielddata.dropShadowBlur = style.hasDropShadow() ? style.getDropShadowBlur() : "0";
+			fielddata.dropShadowDisabled = style.hasDropShadow() ? "" : "disabled";
 			fielddata.color = style.getColor();
 		}
 		else if (style.styleType == "image") {
@@ -64,6 +69,11 @@ stylesToSourceData: function (styleSet) {
 		}
 		else if (style.styleType == "block") {
 			fielddata.color = style.getColor();
+			fielddata.dropShadowChecked = style.hasDropShadow() ? "checked" : "";
+			fielddata.dropShadowH = style.hasDropShadow() ? style.getDropShadowH() : "0";
+			fielddata.dropShadowV = style.hasDropShadow() ? style.getDropShadowV() : "0";
+			fielddata.dropShadowBlur = style.hasDropShadow() ? style.getDropShadowBlur() : "0";
+			fielddata.dropShadowDisabled = style.hasDropShadow() ? "" : "disabled";
 		}
 		else if (style.styleType == "logo") {
 		}
@@ -164,6 +174,65 @@ updatePrototypeBold: function (cbox) {
    		style.fabricObject.setFontWeight (nowChecked ? "bold" : "normal");
 		bench.currentPromotion.canvas.renderAll();
 	}
+},
+
+updatePrototypeDropShadow: function (cbox) {
+	var style = benchcontent.elemToLinkedStyle(cbox);
+	var nowChecked = $(cbox).prop('checked');
+	var table = $(cbox).closest('table');
+	var dsh = table.find('.dsh');
+	var dsv = table.find('.dsv');
+	var dsb = table.find('.dsb');
+	if (nowChecked) {
+		// Checking it merely enables the specific controls
+		table.find('.dsh').prop('disabled', false);
+		table.find('.dsv').prop('disabled', false);
+		table.find('.dsb').prop('disabled', false);
+		style.setLocalDropShadowEnabled (true);
+		style.setLocalDropShadowH(dsh.val());
+		style.setLocalDropShadowV(dsv.val());
+		style.setLocalDropShadowBlur(dsb.val());
+		style.updateDropShadow();
+		bench.currentPromotion.canvas.renderAll();
+	}
+	else {
+		dsh.prop('disabled', true);
+		dsv.prop('disabled', true);
+		dsb.prop('disabled', true);
+		
+		style.setLocalDropShadowEnabled (false);
+		style.updateDropShadow();
+		bench.currentPromotion.canvas.renderAll();
+	}
+},
+
+updatePrototypeDropShadowH: function (input) {
+	
+	function testForChange() {
+    	if (!isNaN (input.value)) {
+    		var h = Number (input.value);
+    		var style = benchcontent.elemToLinkedStyle (input);
+    		if (h >= 0) {
+    			style.setLocalDropShadowH (h);
+    			style.updateDropShadow();
+    			bench.currentPromotion.canvas.renderAll();
+    		}
+    	}
+    }
+
+    input.onblur = function() {
+        testForChange();
+        input.onblur = null;
+    };
+
+},
+
+updatePrototypeDropShadowV: function (input) {
+	// TODO stub
+},
+
+updatePrototypeDropShadowBlur: function (input) {
+	// TODO stub
 },
 
 updatePrototypeTypeface: function (sel) {
@@ -360,15 +429,7 @@ applyCrop: function (coords) {
 	//var origSize = styl.fabricObject.getOriginalSize();
 	styl.drawToMask (cropx, cropy, cropw, croph);
 	
-	// Scale to the display size of the image
-//	var scaleX = styl.fabricObject.width / origSize.width;
-//	var scaleY = styl.fabricObject.height / origSize.height;
-//	coords.x *= scaleX;
-//	coords.y *= scaleY;
-//	coords.w *= scaleX;
-//	coords.h *= scaleY;
 	
-//	styl.crop(coords.x, coords.y, coords.w, coords.h);
 	bench.currentPromotion.canvas.renderAll();
 },
 

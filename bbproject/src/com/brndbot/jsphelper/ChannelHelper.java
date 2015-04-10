@@ -1,7 +1,11 @@
 package com.brndbot.jsphelper;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.brndbot.client.style.StyleSet;
 
 public class ChannelHelper extends Helper {
 
@@ -23,5 +27,15 @@ public class ChannelHelper extends Helper {
 	
 	public void setModelName (String model) {
 		modelName = model;
+	}
+	
+	public int getNumberAvailableChannels () {
+		if (client == null)
+			return 0;
+		Map<String, StyleSet> styleSetMap = client.getStyleSets(modelName);
+		if (styleSetMap == null)
+			return 0;
+		return styleSetMap.keySet().size();
+
 	}
 }

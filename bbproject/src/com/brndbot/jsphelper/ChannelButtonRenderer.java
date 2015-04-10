@@ -35,12 +35,13 @@ public class ChannelButtonRenderer extends Renderer {
 		// Check which channels are represented in the styles
 		
 		try {
-			if (client == null)
-				logger.debug ("Client is null!");
+			if (client == null) {
+				logger.error ("Client is null!");
+				// Throw the NullPointerException anyway. We're doomed.
+			}
 			styleSetMap = client.getStyleSets(modelName);
 			if (styleSetMap == null)
 				logger.debug ("styleSetMap is null!");
-			logger.debug ("Got style set map with {} elements", styleSetMap.size()); 
 			for (StyleSet ss : styleSetMap.values()) {
 				Set<String> channels = ss.getChannels ();
 				for (String channel : channels) {

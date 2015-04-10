@@ -35,12 +35,13 @@ public class ModelListButtonRenderer extends Renderer {
 			}
 		}
 		catch (Exception e) {
-			logger.error ("Exception generating Do Today: {}   {}",
+			logger.error ("Exception in ModelListButtonRenderer constructor: {}   {}",
 					e.getClass().getName(), e.getMessage());
 		}
 	}
 
 	private void renderModel (Model m, int idx) throws IOException {
+		logger.debug ("renderModel, model {}", m.getName());
 		Element topDiv = new Element ("div");
 		topDiv.setAttribute ("class", "unit eachButton");
 		Element button = new Element ("button");
@@ -48,6 +49,7 @@ public class ModelListButtonRenderer extends Renderer {
 		button.setAttribute ("class", "greenNoHoverButton");
 		topDiv.addContent (button);
 		button.addContent (m.getName() + "s");
+		logger.debug ("Outputting button");
 		outputter.output (topDiv, writer);
 	}
 

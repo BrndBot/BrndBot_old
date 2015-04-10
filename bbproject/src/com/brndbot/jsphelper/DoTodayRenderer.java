@@ -22,34 +22,39 @@ import com.brndbot.promo.Client;
  */public class DoTodayRenderer extends Renderer {
 
 	final static Logger logger = LoggerFactory.getLogger(DoTodayRenderer.class);
+	
+	// Half the difference between the width of the category div and the model table div.
+	// This is the offset for the category div left side.
+	final static int WIDTHDIFF = 100;
 
 	public DoTodayRenderer(Client c) {
 		/* We want to render first the categories, then the models under the selected
 		 * category.
 		 * 
-		 * This will be a table with two rows. The top row has the category buttons.
-		 * The bottom row has a table inside each TD, with the models arranged vertically.
+		 * This will be a two rows of positioned divs, because we need to do positioning
+		 * tricks.
 		 */
 		super ();
 		try {
 			ModelCollection modelCol = c.getModels ();
-			Element tableElem = new Element ("table");
-			tableElem.setAttribute ("class", "modelTable");
+			Element categoriesDiv = new Element ("div");
+			categoriesDiv.setAttribute ("class", "categoriesDiv");
 			Element firstRowElem = new Element ("tr");
-			tableElem.addContent(firstRowElem);
+			categoriesDiv.addContent(firstRowElem);
 			List<String> categories = modelCol.getCategories ();
 			int idx = 0;
 			for (String cat : categories) {
 				firstRowElem.addContent (renderCategory (cat, idx++));
 			}
-			Element secondRowElem = new Element ("tr");
-			tableElem.addContent (secondRowElem);
+			Element secondRowElem = new Element ("div");
+			//tableElem.addContent (secondRowElem);
 			idx = 0;
 			for (String cat : categories) {
 				secondRowElem.addContent (renderModels (modelCol, cat, idx++));
 			}
 			
-			outputter.output (tableElem, writer);
+			outputter.output (categoriesDiv, writer);
+			outputter.output (secondRowElem, writer);
 		}
 		catch (Exception e) {
 			logger.error ("Exception generating Do Today: {}   {}",
@@ -61,8 +66,9 @@ import com.brndbot.promo.Client;
 	 * and returns a TD Element for it. */
 	private Element renderCategory (String cat, int idx)  {
 		logger.debug ("renderCategory, cat = {} idx = {}", cat, idx);
-		Element catCell = new Element ("td");
-		catCell.setAttribute ("class", "categoryTD");
+		Element catDiv = new Element ("div");
+		catDiv.setAttribute ("class", "categoryDiv");
+		catDiv.setAttribute ("style", "left:" + (WIDTHDIFF + idx * 156) + "px");
 
 		// Inside the TD, put a table with one row for the button 
 		// and one for the name.
@@ -93,20 +99,23 @@ import com.brndbot.promo.Client;
 		nameTR.addContent (nameTD);
 		catTable.addContent (nameTR);
 		
-		catCell.addContent (catTable);
-		return catCell;
+		catDiv.addContent (catTable);
+		return catDiv;
 	}
 	
-	/* This generates the model buttons for one category and returns a TD
-	 * element containing a table for it. */
+	/* This generates the model buttons for one category and returns a div
+	 * element containing a table for it. Each div is centered under the tab
+	 * column, but is wider than it, so it can't be a TD. */
 	private Element renderModels (ModelCollection modelCol, String cat, int idx) {
 		logger.debug ("renderModels, cat = {} idx = {}", cat, idx);
-		Element modelsCell = new Element ("td");
+		Element modelsDiv = new Element ("div");
+		modelsDiv.setAttribute ("class", "modelsDiv");
+		modelsDiv.setAttribute ("style", "left:" + (idx * 156) + "px");
 		
 		Element modelsTable = new Element ("table");
 		modelsTable.setAttribute ("data-category", cat);
 		modelsTable.setAttribute ("class", "modelsTable");
-		modelsCell.addContent (modelsTable);
+		modelsDiv.addContent (modelsTable);
 		Map<String, Model> catModels = modelCol.getModelsForCategory(cat);
 		
 		// Add the descriptive text
@@ -132,7 +141,7 @@ import com.brndbot.promo.Client;
 			modelCell.addContent (modelItem);
 		}
 		logger.debug ("returning from renderModels");
-		return modelsCell;
+		return modelsDiv;
 	}
 
 }

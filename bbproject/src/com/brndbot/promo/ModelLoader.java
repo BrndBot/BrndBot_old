@@ -44,12 +44,11 @@ public class ModelLoader {
 			String catName = dir.getName();
 			logger.debug ("Category directory {}", catName);
 			if (!dir.isDirectory()) {
-				logger.warn ("Non-directory file at category level in models directory");
+				// Could be a badge icon or other junk
 				continue;
 			}
 			File[] modelFiles = dir.listFiles ();
 			for (File f : modelFiles) {
-				logger.debug ("Model file {}", f.getName());
 				ModelParser parser = new ModelParser (f);
 				try {
 					Model m = parser.parse();

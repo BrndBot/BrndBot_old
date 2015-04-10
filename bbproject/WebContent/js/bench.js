@@ -581,6 +581,10 @@ var bench = {
 				{
 					url: "DashboardServlet?promo=" + promoName,
 					dataType: "json"
+				},
+				error: function (xhr) {
+					if (xhr && (xhr.statusCode() == 401))
+							homejs.redirectToLogin();
 				}
 			},
 			change: 
@@ -618,7 +622,7 @@ var bench = {
 				}
 			},
 			error: function (xhr) {
-				if (xhr && (xhr.statusCode() == 401))
+				if (xhr && (xhr.status == 401))
 						bench.redirectToLogin();
 			}
 		});	
@@ -638,6 +642,10 @@ var bench = {
 					url: "StyleServlet",
 					// TODO figure out what it will need as a parameter
 					dataType: "json"
+				},
+				error: function (xhr) {
+					if (xhr && (xhr.status == 401))
+							homejs.redirectToLogin();
 				}
 			},
 			change: 
@@ -699,7 +707,7 @@ var bench = {
 			  }
 		}).done(function() {
 			  console.log('saved'); 
-			  window.location.assign ("channel.jsp");
+			  window.location.assign ("submit.jsp");
 		}).fail(function (jqXHR, textStatus, errorThrown) {
 			console.log ("exportPresentation failed");
 			if (errorThrown)

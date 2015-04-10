@@ -17,9 +17,21 @@
 	text-align: center;
 }
 
-.modelTable td {
-	width:154px;
-	max-width:154px;	
+.modelsDiv {
+	display:none;
+	position:absolute;
+	top:150px;
+	width:304px;
+	max-width:304px;
+}
+
+.categoriesDiv {
+}
+
+.categoryDiv {
+	position:absolute;
+	width:100px;
+	max-width:100px;	
 }
 
 .selectPromoText {
@@ -42,6 +54,9 @@
 	color: #6A6463;
 }
 
+.modelsTable {
+	width: 100%;
+}
 .modelHeader {
 	font-size: 0.7rem;
 }
@@ -78,7 +93,3 @@
 	float:left;
 }
 
-.modelsTable
-{
-	display: none;
-}

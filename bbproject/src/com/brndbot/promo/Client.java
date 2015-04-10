@@ -244,36 +244,29 @@ public class Client implements Serializable {
 		pathb.append (brandIdentity.getName());
 		pathb.append ("/");
 		String path = pathb.toString();
-		Map<String, Model> models = modelCollection.getAllModels();
-		for (String modelName : models.keySet()) {
-//			File modelDir = new File (path + modelName);
-//			if (!modelDir.exists() || !modelDir.isDirectory()) {
-//				logger.warn ("No styleset directory {}", modelDir.getPath());
-//				continue;
-//			}
-			File styleSetDir = new File (path);
-			File [] styleSetFiles = styleSetDir.listFiles();
-			
-			// parse all the style set files for all models
-			for (File ssfile : styleSetFiles) {
-				if (ssfile.isDirectory())
-					continue;
-				if (!ssfile.getName().endsWith(".xml"))
-					continue;
-				logger.debug ("Calling StyleSetParser on {}", ssfile.getPath ());
-				StyleSetParser ssp = new StyleSetParser (ssfile);
-				try {
-					StyleSet ss = ssp.parse();
-					logger.debug ("Adding style set {}", ss.getName());
-					if (ss.isValid ()) 
-						brandIdentity.addStyleSet(ss.getModel(), ss);
-					else 
-						logger.warn ("Invalid style set: {}", ss.getName());
-				} catch (Exception e) {
-					logger.error ("Exception parsing styleset {}", ssfile.getPath());
-					logger.error (e.getClass().getName());
-					continue;
-				}
+//		Map<String, Model> models = modelCollection.getAllModels();
+		File styleSetDir = new File (path);
+		File [] styleSetFiles = styleSetDir.listFiles();
+		
+		// parse all the style set files for all models
+		for (File ssfile : styleSetFiles) {
+			if (ssfile.isDirectory())
+				continue;
+			if (!ssfile.getName().endsWith(".xml"))
+				continue;
+			logger.debug ("Calling StyleSetParser on {}", ssfile.getPath ());
+			StyleSetParser ssp = new StyleSetParser (ssfile);
+			try {
+				StyleSet ss = ssp.parse();
+				logger.debug ("Adding style set {}", ss.getName());
+				if (ss.isValid ()) 
+					brandIdentity.addStyleSet(ss.getModel(), ss);
+				else 
+					logger.warn ("Invalid style set: {}", ss.getName());
+			} catch (Exception e) {
+				logger.error ("Exception parsing styleset {}", ssfile.getPath());
+				logger.error (e.getClass().getName());
+				continue;
 			}
 		}
 	}

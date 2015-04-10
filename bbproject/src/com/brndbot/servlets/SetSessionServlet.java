@@ -173,6 +173,7 @@ public class SetSessionServlet extends HttpServlet
 
 		if (action.equals(SessionUtils.CLEAR))
 		{
+			// I don't think this makes any sense.
 //			System.out.println("CLEARING THE SESSION!");
 			session.setAttribute(SessionUtils.CHANNEL_KEY, "" + NEG_ONE);
 			session.setAttribute(SessionUtils.CONTENT_KEY, "");

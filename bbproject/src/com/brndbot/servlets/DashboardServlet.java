@@ -70,7 +70,7 @@ public class DashboardServlet extends HttpServlet
 		logger.debug("--------Entering DashboardServlet----------");
 
 		HttpSession session = request.getSession();
-		int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
+		//int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
 		Client client = (Client) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
 		if (client == null) {
@@ -78,14 +78,6 @@ public class DashboardServlet extends HttpServlet
 			SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client);
 		}
 		
-		if (channel == 0) {
-			logger.error ("Channel is zero in DashboardServlet!");
-			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
-		}
-
-		//int max_width = ChannelEnum.UNDEFINED.getDefaultImgWidth();
-		logger.debug("Channel is: {}", channel);
 		logger.debug("Model name is: {}", modelName);
 
 		// Make a JSON array of the promotion prototypes under this model

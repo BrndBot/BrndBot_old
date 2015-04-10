@@ -274,6 +274,12 @@ All rights reserved by Brndbot, Ltd. 2015
 
 			</div><!-- id="finishedImage">  -->
 
+			<div>
+				<button id="checkOutButton" onclick="bench.exportPresentation();" 
+						style="font-size: 1rem;width:8rem" class="orangeButton" >
+					Submit
+				</button>
+			</div>
 			</div></div></div>	<!-- relative --> 
 			<div class="unit lastUnit">
 				&nbsp;
@@ -526,6 +532,43 @@ All rights reserved by Brndbot, Ltd. 2015
 						</td>
 					</tr></table>
 				</div>
+				<div>
+					<table>
+						<tr><td colspan="3">
+						<label><input type="checkbox" data-linkedfield="#:fieldid#" #:dropShadowChecked#
+        		    		onchange="benchcontent.updatePrototypeDropShadow(this)">
+        	    		Drop shadow
+			           	</label>
+			           	</td></tr>
+			           	<tr>
+			           	<td>
+			           		<label> H
+		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
+		                    	class="dsh"
+								onfocus="benchcontent.updatePrototypeDropShadowH(this)" 
+								style="width:50%" value="#:dropShadowH#">
+							</label>
+			           	</td>
+			           	<td>
+			           		<label> V
+		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
+		                    	class="dsv"
+								onfocus="benchcontent.updatePrototypeDropShadowV(this)" 
+								style="width:50%" value="#:dropShadowV#">
+							</label>
+			           	</td>
+			           	<td>
+			           		<label> Blur
+		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
+		                    	class="dsb"
+								onfocus="benchcontent.updatePrototypeDropShadowBlur(this)" 
+								style="width:50%" value="#:dropShadowBlur#">
+							</label>
+			           	</td>
+			           	<tr>
+		           	</table>
+				</div>
+				
                 <p>&nbsp;</p>	
 		# } #		<!-- text -->
 		# if (styleType == 'image') {   #
@@ -554,7 +597,7 @@ All rights reserved by Brndbot, Ltd. 2015
 					onclick="benchcontent.colorSelector.showHideColorSelect(this)"></button>
 			</label>
 		</div>
-		<div id="#:fieldid#-select" style="display:none">
+		<div id="#:fieldid#-select" style="display:none">	<!-- color control -->
 			<table>
 				<tr>
 				<c:forEach var="color" items="${benchHelper.userPaletteColors}">
@@ -579,6 +622,42 @@ All rights reserved by Brndbot, Ltd. 2015
 						data-linkedfield="#:fieldid#">
 				</td>
 			</tr></table>
+		</div>							<!-- color control -->
+		<div>
+			<table>
+				<tr><td colspan="3">
+				<label><input type="checkbox" data-linkedfield="#:fieldid#" #:dropShadowChecked#
+      		    		onchange="benchcontent.updatePrototypeDropShadow(this)">
+      	    		Drop shadow
+	           	</label>
+	           	</td></tr>
+	           	<tr>
+	           	<td>
+	           		<label> H
+                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
+                    	class="dsh"
+						onchange="benchcontent.updatePrototypeDropShadowH(this)" 
+						style="width:50%" value="#:dropShadowH#">
+					</label>
+	           	</td>
+	           	<td>
+	           		<label> V
+                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
+                    	class="dsv"
+						onchange="benchcontent.updatePrototypeDropShadowV(this)" 
+						style="width:50%" value="#:dropShadowV#">
+					</label>
+	           	</td>
+	           	<td>
+	           		<label> Blur
+                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
+                    	class="dsb"
+						onchange="benchcontent.updatePrototypeDropShadowBlur(this)" 
+						style="width:50%" value="#:dropShadowBlur#">
+					</label>
+	           	</td>
+	           	<tr>
+           	</table>
 		</div>
         <p>&nbsp;</p>	
 		# } #		<!-- block -->

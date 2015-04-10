@@ -11,19 +11,22 @@
 
 $(document).ready(function() 
 	{
-	
-		
-
-		
 		/* This sets up the function for all the category buttons. */
 		$('.categoryButton').on('click', function(e)
 		{
 			var dataCat = $(this).attr("data-category");
+			// Reset all other category buttons to non-hover state
+			$('.categoryButton').each (function () {
+				var img = $(this).find("img");
+				if ($(this).attr("data-category") != dataCat)
+					img.attr ("src", img.attr("data-normalsrc"));
+			});
+			homejs.selectedCategory = dataCat;
 			// We just make the corresponding column visible for the category,
 			// and all the others invisible.
-			var modelColumns = $(".modelsTable");
+			var modelColumns = $(".modelsDiv");
 			modelColumns.each (function () {
-				if ($(this).attr("data-category") == dataCat)
+				if ($(this).children("table").attr("data-category") == dataCat)
 					$(this).show();
 				else
 					$(this).hide();
@@ -35,7 +38,7 @@ $(document).ready(function()
 		 * that model. Since the buttons change dynamically, we need to assign this
 		 * handler every time the button is loaded from a template.
 		 * 
-		 * TODO CHANGE IN SPEC: List the models just by name in a column below the
+		 * List the models just by name in a column below the
 		 * category button.
 		 */
 		$('.modelButton').on('click', function(e)
@@ -62,45 +65,18 @@ $(document).ready(function()
 			$('#contentType').text (homejs.model_name);
 		});
 	
-		// init dashboard
-		//initDashboard();
-	
-		homejs.fancyShow(homejs.HOME_JSP);
-		session_mgr.setSession(SESSION_CLEAR);
 	
 	});
 	
 var homejs = {
 
-	HOME_JSP: "#homeJsp",
-	
-	current_jsp: "undefined",
 	model_name: "",
 	protosDataSource: null,
 	session_mgr: "",
+	selectedCategory: null,
 	
 	/* Current selection in prototype list */
 	currentItemID: -1,
-	
-
-	
-	fancyShow: function (show_id)
-	{
-		if (show_id !== homejs.current_jsp)
-		{
-			if (homejs.current_jsp !== "undefined")
-			{
-				$(homejs.current_jsp).fadeOut(250, function() {
-					$(show_id).show();
-				});
-			}
-			else
-				$(show_id).show();
-	
-			homejs.current_jsp = show_id;
-		}
-	},
-	
 	
 	
 	/* Display the prototypes for the selected model, or jump directly to
@@ -156,9 +132,9 @@ var homejs = {
 	    var item = kendoList.dataSource.view()[index];
 	    // item is an item from the dataSource. We gave them sequential ID values.
 	    var itemID = item.ID;
-		if (currentItemID == itemID) {
-			return;
-		}
+//		if (currentItemID == itemID) {
+//			return;
+//		}
 		currentItemID = itemID;
 	},
 	
@@ -168,10 +144,14 @@ var homejs = {
 		img.attr("src", img.attr("data-hoversrc"));
 	},
 	
-	/* Set a button to its non-hover state */
+	/* Set a button to its non-hover state. If it's the selected category,
+	 * we use its hover-state image. */
 	showNormalImage: function (button) {
 		var img = $(button).find("img");
-		img.attr("src", img.attr("data-normalsrc"));
+		if ($(button).attr("data-category") == homejs.selectedCategory)
+			img.attr("src", img.attr("data-hoversrc"));
+		else
+			img.attr("src", img.attr("data-normalsrc"));
 	},
 	
 	redirectToLogin: function () {
