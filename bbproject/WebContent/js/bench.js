@@ -36,13 +36,21 @@ var bench = {
 		
 		// Tab selection buttons
 		$("#contentTabButton").on('click', function (e) {
-			$('#stylePane').hide();
-			$('#contentPane').show();
+			if (! $("#contentTabButton").hasClass("activePaneButton")) {
+				$("#styleTabButton").removeClass("activePaneButton");
+				$("#contentTabButton").addClass("activePaneButton");
+				$('#stylePane').hide();
+				$('#contentPane').show();
+			}
 		});
 		
 		$("#styleTabButton").on('click', function (e) {
-			$('#contentPane').hide();
-			$('#stylePane').show();
+			if (! $("#styleTabButton").hasClass("activePaneButton")) {
+				$("#contentTabButton").removeClass("activePaneButton");
+				$("#styleTabButton").addClass("activePaneButton");
+				$('#contentPane').hide();
+				$('#stylePane').show();
+			}
 		});
 	    
 	    // Set up ColorSelectors
@@ -610,16 +618,23 @@ var bench = {
 				benchcontent.insertEditFields ( $('#contentArea'));
 				//benchdesign.insertEditFields ( $('#designArea'));
 				benchstyle.insertStyles ( $('#styleArea'));
+				var canvasWidth;
+				var canvasHeight;
 				if (defaultStyleSet.width > bench.MAX_PROMOTION_DIM || defaultStyleSet.height > bench.MAX_PROMOTION_DIM) {
 					var scaleRatio = Math.min (bench.MAX_PROMOTION_DIM / defaultStyleSet.width,
 							bench.MAX_PROMOTION_DIM / defaultStyleSet.height);
-					canvas.css("width", "" + Math.floor(defaultStyleSet.width * scaleRatio) + "px");
-					canvas.css("height", "" + Math.floor(defaultStyleSet.height * scaleRatio) + "px");
+					canvasWidth = Math.floor(defaultStyleSet.width * scaleRatio) + "px";
+					canvasHeight = Math.floor(defaultStyleSet.height * scaleRatio) + "px";
 				}
 				else {
-					canvas.css("width", "" + Math.floor(defaultStyleSet.width) + "px");
-					canvas.css("height", "" + Math.floor(defaultStyleSet.height) + "px");
+					canvasWidth = Math.floor(defaultStyleSet.width) + "px";
+					canvasHeight = Math.floor(defaultStyleSet.height) + "px";
 				}
+				canvas.css("width", canvasWidth);
+				canvas.css("height", canvasHeight);
+				// Set enclosing div to same.
+				$('#finishedImage').css("width", canvasWidth);
+				$('#finishedImage').css("height", canvasHeight);
 			},
 			error: function (xhr) {
 				if (xhr && (xhr.status == 401))

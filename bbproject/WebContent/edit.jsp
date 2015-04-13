@@ -132,7 +132,7 @@ All rights reserved by Brndbot, Ltd. 2015
 	<jsp:setProperty name="starting_block" property="channelType" value="${tmp_channel}"/>
 	<jsp:setProperty name="starting_block" property="name" value="${proto_name}"/>
 </jsp:useBean>
-	<div id="brndbotMain" style="background-color:#f4f4f4;">
+	<div id="brndbotMain" >
 		<div id="benchBody">
 
 			<div id="leftSideBar">
@@ -166,7 +166,7 @@ All rights reserved by Brndbot, Ltd. 2015
 							</ul>
 							<div>
 								<div class="editTab" id="contentPane">
-									<div id="contentArea" ><!--edit fields go here--></div>
+									<div id="contentArea" style="background-color:#F8F8F8 !important;border-style:none" ><!--edit fields go here--></div>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>							
@@ -177,24 +177,43 @@ All rights reserved by Brndbot, Ltd. 2015
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>
 						</div>		<!-- tabstrip2 -->
-						<div style="float:right;position:relative;width:5rem">
-							<table>
+						<div style="float:right;position:relative;width:5rem;height:100%;background-color:#DBDEE0">
+							<table style="width:100%;">
 								<tr>
-								<td style="text-align:center;cursor:pointer" id="contentTabButton">Edit</td>
+								<td class="tabButton activePaneButton" id="contentTabButton" class="activePaneButton">
+								<img src="images/bench/EditButton.png" style="align:top" alt="Edit button">
+								<br>EDIT
+								</td>
 								</tr><tr>
-								<td style="text-align:center;cursor:pointer" id="styleTabButton">Style</td>
+								<td class="tabButton" id="styleTabButton">
+								<img src="images/bench/StyleButton.png" style="align:top" alt="Style button">
+								<br>STYLE
+								</td>
 								</tr>
 							</table>
 						</div>
 						<div style="float:none"></div>
 					</div>			<!-- editorDiv -->
 
-			<div class="rounded benchHeader">
-
-				<div class="emailBenchHeader">
-					&nbsp;Message Builder
-				</div>
-			  <div style="position:relative;"><div style="position:absolute;top:36px;"><div style="position:relative;" id="promoview">
+			<div class="benchHeader">
+			<table><tr>
+			<td style="min-width:25%; font-size:20px;">
+			EDIT THIS POST
+			</td>
+			<td style="min-width:15%;" >
+			<a class="goBackLink" href="channel.jsp?channel=0&proto=${proto_name}&model=${model_name}">go back</a>
+			</td>
+			<td style="min-width:45%">
+			&nbsp;
+			</td>
+			<td style="min-width:15%">
+			<button id="checkOutButton" onclick="bench.exportPresentation();" 
+						style="font-size: 1rem;width:8rem" class="checkOutButton" >
+			CONTINUE
+			</button>
+			</td>
+			</tr></table>
+			<div style="position:relative;"><div style="position:absolute;top:36px;"><div style="position:relative;" id="promoview">
  		<%
 			// Options anticipated by the templates.  The templates are separate JSPs and expect thse variables
 			//  to be instantiated.  So you'll see Eclipse think the templates have errors, but that's because
@@ -274,12 +293,6 @@ All rights reserved by Brndbot, Ltd. 2015
 
 			</div><!-- id="finishedImage">  -->
 
-			<div>
-				<button id="checkOutButton" onclick="bench.exportPresentation();" 
-						style="font-size: 1rem;width:8rem" class="orangeButton" >
-					Submit
-				</button>
-			</div>
 			</div></div></div>	<!-- relative --> 
 			<div class="unit lastUnit">
 				&nbsp;

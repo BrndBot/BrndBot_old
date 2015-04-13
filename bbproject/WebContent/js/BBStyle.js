@@ -384,6 +384,8 @@ function Style (styleType, styleSet) {
 		this.fabricObject = text;
 		canvas.add(text);
 		canvas.moveTo(text, this.index);
+		console.log ("bounding box width: " + text.getBoundingRectWidth());
+		console.log ("text width: " + text.getWidth());
 	};
 
 	this.fabricateBlock = function  (canvas) {

@@ -93,13 +93,19 @@ to the ModelField. If we set the attribute data-linkedfield
 to the field name, we should have what we need.  */
 updatePrototypeText: function(tarea) {
 
-	benchcontent.highlightTextArea(tarea);
+	//benchcontent.highlightTextArea(tarea);
 	
     function testForChange() {
     	var style = benchcontent.elemToLinkedStyle(tarea);
     	if (tarea.value != style.fabricObject.getText()) {
     		style.setLocalText(tarea.value);
+    		style.fabricObject.scale (1.0);		// Reset scale for initial drawing  **** experimental ****
     		style.fabricObject.setText(tarea.value);
+    		console.log ("bounding box width: " + style.fabricObject.getBoundingRectWidth());
+    		console.log ("text width: " + style.fabricObject.getWidth());
+    		
+    		/***** EXPERIMENTAL CODE *******/
+    		benchcontent.makeTextFit(style);
     		bench.currentPromotion.canvas.renderAll();
     	}
     }
@@ -107,7 +113,7 @@ updatePrototypeText: function(tarea) {
     tarea.onblur = function() {
         window.clearInterval(timer);
         testForChange();
-        benchcontent.unhighlightTextArea (tarea);
+        //benchcontent.unhighlightTextArea (tarea);
         tarea.onblur = null;
     };
 
@@ -116,9 +122,17 @@ updatePrototypeText: function(tarea) {
     }, 50);
 },
 
+makeTextFit: function (style) {
+	var drawnWidth = style.fabricObject.getWidth();
+	var styleWidth = style.getWidth ();
+	if (drawnWidth > styleWidth) {
+		style.fabricObject.scale (styleWidth / drawnWidth);
+	}
+},
+
 updatePrototypePointSize: function(tarea) {
 
-	benchcontent.highlightTextArea(tarea);
+	//benchcontent.highlightTextArea(tarea);
 
 	function testForChange() {
     	if (!isNaN (tarea.value)) {
@@ -126,8 +140,10 @@ updatePrototypePointSize: function(tarea) {
     		var newsize = Number(tarea.value);
     		if (newsize != style.getPointSize ()) {
     			var pointSize = Number (tarea.value);
+    			style.fabricObject.scale (1.0);
     			style.setLocalPointSize (pointSize);
     			style.fabricObject.setFontSize(pointSize);
+    			makeTextFit(style);
     			bench.currentPromotion.canvas.renderAll();
     		}
     	}
@@ -137,7 +153,7 @@ updatePrototypePointSize: function(tarea) {
      *  great idea, so we don't put this on timer. */
     tarea.onblur = function() {
         testForChange();
-        benchcontent.unhighlightTextArea (tarea);
+        //benchcontent.unhighlightTextArea (tarea);
         tarea.onblur = null;
     };
 
