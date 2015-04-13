@@ -228,11 +228,41 @@ updatePrototypeDropShadowH: function (input) {
 },
 
 updatePrototypeDropShadowV: function (input) {
-	// TODO stub
+	function testForChange() {
+    	if (!isNaN (input.value)) {
+    		var v = Number (input.value);
+    		var style = benchcontent.elemToLinkedStyle (input);
+    		if (v >= 0) {
+    			style.setLocalDropShadowV (v);
+    			style.updateDropShadow();
+    			bench.currentPromotion.canvas.renderAll();
+    		}
+    	}
+    }
+
+    input.onblur = function() {
+        testForChange();
+        input.onblur = null;
+    };
 },
 
 updatePrototypeDropShadowBlur: function (input) {
-	// TODO stub
+	function testForChange() {
+    	if (!isNaN (input.value)) {
+    		var b = Number (input.value);
+    		var style = benchcontent.elemToLinkedStyle (input);
+    		if (b >= 0) {
+    			style.setLocalDropShadowBlur (b);
+    			style.updateDropShadow();
+    			bench.currentPromotion.canvas.renderAll();
+    		}
+    	}
+    }
+
+    input.onblur = function() {
+        testForChange();
+        input.onblur = null;
+    };
 },
 
 updatePrototypeTypeface: function (sel) {

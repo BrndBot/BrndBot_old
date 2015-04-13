@@ -39,22 +39,24 @@ import com.brndbot.promo.Client;
 			ModelCollection modelCol = c.getModels ();
 			Element categoriesDiv = new Element ("div");
 			categoriesDiv.setAttribute ("class", "categoriesDiv");
-			Element firstRowElem = new Element ("tr");
-			categoriesDiv.addContent(firstRowElem);
+			Element categoriesTable = new Element ("table");
+			categoriesDiv.addContent (categoriesTable);
+			Element catgegoriesRowElem = new Element ("tr");
+			categoriesTable.addContent(catgegoriesRowElem);
 			List<String> categories = modelCol.getCategories ();
 			int idx = 0;
 			for (String cat : categories) {
-				firstRowElem.addContent (renderCategory (cat, idx++));
+				catgegoriesRowElem.addContent (renderCategory (cat, idx++));
 			}
-			Element secondRowElem = new Element ("div");
-			//tableElem.addContent (secondRowElem);
+			
+			Element modelItemsDiv = new Element ("div");
 			idx = 0;
 			for (String cat : categories) {
-				secondRowElem.addContent (renderModels (modelCol, cat, idx++));
+				modelItemsDiv.addContent (renderModels (modelCol, cat, idx++));
 			}
 			
 			outputter.output (categoriesDiv, writer);
-			outputter.output (secondRowElem, writer);
+			outputter.output (modelItemsDiv, writer);
 		}
 		catch (Exception e) {
 			logger.error ("Exception generating Do Today: {}   {}",
@@ -66,6 +68,7 @@ import com.brndbot.promo.Client;
 	 * and returns a TD Element for it. */
 	private Element renderCategory (String cat, int idx)  {
 		logger.debug ("renderCategory, cat = {} idx = {}", cat, idx);
+		Element catTD = new Element ("td");
 		Element catDiv = new Element ("div");
 		catDiv.setAttribute ("class", "categoryDiv");
 		catDiv.setAttribute ("style", "left:" + (WIDTHDIFF + idx * 156) + "px");
@@ -100,7 +103,8 @@ import com.brndbot.promo.Client;
 		catTable.addContent (nameTR);
 		
 		catDiv.addContent (catTable);
-		return catDiv;
+		catTD.addContent (catDiv);
+		return catTD;
 	}
 	
 	/* This generates the model buttons for one category and returns a div
