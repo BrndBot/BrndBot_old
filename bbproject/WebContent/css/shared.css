@@ -312,3 +312,9 @@ textarea {
 .sidebarButton {
 	width: 22px;
 }
+
+#leftColumn
+{
+	width:15.625rem;
+	float:left;
+}
