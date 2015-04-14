@@ -96,6 +96,7 @@ If no model has been selected, it forces the user back to home.jsp.
 <div id="brndbotMain">
 
 	<div  id="leftColumn">
+		<c:set var="icon_image" value="images/sidebar/TopNavMenuButton.png" />
 		<%@include file="sidebar.jsp" %>
 	</div>
 

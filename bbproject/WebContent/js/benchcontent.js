@@ -14,17 +14,35 @@
  */
 
 var benchcontent = {
+		
+selectedFieldID: null,
+
 /** Insert the fields in the content tab needed to edit a promotion. 
- *  src  JQuery selector for the div into which the fields
- *       will be inserted
- */
+  */
 insertEditFields: function (dest) {
 	
-	dest.kendoListView({
-		dataSource: new kendo.data.DataSource({data: benchcontent.stylesToSourceData(bench.currentPromotion.styleSet)}),
-	    selectable: true,
-        template: kendo.template($('#contentFieldsTemplate').html())
-	});
+	var srcdata = benchcontent.stylesToSourceData (bench.currentPromotion.styleSet);
+	srcdata = benchcontent.sortSourceData (srcdata);
+	var group = 0;
+	dest.append ("<div class='contentgroup'>TEXT</div>");
+	for (var i = 0; i < srcdata.length; i++) {
+		var fielddata = srcdata[i];
+		var stltyp = fielddata.styleType;
+		if (group == 0 && (stltyp == "block" || stltyp == "svg")) {
+			dest.append ("<div class='contentgroup2'>SHAPE</div>");
+			group = 1;
+		}
+		else if (group < 2 && (stltyp == "image" || stltyp == "logo")) {
+			dest.append ("<div class='contentgroup2'>IMAGE</div>");
+			group = 2;
+		}
+		var template = kendo.template($('#contentFieldsTemplate').html());
+		var html = kendo.render (template, [fielddata]);
+		dest.append (html);
+	}
+	benchcontent.selectedFieldID = null;
+	benchcontent.collapseUnselectedFields();
+	benchcontent.setEditFieldHandlers ();
 	dest.show();
 },
 
@@ -84,7 +102,59 @@ stylesToSourceData: function (styleSet) {
 	return srcdata;
 },
 
+/* Sort the source data by field type; first "Text" (text), then 
+ * "Shape" (block, SVG), then "Image" (image, logo).
+ */
+sortSourceData: function (srcdata) {
+	var retdata = [];
+	for (var g = 0; g < 3; g++) {
+		for (var i = 0; i < srcdata.length; i++) {
+			var srcitem = srcdata[i];
+			var match;
+			switch (g) {
+			case 0:
+				match = (srcitem.styleType == "text");
+				break;
+			case 1:
+				match = (srcitem.styleType == "block" || srcitem.styleType == "svg");
+				break;
+			case 2:
+				match = (srcitem.styleType == "image" || srcitem.styleType == "logo");
+				break;
+			default:
+				console.log ("Weird error");
+			}
+			if (match)
+				retdata.push(srcitem);
+		}
+	}
+	return retdata;
+},
 
+/*  Collapse all fields in the content pane to a minimum set, consisting
+ *  of whatever isn't in the selected pane (if any) and doesn't have the
+ *  class "collapsible".
+ */
+collapseUnselectedFields: function () {
+	$(".contentfield").each (function () {
+		if ($(this).attr("data-linkedfield") != benchcontent.selectedFieldID) {
+			$(this).find(".collapsible").hide();
+		} else {
+			$(this).find(".collapsible").show();
+		}
+	});
+},
+
+/*  Set up click handlers for the edit fields. Change the selection and
+ *  expand and collapse appropriately.
+ */
+setEditFieldHandlers: function () {
+	var fieldNames = $(".fieldname");
+	fieldNames.on ('click', function (e) {
+		benchcontent.selectedFieldID = $(this).attr("data-linkedfield");
+		benchcontent.collapseUnselectedFields();
+	});
+},
 
 /* These functions poll the
 specified textarea while it has focus and apply the changes.

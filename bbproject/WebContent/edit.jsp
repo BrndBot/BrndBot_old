@@ -140,6 +140,7 @@ All rights reserved by Brndbot, Ltd. 2015
 					<!--  This is a Kendo UI widget for a tab control.  It follows a specific structure
 					       required by the widget.
 					-->
+					<c:set var="icon_image" value="images/sidebar/Social-Editor_LeftButton.png" />
 					<%@include file="sidebar.jsp" %>
 
 					<!--  These are positioned using the position:relative for the parent style, and the 
@@ -161,12 +162,12 @@ All rights reserved by Brndbot, Ltd. 2015
 			</div>
 
 					<div class="editorDiv">
-						<div id="tabstrip2" class="rounded" style="float:left">
+						<div id="tabstrip2" style="float:left">
 							<ul class="tabs" style="display:none">
 							</ul>
 							<div>
 								<div class="editTab" id="contentPane">
-									<div id="contentArea" style="background-color:#F8F8F8 !important;border-style:none" ><!--edit fields go here--></div>
+									<div id="contentArea" ><!--edit fields go here--></div>
 								</div>
 								<div style="clear:both;line-height:0rem;">&nbsp;</div>
 							</div>							
@@ -474,8 +475,8 @@ All rights reserved by Brndbot, Ltd. 2015
 <!-- Script for generating the data to populate the editor pane. 
      Big, but apparently you can't put a Kendo template in a separate file. -->
 <script type="text/x-kendo-template" id="contentFieldsTemplate">
-	<div>
-		<div style="font-weight:bold">#:fieldname#</div>
+	<div class="contentfield"  data-linkedfield="#:fieldid#">
+		<div data-linkedfield="#:fieldid#" class="fieldname">#:fieldname#</div>
 
 		# if (styleType == 'text') {   #
                 <div class="editTextArea" >
@@ -484,13 +485,13 @@ All rights reserved by Brndbot, Ltd. 2015
 							style="width:98%">#:content#
 						</textarea>
                 </div>
-                <div>Font size</div>
-                <div class="editTextArea" >
+                <div class="collapsible">Font size</div>
+                <div class="editTextArea collapsible" >
                     <input type="number" data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypePointSize(this)" 
 							style="width:98%" value="#:ptsize#">
                 </div>
-                <div>
+                <div class="collapsible">
                 	<label>Typeface
                 	<select data-linkedfield="#:fieldid#"
                 			onchange="benchcontent.updatePrototypeTypeface(this)">
@@ -499,19 +500,19 @@ All rights reserved by Brndbot, Ltd. 2015
                 	</select>
                 	</label>
                 </div>
-                <div>
+                <div class="collapsible">
                 	<label><input type="checkbox" data-linkedfield="#:fieldid#" #:italicChecked#
                 			onchange="benchcontent.updatePrototypeItalic(this)">
                 		Italic
                 	</label>
                 </div>		
-                <div>
+                <div class="collapsible">
                 	<label><input type="checkbox" data-linkedfield="#:fieldid#" #:boldChecked#
                 			onchange="benchcontent.updatePrototypeBold(this)">
                 		Bold
                 	</label>
                 </div>	
-				<div>
+				<div class="collapsible">
 					<label>Color
 						<button type="button" data-linkedfield="#:fieldid#" 
 							class="colorSelectButton"
@@ -519,7 +520,7 @@ All rights reserved by Brndbot, Ltd. 2015
 							onclick="benchcontent.colorSelector.showHideColorSelect(this)"></button>
 					</label>
 				</div>
-				<div id="#:fieldid#-select" style="display:none">
+				<div class="collapsible" id="#:fieldid#-select" style="display:none">
 					<table>
 						<tr>
 						<c:forEach var="color" items="${benchHelper.userPaletteColors}">
@@ -545,7 +546,7 @@ All rights reserved by Brndbot, Ltd. 2015
 						</td>
 					</tr></table>
 				</div>
-				<div>
+				<div class="collapsible">
 					<table>
 						<tr><td colspan="3">
 						<label><input type="checkbox" data-linkedfield="#:fieldid#" #:dropShadowChecked#
@@ -585,7 +586,7 @@ All rights reserved by Brndbot, Ltd. 2015
                 <p>&nbsp;</p>	
 		# } #		<!-- text -->
 		# if (styleType == 'image') {   #
-				<table><tr>
+				<table class="collapsible"><tr>
 				<td>
 				<button type="button" style="width:70px;height:20px;font-size:85%;" 
 					data-linkedField="#:fieldid#"
@@ -610,7 +611,7 @@ All rights reserved by Brndbot, Ltd. 2015
 					onclick="benchcontent.colorSelector.showHideColorSelect(this)"></button>
 			</label>
 		</div>
-		<div id="#:fieldid#-select" style="display:none">	<!-- color control -->
+		<div class="collapsible" id="#:fieldid#-select" style="display:none">	<!-- color control -->
 			<table>
 				<tr>
 				<c:forEach var="color" items="${benchHelper.userPaletteColors}">
@@ -636,7 +637,7 @@ All rights reserved by Brndbot, Ltd. 2015
 				</td>
 			</tr></table>
 		</div>							<!-- color control -->
-		<div>
+		<div class="collapsible">
 			<table>
 				<tr><td colspan="3">
 				<label><input type="checkbox" data-linkedfield="#:fieldid#" #:dropShadowChecked#

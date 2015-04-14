@@ -20,7 +20,10 @@ public class SystemProp
 {
 	final static Logger logger = LoggerFactory.getLogger(SystemProp.class);
 
-	static final private String PROPERTY_FILENAME_BASE = "\\webapps\\brndbot\\WEB-INF\\system.properties";
+//	static final private String PROPERTY_FILENAME_BASE = "\\webapps\\brndbot\\WEB-INF\\system.properties";
+	// Put the properties file outside the webapp so that we can have different files
+	// without changing the war
+	static final private String PROPERTY_FILENAME_BASE = "\\conf\\brndbot.properties";
 	static private String PROPERTY_FILENAME;
 
 	// The property names for the system.properties configuration file in main folder

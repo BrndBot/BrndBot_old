@@ -36,6 +36,7 @@ All rights reserved by Brndbot, Ltd. 2015
 <div id="brndbotMain">
 
 	<div  id="leftColumn">
+		<c:set var="icon_image" value="images/sidebar/Social-Editor_LeftButton.png" />
 		<%@include file="sidebar.jsp" %>
 	</div>
 

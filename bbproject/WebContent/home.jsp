@@ -93,6 +93,7 @@ prototypes to select, and the user picks one for processing in the editor (bench
 
 		<div  id="leftColumn">
 
+		<c:set var="icon_image" value="images/sidebar/TopNavMenuButton.png" />
 		<%@include file="sidebar.jsp" %>
 
 		</div>

@@ -1,9 +1,11 @@
 <!-- sidebar.jsp 
  All rights reserved by Brndbot, Ltd. 2015
+ Any file that includes sidebar.jsp must define icon_image in JSTL as a path to an image.
 -->
 			<div id="tabstrip">
 				<ul>
-					<li><img src="images/logos/1-brndbot-robot.png" alt="brndbot robot" style="width:30px">
+					<li style="height:110px">
+					<img src="${icon_image}" alt="brndbot robot" >
 					
 					<li>
 						<a href="home.jsp">
