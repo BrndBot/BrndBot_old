@@ -591,6 +591,10 @@ pickImage: function (btn) {
 	$(".useThisImage").on ('click', function (e) {
 		benchcontent.useClickedImage(this);
 	});
+	$(".useThisImage").hide();
+	$(".galleryImage").on('click', function (e) {
+		benchcontent.primeClickedImage(this);
+	});
 	$("#imagePickerHolder").show();
 },
 
@@ -614,21 +618,26 @@ populateGallery: function (sel) {
 	});
 },
 
-
-//useClickedImage: function (e) {
-//	// "this" is the kendo List
-//    var index = this.select().index();
-//    var item = this.dataSource.view()[index];
-//    var id = item.ID;
-//    var style = benchcontent.galleryTarget.style;
-//    style.setLocalImageID (id, item.width, item.height);
-//    bench.currentPromotion.canvas.renderAll();
-//},
+/* We use the two-click approach, once on the image to show a button
+ * and then on the button to pick the image.
+ */
+primeClickedImage: function (img) {
+	console.log("primeClickedImage");
+	var id = $(img).parent().attr("data-id");
+	$(".useThisImage").each (function (e) {
+		if ($(this).parent().attr("data-id") == id) {
+			$(this).show();
+		}
+		else {
+			$(this).hide();
+		}
+	});
+},
 
 /* Use the image based on the "USE THIS IMAGE" button being clicked.
  */
-useClickedImage: function (e) {
-	var id = $(e).attr("data-id");
+useClickedImage: function (btn) {
+	var id = $(btn).parent().attr("data-id");
 	var style = benchcontent.galleryTarget.style;
 	style.setLocalImageID(id);
 	$("#imagePickerHolder").hide();

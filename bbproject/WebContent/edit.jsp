@@ -448,9 +448,9 @@ All rights reserved by Brndbot, Ltd. 2015
 	
 <script type="text/x-kendo-template" id="galleryTemplate">
 	<li class="galleryPickerField" style="float:left;padding:20px;list-style-type:none">
-		<div>
-			<img src="ImageServlet?brndbotimageid=2&img=#:ID#" style="">
-			<button class="useThisImage" data-id="#:ID#">USE THIS IMAGE</button>
+		<div data-id="#:ID#">
+			<img class="galleryImage" src="ImageServlet?brndbotimageid=2&img=#:ID#" >
+			<button class="useThisImage" >USE THIS IMAGE</button>
 		</div>
 	</li>
 </script>
@@ -694,7 +694,6 @@ All rights reserved by Brndbot, Ltd. 2015
 
 	</div>
 </script>
-
 
 
 <script type="text/x-kendo-template" id="styleFieldsTemplate">
