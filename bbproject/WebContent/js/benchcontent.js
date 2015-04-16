@@ -17,6 +17,31 @@ var benchcontent = {
 		
 selectedFieldID: null,
 
+/** Document ready initialization code. 
+ */
+initTheBench: function () {
+	$("#files").kendoUpload({
+		multiple: false,
+		async: {
+            saveUrl: "SaveImageServlet?brndbotimageid=2",
+            removeUrl: "dummy",			// don't quite understand what this signifies
+            removeField: "fileNames[]"	// not sure what to do with this
+	    },
+	    complete: benchcontent.onComplete,
+        localization: {
+            select: "Upload a JPEG, GIF, or PNG image",
+            headerStatusUploaded: "Image uploaded."
+        }
+	});
+},
+
+/* This is called when the upload is complete. */
+onComplete: function () {
+//	imagesjs.galleryDataSource.read();		// Reload the list
+//	imagesjs.populateGallery ($('#imageGallery'));
+},
+
+
 /** Insert the fields in the content tab needed to edit a promotion. 
   */
 insertEditFields: function (dest) {
@@ -603,6 +628,10 @@ pickImage: function (btn) {
 		$("#normalBenchHeader").show();
 		$("#cancelGalleryPane").hide();
 		$("#contentPane").show();
+	});
+	$("#files").off('click');
+	$("#files").on ('click', function (e) {
+
 	});
 	$("#imagePickerHolder").show();
 	$("#normalBenchHeader").hide();

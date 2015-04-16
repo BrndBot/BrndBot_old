@@ -296,7 +296,12 @@ All rights reserved by Brndbot, Ltd. 2015
 			<div class="promoPane" id="imagePickerHolder" style="display:none">
 				<!-- Image picker will go here -->
 				<div style="min-height: 4rem;">
-					<button class="rounded">UPLOAD A NEW PHOTO</button>
+					<form method="post">
+					<button  class="rounded" onclick="$('#files').trigger('click');">UPLOAD A NEW PHOTO</button>
+					<div style="display:none">
+						<input id="files" type="file" >
+					</div>
+					</form>
 				</div>
 				<div id="imagePicker"></div>
 			</div>
