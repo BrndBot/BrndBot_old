@@ -550,11 +550,10 @@ applyCrop: function (coords) {
 },
 
 galleryTarget: null,
-galleryWin: null,
+//galleryWin: null,
 
-/* Bring up the image gallery for a selected iamge */
-/* Bring up a cropping modal window for the specified image */
-pickImage: function (btn) {
+/* OLD CODE */
+pickImageOld: function (btn) {
 	session_mgr.checkSession();	// redirect to login if expired
 	var style = benchcontent.elemToLinkedStyle(btn);
 	benchcontent.galleryTarget = { style: style };
@@ -583,6 +582,18 @@ pickImage: function (btn) {
 	}
 },
 
+/* Replace old pick image code with pane which conceals editor */
+pickImage: function (btn) {
+	var style = benchcontent.elemToLinkedStyle(btn);
+	benchcontent.galleryTarget = { style: style };
+	$("#promoViewHolder").hide();
+	benchcontent.populateGallery ($("#imagePickerHolder"));
+	$(".useThisImage").on ('click', function (e) {
+		benchcontent.useClickedImage(this);
+	});
+	$("#imagePickerHolder").show();
+},
+
 // Placeholder data source till the images are loaded
 galleryDataSource: new kendo.data.DataSource({data: []}),
 
@@ -592,14 +603,6 @@ prepareDataSource: function () {
 	benchcontent.galleryDataSource = new kendo.data.DataSource({
 		data: bench.availableImages
 	});
-//	transport:
-//	{
-//		read:
-//		{
-//			url: "GetImagesServlet" ,
-//			dataType: "json"
-//		}
-//	}
 },
 
 
@@ -607,20 +610,30 @@ populateGallery: function (sel) {
 	sel.kendoListView ({
 		dataSource: benchcontent.galleryDataSource,
 		template: kendo.template($("#galleryTemplate").html()),
-	    selectable: true,
-	    change: benchcontent.useClickedImage
+	    selectable: true
 	});
 },
 
 
+//useClickedImage: function (e) {
+//	// "this" is the kendo List
+//    var index = this.select().index();
+//    var item = this.dataSource.view()[index];
+//    var id = item.ID;
+//    var style = benchcontent.galleryTarget.style;
+//    style.setLocalImageID (id, item.width, item.height);
+//    bench.currentPromotion.canvas.renderAll();
+//},
+
+/* Use the image based on the "USE THIS IMAGE" button being clicked.
+ */
 useClickedImage: function (e) {
-	// "this" is the kendo List
-    var index = this.select().index();
-    var item = this.dataSource.view()[index];
-    var id = item.ID;
-    var style = benchcontent.galleryTarget.style;
-    style.setLocalImageID (id, item.width, item.height);
-    bench.currentPromotion.canvas.renderAll();
+	var id = $(e).attr("data-id");
+	var style = benchcontent.galleryTarget.style;
+	style.setLocalImageID(id);
+	$("#imagePickerHolder").hide();
+	$("#promoViewHolder").show();
+	bench.currentPromotion.canvas.renderAll();
 },
 
 /* For the a DOM element which has the data-linkedfield attribute,

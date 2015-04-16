@@ -214,7 +214,9 @@ All rights reserved by Brndbot, Ltd. 2015
 			</button>
 			</td>
 			</tr></table>
-			<div style="position:relative;"><div style="position:absolute;top:36px;"><div style="position:relative;" id="promoview">
+			<div style="position:relative;">
+			<div class="promoPane" id="promoViewHolder">
+			<div style="position:relative;" >
  		<%
 			// Options anticipated by the templates.  The templates are separate JSPs and expect thse variables
 			//  to be instantiated.  So you'll see Eclipse think the templates have errors, but that's because
@@ -268,33 +270,23 @@ All rights reserved by Brndbot, Ltd. 2015
 
 		%>
 			<c:set var="templateEnum" value="1" scope="page"/> 
-			<!-- include file="promo.jsp" -->
 
 			<div id="finishedImage">
-
-				<c:set var="templateEnum" value="2" scope="page"/> 
 
 				<% // Here's where the promotion goes
 				%>
 				<canvas id="finishedImage1" ></div>
 
-				<c:set var="templateEnum" value="3" scope="page"/> 
-
-				<%  // Currently, only email has more than 3 slots in the editor.
-				%>
-				<c:choose>
-					<c:when test="${tmp_channel == channel_email}">
-						<c:set var="templateEnum" value="4" scope="page"/> 
-
-						<c:set var="templateEnum" value="5" scope="page"/> 
-
-						<c:set var="templateEnum" value="6" scope="page"/> 
-					</c:when>
-				</c:choose>
 
 			</div><!-- id="finishedImage">  -->
 
-			</div></div></div>	<!-- relative --> 
+			</div>		<!-- #promoView ->
+			</div>		<!-- .promoPane -->
+			
+			<div class="promoPane" id="imagePickerHolder" style="visibility:none">
+				<!-- Image picker will go here -->
+			</div>
+			</div>		<!-- relative --> 
 			<div class="unit lastUnit">
 				&nbsp;
 			</div>
@@ -448,28 +440,19 @@ All rights reserved by Brndbot, Ltd. 2015
 			</div>
 	</c:forEach>
 
-	<script type="text/x-kendo-template" id="galleryTemplate">
-		<li class="gallerypickerfield" style="float:left;padding:20px;list-style-type:none">
-			<img src="ImageServlet?brndbotimageid=2&img=#:ID#" style="max-width:180px;max-height:180px">
-		</li>
-	</script>
 
 	<script type="text/javascript" src="js/benchcontent.js"></script>
 	<script type="text/javascript" src="js/benchstyle.js"></script>
-<script type="text/javascript">
-// This is the "style" implementation.  The design and implementation of the "style" (aka "layout variation")
-//  needs requirements before it can be done correctly.  At the time the implementation of this editor was halted,
-//  "styles" was all over the map.
 
-
-	// This function is called when all of page including HTML, JS and CSS are fully loaded.
-	$(document).ready(function() 
-	{
-		// doc.ready init for the bench, in bench.js
-		bench.initTheBench();
-
-
-	});
+	<!-- KENDO TEMPLATES -->
+	
+<script type="text/x-kendo-template" id="galleryTemplate">
+	<li class="galleryPickerField" style="float:left;padding:20px;list-style-type:none">
+		<div>
+			<img src="ImageServlet?brndbotimageid=2&img=#:ID#" style="">
+			<button class="useThisImage" data-id="#:ID#">USE THIS IMAGE</button>
+		</div>
+	</li>
 </script>
 
 <!-- Script for generating the data to populate the editor pane. 

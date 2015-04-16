@@ -48,6 +48,12 @@ ul.leftButtons {
 	top: -2.5rem;
 }
 
+.promoPane
+{
+	position:absolute;
+	top:36px;
+}
+
 .benchHeader
 {
 	padding-bottom: 1.25rem; 
@@ -338,6 +344,41 @@ td.paletteButton button {
 	width:30px;
 	height:15px;
 }
+
+.galleryImage {
+	max-width:180px;
+	max-height:180px;
+	position:absolute;
+	top:0;
+	left:0;
+}
+
+.galleryPickerField > div {
+	position:relative;
+	min-width:180px;
+	min-height:180px;
+	max-width:180px;
+	max-height:180px;
+}
+
+.galleryPickerField img {
+	max-width:180px;
+	max-height:180px;
+}
+
+.useThisImage {
+	z-index:2;
+	position:absolute;
+	top:80px;
+	left:10px;
+	-moz-border-radius: 0.5rem;
+	-webkit-border-radius: 0.5rem;
+	border-radius: 0.5rem;
+	min-width:160px;
+	background-color:orange;
+}
+	
+	
 
 .hiddenPalette {
 	display:none;

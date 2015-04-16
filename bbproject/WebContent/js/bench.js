@@ -740,3 +740,9 @@ var bench = {
 	}
 	
 };
+
+$(document).ready(function() 
+	{
+		// doc.ready init for the bench, in bench.js
+		bench.initTheBench();
+	});
