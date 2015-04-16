@@ -587,7 +587,7 @@ pickImage: function (btn) {
 	var style = benchcontent.elemToLinkedStyle(btn);
 	benchcontent.galleryTarget = { style: style };
 	$("#promoViewHolder").hide();
-	benchcontent.populateGallery ($("#imagePickerHolder"));
+	benchcontent.populateGallery ($("#imagePicker"));
 	$(".useThisImage").on ('click', function (e) {
 		benchcontent.useClickedImage(this);
 	});
@@ -595,7 +595,20 @@ pickImage: function (btn) {
 	$(".galleryImage").on('click', function (e) {
 		benchcontent.primeClickedImage(this);
 	});
+	$("#cancelGalleryControl").off('click');	// avoid accumulating handlers
+	$("#cancelGalleryControl").on('click', function (e) {
+		$("#imagePickerHolder").hide();
+		$("#promoViewHolder").show();
+		$("#galleryBenchHeader").hide();
+		$("#normalBenchHeader").show();
+		$("#cancelGalleryPane").hide();
+		$("#contentPane").show();
+	});
 	$("#imagePickerHolder").show();
+	$("#normalBenchHeader").hide();
+	$("#galleryBenchHeader").show();
+	$("#contentPane").hide();
+	$("#cancelGalleryPane").show();
 },
 
 // Placeholder data source till the images are loaded
@@ -643,6 +656,8 @@ useClickedImage: function (btn) {
 	$("#imagePickerHolder").hide();
 	$("#promoViewHolder").show();
 	bench.currentPromotion.canvas.renderAll();
+	$("#galleryBenchHeader").hide();
+	$("#normalBenchHeader").show();
 },
 
 /* For the a DOM element which has the data-linkedfield attribute,

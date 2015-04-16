@@ -73,7 +73,12 @@ ul.leftButtons {
 {
 	font-size: 12px;	
 	background-color:#F8F8F8 !important;
-	border-style:none
+	border-style:none;
+}
+
+#styleArea
+{
+	border-style:none;
 }
 
 #styleArea .k-state-selected
@@ -254,6 +259,18 @@ ul.leftButtons {
 #imageGalleryPopup
 {
 	font-family: proxima-nova;
+}
+
+#imagePickerHolder button
+{
+	color: white;
+	background-color: #227279;
+	min-height: 1.25rem;
+}
+
+#imagePicker
+{
+	border-style:none;
 }
 
 #galleryTabs .k-link

@@ -161,43 +161,46 @@ All rights reserved by Brndbot, Ltd. 2015
 				</div>
 			</div>
 
-					<div class="editorDiv">
-						<div id="tabstrip2" style="float:left">
-							<ul class="tabs" style="display:none">
-							</ul>
-							<div>
-								<div class="editTab" id="contentPane">
-									<div id="contentArea" ><!--edit fields go here--></div>
-								</div>
-								<div style="clear:both;line-height:0rem;">&nbsp;</div>
-							</div>							
-							<div> <!-- Layout tab -->
-								<div class="editTab" id="stylePane" style="display:none">
-								  <ul id="styleArea"><!--styles go here--></ul>
-								</div>
-								<div style="clear:both;line-height:0rem;">&nbsp;</div>
-							</div>
-						</div>		<!-- tabstrip2 -->
-						<div style="float:right;position:relative;width:5rem;height:100%;background-color:#DBDEE0">
-							<table style="width:100%;">
-								<tr>
-								<td class="tabButton activePaneButton" id="contentTabButton" class="activePaneButton">
-								<img src="images/bench/EditButton.png" style="align:top" alt="Edit button">
-								<br>EDIT
-								</td>
-								</tr><tr>
-								<td class="tabButton" id="styleTabButton">
-								<img src="images/bench/StyleButton.png" style="align:top" alt="Style button">
-								<br>STYLE
-								</td>
-								</tr>
-							</table>
+			<div class="editorDiv">
+				<div id="tabstrip2" style="float:left">
+					<ul class="tabs" style="display:none">
+					</ul>
+						<div class="editTab" id="contentPane">
+							<div id="contentArea" ><!--edit fields go here--></div>
 						</div>
-						<div style="float:none"></div>
-					</div>			<!-- editorDiv -->
+						<div style="clear:both;line-height:0rem;">&nbsp;</div>
+						<div class="editTab" id="stylePane" style="display:none">
+						  <ul id="styleArea"><!--styles go here--></ul>
+						</div>
+						<div class="editTab" id="cancelGalleryPane" style="display:none">
+							<div id="cancelGalleryControl"
+								 style="padding-top:16rem;text-align:center;text-decoration:none;">
+								RETURN TO EDITOR
+							</div>
+						</div>
+						<div style="clear:both;line-height:0rem;">&nbsp;</div>
+
+				</div>		<!-- tabstrip2 -->
+				<div style="float:right;position:relative;width:5rem;height:100%;background-color:#DBDEE0">
+					<table style="width:100%;">
+						<tr>
+						<td class="tabButton activePaneButton" id="contentTabButton" class="activePaneButton">
+						<img src="images/bench/EditButton.png" style="align:top" alt="Edit button">
+						<br>EDIT
+						</td>
+						</tr><tr>
+						<td class="tabButton" id="styleTabButton">
+						<img src="images/bench/StyleButton.png" style="align:top" alt="Style button">
+						<br>STYLE
+						</td>
+						</tr>
+					</table>
+				</div>
+				<div style="float:none"></div>
+			</div>			<!-- editorDiv -->
 
 			<div class="benchHeader">
-			<table><tr>
+			<table id="normalBenchHeader"><tr>
 			<td style="min-width:25%; font-size:20px;">
 			EDIT THIS POST
 			</td>
@@ -213,6 +216,13 @@ All rights reserved by Brndbot, Ltd. 2015
 			CONTINUE
 			</button>
 			</td>
+			</tr></table>
+			
+			<table id="galleryBenchHeader" style="display:none;"><tr>
+			<td style="min-width:25%; font-size:20px;">
+			GALLERY
+			</td>
+			<td style="min-width:75%;">&nbsp;</td>
 			</tr></table>
 			<div style="position:relative;">
 			<div class="promoPane" id="promoViewHolder">
@@ -283,8 +293,12 @@ All rights reserved by Brndbot, Ltd. 2015
 			</div>		<!-- #promoView ->
 			</div>		<!-- .promoPane -->
 			
-			<div class="promoPane" id="imagePickerHolder" style="visibility:none">
+			<div class="promoPane" id="imagePickerHolder" style="display:none">
 				<!-- Image picker will go here -->
+				<div style="min-height: 4rem;">
+					<button class="rounded">UPLOAD A NEW PHOTO</button>
+				</div>
+				<div id="imagePicker"></div>
 			</div>
 			</div>		<!-- relative --> 
 			<div class="unit lastUnit">
