@@ -74,6 +74,7 @@ All rights reserved by Brndbot, Ltd. 2015
 
 <c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL.getValue() %>" scope="page"/>
 <c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK.getValue() %>" scope="page"/>
+<c:set var="channel_twitter" value ="<%= ChannelEnum.CH_TWITTER.getValue() %>" scope="page"/>
 <c:if test="${tmp_channel <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
 	<c:redirect url="home.jsp"/>
@@ -117,6 +118,7 @@ All rights reserved by Brndbot, Ltd. 2015
 		var curChannel = ${tmp_channel};
 		var EMAIL_CHANNEL = <jsp:text>${channel_email}</jsp:text>;
 		var FACEBOOK_CHANNEL = <jsp:text>${channel_facebook}</jsp:text>;
+		var TWITTER_CHANNEL = <jsp:text>${channel_twitter}</jsp:text>;
 	</script>
 
 </head>

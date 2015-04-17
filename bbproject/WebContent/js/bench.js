@@ -674,10 +674,17 @@ var bench = {
 			  }
 		}).done(function() {
 			  console.log('saved'); 
-			  if (curChannel == FACEBOOK_CHANNEL)
+			  switch (curChannel) {
+			  case FACEBOOK_CHANNEL:
 				  window.location.assign ("submitfacebook.jsp");
-			  else
+				  break;
+			  case TWITTER_CHANNEL:
+				  window.location.assign ("submittwitter.jsp");
+				  break;
+			  default:
 				  window.location.assign ("submit.jsp");
+			  	  break;
+			  }
 		}).fail(function (jqXHR, textStatus, errorThrown) {
 			console.log ("exportPresentation failed");
 			if (errorThrown)
