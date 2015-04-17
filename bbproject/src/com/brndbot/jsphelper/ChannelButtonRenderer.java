@@ -64,7 +64,6 @@ public class ChannelButtonRenderer extends Renderer {
 		try {
 
 			
-			/* First version: Just outputs a Twitter button */
 			Element tableElem = new Element ("table");
 			Element rowElem = new Element ("tr");
 			tableElem.addContent (rowElem);
@@ -118,8 +117,9 @@ public class ChannelButtonRenderer extends Renderer {
 		Element chanButton = new Element ("button");
 		chanButton.setAttribute ("id", "Cat" + idx);
 		chanButton.setAttribute ("class", "channelButton");
-		String channelName = Integer.toString(chan.getValue());
-		chanButton.setAttribute ("data-channel", channelName);
+		String channelNum = Integer.toString(chan.getValue());
+		String channelName = chan.getItemText();
+		chanButton.setAttribute ("data-channel", channelNum);
 		chanButton.setAttribute ("onmouseover", "channeljs.showHoverImage(this);");
 		chanButton.setAttribute ("onmouseout", "channeljs.showNormalImage(this);");
 		Element buttonImage = new Element ("img");

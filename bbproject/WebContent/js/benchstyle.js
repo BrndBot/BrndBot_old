@@ -42,8 +42,10 @@ insertStyles: function (dest) {
 			scaleRatio = Math.min (benchstyle.MAX_STYLE_DIM / styleSet.width,
 								benchstyle.MAX_STYLE_DIM / styleSet.height);
 		}
-		canvas.css("width", "" + Math.floor(styleSet.width * scaleRatio) + "px");
-		canvas.css("height", "" + Math.floor(styleSet.height * scaleRatio) + "px");
+		var canvasWidth = "" + Math.floor(styleSet.width * scaleRatio) + "px"
+		canvas.css("width", canvasWidth);
+		var canvasHeight = "" + Math.floor(styleSet.height * scaleRatio) + "px";
+		canvas.css("height", canvasHeight);
 	});
 },
 
@@ -64,16 +66,22 @@ updateStyle: function (litem) {
 		//bench.currentPromotion.redraw('finishedImage1');
 		bench.currentPromotion.draw('finishedImage1');
 		var canvas = $('#finishedImage1');
+		var canvasWidth;
+		var canvasHeight;
 		if (styleSet.width > bench.MAX_PROMOTION_DIM || styleSet.height > bench.MAX_PROMOTION_DIM) {
 			var scaleRatio = Math.min (bench.MAX_PROMOTION_DIM / styleSet.width,
 					bench.MAX_PROMOTION_DIM / styleSet.height);
-			canvas.css("width", "" + Math.floor(styleSet.width * scaleRatio) + "px");
-			canvas.css("height", "" + Math.floor(styleSet.height * scaleRatio) + "px");
+			canvasWidth = "" + Math.floor(styleSet.width * scaleRatio) + "px";
+			canvasHeight = "" + Math.floor(styleSet.height * scaleRatio) + "px";
 		}	
 		else {
-			canvas.css("width", "" + Math.floor(styleSet.width) + "px");
-			canvas.css("height", "" + Math.floor(styleSet.height) + "px");
+			canvasWidth = "" + Math.floor(styleSet.width) + "px";
+			canvasHeight = "" + Math.floor(styleSet.height) + "px";
 		}
+		canvas.css("width", canvasWidth);
+		canvas.css("height", canvasHeight);
+		$('#finishedImage').css("width", canvasWidth);
+		$('#finishedImage').css("height", canvasHeight);
 	}
 },
 

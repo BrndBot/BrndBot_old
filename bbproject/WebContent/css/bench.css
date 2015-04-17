@@ -1,129 +1,8 @@
-#benchBody {
-	width:100%;
-	height:100%;
-	padding: 0rem;
-}
+/* Alphabetized on class and ID (mixed together) */
 
-#leftSideBar {
-	position:fixed;
-	left: 0rem;
-	top: 0rem;
-	z-index: 2;
-	width:6rem;
-}
-
-ul.leftButtons {
-	list-style-type: none;
-}
-
-.rounded
+.activePaneButton
 {
-	-moz-border-radius: 1rem;
-	-webkit-border-radius: 1rem;
-	border-radius: 1rem;
-}
-
-.editorDiv
-{
-	padding: 0rem;
-	height: 98vh;
-	position: absolute;
-	top: 0rem;
-	right: 0rem;
-	z-index: 2;
-	width: 27rem;
-}
-
-
-#finishedImage
-{
-	border: 13px solid #DBDCE3;
-}
-
-#applyDiv2
-{
-	right: -65rem;
-	z-index: 100;
-	position: absolute;
-	top: -2.5rem;
-}
-
-.promoPane
-{
-	position:absolute;
-	top:36px;
-}
-
-.benchHeader
-{
-	padding-bottom: 1.25rem; 
-	width: 42.5rem; 
-	margin-left: 12.7rem;
-	margin-top: 2.2rem;
-}
-
-.emailBenchHeader
-{
-	font-size: 1.625rem;
-	border-bottom-right-radius: 0rem;
-	border-bottom-left-radius: 0rem;
-}
-
-#contentArea
-{
-	font-size: 12px;	
-	background-color:#F8F8F8 !important;
-	border-style:none;
-}
-
-#styleArea
-{
-	border-style:none;
-}
-
-#styleArea .k-state-selected
-{
-	background: transparent !important;
-}
-
-.linkText
-{
-	padding:1.25rem 0rem 0rem 0.9375rem;
-	font-size: 1.375rem;
-	width: 100%;
-}
-
-.workingText
-{
-	padding:1.25rem 0rem 0rem 0.9375rem;
-	font-size: 1.375rem;
-	width: 100%;
-}
-
-.contentgroup
-{
-	font-size: 12px;
-}
-
-.contentgroup2
-{
-	font-size: 12px;
-	padding-top: 2rem;
-}
-
-.fieldname
-{
-	padding-top: 1rem;
-}
-
-.k-tabstrip .k-tabstrip-items {
-    padding: 2.5rem 0.3rem 0;
-}
-
-.blockSelectable
-{
-	position:relative;
-	border: .0625rem solid #ffffff;
+	background-color: white;
 }
 
 .addLink
@@ -134,6 +13,28 @@ ul.leftButtons {
 	padding-top: .2rem;
 }
 
+#applyDiv2
+{
+	right: -65rem;
+	z-index: 100;
+	position: absolute;
+	top: -2.5rem;
+}
+
+#benchBody {
+	width:100%;
+	height:100%;
+	padding: 0rem;
+}
+
+.benchHeader
+{
+	padding-bottom: 1.25rem; 
+	width: 42.5rem; 
+	margin-left: 12.7rem;
+	margin-top: 2.2rem;
+}
+
 /* default color and font for edit form on the bench */
 .blockEdit
 {
@@ -142,19 +43,6 @@ ul.leftButtons {
 	color: #4c5356;
 	padding-left: 0.9375rem;
 	padding-right: 0.9375rem;
-}
-
-.newImageLink
-{
-	float:left;
-	width:2.25rem;
-	padding-right: 0.4375rem;
-}
-
-.editTextArea textarea
-{
-	font-size: 0.8rem;
-	font-family:sans-serif;
 }
 
 .blockEdit div
@@ -171,16 +59,15 @@ ul.leftButtons {
     height:1.9375rem;
 }
 
-.smallEditFont
+.blockSelectable
 {
-	font-size: .875rem;
-	padding-top: -0.625rem;
+	position:relative;
+	border: .0625rem solid #ffffff;
 }
 
-.goBackLink 
-{
-	font-size:17px;
-	text-decoration:none;
+button.colorSelectButton {
+	width:30px;
+	height:15px;
 }
 
 .checkOutButton 
@@ -194,20 +81,93 @@ ul.leftButtons {
 	border-width: 0rem;
 }
 
-.activePaneButton
+
+#contentArea
 {
-	background-color: white;
+	font-size: 12px;	
+	background-color:#F8F8F8 !important;
+	border-style:none;
 }
 
-.tabButton {
-	text-align:center;
-	font-size:10px;
-	cursor:pointer;
-	padding-bottom: 2px;
-	padding-top: 2px;
+.contentgroup
+{
+	font-size: 12px;
 }
 
-#plusSignLink { background-image: url('/images/bench/plus-sign.png'); background-repeat: no-repeat; background-size: 20px; }
+.contentgroup2
+{
+	font-size: 12px;
+	padding-top: 2rem;
+}
+
+.editorDiv
+{
+	padding: 0rem;
+	height: 98vh;
+	position: absolute;
+	top: 0rem;
+	right: 0rem;
+	z-index: 2;
+	width: 27rem;
+}
+
+.editTab {
+	overflow-x: hidden;
+	overflow-y: auto;
+	width:100%;
+	background-color: #ffffff;
+	margin-bottom:0.9375rem
+}
+
+.editTextArea textarea
+{
+	font-size: 0.8rem;
+	font-family:sans-serif;
+}
+
+.emailBenchHeader
+{
+	font-size: 1.625rem;
+	border-bottom-right-radius: 0rem;
+	border-bottom-left-radius: 0rem;
+}
+
+.fieldname
+{
+	padding-top: 1rem;
+}
+
+#finishedImage
+{
+	border: 13px solid #DBDCE3;
+}
+
+.goBackLink 
+{
+	font-size:17px;
+	text-decoration:none;
+}
+
+.hiddenPalette {
+	display:none;
+}
+
+
+.k-tabstrip .k-tabstrip-items {
+    padding: 2.5rem 0.3rem 0;
+}
+
+ul.leftButtons {
+	list-style-type: none;
+}
+
+#leftSideBar {
+	position:fixed;
+	left: 0rem;
+	top: 0rem;
+	z-index: 2;
+	width:6rem;
+}
 
 #leftSideBar .k-tabstrip-items .k-state-active
 {
@@ -215,63 +175,54 @@ ul.leftButtons {
 	border-color: #ffffff;
 }
 
-#tabstrip .k-link
+.linkText
 {
-	color: black;
-	width: 60px;
-	font-size: .8rem;
-	text-align: center;
+	padding:1.25rem 0rem 0rem 0.9375rem;
+	font-size: 1.375rem;
+	width: 100%;
 }
 
-#tabstrip2
+.promoPane
 {
-	width:21rem;
-	overflow:auto;
-	height:100%;
-	max-height:100%;
+	position:absolute;
+	top:36px;
 }
 
-#tabstrip2 .k-link
+.rounded
 {
-	color: black;
-	width: 126px;
-	font-size: .8rem;
-	text-align: center;
+	-moz-border-radius: 1rem;
+	-webkit-border-radius: 1rem;
+	border-radius: 1rem;
 }
 
-#tabstrip, #tabstrip2, #galleryTabs
+.newImageLink
 {
-	border-width:0px !important;
+	float:left;
+	width:2.25rem;
+	padding-right: 0.4375rem;
 }
 
-
-.photoBlock
-{
-    float: left;
-    position: relative;
-    width: 222px;
-    height: 220px;
-    margin: 0 5px;
-    padding: 0;
+.galleryImage {
+	max-width:180px;
+	max-height:180px;
+	position:absolute;
+	top:0;
+	left:0;
 }
 
-
-#imageGalleryPopup
-{
-	font-family: proxima-nova;
+.galleryPickerField > div {
+	position:relative;
+	min-width:180px;
+	min-height:180px;
+	max-width:180px;
+	max-height:180px;
 }
 
-#imagePickerHolder button
-{
-	color: white;
-	background-color: #227279;
-	min-height: 1.25rem;
+.galleryPickerField img {
+	max-width:180px;
+	max-height:180px;
 }
 
-#imagePicker
-{
-	border-style:none;
-}
 
 #galleryTabs .k-link
 {
@@ -281,6 +232,27 @@ ul.leftButtons {
 	text-align: center;
 }
 
+#imageGalleryPopup
+{
+	font-family: proxima-nova;
+}
+
+#imagePicker
+{
+	border-style:none;
+}
+
+#imagePickerHolder {
+	max-height:800px;
+	overflow:scroll;
+}
+
+#imagePickerHolder button
+{
+	color: white;
+	background-color: #227279;
+	min-height: 1.25rem;
+}
 
 .k-tabstrip-items .k-tab-on-top .k-link
 {
@@ -317,9 +289,41 @@ ul.leftButtons {
 	border-width:0px;
 }
 
-.viewImageGallery
+td.paletteButton {
+	width:40px;
+	height:20px;
+	padding:3px
+}
+
+td.paletteButton button {
+	width:30px;
+	height:15px;
+}
+
+.photoBlock
 {
-	width: 10rem;
+    float: left;
+    position: relative;
+    width: 222px;
+    height: 220px;
+    margin: 0 5px;
+    padding: 0;
+}
+
+.smallEditFont
+{
+	font-size: .875rem;
+	padding-top: -0.625rem;
+}
+
+#styleArea
+{
+	border-style:none;
+}
+
+#styleArea .k-state-selected
+{
+	background: transparent !important;
 }
 
 li.stylefield {
@@ -332,55 +336,43 @@ li.stylefield {
 	overflow:hidden;
 }
 
-input::-webkit-inner-spin-button, 
-    input::-webkit-outer-spin-button { 
-    -webkit-appearance: none; 
-     margin: 0; 
+.tabButton {
+	text-align:center;
+	font-size:10px;
+	cursor:pointer;
+	padding-bottom: 2px;
+	padding-top: 2px;
 }
 
-.editTab {
-	overflow-x: hidden;
-	overflow-y: auto;
-	width:100%;
-	background-color: #ffffff;
-	margin-bottom:0.9375rem
+#plusSignLink { background-image: url('/images/bench/plus-sign.png'); background-repeat: no-repeat; background-size: 20px; }
+
+#tabstrip .k-link
+{
+	color: black;
+	width: 60px;
+	font-size: .8rem;
+	text-align: center;
 }
 
-td.paletteButton {
-	width:40px;
-	height:20px;
-	padding:3px
+#tabstrip2
+{
+	width:21rem;
+	overflow:auto;
+	height:100%;
+	max-height:100%;
 }
 
-button.colorSelectButton {
-	width:30px;
-	height:15px;
+#tabstrip2 .k-link
+{
+	color: black;
+	width: 126px;
+	font-size: .8rem;
+	text-align: center;
 }
 
-td.paletteButton button {
-	width:30px;
-	height:15px;
-}
-
-.galleryImage {
-	max-width:180px;
-	max-height:180px;
-	position:absolute;
-	top:0;
-	left:0;
-}
-
-.galleryPickerField > div {
-	position:relative;
-	min-width:180px;
-	min-height:180px;
-	max-width:180px;
-	max-height:180px;
-}
-
-.galleryPickerField img {
-	max-width:180px;
-	max-height:180px;
+#tabstrip, #tabstrip2, #galleryTabs
+{
+	border-width:0px !important;
 }
 
 .useThisImage {
@@ -395,8 +387,21 @@ td.paletteButton button {
 	background-color:orange;
 }
 	
-	
-
-.hiddenPalette {
-	display:none;
+.viewImageGallery
+{
+	width: 10rem;
 }
+
+input::-webkit-inner-spin-button, 
+    input::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+     margin: 0; 
+}
+
+.workingText
+{
+	padding:1.25rem 0rem 0rem 0.9375rem;
+	font-size: 1.375rem;
+	width: 100%;
+}
+

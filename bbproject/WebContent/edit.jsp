@@ -109,18 +109,12 @@ All rights reserved by Brndbot, Ltd. 2015
     	 // but has it's own code in the respective javascript below.  There is an assumption in the shared
     	 // javascript above that certain functions will be implemented in each of the editor-specific files.
     %>
-<c:choose>
-  <c:when test="${tmp_channel == channel_email}">
-    <script type="text/javascript" src="js/emailbench.js"></script>
-  </c:when>
-  <c:when test="${tmp_channel == channel_facebook}">
-    <script type="text/javascript" src="js/fbbench.js"></script>
-  </c:when>
-</c:choose>
+
 
 	<script type="text/javascript">
 		// To share the enumerated values used on the server, we define local variables using the 
 		//  same enumerated class variables.
+		var curChannel = ${tmp_channel};
 		var EMAIL_CHANNEL = <jsp:text>${channel_email}</jsp:text>;
 		var FACEBOOK_CHANNEL = <jsp:text>${channel_facebook}</jsp:text>;
 	</script>
@@ -294,15 +288,15 @@ All rights reserved by Brndbot, Ltd. 2015
 			</div>		<!-- .promoPane -->
 			
 			<div class="promoPane" id="imagePickerHolder" style="display:none">
-				<!-- Image picker will go here -->
 				<div style="min-height: 4rem;">
-					<form method="post">
+					<form id="filesForm" method="post">
 					<button  class="rounded" onclick="$('#files').trigger('click');">UPLOAD A NEW PHOTO</button>
 					<div style="display:none">
-						<input id="files" type="file" >
+						<input id="files" name="files" type="file" >
 					</div>
 					</form>
 				</div>
+				<!-- Image picker will go here -->
 				<div id="imagePicker"></div>
 			</div>
 			</div>		<!-- relative --> 
@@ -333,81 +327,6 @@ All rights reserved by Brndbot, Ltd. 2015
 			    </div>
 			</div>
 	
-			<!-- This div is the popup for choosingan image from the gallery.  There is a known bug in this
-				 version of the software.  You cannot use the Kendo upload widget when placed on the pane of
-				 a Kendo tab control widget.  There are new designs for this to avoid this bug.
-			 -->
-			<div id="imageGalleryPopup" class="rounded" style="display:none;">
-			    <div>
-			    	<div class="unit size4of5 channelTitle" style="padding:10px 0 0 10px">
-			    		Image gallery and upload
-			    	</div>
-			    	<div id="closeGalleryPopup" class="rightUnit" style="margin-top: 0rem; margin-right: 0.1rem"> 
-			    		<img src="images/Cancel-Button.png" alt="Cancel" />
-			    	</div>
-			    </div>
-			    <div style="clear:both;line-height:0rem">
-			    	&nbsp;
-			    </div>
-				<div id="galleryTabs" class="rounded">
-					<ul>
-						<li id="images" class="k-state-active">
-							Your images
-						</li>
-						<li id ="logos">
-							Your logos
-						</li>
-						<li id="stock">
-							Stock images
-						</li>
-						<li id="upload" style="font-weight:bold;font-style:italic">
-							<span style="color:red;">Upload</span>
-						</li>
-					</ul>
-					<div>
-						<div class="galleryPane"> <!-- Your images -->
-	 						<div id="yourImagesView"></div>
-	 						<div id="yourImagesPager" class="k-pager-wrap"></div>
-						</div>
-					</div>
-					<div>
-						<div class="galleryPane"> <!-- Logos -->
-	 						<div id="yourLogosView"></div>
-						</div>
-					</div>
-					<div>
-						<div class="galleryPane"> <!-- Stock images -->
-	 						<div id="yourStockView"></div>
-						</div>
-					</div>
-					<div>
-						<div style="padding:50px"> <!-- Upload -->
-					    	<div  class="formLabelFor">
-					        	<label for="imageTypeList">type of image</label>
-					       	</div>
-					        <select id="imageTypeList" multiple="multiple" 
-					        	style="border-width:1px;font-size:1rem;width:300px;" data-placeholder="Choose the type of image to upload...">
-					            <option>An image or photo</option>
-					            <option>A teacher photo</option>
- 					            <option>A logo</option>
-					        </select>
-							<div style="padding-top:30px">
-								<div id="logoCrossHairs" style="margin-left:6.5rem;">
-									<div style="position:relative;">
-										<img id="imageTarget" src="images/image-target.png" alt="Image Target" />
-										<div id="filesHome" style="top:2.375rem;left:1.125rem;position:absolute">
-											<input class="greyButton" name="files" id="files" type="file" />
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-			    </div>
-			    <div style="clear:both;line-height:0rem">
-			    	&nbsp;
-			    </div>
-			</div>
 
 			<!-- Hidden form used to post the blockStack array of data assembled in the editor to 
 			     the server, which puts it on the session for later reuse if needed.

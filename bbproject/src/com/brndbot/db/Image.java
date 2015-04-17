@@ -562,7 +562,7 @@ public class Image implements TableModel
 			DbConnection con) throws IOException, SQLException 
 	{
 		Image return_image = null;
-		logger.debug ("uploadFile");
+		logger.debug ("uploadFile, no. of files = {}", files.size());
 
 		if (files.size() > 0)
 		{
@@ -570,8 +570,10 @@ public class Image implements TableModel
 			Enumeration<?> e = files.keys();
 			return_image = new Image();
 			return_image.setUserID(user_id);
-			UploadFile image_file = (UploadFile)files.get(e.nextElement());
-			InputStream uploadInStream = image_file.getInpuStream();
+			Object fileKey = e.nextElement();
+			logger.debug ("Uploading file {}", fileKey);
+			UploadFile image_file = (UploadFile)files.get(fileKey);
+			InputStream uploadInStream = image_file.getInpuStream();	// sic
 			if (uploadInStream != null)
 			{
 				String original_name = image_file.getFileName().toLowerCase();

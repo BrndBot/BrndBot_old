@@ -20,6 +20,10 @@ selectedFieldID: null,
 /** Document ready initialization code. 
  */
 initTheBench: function () {
+	$("#filesForm").on ('submit', function (e) {
+		// don't let the form haul us off the page
+		e.preventDefault();
+	});
 	$("#files").kendoUpload({
 		multiple: false,
 		async: {
@@ -37,8 +41,8 @@ initTheBench: function () {
 
 /* This is called when the upload is complete. */
 onComplete: function () {
-//	imagesjs.galleryDataSource.read();		// Reload the list
-//	imagesjs.populateGallery ($('#imageGallery'));
+	benchcontent.galleryDataSource.read();		// Reload the list
+	benchcontent.populateGallery ($('#imagePicker'));
 },
 
 

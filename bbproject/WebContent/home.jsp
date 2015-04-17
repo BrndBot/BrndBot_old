@@ -38,8 +38,9 @@ prototypes to select, and the user picks one for processing in the editor (bench
 
 <head>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Fjalla+One|Slabo+27px|Oleo+Script|Oswald:400,300,700' rel='stylesheet' type='text/css'>    
     
-    <title>Brndbot</title>
+	<title>Brndbot</title>
     <meta charset="utf-8">
 	<script type="text/javascript" src="//use.typekit.net/wnn8jyx.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>

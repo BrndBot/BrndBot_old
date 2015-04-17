@@ -84,7 +84,7 @@ public class SaveImageServlet extends HttpServlet
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
-			logger.debug("User ID: " + user_id);
+			logger.debug("brndbotimageid parameter = {}", request.getParameter("brndbotimageid"));
 	
 			// Make sure the image type is passed. Try first the URL parameter,
 			// then the session variable.

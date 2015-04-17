@@ -153,61 +153,13 @@ var bench = {
 
 		 
 	
-		// Initialize the file upload widget
-	    function initFileUpload()
-	    {
-		    $("#files").kendoUpload({
-		        async: 
-		        {
-		            saveUrl: "SaveImageServlet?brndbotimageid=0",
-		//            saveUrl: "http://pictaculous.com/api/1.0/",
-	//	            removeUrl: "RemoveLogoServlet",
-		            autoUpload: true
-		        },
-		        localization: {
-		            select: "upload",
-		            headerStatusUploaded: "",
-		            headerStatusUploading: ""
-		        },
-		        error: onError,
-		        success: onSuccess,
-		        multiple: false,
-		        showFileList: false
-		    });
-	
-	/*        var upload = $("#files").data("kendoUpload");
-	
-	        $.extend(upload.options.localization, {
-	             headerStatusUploading: "",
-	             headerStatusUploaded: ""
-	         });
-	*/
-		}
-	
-		// These two functions try to remove a previous uploader and create one fresh.
-		//  Not sure if this works properly.  Kendo has a problem reinitializing a
-		//  widget after it is initially initted.  There are destroy() methods, but 
-		//  I've seen problems.
-	    takeApartUploader();
-	    initFileUpload();
 	
 	    function onError(e)
 	    {
 	    	alert('onError');
 	    }
 	
-		// Try to remove an existing file uploader
-	    function takeApartUploader()
-	    {
-			var upload = $("#files").data("kendoMultiSelect");
-			if (upload)
-			{
-				upload.destroy();
-				upload = null;
-				$(".k-upload-files.k-reset").find("li").parent().remove();
-				$("#filesHome").html(bench.EMPTY_UPLOAD_HTML);
-			}
-	    }
+
 	
 		// AJAX call to get images was successful.  Display correctly by gallery type.
 	    function onSuccess(e)
@@ -722,7 +674,10 @@ var bench = {
 			  }
 		}).done(function() {
 			  console.log('saved'); 
-			  window.location.assign ("submit.jsp");
+			  if (curChannel == FACEBOOK_CHANNEL)
+				  window.location.assign ("submitfacebook.jsp");
+			  else
+				  window.location.assign ("submit.jsp");
 		}).fail(function (jqXHR, textStatus, errorThrown) {
 			console.log ("exportPresentation failed");
 			if (errorThrown)

@@ -17,7 +17,7 @@ $(document).ready(function() {
 
 		$('.channelButton').on('click', function(e) {
 			channeljs.model_name = $(this).attr("data-channel");
-			var channel = "2";		// Replace with getting data
+			var channel = $(this).attr("data-channel");
 			window.location.assign ("edit.jsp?proto=" + 
 				protoName +
 				"&model=" + 

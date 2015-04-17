@@ -20,6 +20,7 @@ All rights reserved by Brndbot, Ltd. 2015
 
 <c:set var="sessionOK" value="1" scope="page"/>
 
+<!-- Make sure that the user is logged in and not expired -->
 <c:if test="${empty sessionScope.brndbotuser_id || sessionScope.brndbotuser_id <= 0}">
 	<c:set var="sessionOK" value="0" scope="page"/>
 	<c:redirect url="index.jsp"/>
@@ -35,6 +36,7 @@ All rights reserved by Brndbot, Ltd. 2015
 <c:if test="${sessionOK != 0}">	<!-- encompasses whole rest of body -->
 <div id="brndbotMain">
 
+	<!-- Include the standard sidebar -->
 	<div  id="leftColumn">
 		<c:set var="icon_image" value="images/sidebar/Social-Editor_LeftButton.png" />
 		<%@include file="sidebar.jsp" %>
@@ -42,6 +44,9 @@ All rights reserved by Brndbot, Ltd. 2015
 
 	<div class="unit spaceMe">
 
+		<!-- Do something interesting with the following URL, which represents
+		     the image created by the editor.
+		     Right now it just displays it on the page. -->
 		<img src="ImageServlet?img=fused" alt="Composed promotion">
 		<p>
 		You can save this image in most browsers by right-clicking on it.
@@ -49,7 +54,7 @@ All rights reserved by Brndbot, Ltd. 2015
 	</div>
 </div>		<!-- brndbotMain -->
 
-    <script type="text/javascript" src="js/sidebar.js"></script>
+<script type="text/javascript" src="js/sidebar.js"></script>
 
 </c:if>		<!-- sessionOK -->
 </body>
