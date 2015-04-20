@@ -33,10 +33,9 @@ public class BenchHelper extends Helper {
 
 	final static Logger logger = LoggerFactory.getLogger(BenchHelper.class);
 	
-//	private DbConnection con;
 	
 	//private HttpSession session;
-	private int userId;
+//	private int userId;
 	private int channel;
 	private int databaseId;
 	private ChannelEnum chEnum;
@@ -133,25 +132,18 @@ public class BenchHelper extends Helper {
 		return colors;
 	}
 	
-	
-	/** We have to set the session with a scriptlet, not
-	 *  setProperty */
-	//public void setSession (HttpSession s) {
-	//	session = s;
-	//}
-
-	public int getUserId () {
-		return userId;
+	/** Fill in the available font choices for the user. */
+	public String getRenderAvailableFonts () {
+		AvailableFontRenderer rndr = new AvailableFontRenderer(userId);
+		return rndr.getFragment();
 	}
 	
+	
+	/* Why did I make this different from the superclass? */
 	public void setUserId (int u) {
 		userId = u;
 		client = Client.getByUserId(u);
 	}
-	
-//	public DbConnection getConnection () {
-//		return con;
-//	}
 	
 	public String getModelName () {
 		return modelName;
