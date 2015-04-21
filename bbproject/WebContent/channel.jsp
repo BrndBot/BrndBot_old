@@ -69,6 +69,7 @@ If no model has been selected, it forces the user back to home.jsp.
 		class="com.brndbot.jsphelper.ChannelHelper" 
 		scope="page">
 	<jsp:setProperty name="channelHelper" property="userId" value="${sessionScope.brndbotuser_id}"/>
+	<jsp:setProperty name="channelHelper" property="clientKey" value="${sessionScope.brndbotclient}"/>
 	<jsp:setProperty name="channelHelper" property="modelName" value="${param.model}"/>
 </jsp:useBean>
 

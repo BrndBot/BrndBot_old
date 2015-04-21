@@ -142,7 +142,7 @@ public class User implements TableModel
 				}
 			}
 			DbUtils.close(rs);
-			con.close();
+			//con.close();
 		}
 	
 	}
@@ -232,7 +232,7 @@ public class User implements TableModel
 		}
 		finally {
 			pstmt = null;
-			con.close();
+			//con.close();
 		}
 	
 	}

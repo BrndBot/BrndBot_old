@@ -28,7 +28,7 @@ public class Font implements TableModel {
 	/* Get all the font names for a brand personality. Fonts with brand personality
 	 * 0 (public fonts) are also available. */
 	public static List<String> getFontsForPersonality (int persID, DbConnection con) {
-		String sql = "SELECT fontname FROM fonts WHERE personality_id = ? OR personality_id = '0' ORDER BY Sequence;";
+		String sql = "SELECT fontname FROM fonts WHERE personality_id = ? OR personality_id = '0' ORDER BY fontname;";
 		List<String> fonts = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		try {

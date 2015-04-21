@@ -38,7 +38,6 @@ prototypes to select, and the user picks one for processing in the editor (bench
 
 <head>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-	<link href='http://fonts.googleapis.com/css?family=Fjalla+One|Slabo+27px|Oleo+Script|Oswald:400,300,700' rel='stylesheet' type='text/css'>    
     
 	<title>Brndbot</title>
     <meta charset="utf-8">
@@ -76,6 +75,7 @@ prototypes to select, and the user picks one for processing in the editor (bench
 		class="com.brndbot.jsphelper.HomeHelper" 
 		scope="page">
 	<jsp:setProperty name="homeHelper" property="userId" value="${sessionScope.brndbotuser_id}"/>
+	<jsp:setProperty name="homeHelper" property="clientKey" value = "${sessionScope.brndbotclient}"/>
 	<jsp:setProperty name="homeHelper" property="organization" value="${sessionScope.brndbotorg}"/>
 </jsp:useBean>
 

@@ -73,9 +73,6 @@ public class LoginServlet extends HttpServlet
 		session.removeAttribute (SessionUtils.CLIENT);
 		session.removeAttribute (SessionUtils.USER_ID);
 		
-		// FIXME Ugly hack***
-		Client.reset ();
-		
 		DbConnection con = DbConnection.GetDb();
 
 		int user_id;
@@ -98,7 +95,7 @@ public class LoginServlet extends HttpServlet
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
 		session.removeAttribute(SessionUtils.LOGIN_ERROR);
 		Client client = Client.getClient (session);		// Load up the client
-		SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client);
+		SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client.getCacheKey());
 		SessionUtils.saveSessionData (request, SessionUtils.ORGANIZATION, client.getOrganizationName());
 
 		response.sendRedirect("home.jsp");

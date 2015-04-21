@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 //import java.util.HashMap;
@@ -50,29 +51,36 @@ public class Client implements Serializable {
 
 	final static Logger logger = LoggerFactory.getLogger(Client.class);
 	
+	/** Key into the ClientCache */
+	private int cacheKey;
+	
+	/** Time of last touch */
+	private Date touchStamp;
+	
+	/** The ClientCache instance. The implementation should ideally be in the
+	 *  configuration data, but that can be done later. */
+	private static ClientCache clientCache = SingleJVMClientCache.getClientCache();
+	
+	/** Validity flag. When a Client is removed from the cache, it is marked
+	 *  as no longer valid. */
+	private boolean valid;
+	
 	/** An instance of the ClientInterface subclass which feeds 
 	 *  us data 
 	 */
-	
 	private transient ClientInterface clientInterface;
 	private BrandIdentity brandIdentity;
 	private ModelCollection modelCollection;
 	
 	private String clientInterfaceClass;
 	
-	private int userId;
+	//private int userId;
 	
 	/* The human-readable name of the organization */
 	private String organizationName;
 	
 	/* The name used for the organization's directory */
 	private String organizationDirName;
-
-	
-	/* This allows multiple clients. We need to figure out a way to
-	 * remove stale clients who don't explicitly log out.
-	 */
-	private static Map<Integer, Client> clients = new HashMap<>();
 	
 	/* We accumulate default promotion prototypes here as they're 
 	 * created, so we don't keep building new copies.
@@ -81,14 +89,16 @@ public class Client implements Serializable {
 	
 	public static Client getClient (HttpSession session) {
 		logger.debug ("starting getClient");
+		Integer clientKey = (Integer) session.getAttribute (SessionUtils.CLIENT);
 		int uid = SessionUtils.getUserId(session);
 		if (uid == 0) {
 			logger.error ("getClient: User ID in session is 0");
 			return null;		// fail early 
 		}
-		Client client = clients.get (uid);
+		Client client = null;
+		client = getByKey (clientKey);
 
-		if (client != null) {
+		if (client != null && client.isValid()) {
 			return client;
 		}
 		DbConnection con = null;
@@ -106,7 +116,7 @@ public class Client implements Serializable {
 			client.loadModels ();
 			client.loadStyleSets();
 			client.applyBrandStyles();
-			clients.put (uid, client);
+			clientCache.add (client);
 			return client;
 		} catch (Exception e) {
 			logger.error ("Error creating client: {}", e.getClass().getName());
@@ -117,26 +127,54 @@ public class Client implements Serializable {
 			if (con != null)
 				con.close();
 		}
-		
-		// TODO save it in the session and get it back from there
 	}
 	
-	/** Return the Client matching the user ID. Will return null
-	 *  if there's no such user. */
-	public static Client getByUserId (int id) {
-		Client client = clients.get(id);
+	/** Return a non-working CLient object for unit testing purposes. */
+	protected static Client getDummyClient () {
+		return new Client();
+	}
+	
+	/** Get the ClientCache from here. Then we just have to change this if
+	 *  we change implementation. */
+	public static ClientCache getClientCache() {
+		return SingleJVMClientCache.getClientCache();
+	}
+	
+	/** Return the Client matching the key. Will return null
+	 *  if there's no such object. */
+	public static Client getByKey (Integer key) {
+		if (key == null)
+			return null;
+		Client client = clientCache.getClient(key);
 		if (client == null) {
-			logger.error ("No client for ID {}", id);
+			logger.error ("No client for key {}", key);
 		}
 		return client;
 	}
 	
-	/** TODO a worse hack. Call this on logout/login to clear the session. */
-	public static void reset () {
-		clients.clear();
+	/** Constructor. This creates an instance of the ClientInterface implementation
+	 *  specified in the argument.
+	 *  
+	 *  @throws ClientException  if ClientInterface can't be instantiated
+	 */
+	private Client(String clientInterfaceClass) throws ClientException {
+		this.clientInterfaceClass = clientInterfaceClass;
+		createClientInterface();
+		touch();
+		valid = true;
+	}
+	
+	/** Make no-argument Constructor private to prevent accidental calls.
+	 *  This can be used to create a limited Client object for unit tests, through
+	 *  getDummyClient. */
+	private Client () {
+		logger.warn ("Private Client constructor called, valid only in test");
+		touch();
+		valid = true;
 	}
 	
 	public ModelCollection getModels () {
+		touch();
 		try {
 			if (modelCollection == null)
 				loadModels ();
@@ -149,28 +187,17 @@ public class Client implements Serializable {
 	
 	/** Load up the models. */
 	private void loadModels () throws BrndbotException {
+		touch();
 		String modelBase = SystemProp.get(SystemProp.LOCAL_ASSETS);
 		ModelLoader loader = new ModelLoader(modelBase + "/models/" + organizationDirName);
 		modelCollection = loader.readModelFiles();
 	}
 	
-	/** Constructor. This creates an instance of the ClientInterface implementation
-	 *  specified in the argument.
-	 *  
-	 *  @throws ClientException  if ClientInterface can't be instantiated
-	 */
-	private Client(String clientInterfaceClass) throws ClientException {
-		this.clientInterfaceClass = clientInterfaceClass;
-		createClientInterface();
-	}
-	
-	/** Make no-argument Constructor private to prevent accidental calls. */
-	private Client () {
-		logger.error ("Private Client constructor somehow called");
-	}
+
 	
 	/** Since ClientInterface is transient, we may have to re-create it
-	 *  at any time. */
+	 *  at any time. 
+	 *  TODO is this still true? */
 	private void createClientInterface () throws ClientException {
 		try {
 			@SuppressWarnings("unchecked")
@@ -185,30 +212,70 @@ public class Client implements Serializable {
 		}
 	}
 	
+	public int getCacheKey () {
+		touch();
+		return cacheKey;
+	}
+	
+	public void setCacheKey (int k) {
+		touch();
+		cacheKey = k;
+	}
+	
+	public boolean isValid () {
+		return valid;
+	}
+	
+	public void setValid (boolean b) {
+		touch();
+		valid = b;
+	}
+	
+	/** Update the touch stamp. If it's been a while since this was last touched,
+	 *  run a purge. */
+	public void touch () {
+		Date oldStamp = touchStamp;
+		touchStamp = new Date();
+		if (oldStamp != null && touchStamp.getTime() - oldStamp.getTime() > 5000) {
+			clientCache.purge();
+		}
+	}
+	
+	/** Get the touch stamp */
+	public Date getTouchStamp () {
+		return touchStamp;
+	}
+	
 	public String getOrganizationName () {
+		touch();
 		return organizationName;
 	}
 	
 	public BrandIdentity getBrandIdentity () {
+		touch();
 		return brandIdentity;
 	}
 	
 	/** Specify the active brand identity */
 	public void setBrandIdentity (BrandIdentity bi) {
+		touch();
 		brandIdentity = bi;
 	}
 	
 	public ModelCollection getModelCollection () {
+		touch();
 		return modelCollection;
 	}
 	
 	public Map<String,Promotion> getPromotionPrototypes (String modelName) {
+		touch();
 		Model model = modelCollection.getModelByName(modelName);
 		return getPromotionPrototypes (model);
 	}
 	
 	
 	public Map<String,Promotion> getPromotionPrototypes (Model m) {
+		touch();
 		Map<String, Promotion> pmap = 
 				clientInterface.getPromotionPrototypes(m.getName());
 		if (!pmap.isEmpty())
@@ -230,6 +297,7 @@ public class Client implements Serializable {
 	}
 	
 	public ClientInterface getClientInterface () throws ClientException {
+		touch();
 		if (clientInterface == null)
 			createClientInterface();
 		return clientInterface;

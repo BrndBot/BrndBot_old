@@ -72,10 +72,11 @@ public class DashboardServlet extends HttpServlet
 		HttpSession session = request.getSession();
 		//int channel = SessionUtils.getIntSession(session, SessionUtils.CHANNEL_KEY);
 		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
-		Client client = (Client) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
+		Integer clientKey = (Integer) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
+		Client client = Client.getByKey(clientKey);
 		if (client == null) {
 			client = Client.getClient (session);
-			SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client);
+			SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client.getCacheKey());
 		}
 		
 		logger.debug("Model name is: {}", modelName);

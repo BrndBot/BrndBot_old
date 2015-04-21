@@ -6,6 +6,7 @@
 */
 package com.brndbot.jsphelper;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import com.brndbot.db.DbConnection;
 import com.brndbot.db.User;
 import com.brndbot.db.UserLogo;
 import com.brndbot.promo.Client;
+import com.brndbot.promo.ClientCache;
 
 /** Base class for helper classes for a JSP 
  */
@@ -27,8 +29,21 @@ public abstract class Helper {
 	User user;
 	Client client;
 
-	public void setUserId (int id) {
+	/* The client key must be set to retrieve the session's client object */
+	public void setClientKey (int key) {
+		ClientCache cc = Client.getClientCache();
+		client = cc.getClient (key);
+		if (client == null) {
+			logger.error ("No Client found for key {}", key);
+		}
+	}
+	
+	public void setUserId (Integer id) {
 		logger.debug ("setUserId: {}", id);
+		if (id == null) {
+			logger.error ("Attempting to set userId to null");
+			return;
+		}
 		userId = id;
 		DbConnection con = null;
 		try {
@@ -38,9 +53,9 @@ public abstract class Helper {
 			if (con != null)
 				con.close();
 		}
-		client = Client.getByUserId(id);
-		if (client == null)
-			logger.error ("No client for ID {}", id);
+//		client = Client.getByUserId(id);
+//		if (client == null)
+//			logger.error ("No client for ID {}", id);
 	}
 	
 	public String getBoundLogo () {

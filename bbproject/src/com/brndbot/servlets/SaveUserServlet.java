@@ -76,17 +76,23 @@ public class SaveUserServlet extends HttpServlet
 		HttpSession session = request.getSession();
 
 		// Add record to database
-		User user = new User();
-		user.setEmail(userEmail);
-		user.setHashedPassword(hashedPassword);
-		user.setCompanyName(companyName);
-		user.setCompanyAddress(companyAddress);
-		user.setCompanyURL(companyURL);
-		user.setFacebook(facebookURL);
-		user.setTwitter(twitterHandle);
-		user.setOrganizationID(orgId);
-		user.saveUser (con);
-		int user_id = user.getUserID();
+		int user_id;
+		try {
+			User user = new User();
+			user.setEmail(userEmail);
+			user.setHashedPassword(hashedPassword);
+			user.setCompanyName(companyName);
+			user.setCompanyAddress(companyAddress);
+			user.setCompanyURL(companyURL);
+			user.setFacebook(facebookURL);
+			user.setTwitter(twitterHandle);
+			user.setOrganizationID(orgId);
+			user.saveUser (con);
+			user_id = user.getUserID();
+		}
+		finally {
+			con.close();
+		}
 		
 
 		logger.debug("Saved user_id: " + user_id);

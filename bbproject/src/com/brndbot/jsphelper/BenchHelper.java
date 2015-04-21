@@ -142,7 +142,7 @@ public class BenchHelper extends Helper {
 	/* Why did I make this different from the superclass? */
 	public void setUserId (int u) {
 		userId = u;
-		client = Client.getByUserId(u);
+		//client = Client.getByUserId(u);
 	}
 	
 	public String getModelName () {

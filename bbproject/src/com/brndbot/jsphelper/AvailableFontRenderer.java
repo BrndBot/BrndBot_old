@@ -6,8 +6,13 @@ import com.brndbot.db.DbConnection;
 import com.brndbot.db.Font;
 import com.brndbot.db.User;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AvailableFontRenderer extends Renderer {
 
+	final static Logger logger = LoggerFactory.getLogger(AvailableFontRenderer.class);
+	
 	private int userId;
 	
 	public AvailableFontRenderer(int userId) {
@@ -17,20 +22,25 @@ public class AvailableFontRenderer extends Renderer {
 	/* This will return a string of option elements with the value attribute being
 	 * the font name, and the element content a prettified version of the name */
 	public String getFragment () {
+		logger.debug ("getFragment");
 		User u = new User (userId);
 		DbConnection con = DbConnection.GetDb();
 		try {
+			logger.debug ("Calling loadClientInfo");
 			u.loadClientInfo(con);
 			int persId = u.getPersonalityID();
+			logger.debug ("Got personality ID {}", persId);
 			List<String> fonts = Font.getFontsForPersonality (persId, con);
 			StringBuilder sb = new StringBuilder();
 			for (String font : fonts) {
+				logger.debug ("Adding font {}", font);
 				sb.append ("<option value='");
 				sb.append (font);
 				sb.append ("'>");
 				sb.append (prettify(font));
 				sb.append ("</option>\n");
 			}
+			logger.debug ("Returning {}", sb.toString());
 			return sb.toString();
 		}
 		finally {

@@ -51,7 +51,8 @@ public class StyleServlet extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 		String modelName = SessionUtils.getStringSession(session, SessionUtils.CONTENT_KEY);
-		Client client = (Client) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
+		Integer clientKey = (Integer) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
+		Client client = Client.getByKey(clientKey);
 		
 		// Make a JSON array of the promotion prototypes under this model
 		ClientInterface ci = null;

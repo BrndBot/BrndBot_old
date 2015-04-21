@@ -51,7 +51,7 @@ public class SessionUtils
 	public static Object getSessionData
 			(HttpServletRequest req, String name) {
 		if (SessionUtils.CLIENT.equals (name)) {
-			logger.debug ("Getting client object");
+			logger.debug ("Getting client key");
 		}
 		HttpSession session = req.getSession(false);
 		if (session == null) {

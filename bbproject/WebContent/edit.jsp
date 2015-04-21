@@ -36,6 +36,7 @@ All rights reserved by Brndbot, Ltd. 2015
 
 <head>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+	<!-- TODO generate font links dynamically -->
 	<link href='http://fonts.googleapis.com/css?family=Fjalla+One|Slabo+27px|Oleo+Script|Oswald:400,300,700' rel='stylesheet' type='text/css'>    
 
     <title>Brndbot Builder</title>
@@ -422,6 +423,7 @@ All rights reserved by Brndbot, Ltd. 2015
                 			onchange="benchcontent.updatePrototypeTypeface(this)">
                 		<option value="serif" selected>Serif</option>
                 		<option value="sans-serif">Sans Serif</option>
+						<jsp:text>${benchHelper.renderAvailableFonts}</jsp:text>
                 	</select>
                 	</label>
                 </div>
