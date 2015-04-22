@@ -98,14 +98,9 @@ public class SaveUserServlet extends HttpServlet
 		logger.debug("Saved user_id: " + user_id);
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
 		Client client = Client.getClient (session);		// Load up the client
-		try {
-			logger.debug ("Created Client with interface {}", client.getClientInterface().getClass().getName());
-		} catch (Exception e) {
-			logger.error ("Problem creating Client: {}", e.getClass().getName());
-			e.printStackTrace();
-			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
-		}
+		session.setAttribute(SessionUtils.CLIENT, client.getCacheKey());
+		session.setAttribute(SessionUtils.ORGANIZATION, client.getOrganizationName());
+		
 		response.setStatus(HttpServletResponse.SC_OK);
 		return;
 	}

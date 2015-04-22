@@ -104,9 +104,9 @@ stylesToSourceData: function (styleSet) {
 			fielddata.italicChecked = style.isItalic() ? "checked" : "";
 			fielddata.boldChecked = style.isBold() ? "checked" : "";
 			fielddata.dropShadowChecked = style.hasDropShadow() ? "checked" : "";
-			fielddata.dropShadowH = style.getDropShadowH() ? style.getDropShadowH() : "0";
-			fielddata.dropShadowV = style.hasDropShadow() ? style.getDropShadowV() : "0";
-			fielddata.dropShadowBlur = style.hasDropShadow() ? style.getDropShadowBlur() : "0";
+//			fielddata.dropShadowH = style.getDropShadowH() ? style.getDropShadowH() : "0";
+//			fielddata.dropShadowV = style.hasDropShadow() ? style.getDropShadowV() : "0";
+//			fielddata.dropShadowBlur = style.hasDropShadow() ? style.getDropShadowBlur() : "0";
 			fielddata.dropShadowDisabled = style.hasDropShadow() ? "" : "disabled";
 			fielddata.color = style.getColor();
 		}
@@ -117,9 +117,9 @@ stylesToSourceData: function (styleSet) {
 		else if (style.styleType == "block") {
 			fielddata.color = style.getColor();
 			fielddata.dropShadowChecked = style.hasDropShadow() ? "checked" : "";
-			fielddata.dropShadowH = style.hasDropShadow() ? style.getDropShadowH() : "0";
-			fielddata.dropShadowV = style.hasDropShadow() ? style.getDropShadowV() : "0";
-			fielddata.dropShadowBlur = style.hasDropShadow() ? style.getDropShadowBlur() : "0";
+//			fielddata.dropShadowH = style.hasDropShadow() ? style.getDropShadowH() : "0";
+//			fielddata.dropShadowV = style.hasDropShadow() ? style.getDropShadowV() : "0";
+//			fielddata.dropShadowBlur = style.hasDropShadow() ? style.getDropShadowBlur() : "0";
 			fielddata.dropShadowDisabled = style.hasDropShadow() ? "" : "disabled";
 		}
 		else if (style.styleType == "logo") {
@@ -304,9 +304,9 @@ updatePrototypeDropShadow: function (cbox) {
 		table.find('.dsv').prop('disabled', false);
 		table.find('.dsb').prop('disabled', false);
 		style.setLocalDropShadowEnabled (true);
-		style.setLocalDropShadowH(dsh.val());
-		style.setLocalDropShadowV(dsv.val());
-		style.setLocalDropShadowBlur(dsb.val());
+//		style.setLocalDropShadowH(dsh.val());
+//		style.setLocalDropShadowV(dsv.val());
+//		style.setLocalDropShadowBlur(dsb.val());
 		style.updateDropShadow();
 		bench.currentPromotion.canvas.renderAll();
 	}
@@ -321,64 +321,64 @@ updatePrototypeDropShadow: function (cbox) {
 	}
 },
 
-updatePrototypeDropShadowH: function (input) {
-	
-	function testForChange() {
-    	if (!isNaN (input.value)) {
-    		var h = Number (input.value);
-    		var style = benchcontent.elemToLinkedStyle (input);
-    		if (h >= 0) {
-    			style.setLocalDropShadowH (h);
-    			style.updateDropShadow();
-    			bench.currentPromotion.canvas.renderAll();
-    		}
-    	}
-    }
+//updatePrototypeDropShadowH: function (input) {
+//	
+//	function testForChange() {
+//    	if (!isNaN (input.value)) {
+//    		var h = Number (input.value);
+//    		var style = benchcontent.elemToLinkedStyle (input);
+//    		if (h >= 0) {
+//    			style.setLocalDropShadowH (h);
+//    			style.updateDropShadow();
+//    			bench.currentPromotion.canvas.renderAll();
+//    		}
+//    	}
+//    }
+//
+//    input.onblur = function() {
+//        testForChange();
+//        input.onblur = null;
+//    };
+//
+//},
 
-    input.onblur = function() {
-        testForChange();
-        input.onblur = null;
-    };
+//updatePrototypeDropShadowV: function (input) {
+//	function testForChange() {
+//    	if (!isNaN (input.value)) {
+//    		var v = Number (input.value);
+//    		var style = benchcontent.elemToLinkedStyle (input);
+//    		if (v >= 0) {
+//    			style.setLocalDropShadowV (v);
+//    			style.updateDropShadow();
+//    			bench.currentPromotion.canvas.renderAll();
+//    		}
+//    	}
+//    }
+//
+//    input.onblur = function() {
+//        testForChange();
+//        input.onblur = null;
+//    };
+//},
 
-},
-
-updatePrototypeDropShadowV: function (input) {
-	function testForChange() {
-    	if (!isNaN (input.value)) {
-    		var v = Number (input.value);
-    		var style = benchcontent.elemToLinkedStyle (input);
-    		if (v >= 0) {
-    			style.setLocalDropShadowV (v);
-    			style.updateDropShadow();
-    			bench.currentPromotion.canvas.renderAll();
-    		}
-    	}
-    }
-
-    input.onblur = function() {
-        testForChange();
-        input.onblur = null;
-    };
-},
-
-updatePrototypeDropShadowBlur: function (input) {
-	function testForChange() {
-    	if (!isNaN (input.value)) {
-    		var b = Number (input.value);
-    		var style = benchcontent.elemToLinkedStyle (input);
-    		if (b >= 0) {
-    			style.setLocalDropShadowBlur (b);
-    			style.updateDropShadow();
-    			bench.currentPromotion.canvas.renderAll();
-    		}
-    	}
-    }
-
-    input.onblur = function() {
-        testForChange();
-        input.onblur = null;
-    };
-},
+//updatePrototypeDropShadowBlur: function (input) {
+//	function testForChange() {
+//    	if (!isNaN (input.value)) {
+//    		var b = Number (input.value);
+//    		var style = benchcontent.elemToLinkedStyle (input);
+//    		if (b >= 0) {
+//    			style.setLocalDropShadowBlur (b);
+//    			style.updateDropShadow();
+//    			bench.currentPromotion.canvas.renderAll();
+//    		}
+//    	}
+//    }
+//
+//    input.onblur = function() {
+//        testForChange();
+//        input.onblur = null;
+//    };
+//},
 
 updatePrototypeTypeface: function (sel) {
 	var style = benchcontent.elemToLinkedStyle(sel);

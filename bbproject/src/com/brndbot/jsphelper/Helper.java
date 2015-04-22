@@ -38,12 +38,8 @@ public abstract class Helper {
 		}
 	}
 	
-	public void setUserId (Integer id) {
+	public void setUserId (int id) {
 		logger.debug ("setUserId: {}", id);
-		if (id == null) {
-			logger.error ("Attempting to set userId to null");
-			return;
-		}
 		userId = id;
 		DbConnection con = null;
 		try {
@@ -53,9 +49,6 @@ public abstract class Helper {
 			if (con != null)
 				con.close();
 		}
-//		client = Client.getByUserId(id);
-//		if (client == null)
-//			logger.error ("No client for ID {}", id);
 	}
 	
 	public String getBoundLogo () {

@@ -486,7 +486,6 @@ All rights reserved by Brndbot, Ltd. 2015
 			           		<label> H
 		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
 		                    	class="dsh"
-								onfocus="benchcontent.updatePrototypeDropShadowH(this)" 
 								style="width:50%" value="#:dropShadowH#">
 							</label>
 			           	</td>
@@ -494,7 +493,6 @@ All rights reserved by Brndbot, Ltd. 2015
 			           		<label> V
 		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
 		                    	class="dsv"
-								onfocus="benchcontent.updatePrototypeDropShadowV(this)" 
 								style="width:50%" value="#:dropShadowV#">
 							</label>
 			           	</td>
@@ -502,7 +500,6 @@ All rights reserved by Brndbot, Ltd. 2015
 			           		<label> Blur
 		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
 		                    	class="dsb"
-								onfocus="benchcontent.updatePrototypeDropShadowBlur(this)" 
 								style="width:50%" value="#:dropShadowBlur#">
 							</label>
 			           	</td>
@@ -577,7 +574,6 @@ All rights reserved by Brndbot, Ltd. 2015
 	           		<label> H
                     <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
                     	class="dsh"
-						onchange="benchcontent.updatePrototypeDropShadowH(this)" 
 						style="width:50%" value="#:dropShadowH#">
 					</label>
 	           	</td>
@@ -585,7 +581,6 @@ All rights reserved by Brndbot, Ltd. 2015
 	           		<label> V
                     <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
                     	class="dsv"
-						onchange="benchcontent.updatePrototypeDropShadowV(this)" 
 						style="width:50%" value="#:dropShadowV#">
 					</label>
 	           	</td>
@@ -593,7 +588,6 @@ All rights reserved by Brndbot, Ltd. 2015
 	           		<label> Blur
                     <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
                     	class="dsb"
-						onchange="benchcontent.updatePrototypeDropShadowBlur(this)" 
 						style="width:50%" value="#:dropShadowBlur#">
 					</label>
 	           	</td>
