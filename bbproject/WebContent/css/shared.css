@@ -43,7 +43,7 @@
     width:100%;
 	padding:0rem 0 0.625rem;
     background-color:white;
-    min-height:50rem;
+    min-height:20rem;
     overflow: hidden;
     font-family: 'Open Sans', sans-serif;
 }
@@ -324,4 +324,6 @@ textarea {
 {
 	width:15.625rem;
 	float:left;
+	height:100%;
+	overflow:hidden;
 }

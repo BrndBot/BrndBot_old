@@ -93,24 +93,24 @@ var bench = {
 			    });
 			
 				// Pagination control
-			    $("#yourImagesPager").kendoPager({
-			        dataSource: yourImagesDataSource
-			    });
+//			    $("#yourImagesPager").kendoPager({
+//			        dataSource: yourImagesDataSource
+//			    });
 			
 				// Assemble images in a list view.  It's setup in the styles that images will rollover to the 
 				//  next line automatically.
-			    $("#yourImagesView").kendoListView({
-			        dataSource: yourImagesDataSource,
-			        template: kendo.template($("#imageTemplate").html()),
-				    selectable: true,
-				    dataBound: yourImagesViewSuccess,
-				    complete: yourImagesViewSuccess
-				});
+//			    $("#yourImagesView").kendoListView({
+//			        dataSource: yourImagesDataSource,
+//			        template: kendo.template($("#imageTemplate").html()),
+//				    selectable: true,
+//				    dataBound: yourImagesViewSuccess,
+//				    complete: yourImagesViewSuccess
+//				});
 			    
 				// placeholder in case it's needed
-			    function yourImagesViewSuccess(e)
-			    {
-			    }
+//			    function yourImagesViewSuccess(e)
+//			    {
+//			    }
 			
 				// Combo box-like control to select image type (Kendo widget)
 			    $("#imageTypeList").kendoMultiSelect({

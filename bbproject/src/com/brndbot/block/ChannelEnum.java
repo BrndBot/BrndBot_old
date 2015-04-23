@@ -13,7 +13,8 @@ public enum ChannelEnum
 	CH_NONE (-1, "Undefined", 100),
 	CH_EMAIL (1, "Email", 280),
 	CH_FACEBOOK (2, "Facebook", 600),
-	CH_TWITTER (3, "Twitter", -1);
+	CH_TWITTER (3, "Twitter", -1),
+	CH_PRINT (4, "Print", 280);
 	
 	
     // Data
@@ -45,6 +46,8 @@ public enum ChannelEnum
     		return CH_FACEBOOK;
     	else if (value == CH_TWITTER.itemNumber)
     		return CH_TWITTER;
+    	else if (value == CH_PRINT.itemNumber)
+    		return CH_PRINT;
     	else
     		return CH_NONE;
     	
@@ -58,6 +61,8 @@ public enum ChannelEnum
     		return CH_FACEBOOK;
     	else if (text.equals (CH_TWITTER.itemText))
     		return CH_TWITTER;
+    	else if (text.equals (CH_PRINT.itemText))
+    		return CH_PRINT;
     	else
     		return CH_NONE;
     }

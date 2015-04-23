@@ -21,6 +21,7 @@ public class ChannelButtonRenderer extends Renderer {
 	
 	boolean hasTwitter = false;
 	boolean hasFacebook = false;
+	boolean hasPrint = false;
 
 	public ChannelButtonRenderer(Client client, String modelName) {
 		/* We want to render first the categories, then the models under the selected
@@ -47,11 +48,12 @@ public class ChannelButtonRenderer extends Renderer {
 				for (String channel : channels) {
 					if ("Facebook".equals (channel)) {
 						hasFacebook = true;
-						logger.debug ("Found a facebook style");
 					}
-					if ("Twitter".equals (channel)) {
+					else if ("Twitter".equals (channel)) {
 						hasTwitter = true;
-						logger.debug ("Found a twitter style");
+					}
+					else if ("Print".equals (channel)) {
+						hasPrint = true;
 					}
 				}
 			}
@@ -73,6 +75,8 @@ public class ChannelButtonRenderer extends Renderer {
 				rowElem.addContent (renderChannel ("Twitter", idx++));
 			if (hasFacebook)
 				rowElem.addContent (renderChannel ("Facebook", idx++));
+			if (hasPrint)
+				rowElem.addContent (renderChannel ("Print", idx++));
 			
 			outputter.output (tableElem, writer);
 		}
@@ -144,6 +148,9 @@ public class ChannelButtonRenderer extends Renderer {
 		case CH_EMAIL:
 			fileName = "email.png";
 			break;
+		case CH_PRINT:
+			fileName = "print.png";
+			break;
 		default:
 			fileName = "notFound.png";		// should never happen
 			break;
@@ -163,6 +170,9 @@ public class ChannelButtonRenderer extends Renderer {
 			break;
 		case CH_EMAIL:
 			fileName = "email.png";
+			break;
+		case CH_PRINT:
+			fileName = "print.png";
 			break;
 		}
 		return "images/home/" + fileName;

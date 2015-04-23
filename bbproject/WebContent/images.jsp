@@ -38,37 +38,45 @@
 
 <c:if test="${sessionOK != 0}">	<!-- encompasses whole rest of body -->
 
-<div id="brndbotMain">
+<div id="brndbotMain" >
 
-
-	<form method="post">
-		<div class="demo-section k-header">
-				<input name="files" id="files" type="file" />
+	<div id="brndbotImagesBody">
+	
+		<div  id="leftColumn">
+			<c:set var="icon_image" value="images/sidebar/TopNavMenuButton.png" />
+			<%@include file="sidebar.jsp" %>
 		</div>
-	</form>
-
-<ul id="imageGallery" style="border-style:none">
-
-</ul> <!-- imageGallery -->
-<div style="float:none"><div>
-
-</div>		<!-- brndbotMain -->
-
-
-<!-- Template for popup dialog to name the image that was just uploaded. -->
-<div id="nameImagePopup" class="rounded" style="display:none">
-	<form id="nameImageForm" >
-	<ul class="namefileform">
-		<li><label>Image name:
-			<input type="text" name="imgname" id="imgname">
-			</label>
-		</li>
-		<li>
-			<input type="submit" value="Set name">
-		</li>
-		</ul>
-	</form>
-</div>		<!-- nameImagePopup -->
+		<div id="imagesMainBody">
+			<form method="post">
+				<div class="demo-section k-header">
+						<input name="files" id="files" type="file" />
+				</div>
+			</form>
+		
+			<ul id="imageGallery" style="border-style:none">
+			
+			</ul> <!-- imageGallery -->
+			<div style="float:none"><div>
+			
+			</div>		<!-- brndbotImagesBody -->
+			</div>		<!-- brndbotMain -->
+			
+			
+			<!-- Template for popup dialog to name the image that was just uploaded. -->
+			<div id="nameImagePopup" class="rounded" style="display:none">
+				<form id="nameImageForm" >
+				<ul class="namefileform">
+					<li><label>Image name:
+						<input type="text" name="imgname" id="imgname">
+						</label>
+					</li>
+					<li>
+						<input type="submit" value="Set name">
+					</li>
+					</ul>
+				</form>
+			</div>		<!-- nameImagePopup -->
+		</div>			<!-- imageMainBody -->
 
 <script type="text/javascript" src="js/images.js"></script>
 

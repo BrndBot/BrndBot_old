@@ -41,8 +41,52 @@ initTheBench: function () {
 
 /* This is called when the upload is complete. */
 onComplete: function () {
-	benchcontent.galleryDataSource.read();		// Reload the list
-	benchcontent.populateGallery ($('#imagePicker'));
+	//benchcontent.galleryDataSource.read();		// Reload the list
+	// Reload the image list
+    $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: "GetImagesServlet?brndbotimageid=2",	// param of 2 means uploaded images
+        statusCode: {
+            401: function() {
+              bench.redirectToLogin();
+            }
+        }
+    }).done (function (imgdata, textStatus, jqXHR) {
+    	bench.availableImages = imgdata;
+    	benchcontent.prepareDataSource();
+    	
+	    // Kendo data source used to retrieve image data for the appropriate gallery
+	    var yourImagesDataSource = new kendo.data.DataSource({
+			data: imgdata,
+	        pageSize: 6
+	    });
+	
+		// Pagination control
+	    $("#yourImagesPager").kendoPager({
+	        dataSource: yourImagesDataSource
+	    });
+	
+	   	benchcontent.populateGallery ($('#imagePicker'));
+		$(".useThisImage").on ('click', function (e) {
+			benchcontent.useClickedImage(this);
+		});
+		$(".useThisImage").hide();
+		$(".galleryImage").on('click', function (e) {
+			benchcontent.primeClickedImage(this);
+		});
+		// Assemble images in a list view.  It's setup in the styles that images will rollover to the 
+		//  next line automatically.
+//	    $("#yourImagesView").kendoListView({
+//	    	dataSource: yourImagesDataSource,
+//	    	template: kendo.template($("#imageTemplate").html()),
+//			selectable: true,
+//			dataBound: yourImagesViewSuccess,
+//			complete: yourImagesViewSuccess
+//		});
+    });
+  
+	    
 },
 
 
@@ -178,8 +222,7 @@ collapseUnselectedFields: function () {
  *  expand and collapse appropriately.
  */
 setEditFieldHandlers: function () {
-	var fieldNames = $(".fieldname");
-	fieldNames.on ('click', function (e) {
+	$(".fieldExpander").on ('click', function (e) {
 		benchcontent.selectedFieldID = $(this).attr("data-linkedfield");
 		benchcontent.collapseUnselectedFields();
 	});
@@ -579,39 +622,9 @@ applyCrop: function (coords) {
 },
 
 galleryTarget: null,
-//galleryWin: null,
 
-/* OLD CODE */
-pickImageOld: function (btn) {
-	session_mgr.checkSession();	// redirect to login if expired
-	var style = benchcontent.elemToLinkedStyle(btn);
-	benchcontent.galleryTarget = { style: style };
-	if (benchcontent.galleryWin) {
-		benchcontent.galleryWin.data("kendoWindow").open();
-	}
-	else {
-		benchcontent.galleryWin = $("#galleryWindow").kendoWindow ({
-			actions: ["Custom", "Minimize", "Maximize", "Close"],
-			title: "Select Image",
-			draggable: true,
-			modal: true,
-			height: "450px",
-			width: "700px",
-			position: {
-				top: 50,
-				left: 50
-			},
-			close: function () {
-			}
-		});
 
-		benchcontent.populateGallery($('#imageGallery'));
-		var win = $("#galleryWindow").data("kendoWindow");
-		win.center();
-	}
-},
-
-/* Replace old pick image code with pane which conceals editor */
+/* Image picker which takes over editor */
 pickImage: function (btn) {
 	var style = benchcontent.elemToLinkedStyle(btn);
 	benchcontent.galleryTarget = { style: style };
@@ -691,6 +704,8 @@ useClickedImage: function (btn) {
 	bench.currentPromotion.canvas.renderAll();
 	$("#galleryBenchHeader").hide();
 	$("#normalBenchHeader").show();
+	$("#cancelGalleryPane").hide();
+	$("#contentPane").show();
 },
 
 /* For the a DOM element which has the data-linkedfield attribute,

@@ -54,6 +54,11 @@
 	color: #6A6463;
 }
 
+#homeBody {
+	padding-left:9.4375rem;
+	padding-top:3rem
+}
+
 .modelsTable {
 	width: 100%;
 }

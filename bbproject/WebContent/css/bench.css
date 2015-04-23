@@ -100,6 +100,12 @@ button.colorSelectButton {
 	padding-top: 2rem;
 }
 
+#cropWindow .cropImage
+{
+	max-width:800px;
+	max=height:650px;
+}
+
 .editorDiv
 {
 	padding: 0rem;

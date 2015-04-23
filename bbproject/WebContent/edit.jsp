@@ -7,7 +7,6 @@ All rights reserved by Brndbot, Ltd. 2015
 
 <%@ page import="com.brndbot.block.Block" %>
 <%@ page import="com.brndbot.block.ChannelEnum" %>
-<%@ page import="com.brndbot.block.FBStyleType" %>
 <%@ page import="com.brndbot.jsphelper.BenchHelper" %>
 <%@ page import="com.brndbot.jsphelper.BlockRenderer" %>
 <%@ page import="com.brndbot.db.DbConnection" %>
@@ -131,7 +130,7 @@ All rights reserved by Brndbot, Ltd. 2015
 	<jsp:setProperty name="starting_block" property="channelType" value="${tmp_channel}"/>
 	<jsp:setProperty name="starting_block" property="name" value="${proto_name}"/>
 </jsp:useBean>
-	<div id="brndbotMain" >
+	<div id="brndbotMain" style="min-height:50rem;">
 		<div id="benchBody">
 
 			<div id="leftSideBar">
@@ -402,10 +401,10 @@ All rights reserved by Brndbot, Ltd. 2015
      Big, but apparently you can't put a Kendo template in a separate file. -->
 <script type="text/x-kendo-template" id="contentFieldsTemplate">
 	<div class="contentfield"  data-linkedfield="#:fieldid#">
-		<div data-linkedfield="#:fieldid#" class="fieldname">#:fieldname#</div>
+		<div data-linkedfield="#:fieldid#" class="fieldExpander">#:fieldname#</div>
 
 		# if (styleType == 'text') {   #
-                <div class="editTextArea" >
+                <div class="editTextArea fieldExpander" >
                         <textarea data-linkedfield="#:fieldid#"
 							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
 							style="width:98%">#:content#
@@ -473,44 +472,11 @@ All rights reserved by Brndbot, Ltd. 2015
 						</td>
 					</tr></table>
 				</div>
-				<div class="collapsible">
-					<table>
-						<tr><td colspan="3">
-						<label><input type="checkbox" data-linkedfield="#:fieldid#" #:dropShadowChecked#
-        		    		onchange="benchcontent.updatePrototypeDropShadow(this)">
-        	    		Drop shadow
-			           	</label>
-			           	</td></tr>
-			           	<tr>
-			           	<td>
-			           		<label> H
-		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
-		                    	class="dsh"
-								style="width:50%" value="#:dropShadowH#">
-							</label>
-			           	</td>
-			           	<td>
-			           		<label> V
-		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
-		                    	class="dsv"
-								style="width:50%" value="#:dropShadowV#">
-							</label>
-			           	</td>
-			           	<td>
-			           		<label> Blur
-		                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
-		                    	class="dsb"
-								style="width:50%" value="#:dropShadowBlur#">
-							</label>
-			           	</td>
-			           	<tr>
-		           	</table>
-				</div>
 				
                 <p>&nbsp;</p>	
 		# } #		<!-- text -->
 		# if (styleType == 'image') {   #
-				<table class="collapsible"><tr>
+				<table class="fieldExpander"><tr>
 				<td>
 				<button type="button" style="width:70px;height:20px;font-size:85%;" 
 					data-linkedField="#:fieldid#"
@@ -530,7 +496,7 @@ All rights reserved by Brndbot, Ltd. 2015
 		<div>
 			<label>Color
 				<button type="button" data-linkedfield="#:fieldid#" 
-					class="colorSelectButton"
+					class="colorSelectButton fieldExpander"
 					style="background-color:#:color#"
 					onclick="benchcontent.colorSelector.showHideColorSelect(this)"></button>
 			</label>
@@ -561,39 +527,6 @@ All rights reserved by Brndbot, Ltd. 2015
 				</td>
 			</tr></table>
 		</div>							<!-- color control -->
-		<div class="collapsible">
-			<table>
-				<tr><td colspan="3">
-				<label><input type="checkbox" data-linkedfield="#:fieldid#" #:dropShadowChecked#
-      		    		onchange="benchcontent.updatePrototypeDropShadow(this)">
-      	    		Drop shadow
-	           	</label>
-	           	</td></tr>
-	           	<tr>
-	           	<td>
-	           		<label> H
-                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
-                    	class="dsh"
-						style="width:50%" value="#:dropShadowH#">
-					</label>
-	           	</td>
-	           	<td>
-	           		<label> V
-                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
-                    	class="dsv"
-						style="width:50%" value="#:dropShadowV#">
-					</label>
-	           	</td>
-	           	<td>
-	           		<label> Blur
-                    <input type="number" data-linkedfield="#:fieldid#" #:dropShadowDisabled#
-                    	class="dsb"
-						style="width:50%" value="#:dropShadowBlur#">
-					</label>
-	           	</td>
-	           	<tr>
-           	</table>
-		</div>
         <p>&nbsp;</p>	
 		# } #		<!-- block -->
 		<% /* Debug feature: Adjust block size */ %>

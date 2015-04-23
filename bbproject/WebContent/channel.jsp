@@ -107,11 +107,17 @@ If no model has been selected, it forces the user back to home.jsp.
 		</div>
 	</c:if>
 	<div class="unit spaceMe">
+		<div style="min-height:15rem;font-size:30px;">
+		<div style="min-height:10rem;"></div>
+		How would you like to promote it?
+		</div>
+		<div>
 		<% /* The buttons are inserted here for picking a channel */ %>
 		<table><tr>
 		<c:out escapeXml="false" value="${channelHelper.renderChannelButtons}"/>
 		</tr>
 		</table>
+		</div>
 	</div>
 </c:if>		<!-- whole of body -->
 
