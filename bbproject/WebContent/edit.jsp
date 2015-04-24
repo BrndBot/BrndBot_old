@@ -308,30 +308,6 @@ All rights reserved by Brndbot, Ltd. 2015
 				&nbsp;
 			</div>
 
-			<!-- This div is the popup for choosing the type of content (workshop, class, teacher) from
-			       a Kendo list widget.
-			 -->
-			<div id="contentPopup" class="rounded" style="display:none;">
-			    <div>
-			    	<div class="unit size4of5 channelTitle">
-			    		Choose a <span id="promoteThisTxt">&nbsp;workshop</span>.
-			    	</div>
-			    	<div id="closeContentPopup" class="rightUnit" style="margin-top: -0.875rem; margin-right: -0.625rem"> 
-			    		<img src="images/Cancel-Button.png" alt="Cancel" />
-			    	</div>
-			    </div>
-			    <div style="clear:both;line-height:0rem">
-			    	&nbsp;
-			    </div>
-			    <!--  Each of these divs gets initialized as a Kendo list widget. -->
-			    <div style="background-color: #ffffff">
-					<div id="classHere" style="display:none;">Loading data, one moment please...</div>
-					<div id="workshopHere" style="display:none;">Loading data, one moment please...</div>
-					<div id="staffHere" style="display:none;">Loading data, one moment please...</div>
-			    </div>
-			</div>
-	
-
 			<!-- Hidden form used to post the blockStack array of data assembled in the editor to 
 			     the server, which puts it on the session for later reuse if needed.
 			 -->
@@ -406,7 +382,7 @@ All rights reserved by Brndbot, Ltd. 2015
 		# if (styleType == 'text') {   #
                 <div class="editTextArea fieldExpander" >
                         <textarea data-linkedfield="#:fieldid#"
-							onfocus="benchcontent.updatePrototypeText(this)" rows="4" 
+							onfocus="benchcontent.updatePrototypeText(this)" rows="3" 
 							style="width:98%">#:content#
 						</textarea>
                 </div>

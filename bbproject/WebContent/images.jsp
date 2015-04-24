@@ -64,7 +64,7 @@
 			
 			<!-- Template for popup dialog to name the image that was just uploaded. -->
 			<div id="nameImagePopup" class="rounded" style="display:none">
-				<form id="nameImageForm" >
+				<form id="nameImageForm"  >
 				<ul class="namefileform">
 					<li><label>Image name:
 						<input type="text" name="imgname" id="imgname">

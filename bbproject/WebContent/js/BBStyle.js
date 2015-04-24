@@ -849,55 +849,7 @@ function Style (styleType, styleSet) {
 		this.fabricateImage (this.canvas);
 	};
 	
-	/* Calculate the display size of the image based on its source width and height.
-	 * Doesn't take masking into account.
-	 * 
-	 * Return an object with properties x, y, width and height.
-	 * 
-	 * We apply Procrustean logic to the image. 
-	 * The image will be proportionally stretched or shrunk such that the
-	 * masked portion (the whole image if maskRect is null) will exactly fill the
-	 * style's display rectangle in one dimension and fill or overflow it in the
-	 * other.  
-	 * 
-	 * Explained another way: No blank space outside the image, and no portion 
-	 * outside the mask rectangle will ever be drawn, but as much as possible of
-	 * the image will be drawn subject to this constraint, and the clipping will
-	 * be symmetric.
-	 * 
-	 * The returned value will be a rectangle in display coordinates with the
-	 * following meaning:
-	 * 
-	 * x: x offset at which to start drawing relative to the left of the drawing
-	 *     frame. Always 0 or negative.
-	 * y: y offset at which to start drawing relative to the top of the drawing
-	 *     frame. Always 0 or negative.
-	 * 
-	 */
-//	this.fitImage = function (w, h) {
-//		this.sourceWidth = w;
-//		this.sourceHeight = h;
-//		this.sourceX = 0;
-//		this.sourceY = 0;
-//		var width = this.getWidth();
-//		var height = this.getHeight();
-//		var retval = {x: 0, y: 0, width: 0, height: 0};
-//		var widthRatio = this.sourceWidth / this.width;
-//		var heightRatio = this.sourceHeight / this.height;
-//		if (widthRatio < heightRatio) {
-//			// We'll fill the horizontal and overflow the vertical
-//			retval.width = width;
-//			retval.height = this.sourceHeight * (width / this.sourceWidth);
-//			retval.y = -(retval.height - height) / 2;
-//		}
-//		else {
-//			// Fill the vertical and overflow the horizontal, or fit perfectly
-//			retval.height = height;
-//			retval.width = this.sourceWidth * (height / this.sourceHeight);
-//			retval.x = -(retval.width - width) / 2;
-//		}
-//		return retval;
-//	};
+
 	
 	/* Set displayDims so as to set a masking rectangle, then redraw.
 	 * 

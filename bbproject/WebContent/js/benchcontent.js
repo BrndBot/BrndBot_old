@@ -115,6 +115,7 @@ insertEditFields: function (dest) {
 	}
 	benchcontent.selectedFieldID = null;
 	benchcontent.collapseUnselectedFields();
+	benchcontent.resizeTextAreas();
 	benchcontent.setEditFieldHandlers ();
 	dest.show();
 },
@@ -218,6 +219,19 @@ collapseUnselectedFields: function () {
 	});
 },
 
+/*  Shrink textarea fields which aren't collapsible down to 1 row when they aren't
+ *  selected and expand to 3 rows when they are.
+ */
+resizeTextAreas: function () {
+	$(".contentfield").each (function () {
+		if ($(this).attr("data-linkedfield") != benchcontent.selectedFieldID) {
+			$(this).find(".editTextArea textarea").attr("rows", "1");
+		} else {
+			$(this).find(".editTextArea textarea").attr("rows", "3");
+		}
+	});
+},
+
 /*  Set up click handlers for the edit fields. Change the selection and
  *  expand and collapse appropriately.
  */
@@ -225,6 +239,7 @@ setEditFieldHandlers: function () {
 	$(".fieldExpander").on ('click', function (e) {
 		benchcontent.selectedFieldID = $(this).attr("data-linkedfield");
 		benchcontent.collapseUnselectedFields();
+		benchcontent.resizeTextAreas();
 	});
 },
 
@@ -696,8 +711,10 @@ primeClickedImage: function (img) {
 /* Use the image based on the "USE THIS IMAGE" button being clicked.
  */
 useClickedImage: function (btn) {
-	var id = $(btn).parent().attr("data-id");
+	var id = parseInt ($(btn).parent().attr("data-id"), 10);
+	var imgdata = bench.getImageDataById (id);
 	var style = benchcontent.galleryTarget.style;
+	style.setSourceDims (imgdata.width, imgdata.height);
 	style.setLocalImageID(id);
 	$("#imagePickerHolder").hide();
 	$("#promoViewHolder").show();

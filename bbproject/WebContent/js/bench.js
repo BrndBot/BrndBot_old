@@ -92,25 +92,6 @@ var bench = {
 			        pageSize: 6
 			    });
 			
-				// Pagination control
-//			    $("#yourImagesPager").kendoPager({
-//			        dataSource: yourImagesDataSource
-//			    });
-			
-				// Assemble images in a list view.  It's setup in the styles that images will rollover to the 
-				//  next line automatically.
-//			    $("#yourImagesView").kendoListView({
-//			        dataSource: yourImagesDataSource,
-//			        template: kendo.template($("#imageTemplate").html()),
-//				    selectable: true,
-//				    dataBound: yourImagesViewSuccess,
-//				    complete: yourImagesViewSuccess
-//				});
-			    
-				// placeholder in case it's needed
-//			    function yourImagesViewSuccess(e)
-//			    {
-//			    }
 			
 				// Combo box-like control to select image type (Kendo widget)
 			    $("#imageTypeList").kendoMultiSelect({
@@ -151,170 +132,51 @@ var bench = {
 		    });		// end uploaded images done function
 	    });			// end logo done function
 
-		 
-	
-	
-	    function onError(e)
-	    {
-	    	alert('onError');
-	    }
-	
-
-	
-		// AJAX call to get images was successful.  Display correctly by gallery type.
-	    function onSuccess(e)
-	    {
-			var dialog = $("#imageGalleryPopup").data("kendoWindow");
-			if (dialog)
-				dialog.close();
-	
-	    }
-	
-	
-		// The tab control in the image gallery popup
-		$("#galleryTabs").kendoTabStrip({
-	    });
-	
-		// Upload button
-		$('#uploadTeacherPhoto').kendoButton({
-		});
-	
-		// Event handler for something in a list getting selected (class, workshop, teacher).
-		function publishClicked(e)
-		{
-			// Use the ID of the object selected to figure out what type of object it is.
-			var spl = e.event.target.id.split("Button");
-			if (spl.length != 2) alert('Unexpected button id: ' + e.event.target.id);
-			var myType = '';
-			var myDesc = '';
-			if (spl[0] == 'class')
-			{
-				myType = CLASS_OBJ;
-				myDesc = ' this Class';
-			}
-			else if (spl[0] == 'workshop')
-			{
-				myType = WORKSHOP_OBJ;
-				myDesc = ' this Workshop';
-			}
-			else if (spl[0] == 'staff')
-			{
-				myType = STAFF_OBJ;
-				myDesc = ' this Teacher';
-			}
-			else
-				alert('Unexpected type from id: ' + spl[0]);
-	
-			// Calculate the ID for the overall list itself.  Extract the database ID from element ID.
-			var id = '#' + idPrefix[myType - 1] + 'Here';
-			var listView = $(id).data("kendoListView");
-			var database_id = parseInt(spl[1]);
-	
-			// get data items for the selected options.
-			var block = null;
-			var dataItems = listView.dataSource._data;
-			for (var i=0; i < dataItems.length; i++)
-			{
-		        var dataItem = dataItems[i];
-		        id = parseInt(dataItem.ID);
-		        if (id == database_id)
-		        {
-					// Build a Javascript Block object to store in the blockStack array
-		        	block = new Block(
-	    				CURRENT_CHANNEL,
-	    				myType,
-	    				myDesc,
-	    				database_id,
-	    				dataItem.Name,
-	    				dataItem.FullName,
-	    				'17-sep-2014',
-	    				'SchedRef',
-	    				dataItem.FullDescription,
-	    				dataItem.ShortDescription,
-	    				dataItem.ImgURL);
-					// Add to stack
-		        	editorSpecificDynamicPush(block);
-	
-					// Show the template that was just added
-					document.getElementById(blockStack[blockStack.length - 1].getBlockID()).scrollIntoView();
-	
-					// Click on the new template to highlight it and load its data into the editor tab
-					$('#' + blockStack[blockStack.length - 1].getBlockID()).click();
-		        	i = dataItems.length;
-		        }
-			}
-			
-	
-			// Close the popup
-			var dialog = $("#contentPopup").data("kendoWindow");
-			dialog.close();
-		}
-	
-		// Initialize controls specific to the type of bench
-		//benchSpecificInits();
-	
-		$('#genericTextLink').on('click', function(e)
-		{
-			addTextBlock(false, true);
-		});
-	
-	
-		$('#closeContentPopup').on('click', function(event)
-		{
-			var dialog = $("#contentPopup").data("kendoWindow");
-			dialog.close();
-		});
-	
-		$('#closeGalleryPopup').on('click', function(event)
-		{
-			var dialog = $("#imageGalleryPopup").data("kendoWindow");
-			dialog.close();
-		});
 	
 	
 		// Button to popup the image gallery
-		$('.viewImageGallery').each(function ()
-		{
-			$(this).kendoButton({
-	    	});
-	
-			$(this).on('click', function(e)
-			{
-				popupImageGallery(this.id);
-			});
-		});
+//		$('.viewImageGallery').each(function ()
+//		{
+//			$(this).kendoButton({
+//	    	});
+//	
+//			$(this).on('click', function(e)
+//			{
+//				popupImageGallery(this.id);
+//			});
+//		});
 		
 		// Show the image gallery popup
-		function popupImageGallery(id)
-		{
-			var myWin = $("#imageGalleryPopup");
-			if (!myWin.data("kendoWindow"))
-			{
-				// window not yet initialized
-				var dialog = myWin.kendoWindow({
-			        modal: true,
-			        width: "50rem",
-			        height: "37.5rem",
-			        pinned: false,
-			        resizable: false,
-			        title: false,
-			        visible: false
-		        }).data("kendoWindow").center();
-	
-				// Position window
-			    myWin.parent().css({ "width" : "800px"});
-			    myWin.parent().css({ "height" : "550px"});
-			    myWin.parent().css({ "top" : "50px"});
-			    dialog.center().open();
-			    $('body').blur();
-			} 
-			else 
-		    {
-		        // reopening window
-		        myWin.data("kendoWindow").center().open(); // open the window
-			    $('body').blur();
-		    }
-		}
+//		function popupImageGallery(id)
+//		{
+//			var myWin = $("#imageGalleryPopup");
+//			if (!myWin.data("kendoWindow"))
+//			{
+//				// window not yet initialized
+//				var dialog = myWin.kendoWindow({
+//			        modal: true,
+//			        width: "50rem",
+//			        height: "37.5rem",
+//			        pinned: false,
+//			        resizable: false,
+//			        title: false,
+//			        visible: false
+//		        }).data("kendoWindow").center();
+//	
+//				// Position window
+//			    myWin.parent().css({ "width" : "800px"});
+//			    myWin.parent().css({ "height" : "550px"});
+//			    myWin.parent().css({ "top" : "50px"});
+//			    dialog.center().open();
+//			    $('body').blur();
+//			} 
+//			else 
+//		    {
+//		        // reopening window
+//		        myWin.data("kendoWindow").center().open(); // open the window
+//			    $('body').blur();
+//		    }
+//		}
 	
 		// Select onclick handler for any block with the class 'blockSelectable'.
 		// If the template has that class, if you click on it with the mouse, this
@@ -393,66 +255,6 @@ var bench = {
 
 	},				// end initTheBench
 	
-	// If you click on a selected block, it unselects the block.  This is the 
-	//  function that unselects a selected block.
-//	unselectLastSelectedBlock: function()
-//	{
-//		var lastOne = 'x';
-//		if (bench.lastSelectedBlock)
-//		{
-//			lastOne = bench.lastSelectedBlock.substring(1);
-//			var stackIdx = bench.isolateEnum(bench.lastSelectedBlock);
-//			// Reverse things out for the last selected block
-//	
-//			$(bench.lastSelectedBlock).css('border-width','0rem');
-//			if (bench.lastSelectedBlock.lastIndexOf('#graphicBlock', 0) !== -1)
-//			{
-//				$(bench.lastSelectedBlock).css('border-bottom','0.1875rem solid #3d474a');
-//			}
-//			if (stackIdx > 0)
-//			{
-//				$(bench.lastSelectedBlock + 'SortUpBtn').css('display', 'none');
-//				$(bench.lastSelectedBlock + 'SortDownBtn').css('display', 'none');
-//				$('#editType').html('');
-//			}
-//			$(bench.lastSelectedBlock + 'TrashBtn').css('display', 'none');
-//			var baseID = bench.prepEditID(bench.lastSelectedBlock);
-//			bench.hideBlock(baseID);
-//		}
-//		return lastOne;
-//	},
-	
-	// Function that affects the removal of an item from the stack.  Has to handle
-	//  the blockStack data array as well as the display templates
-//	trashBlockClicked: function (e, id, scrollIntoView)
-//	{
-//		var stackIdx = bench.isolateEnum(id) - 1;
-//		var blockRoot = id.substr(0, id.length - 8);
-//		// -1 means its not enumerated, not in the stack
-//		if (stackIdx == -1)
-//		{
-//			// should never happen
-//			alert('this should never happen, contact tech support.');
-//		}
-//		else
-//		{
-//	//		$('#' + blockRoot).hide();
-//			$('#' + blockStack[stackIdx].blockID).hide();
-//			blockStack.splice(stackIdx, 1); // delete item
-//			// walk the rest of the blocks to 'slide' them up
-//			var finalID = null;
-//			for (var i = stackIdx; i < blockStack.length; i++)
-//			{
-//				finalID = blockStack[i].getBlockID();
-//				$('#' + finalID).hide();
-//				bench.fillBlock(i + 1, blockStack[i], true);
-//			}
-//			if (scrollIntoView && stackIdx > 0)
-//				document.getElementById(blockStack[stackIdx].getBlockID()).scrollIntoView();
-//		}
-//		if (e)
-//			e.preventDefault();
-//	},
 	
 	hideBlock: function (baseID)
 	{
@@ -699,6 +501,16 @@ var bench = {
 	
 	redirectToLogin: function () {
 		window.location.assign("index.jsp");
+	},
+	
+	/** Return an object holding the availableImages data for the specified ID */
+	getImageDataById: function (id) {
+		for (var i = 0; i < bench.availableImages.length; i++) {
+			var imgData = bench.availableImages[i];
+			if (imgData.ID == id)
+				return imgData;
+		}
+		return null;		// This is an error condition
 	}
 	
 };

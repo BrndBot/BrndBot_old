@@ -9,6 +9,8 @@
 			async: {
 	            saveUrl: "SaveImageServlet?brndbotimageid=2",
 	            removeUrl: "dummy",			// don't quite understand what this signifies
+	            autoUpload: false,			// allow user intervention
+	            select:imagesjs.onSelect,	// function to let user name the file
 	            removeField: "fileNames[]"	// not sure what to do with this
     	    },
     	    complete: imagesjs.onComplete,
@@ -28,7 +30,7 @@ var imagesjs = {
 	saveUrl: "" ,
 			
 	/* Function called on file selection. Prompts to name the picture. */
-    uploadImageSelect: function(e)
+    nameUploadedImage: function(e)
     {
     	if (!$("#nameImagePopup").data("kendoWindow")) {
 	    	$("#nameImagePopup").kendoWindow ({
@@ -47,7 +49,7 @@ var imagesjs = {
         e.sender.options.async.saveUrl = imagesjs.saveUrl;
     },
     
-    /* I was starting to do something with this, wasn't I? */
+    /* Handles the submission of the image naming form */
 	nameImageFormSubmit: function () {
 		var newName = $("#imgname").val().trim();
 		if (!newName)
@@ -88,6 +90,7 @@ var imagesjs = {
     
     /* This is called when the upload is complete. */
     onComplete: function () {
+    	
     	imagesjs.galleryDataSource.read();		// Reload the list
     	imagesjs.populateGallery ($('#imageGallery'));
     }
