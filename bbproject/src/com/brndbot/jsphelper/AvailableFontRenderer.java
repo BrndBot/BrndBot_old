@@ -5,6 +5,7 @@ import java.util.List;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Font;
 import com.brndbot.db.User;
+import com.brndbot.system.BrndbotException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +22,12 @@ public class AvailableFontRenderer extends Renderer {
 	
 	/* This will return a string of option elements with the value attribute being
 	 * the font name, and the element content a prettified version of the name */
-	public String getFragment () {
+	public String getFragment () throws BrndbotException {
 		logger.debug ("getFragment");
 		User u = new User (userId);
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con = null;
 		try {
+			con = DbConnection.GetDb();
 			logger.debug ("Calling loadClientInfo");
 			u.loadClientInfo(con);
 			int persId = u.getPersonalityID();
@@ -44,7 +46,8 @@ public class AvailableFontRenderer extends Renderer {
 			return sb.toString();
 		}
 		finally {
-			con.close();
+			if (con != null)
+				con.close();
 		}
 	}
 	

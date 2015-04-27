@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.brndbot.client.style.StyleSet;
+import com.brndbot.system.BrndbotException;
 
 public class ChannelHelper extends Helper {
 
@@ -16,7 +17,7 @@ public class ChannelHelper extends Helper {
 	/** Use c:out on this at the point where "what do you want to do today" should
 	 *  be inserted.
 	 */
-	public String getRenderChannelButtons () {
+	public String getRenderChannelButtons () throws BrndbotException {
 		if (client == null) {
 			logger.error ("getRenderChannelButtons: client is null");
 			return null;

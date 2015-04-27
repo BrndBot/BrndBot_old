@@ -34,7 +34,14 @@ public class HomeHelper extends Helper {
 			return null;
 		}
 		DoTodayRenderer renderer = new DoTodayRenderer (client);
-		return renderer.getFragment();
+		try {
+			return renderer.getFragment();
+		}
+		catch (Exception e) {
+			logger.error ("Exception getting fragment:{}, {}" ,
+					e.getClass().getName(), e.getMessage());
+			return "Internal error";
+		}
 	}
 
 	/** Use c:out on this at the point where the buttons for viewing lists of
@@ -42,7 +49,14 @@ public class HomeHelper extends Helper {
 	 */
 	public String getRenderModelListButtons () {
 		ModelListButtonRenderer renderer = new ModelListButtonRenderer(client);
-		return renderer.getFragment ();
+		try {
+			return renderer.getFragment ();
+		}
+		catch (Exception e) {
+			logger.error ("Exception getting model buttons:{}, {}" ,
+					e.getClass().getName(), e.getMessage());
+			return "Internal error";
+		}
 	}
 	
 	public String getOrganization () {

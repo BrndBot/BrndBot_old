@@ -43,12 +43,14 @@ public class Organization implements TableModel {
 
 	public static Organization getByAuthCode(String authCode) {
 		Organization org = null;
-		DbConnection con = DbConnection.GetDb();
-		String sql = "SELECT id, Name, Directory FROM organization WHERE Authcode = ?;";
-		PreparedStatement pstmt = con.createPreparedStatement(sql);
+		PreparedStatement pstmt = null;
+		DbConnection con = null;
 		ResultSet rs = null;
 		try
 		{
+			con = DbConnection.GetDb();
+			String sql = "SELECT id, Name, Directory FROM organization WHERE Authcode = ?;";
+			pstmt = con.createPreparedStatement(sql);
 			pstmt.setString (1, authCode);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -60,7 +62,7 @@ public class Organization implements TableModel {
 				org.directoryName = rs.getString(3);
 			}
 		} 
-		catch (SQLException e) 
+		catch (Exception e) 
 		{
 			logger.error ("Error in getByAuthCode query, authCode = {}", authCode);
 			e.printStackTrace();
@@ -69,19 +71,22 @@ public class Organization implements TableModel {
 		finally
 		{
 			DbUtils.close(pstmt, rs);
-			con.close();
+			if (con != null)
+				con.close();
 		}
 		return org;
 	}
 	
 	public static Organization getById (int orgId) {
 		Organization org = null;
-		DbConnection con = DbConnection.GetDb();
-		String sql = "SELECT Name, moduleclass, Directory FROM organization WHERE id = ?;";
-		PreparedStatement pstmt = con.createPreparedStatement(sql);
+		DbConnection con = null;
 		ResultSet rs = null;
+		PreparedStatement pstmt = null;
 		try
 		{
+			con = DbConnection.GetDb();
+			String sql = "SELECT Name, moduleclass, Directory FROM organization WHERE id = ?;";
+			pstmt = con.createPreparedStatement(sql);
 			pstmt.setInt (1, orgId);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -95,16 +100,18 @@ public class Organization implements TableModel {
 				logger.error ("No organization found for ID {}", orgId);
 			}
 		} 
-		catch (SQLException e) 
+		catch (Exception e) 
 		{
-			logger.error ("Error in getByid query, id = {}", orgId);
+			logger.error ("Error in getByid query, exception = {}, id = {}", 
+						e.getClass().getName(), orgId);
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
 		finally
 		{
 			DbUtils.close(pstmt, rs);
-			con.close();
+			if (con != null)
+				con.close();
 		}
 		return org;
 	}

@@ -98,67 +98,26 @@ public class SavePromotionServlet extends HttpServlet {
 		img.setImageHeight (bimg.getHeight());
 		img.setMimeType("application/jpeg");
 		
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con =null;
 		try {
+			con =  DbConnection.GetDb();
 			Image.deleteFusedImages(userID, con);		// delete old presentation
 			logger.debug ("saving image");
 			img.setImage(imgBytes);
 			logger.debug ("Image data: {}", img.toString());
 			img.save (con);
 		}
-		catch (SQLException e) {
-			logger.error ("SQLException: {}", e.getMessage());
+		catch (Exception e) {
+			logger.error ("Exception in SavePromotionServlet: {}, {}", 
+						e.getClass().getName(), e.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 		finally {
-			con.close();
+			if (con != null)
+				con.close();
 		}
 	}
 
 	
-	protected void doPostOld(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{
-		InputStream reqstrm = request.getInputStream();
-		// Discard everything through the first comma.
-		int bytesTossed = 0;
-		StringBuffer debugStr = new StringBuffer ();
-		for (;;) {
-			int ch = reqstrm.read();
-			debugStr.append ((char) ch);
-			if (ch < 0) {
-				logger.error ("No valid data found");
-				logger.error ("Debug string: {}", debugStr);
-				return;
-			}
-			++bytesTossed;
-			if ((char) ch == ',') {
-				logger.debug ("Tossed {} bytes out", bytesTossed);
-				break;
-			}
-		}
-		// Now start decoding from the next byte.
-		InputStream instrm = new Base64InputStream(reqstrm);
-		try {
-			byte[] buf = new byte[2048];
-			for (;;) {
-				int bytesRead = instrm.read(buf);
-				logger.debug ("Read {} bytes", bytesRead);
-				if (bytesRead <= 0)
-					break;
-				StringBuilder firstFewBytes = new StringBuilder();
-				firstFewBytes.append (Integer.toString (buf[0]));
-				firstFewBytes.append (" ");
-				firstFewBytes.append (Integer.toString (buf[1]));
-				firstFewBytes.append (" ");
-				firstFewBytes.append (Integer.toString (buf[2]));
-				firstFewBytes.append (" ");
-				firstFewBytes.append (Integer.toString (buf[3]));
-				logger.debug ("First few bytes: {}", firstFewBytes.toString());
-			}
-		}
-		finally {
-			instrm.close ();
-		}
-	}
 
 }

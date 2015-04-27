@@ -94,8 +94,6 @@ public class Palette implements TableModel
 		finally {
 			pstmt.close();
 		}
-		//ResultSet rs = con.QueryDB(sql, pstmt);
-		//rs.close();
 	}
 	
 	static public ArrayList<Palette> getUserPalette(int user_id, DbConnection con)

@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 //import com.brndbot.block.Block;
 import com.brndbot.block.ChannelEnum;
@@ -23,6 +23,7 @@ import com.brndbot.client.Promotion;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Palette;
 import com.brndbot.promo.Client;
+import com.brndbot.system.BrndbotException;
 
 /** BenchHelper provides Java logic for the editor (edit.jsp).
  *  It's designed so it can (at least mostly) be accessed with
@@ -53,7 +54,7 @@ public class BenchHelper extends Helper {
 	/** Use c:out on this at the point where the buttons for viewing lists of
 	 *  promo protos should be inserted.
 	 */
-	public String getRenderModelLinks () {
+	public String getRenderModelLinks () throws BrndbotException {
 		logger.debug ("getRenderModelLinks");
 		ModelLinkRenderer renderer = new ModelLinkRenderer(client);
 		return renderer.getFragment ();
@@ -102,13 +103,15 @@ public class BenchHelper extends Helper {
 	}
 
 	/** Get the user palette */
-	public ArrayList<Palette> getUserPalette () {
-		DbConnection con = DbConnection.GetDb();
+	public ArrayList<Palette> getUserPalette () throws BrndbotException {
+		DbConnection con = null;
 		try {
+			con = DbConnection.GetDb();
 			return Palette.getUserPalette (userId, con);
 		}
 		finally {
-			con.close();
+			if (con != null)
+				con.close();
 		}
 	}
 	
@@ -116,7 +119,7 @@ public class BenchHelper extends Helper {
 	 *  We have to escape the pound sign in front of the color so Kendo
 	 *  won't try to evaluate it. We can't do that in the JSP because it
 	 *  will escape the EL expressioN! */
-	public List<String> getUserPaletteColors () {
+	public List<String> getUserPaletteColors () throws BrndbotException {
 		logger.debug ("getUserPaletteColors");
 		List<Palette> palettes = getUserPalette();
 		List<String> colors = new ArrayList<>();
@@ -133,7 +136,7 @@ public class BenchHelper extends Helper {
 	}
 	
 	/** Fill in the available font choices for the user. */
-	public String getRenderAvailableFonts () {
+	public String getRenderAvailableFonts () throws BrndbotException {
 		AvailableFontRenderer rndr = new AvailableFontRenderer(userId);
 		return rndr.getFragment();
 	}
@@ -201,7 +204,7 @@ public class BenchHelper extends Helper {
 		return chEnum.getDefaultImgWidth();
 	}
 	
-	public List<Palette> getPaletteArray () {
+	public List<Palette> getPaletteArray () throws BrndbotException {
 		DbConnection con = null;
 		try {
 			if (paletteArray == null) {
@@ -215,7 +218,7 @@ public class BenchHelper extends Helper {
 		return paletteArray;
 	}
 	
-	public String getPaletteColor (int idx) {
+	public String getPaletteColor (int idx) throws BrndbotException {
 		List<Palette> paletteArray = getPaletteArray ();
 		if (paletteArray == null || paletteArray.size() <= idx) {
 			return "#000000";		// no palette color for index, things are looking black

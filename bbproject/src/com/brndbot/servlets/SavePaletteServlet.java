@@ -37,38 +37,37 @@ public class SavePaletteServlet extends HttpServlet
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		logger.debug("--------Entering SavePaletteServlet----------");
-
-		// Get rid of previous values
-		DbConnection con = DbConnection.GetDb();
-
-		HttpSession session = request.getSession();
-		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
-
-		try 
-		{
-			Palette.deletePalettes(user_id, con);
-		} 
-		catch (SQLException e) 
-		{
-			logger.error("Error deleting palette: {}  {}", 
-					e.getClass().getName(),
-					e.getMessage());
-			e.printStackTrace();
-			throw new RuntimeException("Exception: " + e);
-		}
-
-		// Gather data
-		String yourPalette = Utils.getStringParameter(request, "hiddenYourPalette");
-		//String suggestedPalette = Utils.getStringParameter(request, "hiddenSuggestedPalette");
-		//String[] suggested = suggestedPalette.split(",");
-		String[] yours = yourPalette.split(",");
-		try
-		{
+		DbConnection con = null;
+		try {
+			
+			// Get rid of previous values
+			con = DbConnection.GetDb();
+	
+			HttpSession session = request.getSession();
+			int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
+	
+			try 
+			{
+				Palette.deletePalettes(user_id, con);
+			} 
+			catch (SQLException e) 
+			{
+				logger.error("Error deleting palette: {}  {}", 
+						e.getClass().getName(),
+						e.getMessage());
+				e.printStackTrace();
+				throw new RuntimeException("Exception: " + e);
+			}
+	
+			// Gather data
+			String yourPalette = Utils.getStringParameter(request, "hiddenYourPalette");
+			//String suggestedPalette = Utils.getStringParameter(request, "hiddenSuggestedPalette");
+			//String[] suggested = suggestedPalette.split(",");
+			String[] yours = yourPalette.split(",");
 			logger.debug("Writing palettes");
-			//writePalette(user_id, true, suggested, con);
 			writePalette(user_id, false, yours, con);
-		} 
-		catch (SQLException e) 
+		}
+		catch (Exception e) 
 		{
 			logger.error("Error writing palette: {}  {}", 
 					e.getClass().getName(),
@@ -78,10 +77,9 @@ public class SavePaletteServlet extends HttpServlet
 		}
 		finally
 		{
-			con.close();
+			if (con != null)
+				con.close();
 		}
-//		System.out.println("YP: " + yourPalette);
-//		System.out.println("SP: " + suggestedPalette);
 		return;
 	}
 

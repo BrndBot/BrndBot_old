@@ -29,6 +29,7 @@ import com.brndbot.db.Image;
 import com.brndbot.db.ImageException;
 import com.brndbot.db.ImageType;
 import com.brndbot.db.UserLogo;
+import com.brndbot.system.BrndbotException;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
@@ -62,7 +63,8 @@ public class SaveImageServlet extends HttpServlet
 		logger.debug("saveImageServlet.doPost");
 
 		MultipartFormDataRequest data;
-		String responseString = null;
+		String errorString = null;
+		DbConnection con = null;
 		try {
 			try
 			{
@@ -71,7 +73,7 @@ public class SaveImageServlet extends HttpServlet
 			catch (UploadException e1)
 			{
 				e1.printStackTrace();
-				responseString = "Exception uploading image: " + e1.getClass().getName();
+				errorString = "Exception uploading image: " + e1.getClass().getName();
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				return;
 			}
@@ -80,7 +82,7 @@ public class SaveImageServlet extends HttpServlet
 			int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
 			if (user_id == 0)
 			{
-				responseString = "Not logged in";
+				errorString = "Not logged in";
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
@@ -105,12 +107,11 @@ public class SaveImageServlet extends HttpServlet
 			ImageType image_type = ImageType.getByItemNumber(type);
 			if (image_type == null)
 			{
-				responseString = "The image type (" + type + ") is not supported";
+				errorString = "The image type (" + type + ") is not supported";
 				response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 				return;
 			}
 	
-			DbConnection con = DbConnection.GetDb();
 			
 			//String imgTag = ""; // <img> tag to return in json
 	
@@ -119,54 +120,54 @@ public class SaveImageServlet extends HttpServlet
 				@SuppressWarnings("rawtypes")
 				Hashtable files = data.getFiles();
 	
+				con = DbConnection.GetDb();
 				logger.debug("files.size:  " + files.size());
 				Image image = null;
 				try {
 					image = Image.uploadFile(user_id, image_type, files, con);
 				} catch (Exception e) {
 					logger.error("Exception uploading file: " + e.getClass().getName());
-					responseString = "Internal error: " + e.getClass().getName();
+					errorString = "Internal error: " + e.getClass().getName();
 				}
 				if (image != null)
 				{
-					responseString = saveImage (image, image_type, user_id, con);
+					String resultString = saveImage (image, image_type, user_id, con);
 					response.setContentType("application/json; charset=UTF-8");
 					response.setStatus(HttpServletResponse.SC_OK);
-				}
+					PrintWriter out = response.getWriter();
+					out.print(resultString);
+					out.flush();				}
 				else
 				{
 					// Something failed, check the tomcat log
 					logger.error("Upload of image came back NULL!");
 					response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
-					if (responseString == null) {
-						responseString = "Internal error: Image upload failed";
+					if (errorString == null) {
+						errorString = "Internal error: Image upload failed";
 					}
 					return;
 				}
 			}
-			catch (ImageException e1) 
+			catch (ImageException|SQLException|BrndbotException e) 
 			{
-				logger.error("Exception: " + e1);
-				e1.printStackTrace();
-				responseString = "Internal error: " + e1.getClass().getName();
-				return;
-			} catch (SQLException e) 
-			{
-				logger.error("Exception saving image: " + e.getMessage());
+				logger.error("Exception saving image:{}, {}",
+						e.getClass().getName(), e.getMessage());
 				e.printStackTrace();
-				responseString = "Internal error: " + e.getClass().getName();
+				errorString = "Internal error saving image";
 				return;
 			}
 			finally
 			{
-				con.close();
+				if (con != null)
+					con.close();
 			}
 	
 		} finally {
-			if (responseString != null) {
-				PrintWriter out = response.getWriter();
-				out.print(responseString);
-				out.flush();
+			if (errorString != null) {
+				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//				PrintWriter out = response.getWriter();
+//				out.print(responseString);
+//				out.flush();
 			}
 		}
 	}

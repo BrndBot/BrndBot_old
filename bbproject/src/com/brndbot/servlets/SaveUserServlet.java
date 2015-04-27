@@ -43,7 +43,7 @@ public class SaveUserServlet extends HttpServlet
 	{
 		logger.debug("--------Entering SaveUserServlet----------");
 
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con = null;
 
 		// Gather data
 		String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
@@ -76,8 +76,9 @@ public class SaveUserServlet extends HttpServlet
 		HttpSession session = request.getSession();
 
 		// Add record to database
-		int user_id;
+		int user_id = -1;
 		try {
+			con = DbConnection.GetDb();
 			User user = new User();
 			user.setEmail(userEmail);
 			user.setHashedPassword(hashedPassword);
@@ -89,6 +90,12 @@ public class SaveUserServlet extends HttpServlet
 			user.setOrganizationID(orgId);
 			user.saveUser (con);
 			user_id = user.getUserID();
+		}
+		catch (Exception e) {
+			logger.error ("Exception in SaveUserServlet: {}, {}",
+						e.getClass().getName(), e.getMessage());
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 		finally {
 			con.close();

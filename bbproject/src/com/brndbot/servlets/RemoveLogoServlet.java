@@ -43,24 +43,35 @@ public class RemoveLogoServlet extends HttpServlet
 	{
 		logger.debug("--------Entering RemoveLogoServlet----------");
 
-		// Get rid of previous values
-		DbConnection con = DbConnection.GetDb();
-
-		HttpSession session = request.getSession();
-		int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
-
-		// Check for attachment
-		UserLogo existing_logo = UserLogo.getLogoByUserID(user_id, con);
-		UserLogo user_logo = new UserLogo(user_id);
-		user_logo.setUserID(user_id);
-
-		// See if we need to delete the previous entry
-		if (existing_logo != null)
-		{
-			//System.out.println("Deleting old logo");
-			UserLogo.deleteLogo(user_id, con);
+		DbConnection con = null;
+		try {
+			// Get rid of previous values
+			con = DbConnection.GetDb();
+	
+			HttpSession session = request.getSession();
+			int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);
+	
+			// Check for attachment
+			UserLogo existing_logo = UserLogo.getLogoByUserID(user_id, con);
+			UserLogo user_logo = new UserLogo(user_id);
+			user_logo.setUserID(user_id);
+	
+			// See if we need to delete the previous entry
+			if (existing_logo != null)
+			{
+				UserLogo.deleteLogo(user_id, con);
+			}
 		}
-		con.close();
+		catch (Exception e) {
+			logger.error ("Exception in RemoveLogoServlet: {}, {}",
+						e.getClass().getName(), e.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+		finally {
+			if (con != null)
+				con.close();
+		}
+			
 		return;
 	}
 }

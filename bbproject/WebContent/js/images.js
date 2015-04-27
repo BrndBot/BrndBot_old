@@ -9,7 +9,7 @@
 			async: {
 	            saveUrl: "SaveImageServlet?brndbotimageid=2",
 	            removeUrl: "dummy",			// don't quite understand what this signifies
-	            autoUpload: false,			// allow user intervention
+	            autoUpload: true,			// no user intervention
 	            select:imagesjs.onSelect,	// function to let user name the file
 	            removeField: "fileNames[]"	// not sure what to do with this
     	    },

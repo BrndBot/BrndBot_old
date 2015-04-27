@@ -513,10 +513,12 @@ function replaceAll(find, rep, str)
 
 function onError(e) 
 {
-	// New informative error.
+	// New informative error. Hint. "No error information" is by definition not informative.
     var err = e.XMLHttpRequest.responseText;
     if (!err)
-    	err = "No error information.";
+    	err = e.statusText;
+    if (!err)
+    	err = "Error uploading or processing logo.";
     alert(err);
 	//alert('There was an unexpected error processing the logo.  The maximum file sie is ' + MAX_LOGO_SIZE + '.  Was your file too big?');
 	window.location = 'signup.jsp?toLogo=1';

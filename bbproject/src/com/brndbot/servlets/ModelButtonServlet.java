@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Organization;
 import com.brndbot.db.User;
+import com.brndbot.system.BrndbotException;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
@@ -65,21 +66,21 @@ public class ModelButtonServlet extends HttpServlet {
 					String category,
 					boolean hover) {
 		final int bufferSize = 4096;
-		String modelBase = SystemProp.get(SystemProp.LOCAL_ASSETS);
-		StringBuilder path = new StringBuilder (modelBase);
-		path.append ("/models/");
-		path.append (getOrganizationDir(userId));
-		path.append ("/");
-		path.append (category);
-		// Set the name for the normal or hover button
-		if (hover)
-			path.append("__Hover.png");
-		else
-			path.append ("__.png");
-		logger.debug ("Getting button image from {}", path);
-		FileInputStream inputStream = null;
 		ServletOutputStream out = null;
+		FileInputStream inputStream = null;
+		String modelBase = SystemProp.get(SystemProp.LOCAL_ASSETS);
 		try {
+			StringBuilder path = new StringBuilder (modelBase);
+			path.append ("/models/");
+			path.append (getOrganizationDir(userId));
+			path.append ("/");
+			path.append (category);
+			// Set the name for the normal or hover button
+			if (hover)
+				path.append("__Hover.png");
+			else
+				path.append ("__.png");
+			logger.debug ("Getting button image from {}", path);
 			inputStream = new FileInputStream(path.toString());
 			response.setContentType("image/png");
 			out = response.getOutputStream();
@@ -91,6 +92,9 @@ public class ModelButtonServlet extends HttpServlet {
 				out.write (buffer, 0, len);
 			}
 			response.setStatus (HttpServletResponse.SC_OK);
+		}
+		catch (BrndbotException e) {
+			logger.error ("BrndbotException in returnCategoryButton: {}", e.getMessage());
 		}
 		catch (IOException e) {
 			logger.debug ("Button image not found");
@@ -115,13 +119,20 @@ public class ModelButtonServlet extends HttpServlet {
 //		response.setStatus (HttpServletResponse.SC_NOT_FOUND);	// TODO stub
 //	}
 	
-	private String getOrganizationDir (int userId) {
-		DbConnection con = DbConnection.GetDb();
-		User user = new User(userId);
-		user.loadClientInfo(con);
-		int orgId = user.getOrganizationID();
-		Organization org = Organization.getById(orgId);
-		return org.getDirectoryName();
+	private String getOrganizationDir (int userId) throws BrndbotException {
+		DbConnection con = null;
+		try {
+			con = DbConnection.GetDb();
+			User user = new User(userId);
+			user.loadClientInfo(con);
+			int orgId = user.getOrganizationID();
+			Organization org = Organization.getById(orgId);
+			return org.getDirectoryName();
+		}
+		finally {
+			if (con != null)
+				con.close();
+		}
 	}
 
 }

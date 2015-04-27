@@ -41,19 +41,23 @@ public class ChannelButtonRenderer extends Renderer {
 				// Throw the NullPointerException anyway. We're doomed.
 			}
 			styleSetMap = client.getStyleSets(modelName);
-			if (styleSetMap == null)
+			if (styleSetMap == null) {
 				logger.debug ("styleSetMap is null!");
-			for (StyleSet ss : styleSetMap.values()) {
-				Set<String> channels = ss.getChannels ();
-				for (String channel : channels) {
-					if ("Facebook".equals (channel)) {
-						hasFacebook = true;
-					}
-					else if ("Twitter".equals (channel)) {
-						hasTwitter = true;
-					}
-					else if ("Print".equals (channel)) {
-						hasPrint = true;
+				// But this might be legitimate; just no stylesets.
+			}
+			if (styleSetMap != null) {
+				for (StyleSet ss : styleSetMap.values()) {
+					Set<String> channels = ss.getChannels ();
+					for (String channel : channels) {
+						if ("Facebook".equals (channel)) {
+							hasFacebook = true;
+						}
+						else if ("Twitter".equals (channel)) {
+							hasTwitter = true;
+						}
+						else if ("Print".equals (channel)) {
+							hasPrint = true;
+						}
 					}
 				}
 			}

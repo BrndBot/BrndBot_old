@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Image;
 import com.brndbot.db.MimeTypedInputStream;
+import com.brndbot.system.BrndbotException;
 //import com.brndbot.system.LoginCookie;
 import com.brndbot.system.SessionUtils;
 
@@ -85,8 +86,13 @@ public class ImageServlet extends HttpServlet {
 		}
 		String metaParam = (String) request.getParameter ("meta");
 		if (metaParam != null) {
-			logger.debug ("Getting metadata, id = {}", imageId);
-			doMetadata (request, response, userId, imageId, userLogo, useDefaultImage, useFusedImage);
+			try {
+				doMetadata (request, response, userId, imageId, userLogo, useDefaultImage, useFusedImage);
+			}
+			catch (Exception e) {
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				return;
+			}
 		}
 		else {
 			logger.debug ("Getting image, id = {}", imageId);
@@ -102,41 +108,53 @@ public class ImageServlet extends HttpServlet {
 			boolean useDefaultImage,
 			boolean useFusedImage) 
 					throws ServletException, IOException {
-		DbConnection con = DbConnection.GetDb();
-
-		MimeTypedInputStream imgStream;
-		if (useDefaultImage) 
-			imgStream = Image.getDefaultImageStream (userId, con);
-		else if (userLogo)
-			imgStream = Image.getLogoImageStream (userId, con);
-		else if (useFusedImage)
-			imgStream = Image.getFusedImageStream(userId, con);
-		else
-			imgStream = Image.getImageStream(userId, imageId, con);
-		if (imgStream == null) {
-			// If we couldn't get anything, try for the global default image.
-			imgStream = Image.getGlobalDefaultStream (con);
+		DbConnection con = null;
+		try {
+			con = DbConnection.GetDb();
+	
+			MimeTypedInputStream imgStream;
+			if (useDefaultImage) 
+				imgStream = Image.getDefaultImageStream (userId, con);
+			else if (userLogo)
+				imgStream = Image.getLogoImageStream (userId, con);
+			else if (useFusedImage)
+				imgStream = Image.getFusedImageStream(userId, con);
+			else
+				imgStream = Image.getImageStream(userId, imageId, con);
 			if (imgStream == null) {
-				logger.error ("Couldn't get image stream");
-				con.close();
-				response.setStatus (HttpServletResponse.SC_NOT_FOUND);
-				return;
+				// If we couldn't get anything, try for the global default image.
+				imgStream = Image.getGlobalDefaultStream (con);
+				if (imgStream == null) {
+					logger.error ("Couldn't get image stream");
+					con.close();
+					response.setStatus (HttpServletResponse.SC_NOT_FOUND);
+					return;
+				}
 			}
+			response.setContentType (imgStream.getMimeType());
+			
+			ServletOutputStream out = response.getOutputStream();
+			byte[] buffer = new byte[bufferSize];
+			for (;;) {
+				int len = imgStream.read(buffer);
+				if (len <= 0)
+					break;
+				out.write (buffer, 0, len);
+			}
+			imgStream.close();
+			out.flush ();
+			response.setStatus (HttpServletResponse.SC_OK);
 		}
-		response.setContentType (imgStream.getMimeType());
-		
-		ServletOutputStream out = response.getOutputStream();
-		byte[] buffer = new byte[bufferSize];
-		for (;;) {
-			int len = imgStream.read(buffer);
-			if (len <= 0)
-				break;
-			out.write (buffer, 0, len);
+		catch (Exception e) {
+			logger.error ("Exception in ImageServlet: {}, {}", e.getClass().getName(), e.getMessage());
+			if (con != null)
+				con.close();
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		imgStream.close();
-		con.close();
-		out.flush ();
-		response.setStatus (HttpServletResponse.SC_OK);
+		finally {
+			if (con != null)
+				con.close();
+		}
 	}
 	
 	private void doMetadata (HttpServletRequest request, 
@@ -146,7 +164,7 @@ public class ImageServlet extends HttpServlet {
 			boolean userLogo, 
 			boolean useDefaultImage,
 			boolean useFusedImage) 
-					throws ServletException, IOException {
+					throws ServletException, IOException, BrndbotException {
 		DbConnection con = DbConnection.GetDb();
 
 		Image image;

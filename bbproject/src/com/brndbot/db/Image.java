@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import javazoom.upload.UploadFile;
 
+import com.brndbot.system.BrndbotException;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
 import com.brndbot.util.AppEnvironment;
@@ -260,59 +261,7 @@ public class Image implements TableModel
 	}
 
 	
-	/** Create a new row in the table "images" with the specified data.
-	 *  This version passes an InputStream for the image blob data instead
-	 *  of using the image value.
-	 */
-//	public int saveFromStream(InputStream blobStream, DbConnection con) throws SQLException
-//	{
-//		logger.debug("saveFromStream");
-//		PreparedStatement pstmt;
-//			pstmt = con.createPreparedStatement("INSERT INTO images (" +
-//					"ImageType, UserID, ImageURL, ImageSize, ImageHeight, ImageWidth, ImageName, Image) " +
-//					"VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-//		pstmt.setInt(1, getImageType().getValue());
-//		pstmt.setInt(2, getUserID().intValue());
-//		pstmt.setString(3, getImageUrl());
-//		pstmt.setInt(4, getImageSize());
-//		pstmt.setInt(5, getImageHeight());
-//		pstmt.setInt(6, getImageWidth());
-//		pstmt.setString(7, getImageName());
-//		pstmt.setBinaryStream(8, blobStream);
-//		// Timestamp is defined by default as current system time 
-//		pstmt.executeUpdate();
-//		pstmt.close();
-//		logger.debug ("returning from save");
-//		return DbUtils.getLastInsertID(con);
-//	}
 
-	/** Returns the total number of images in the database
-	 *  (why was this ever written?) */
-//	static public int getImageCount(DbConnection con)
-//	{
-//		String sql = "SELECT COUNT(*) FROM images;";
-//		Statement stmt = con.createStatement();
-//		ResultSet rs = null;
-//		int count = 0;
-//		try
-//		{
-//			rs = stmt.executeQuery(sql);
-//			if (rs.next())
-//			{
-//				count = rs.getInt(1);
-//			}
-//		} 
-//		catch (SQLException e) 
-//		{
-//			e.printStackTrace();
-//			throw new RuntimeException(e.getMessage());
-//		}
-//		finally
-//		{
-//			DbUtils.close(stmt, rs);
-//		}
-//		return count;
-//	}
 
 	/** Deletes an image that matches the specified ImagdID and UserID.
 	 *  For some unclear reason, fetches the image first. The only reason I
@@ -330,7 +279,7 @@ public class Image implements TableModel
 	}
 
 	static public String getBoundImage(int image_id, int user_id,
-			int max_image_height, int max_image_width)
+			int max_image_height, int max_image_width) throws BrndbotException
 	{
 		logger.debug("entering getBoundImage");
 		DbConnection con = DbConnection.GetDb();
@@ -354,7 +303,8 @@ public class Image implements TableModel
 			}
 		}
 		finally {
-			con.close();
+			if (con != null)
+				con.close();
 		}
 		return s;
 	}
@@ -499,40 +449,7 @@ public class Image implements TableModel
 		return retList;
 	}
 	 
-	/** Creates an Image object from the ImageID and UserID. 
-	 *  Returns null if there's no match.
-	 *  Doesn't load the image blob.
-	 *  What's the difference between this and getImageByID?
-	 *  Only that this doesn't work with database images.
-	 */
-//	static public Image makeThisImage(int image_id, int user_id, DbConnection con)
-//	{
-//		Statement stmt = con.createStatement();
-//		String sql = "SELECT ImageID, UserID, ImageType, ImageURL, ImageSize, ImageHeight, ImageWidth FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
-//		ResultSet rs = con.QueryDB(sql, stmt);
-//		Image image = null;
-//		try 
-//		{
-//			if (rs.next())
-//			{
-//				image = new Image(rs);
-//				if (image.getImageID().intValue() != image_id)
-//				{
-//					image = null;
-//				}
-//			}
-//		}
-//		catch (SQLException e)
-//		{
-//			logger.error ("SQLException getting image: {}", e.getMessage());
-//			e.printStackTrace();
-//		}
-//		finally 
-//		{
-//			DbUtils.close(stmt, rs);
-//		}
-//		return image;
-//	}
+
 
 
 	static public boolean isAnImage(String extension)

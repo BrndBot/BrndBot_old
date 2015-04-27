@@ -51,9 +51,10 @@ public class EmailExistServlet extends HttpServlet
 	{
 		logger.info("Entering EmailExistServlet");
 
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con = null;
 
 		try {
+			con = DbConnection.GetDb();
 			// Gather data
 			String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
 			String authCode = Utils.getStringParameter(request, "hiddenAuth").toLowerCase();
@@ -91,6 +92,10 @@ public class EmailExistServlet extends HttpServlet
 			out.println(s);
 			out.flush();
 			response.setStatus(HttpServletResponse.SC_OK);
+		}
+		catch (Exception e) {
+			logger.error ("Error in EmailExistServlet: {}, {}",
+						e.getClass().getName(), e.getMessage());
 		}
 		finally {
 			con.close();

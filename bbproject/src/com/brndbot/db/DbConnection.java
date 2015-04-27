@@ -16,6 +16,7 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.brndbot.system.BrndbotException;
 import com.brndbot.system.SystemProp;
 
 import snaq.db.ConnectionPool;
@@ -64,7 +65,7 @@ public class DbConnection
 		}
 	}
 
-	static public DbConnection GetDb()
+	static public DbConnection GetDb() throws BrndbotException
 	{
 		DbConnection con = null;
 		if (_driver == null)
@@ -130,9 +131,12 @@ public class DbConnection
 */			}
 		}
 
-		if (con == null)
-		{
+		if (con == null) {
 			con = createViableDbConnection();
+		}
+		if (con == null) {
+			// Failed twice. Throw an exception.
+			throw new BrndbotException ("Unable to get database connection");
 		}
 
 		return con;

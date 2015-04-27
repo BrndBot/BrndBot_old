@@ -69,29 +69,5 @@ public class ChannelBase
 		}
 	}
 
-/*	static public ArrayList<ChannelBase> getContentTypes(DbConnection con)
-	{
-		Statement stmt = con.createStatement();
-		ArrayList<ChannelBase> lst = new ArrayList<ChannelBase>();
-		String sql = "SELECT * from ltchanneltypes;";
-		ResultSet rs = con.QueryDB(sql, stmt);
-		try
-		{
-			if (rs.next())
-			{
-				lst.add(new ChannelBase(rs));
-			}
-		}
-		catch (SQLException e)
-		{
-			System.out.println("Exception in getChannelTypes(): " + e.getMessage());
-			e.printStackTrace();
-		}
-		finally
-		{
-			DbUtils.close(stmt, rs);
-		}
-		return lst;
-	}
-*/
+
 }

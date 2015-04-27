@@ -168,45 +168,17 @@ public class UserLogo implements TableModel
 			con.rollback();
 		}
 	}
-/*
-	static public UserLogo makeThisLogo(int user_id, int logo_id, DbConnection con)
-	{
-		Statement stmt = con.createStatement();
-		String sql = "SELECT a.* FROM userlogo as a, User WHERE LogoID = " + logo_id + 
-			" AND a.UserID = User.UserID;";
-//		System.out.println("SQL: " + sql);
-		ResultSet rs = con.QueryDB(sql, stmt);
-		UserLogo Logo = null;
-		try 
-		{
-			if (rs.next())
-			{
-				Logo = new UserLogo(rs);
-				if (Logo.getUserID().intValue() != user_id)
-				{
-					Logo = null;
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		finally 
-		{
-			DbUtils.close(stmt, rs);
-		}
-		return Logo;
-	}
-*/
+
+
 	static public String getBoundLogo(
 			int user_id, int max_logo_height, int max_logo_width)
 	{
 		System.out.println("---entering getBoundLogo---");
-		DbConnection con = DbConnection.GetDb();
-		UserLogo logo = getLogoByUserID(user_id, con);
 		String s = "<div style=\"padding:0.625rem;\">Invalid logo</div>";
+		DbConnection con = null;
 		try {
+			con = DbConnection.GetDb();
+			UserLogo logo = getLogoByUserID(user_id, con);
 			if (logo != null)
 			{
 				int height = logo.getImage().getImageHeight().intValue();
@@ -220,12 +192,16 @@ public class UserLogo implements TableModel
 					int w = ((int)(width * scale));
 					s = String.format("<img src=\"%s\" alt=\"\" height=\"%d\" width=\"%d\"></img>",
 							logo.getImage().getImageUrl(), h, w);
-	//				System.out.println("Logo: " + s);
 				}
 			}
 		}
+		catch (Exception e) {
+			logger.error ("Exception in getBoundLogo, exception = {}, user id = {}", 
+					e.getClass().getName(), user_id);
+		}
 		finally {
-			con.close();
+			if (con != null)
+				con.close();
 		}
 		return s;
 	}

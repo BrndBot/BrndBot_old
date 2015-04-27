@@ -142,7 +142,6 @@ public class User implements TableModel
 				}
 			}
 			DbUtils.close(rs);
-			//con.close();
 		}
 	
 	}
@@ -205,9 +204,6 @@ public class User implements TableModel
 			pstmt.setString(5, companyUrl);
 			pstmt.setString(6, facebook);
 			pstmt.setString(7, twitter);
-//			pstmt.setString(8, _linked_in);
-//			pstmt.setString(9, _you_tube);
-//			pstmt.setString(10, _instagram);
 			pstmt.setInt(8, orgId);
 			pstmt.executeUpdate();
 			// Get the new user ID

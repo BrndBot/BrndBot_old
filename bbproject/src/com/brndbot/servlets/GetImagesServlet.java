@@ -65,20 +65,27 @@ public class GetImagesServlet extends HttpServlet
 		if (image_type == null)
 			image_type = ImageType.USER_UPLOAD;
 
-		DbConnection con = DbConnection.GetDb();
-		JSONArray json_array = null;
 		try {
-			json_array = Image.getImagesForDisplay(user_id, image_type, con);
+			DbConnection con = DbConnection.GetDb();
+			JSONArray json_array = null;
+			try {
+				json_array = Image.getImagesForDisplay(user_id, image_type, con);
+			}
+			finally {
+				con.close();
+			}
+			response.setContentType("application/json; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			String s = json_array.toString();
+			out.println(s);
+			out.flush();
+			response.setStatus(HttpServletResponse.SC_OK);
 		}
-		finally {
-			con.close();
+		catch (Exception e) {
+			logger.error ("Exception in GetImagesServlet: {}, {}",
+							e.getClass().getName(), e.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		response.setContentType("application/json; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		String s = json_array.toString();
-		out.println(s);
-		out.flush();
-		response.setStatus(HttpServletResponse.SC_OK);
 		return;
 	}
 }

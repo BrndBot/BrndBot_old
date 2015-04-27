@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.brndbot.db.DbConnection;
+import com.brndbot.system.BrndbotException;
 import com.brndbot.system.SessionUtils;
 import com.brndbot.db.Image;
 
@@ -42,11 +43,12 @@ public class ImagesServlet extends HttpServlet {
 		logger.debug ("Starting ImagesServlet post");
 		HttpSession session = request.getSession();
 		int userId = SessionUtils.getUserId(session);
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con = null;
 		List<Image> images = Image.getAllUserImages(userId, con);
 		
 		JSONArray returnArray = new JSONArray();
 		try {
+			con = DbConnection.GetDb();
 			for (Image img : images) {
 				JSONObject item = new JSONObject();
 				item.put ("id", img.getImageID());
@@ -69,9 +71,16 @@ public class ImagesServlet extends HttpServlet {
 				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}	
 		}
+		catch (BrndbotException e) {
+			logger.error ("Error in ImageServlet: {}", e.getMessage());
+		}
 		catch (JSONException e) {
 			logger.error ("JSON exception creating JSON for user images");
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+		finally {
+			if (con != null)
+				con.close();
 		}
 	}
 }

@@ -120,11 +120,6 @@
     </servlet>
 
     <servlet>
-      <servlet-name>SaveHTMLAsImageServlet</servlet-name>
-      <servlet-class>com.brndbot.servlets.SaveHTMLAsImageServlet</servlet-class>
-    </servlet>
-
-    <servlet>
       <servlet-name>SavePaletteServlet</servlet-name>
       <servlet-class>com.brndbot.servlets.SavePaletteServlet</servlet-class>
     </servlet>
@@ -137,11 +132,6 @@
     <servlet>
       <servlet-name>RemoveLogoServlet</servlet-name>
       <servlet-class>com.brndbot.servlets.RemoveLogoServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-      <servlet-name>GetFacilitiesServlet</servlet-name>
-      <servlet-class>com.brndbot.servlets.Get FacilitiesServlet</servlet-class>
     </servlet>
 
     <servlet>
@@ -220,11 +210,6 @@
     </servlet-mapping>
 
     <servlet-mapping>
-      <servlet-name>SaveHTMLAsImageServlet</servlet-name>
-      <url-pattern>/SaveHTMLAsImageServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
       <servlet-name>SavePaletteServlet</servlet-name>
       <url-pattern>/SavePaletteServlet</url-pattern>
     </servlet-mapping>
@@ -237,11 +222,6 @@
     <servlet-mapping>
       <servlet-name>RemoveLogoServlet</servlet-name>
       <url-pattern>/RemoveLogoServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-      <servlet-name>GetFacilitiesServlet</servlet-name>
-      <url-pattern>/GetFacilitiesServlet</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -294,11 +274,6 @@
 		<servlet-name>ImagesServlet</servlet-name>
 	</filter-mapping>
 	
-	<filter-mapping>
-		<filter-name>AuthenticationFilter</filter-name>
-		<servlet-name>SaveHTMLAsImageServlet</servlet-name>
-	</filter-mapping>
-
     <filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
     	<servlet-name>SavePaletteServlet</servlet-name>
@@ -307,11 +282,6 @@
     <filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
     	<servlet-name>RemoveLogoServlet</servlet-name>
-    </filter-mapping>
-
-    <filter-mapping>
-		<filter-name>AuthenticationFilter</filter-name>
-    	<servlet-name>GetFacilitiesServlet</servlet-name>
     </filter-mapping>
 
     <filter-mapping>

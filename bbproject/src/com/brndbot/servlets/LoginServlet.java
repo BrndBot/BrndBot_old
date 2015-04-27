@@ -73,10 +73,11 @@ public class LoginServlet extends HttpServlet
 		session.removeAttribute (SessionUtils.CLIENT);
 		session.removeAttribute (SessionUtils.USER_ID);
 		
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con = null;
 
-		int user_id;
+		int user_id = -1;
 		try {
+			con = DbConnection.GetDb();
 			user_id = User.Login(email_address, password, con);
 			if (user_id == 0)
 			{
@@ -87,8 +88,15 @@ public class LoginServlet extends HttpServlet
 	
 			session.setAttribute(SessionUtils.IS_PRIV, User.isPrivileged(user_id, con));
 		}
+		catch (Exception e) {
+			logger.error ("Exception in LoginServlet: {}, {}", 
+						e.getClass().getName(), e.getMessage());
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
 		finally {
-			con.close();
+			if (con != null)
+				con.close();
 		}
 
 		// Success!
