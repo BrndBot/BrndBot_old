@@ -408,8 +408,7 @@ function skipPalette()
 {
 //	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#paletteForkPane').hide();
-	$('#lookPane').show();
-	$('#lookPane2').show();
+	showLookPane();
 	savePalette();
 }
 
@@ -424,8 +423,7 @@ function unforkToLook()
 {
 //	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#palettePane').hide();
-	$('#lookPane').show();
-	$('#lookPane2').show();
+	showLookPane();
 	savePalette();
 }
 
@@ -433,6 +431,26 @@ function posSelected()
 {
 //	document.getElementById('brndbotHeader').scrollIntoView();
 	$('#posSelectPane').hide();
+	showLookPane();
+}
+
+function showLookPane () {
+	$('#lookPane2 ul').kendoListView ({
+		dataSource: new kendo.data.DataSource ({
+			transport: {
+					read: 
+					{
+						type: "POST",
+						url: "PersonalityServlet",
+						dataType: "json"
+					}
+			},
+			error: function (xhr) {
+				console.log ("Error in showLookPane: " + xhr.statusCode());
+			}
+		}),
+		template: kendo.template($('#personalitiesTemplate').html())
+	});
 	$('#lookPane').show();
 	$('#lookPane2').show();
 }

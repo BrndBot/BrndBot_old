@@ -116,6 +116,8 @@ public class DashboardServlet extends HttpServlet
 			}
 		} catch (JSONException e) {
 			logger.error ("Error getting promo prototypes: {}", e.getClass().getName());
+			response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
 		}
 		String jsonStr = jsonProtos.toString();
 

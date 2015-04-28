@@ -77,6 +77,8 @@ public class Organization implements TableModel {
 		return org;
 	}
 	
+	/* Return an Organization object with the specified ID.
+	 * Returns null if no match. */
 	public static Organization getById (int orgId) {
 		Organization org = null;
 		DbConnection con = null;
@@ -115,7 +117,46 @@ public class Organization implements TableModel {
 		}
 		return org;
 	}
-	
+
+	public static Organization getByName (String name) {
+		Organization org = null;
+		DbConnection con = null;
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		try
+		{
+			con = DbConnection.GetDb();
+			String sql = "SELECT id, moduleclass, Directory FROM organization WHERE name = ?;";
+			pstmt = con.createPreparedStatement(sql);
+			pstmt.setString (1, name);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				org = new Organization();
+				org.id = rs.getInt (1);
+				org.name = name;
+				org.moduleClass = rs.getString(2);
+				org.directoryName = rs.getString(3);
+			} else {
+				logger.error ("No organization found with name {}", name);
+			}
+		} 
+		catch (Exception e) 
+		{
+			logger.error ("Error in getByid query, exception = {}, name = {}", 
+						e.getClass().getName(), name);
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+		finally
+		{
+			DbUtils.close(pstmt, rs);
+			if (con != null)
+				con.close();
+		}
+		return org;
+	}
+
 	public void setOrganizationID (int orgid) {
 		id = orgid;
 	}
@@ -136,6 +177,11 @@ public class Organization implements TableModel {
 	/** Returns the name used for organization directories */
 	public String getDirectoryName () {
 		return directoryName;
+	}
+	
+	/** Returns the organization ID */
+	public int getId () {
+		return id;
 	}
 
 	/** getModuleClass should return the name of an implementation

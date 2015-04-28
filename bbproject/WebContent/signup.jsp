@@ -368,7 +368,7 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 
 
 
-		<!-- Start Look Pane -->
+		<!-- Start Personality Pane -->
 		<div id="lookPane" style="display:none;padding-top:2rem;">
 			<div style="text-align:center">
 				<div class="unit lastUnit">
@@ -388,25 +388,9 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 			</div>
 		</div>
 		<div id="lookPane2" style="width:100%;display:none;">
-			<div style="text-align:center;width:100%;">
-				<div class="unit" style="width:26%;padding-right:3rem">
-					<div id="mockup1" class="mockups">
-						<img alt="" width="240px" src="images/saktiMockup.png" />
-					</div>
-				</div>
-				<div class="unit" style="width:26%;padding-right:3rem">
-					<div id="mockup2" class="mockups">
-						<img alt="" width="240px" src="images/barreMockup.png" />
-					</div>
-				</div>
-				<div class="unit" style="width:26%">
-					<div id="mockup3" class="mockups">
-						<img alt="" width="240px" src="images/fitMockup.png" />
-					</div>
-				</div>
-				<div style="clear:both">&nbsp;
-				</div>
-			</div>
+			<ul style="width:100%;">
+			
+			</ul>
 			<div style="padding-top:1.5rem">
 				<div class="unit size1of3">
 					<button id="signUpComplete" class="greenButton rounded" style="width:9.375rem">finished</button>
@@ -455,5 +439,8 @@ session_mgr.setImageID(IMAGE_TYPE_LOGO);
 
 </script>
 
+<script type="text/x-kendo-template" id="personalitiesTemplate">
+	<li data-id="#:id#">#:name#</li>
+</script>
 </body>
 </html>

@@ -120,6 +120,11 @@
     </servlet>
 
     <servlet>
+      <servlet-name>PersonalityServlet</servlet-name>
+      <servlet-class>com.brndbot.servlets.PersonalityServlet</servlet-class>
+    </servlet>
+
+    <servlet>
       <servlet-name>SavePaletteServlet</servlet-name>
       <servlet-class>com.brndbot.servlets.SavePaletteServlet</servlet-class>
     </servlet>
@@ -207,6 +212,11 @@
     <servlet-mapping>
       <servlet-name>ImagesServlet</servlet-name>
       <url-pattern>/ImagesServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>PersonalityServlet</servlet-name>
+      <url-pattern>/PersonalityServlet</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
