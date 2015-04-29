@@ -326,14 +326,19 @@ public class Image implements TableModel
 		String image_file = Utils.Slashies(tomcat_base + "\\" + local_image_file_name);
 		logger.debug("getBoundImage, Image file path: {}", image_file);
 		BufferedImage bimg = null;
+		String s = "<div style=\"padding:10px;\">Invalid image</div>";
 		try {
 			bimg = ImageIO.read(new File(image_file));
 		} 
-		catch (IOException e) 
-		{
+		catch (IOException e) {
 			e.printStackTrace();
 		}
-		String s = "<div style=\"padding:10px;\">Invalid image</div>";
+		catch (Throwable t) {
+			// TODO Some versions of Openjdk don't support JPEG in ImageIO.
+			// Until I work up a backup, use this just so it doesn't break.
+			s = genImageTag (null, local_image_file_name,
+					max_img_height, max_img_width, max_img_height, max_img_width);
+		}
 
 		if (bimg != null)
 		{
@@ -520,9 +525,17 @@ public class Image implements TableModel
 					// Get the image info from the image in memory, instead of writing it
 					// to a file and then reading again.
 					ByteArrayInputStream instrm = new ByteArrayInputStream (bytes);
-					BufferedImage bimg = ImageIO.read (instrm);
-					return_image.setImageWidth(bimg.getWidth());
-					return_image.setImageHeight(bimg.getHeight());
+					try {
+						BufferedImage bimg = ImageIO.read (instrm);
+						return_image.setImageWidth(bimg.getWidth());
+						return_image.setImageHeight(bimg.getHeight());
+					}
+					catch (Throwable t) {
+						// TODO temporary repair due to problem with JPEG in ImageIO
+						logger.error ("JavaIO problem in uploadFile: {}", t.getClass().getName());
+						return_image.setImageWidth(200);
+						return_image.setImageHeight(200);
+					}
 
 					// Store in the database
 					
