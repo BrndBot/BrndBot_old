@@ -17,7 +17,9 @@
 var benchstyle = {
 		
 	// Fixed height for promotion canvas
-	MAX_STYLE_DIM: 120,
+	MAX_STYLE_HT: 120,
+	MAX_STYLE_WID: 230,
+	
 /** Insert the fields in the content tab needed to edit a promotion. 
  *  src  JQuery selector for the div into which the fields
  *       will be inserted
@@ -38,14 +40,17 @@ insertStyles: function (dest) {
 		var canvas = $(this).find("canvas");
 		promo.draw (canvas.attr("id"));
 		var scaleRatio = 1.0;
-//		if (styleSet.width > benchstyle.MAX_STYLE_DIM || styleSet.height > benchstyle.MAX_STYLE_DIM) {
-//			scaleRatio = Math.min (benchstyle.MAX_STYLE_DIM / styleSet.width,
-//								benchstyle.MAX_STYLE_DIM / styleSet.height);
+//		if (styleSet.width > benchstyle.MAX_STYLE_HT || styleSet.height > benchstyle.MAX_STYLE_HT) {
+//			scaleRatio = Math.min (benchstyle.MAX_STYLE_HT / styleSet.width,
+//								benchstyle.MAX_STYLE_HT / styleSet.height);
 //		}
-		scaleRatio = benchstyle.MAX_STYLE_DIM / styleSet.height;
-		var canvasWidth = "" + Math.floor(styleSet.width * scaleRatio) + "px"
+		scaleRatio = benchstyle.MAX_STYLE_HT / styleSet.height;
+		if (styleSet.width * scaleRatio > benchstyle.MAX_STYLE_WID) {
+			scaleRatio = benchstyle.MAX_STYLE_WID / styleSet.width;
+		}
+		var canvasWidth = "" + Math.floor(styleSet.width * scaleRatio) + "px";
 		canvas.css("width", canvasWidth);
-		var canvasHeight = "" + benchstyle.MAX_STYLE_DIM + "px";
+		var canvasHeight = "" + benchstyle.MAX_STYLE_HT + "px";
 		canvas.css("height", canvasHeight);
 	});
 },

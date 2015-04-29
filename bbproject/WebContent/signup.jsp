@@ -440,7 +440,7 @@ session_mgr.setImageID(IMAGE_TYPE_LOGO);
 </script>
 
 <script type="text/x-kendo-template" id="personalitiesTemplate">
-	<li data-id="#:id#">#:name#</li>
+	<li class="selPersonality" data-id="#:id#">#:name#</li>
 </script>
 </body>
 </html>

@@ -441,7 +441,7 @@ function showLookPane () {
 					read: 
 					{
 						type: "POST",
-						url: "PersonalityServlet",
+						url: "PersonalityServlet?action=get",
 						dataType: "json"
 					}
 			},
@@ -451,6 +451,12 @@ function showLookPane () {
 		}),
 		template: kendo.template($('#personalitiesTemplate').html())
 	});
+//	$('.selPersonality').on ('click', function (e) {
+//		var persId = $(this).attr('data-id');
+//		$.ajax({
+//			type: GET,
+//		});
+//	});
 	$('#lookPane').show();
 	$('#lookPane2').show();
 }

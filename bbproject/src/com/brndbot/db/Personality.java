@@ -37,6 +37,33 @@ public class Personality implements TableModel {
 		return orgId;
 	}
 	
+	/** Returns the Personality with the given ID, or null. */
+	public static Personality getById (int id) {
+		PreparedStatement pstmt = null;
+		DbConnection con = null;
+		ResultSet rs = null;
+		try {
+			con = DbConnection.GetDb();
+			String sql = "SELECT name, orgid FROM personality WHERE id = ?;";
+			pstmt = con.createPreparedStatement(sql);
+			pstmt.setInt (1, id);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				Personality pers = new Personality ();
+				pers.id = id;
+				pers.name = rs.getString (1);
+				pers.orgId = rs.getInt(2);
+				return pers;
+			}
+		}
+		catch (Exception e) {
+			logger.error ("Error in getPersonalityById, id = {}", id);
+			throw new RuntimeException (e);
+		}
+		return null;
+	}
+	
+	
 	/** Returns all Personalities that have a specified organization ID */
 	public static List<Personality> getPersonalitiesByOrgId (int orgId) {
 		PreparedStatement pstmt = null;

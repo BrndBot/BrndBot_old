@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet
 		String missing_str = "";
 
 		// Email address
-		String email_address = (String)request.getParameter(LoginCookie.EMAIL_ADDRESS); 
+		String email_address = (String)request.getParameter("brndbotemailcookie"); 
 		if (email_address == null || email_address.length() == 0)
 		{
 			logger.info("Email address missing");
@@ -55,7 +55,7 @@ public class LoginServlet extends HttpServlet
 		}
 
 		// New Password
-		String password = (String)request.getParameter(LoginCookie.PASSWORD); 
+		String password = (String)request.getParameter("brndbotpassword"); 
 		if (password == null || password.length() == 0)
 		{
 			logger.info("Password missing");
@@ -76,6 +76,7 @@ public class LoginServlet extends HttpServlet
 		DbConnection con = null;
 
 		int user_id = -1;
+		User user = null;
 		try {
 			con = DbConnection.GetDb();
 			user_id = User.Login(email_address, password, con);
@@ -86,6 +87,8 @@ public class LoginServlet extends HttpServlet
 				return;
 			}
 	
+			user = new User (user_id);
+			user.loadClientInfo(con);
 			session.setAttribute(SessionUtils.IS_PRIV, User.isPrivileged(user_id, con));
 		}
 		catch (Exception e) {
@@ -103,6 +106,7 @@ public class LoginServlet extends HttpServlet
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
 		session.removeAttribute(SessionUtils.LOGIN_ERROR);
 		Client client = Client.getClient (session);		// Load up the client
+		client.setBrandPersonality (user.getPersonalityID());
 		SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client.getCacheKey());
 		SessionUtils.saveSessionData (request, SessionUtils.ORGANIZATION, client.getOrganizationName());
 

@@ -346,7 +346,7 @@ All rights reserved by Brndbot, Ltd. 2015
 	</div>
 	
 	<!-- Template for image gallery modal window -->
-	<div display="none"
+	<div style="display:none"
 		<div id="galleryWindow">
 			<ul id="imageGallery" style="border-style:none"></ul>
 		</div>

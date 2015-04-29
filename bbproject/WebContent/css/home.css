@@ -48,6 +48,8 @@
 .categoryButton img {
 	width: 94px;
 	height: 91px;
+	min-width:94px;
+	min-height:91px;
 }
 
 .categoryName {

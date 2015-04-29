@@ -12,7 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import com.brndbot.client.BrandIdentity;
+import com.brndbot.client.BrandPersonality;
 import com.brndbot.client.ClientException;
 import com.brndbot.client.ClientInterface;
 import com.brndbot.client.Model;
@@ -22,6 +22,7 @@ import com.brndbot.client.style.StyleSet;
 import com.brndbot.client.parser.StyleSetParser;
 import com.brndbot.db.DbConnection;
 import com.brndbot.db.Organization;
+import com.brndbot.db.Personality;
 import com.brndbot.db.User;
 import com.brndbot.system.BrndbotException;
 import com.brndbot.system.SessionUtils;
@@ -69,7 +70,7 @@ public class Client implements Serializable {
 	 *  us data 
 	 */
 	private transient ClientInterface clientInterface;
-	private BrandIdentity brandIdentity;
+	private BrandPersonality brandPersonality;
 	private ModelCollection modelCollection;
 	
 	private String clientInterfaceClass;
@@ -112,7 +113,18 @@ public class Client implements Serializable {
 			client = new Client (moduleClass);
 			client.organizationName = org.getName();
 			client.organizationDirName = org.getDirectoryName();
-			client.brandIdentity = new BrandIdentity ("default");	// TODO Is this a required value?
+			int persId = user.getPersonalityID();
+			logger.debug ("Brand personality ID = {}", persId);
+			client.brandPersonality = new BrandPersonality(persId);
+			Personality pers = Personality.getById(persId);
+			if (pers == null || pers.getOrgId() != orgId) {
+				logger.warn ("Setting up dummy BrandPersonality");
+				client.brandPersonality = new BrandPersonality();		// Can only use own organization's brand personality
+			}
+			else {
+				logger.debug ("Brand personality name = {}", pers.getName());
+				client.brandPersonality.setName (pers.getName());
+			}
 			client.loadModels ();
 			client.loadStyleSets();
 			client.applyBrandStyles();
@@ -251,15 +263,22 @@ public class Client implements Serializable {
 		return organizationName;
 	}
 	
-	public BrandIdentity getBrandIdentity () {
+	public BrandPersonality getBrandPersonality () {
 		touch();
-		return brandIdentity;
+		return brandPersonality;
 	}
 	
-	/** Specify the active brand identity */
-	public void setBrandIdentity (BrandIdentity bi) {
+	/** Specify the active brand personality */
+	public void setBrandPersonality (int id) {
 		touch();
-		brandIdentity = bi;
+		Personality pers = Personality.getById(id);
+		if (pers == null ) {
+			// TODO should check organization ID
+			logger.warn ("Setting up dummy BrandPersonality");
+			brandPersonality = new BrandPersonality();		// Can only use own organization's brand personality
+		}
+		brandPersonality.setName (pers.getName());
+
 	}
 	
 	public ModelCollection getModelCollection () {
@@ -303,21 +322,27 @@ public class Client implements Serializable {
 		return clientInterface;
 	}
 
-	/* Read the style set files and load them into brandIdentity */
+	/* Read the style set files and load them into BrandPersonality */
 	private void loadStyleSets() {
 		logger.debug ("loadStyleSets");
 		StringBuilder pathb = new StringBuilder("/var/brndbot/styles/");		// FIXME more hack
 		pathb.append (organizationDirName);
 		pathb.append ("/");
-		pathb.append (brandIdentity.getName());
+		pathb.append (brandPersonality.getName());
 		pathb.append ("/");
 		String path = pathb.toString();
+		logger.debug ("loadStyleSets: path = {}", path);
 //		Map<String, Model> models = modelCollection.getAllModels();
 		File styleSetDir = new File (path);
+		if (!styleSetDir.exists() || !styleSetDir.isDirectory()) {
+			logger.error ("No style set directory {}", path);
+			return;
+		}
 		File [] styleSetFiles = styleSetDir.listFiles();
 		
 		// parse all the style set files for all models
 		for (File ssfile : styleSetFiles) {
+			logger.debug ("Style set file {}", ssfile.getPath());
 			if (ssfile.isDirectory())
 				continue;
 			if (!ssfile.getName().endsWith(".xml"))
@@ -328,7 +353,7 @@ public class Client implements Serializable {
 				StyleSet ss = ssp.parse();
 				logger.debug ("Adding style set {}", ss.getName());
 				if (ss.isValid ()) 
-					brandIdentity.addStyleSet(ss.getModel(), ss);
+					brandPersonality.addStyleSet(ss.getModel(), ss);
 				else 
 					logger.warn ("Invalid style set: {}", ss.getName());
 			} catch (Exception e) {
@@ -341,10 +366,10 @@ public class Client implements Serializable {
 	
 	/** Return the stylesets for the current brand identity */
 	public Map<String,StyleSet> getStyleSets (String modelName) {
-		return brandIdentity.getStyleSetsForModel(modelName);
+		return brandPersonality.getStyleSetsForModel(modelName);
 	}
 	
-	/* Apply the BrandIdentity's styles to the promotion prototypes.
+	/* Apply the BrandPersonality's styles to the promotion prototypes.
 	 * TODO is this really useful for anything? */
 	private void applyBrandStyles () {
 		Map<String, Model> models = modelCollection.getAllModels();
@@ -356,7 +381,7 @@ public class Client implements Serializable {
 				logger.error ("promoProtos is null for {}", modelName);
 				continue;
 			}
-			Map<String,StyleSet> styleSets = brandIdentity.getStyleSetsForModel(modelName);
+			Map<String,StyleSet> styleSets = brandPersonality.getStyleSetsForModel(modelName);
 			if (styleSets == null) {
 				logger.warn ("styleSets is null for {}", modelName);
 				continue;

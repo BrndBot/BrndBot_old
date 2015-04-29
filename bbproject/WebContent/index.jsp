@@ -88,14 +88,14 @@ var __adobewebfontsappname__ = "muse";
 			       	<label for="userEmail">your email</label>
 			      	</div>
 			      	<div class="formSpacer">
-						<input type="text" class="k-textbox editWidth" id="<%=LoginCookie.EMAIL_ADDRESS %>" name="<%=LoginCookie.EMAIL_ADDRESS %>" 
+						<input type="text" class="k-textbox editWidth" id="brndbotemailcookie" name="brndbotemailcookie" 
 							size="40" value="<%=emailVal %>" style="height:1.5rem;padding-left:.3rem;" />
 			      	</div>
 			   	<div class="formLabelFor" style=" color: #ED752D;">
 			       	<label for="userPassword">your password</label>
 				</div>
 				<div class="formSpacer">
-					<input type="password" class="k-textbox editWidth" id="<%=LoginCookie.PASSWORD %>" name="<%=LoginCookie.PASSWORD %>"
+					<input type="password" class="k-textbox editWidth" id="brndbotpassword" name="brndbotpassword"
 						size="40"  value="<%=pwVal %>" style="height:1.5rem;padding-left:.3rem;" />
 		      	</div>
 				<div id="forceLoginStyle">

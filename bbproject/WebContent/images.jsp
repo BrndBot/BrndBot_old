@@ -86,6 +86,6 @@
 	</li>
 </script>
 
-</c:if>			<!-- end of session check for body ->
+</c:if>			<!-- end of session check for body -->
 </body>
 </html>

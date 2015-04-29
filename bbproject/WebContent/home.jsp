@@ -99,7 +99,7 @@ prototypes to select, and the user picks one for processing in the editor (bench
 
 		</div>
 
-		<div class="homeBody>
+		<div class="homeBody">
 			<div style="width:100%">
 
 				<div id="homeJsp">

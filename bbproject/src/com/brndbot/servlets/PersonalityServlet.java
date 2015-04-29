@@ -35,14 +35,29 @@ public class PersonalityServlet extends HttpServlet {
 		doPost(request, response);
 	}
 	
-	/** A GET or POST request to this servlet will return JSON data with info on
+	/* This servlet can return a list of all personalities or set one in the client, depending
+	 * on the "action" URL parameter. */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		logger.debug ("Entering PersonalityServlet");
+		String action = request.getParameter ("action");
+		if ("get".equals (action)) {
+			doGetPersonalities (request, response);
+		}
+		else if ("select".equals (action)) {
+			doSelectPersonality (request, response);
+		}
+		else {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		}
+	}
+	
+	/** A request with the parameter action=get
+	 *  will return JSON data with info on
 	 *  the available brand personalities. I'm assuming the client is available 
 	 *  at this point.
 	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{
-		logger.debug ("Entering PersonalityServlet");
+	private void doSelectPersonality(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Integer clientKey = (Integer) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
 		Client client = Client.getByKey(clientKey);
 		String orgName = client.getOrganizationName();
@@ -77,5 +92,29 @@ public class PersonalityServlet extends HttpServlet {
 			logger.debug ("Exception in creating JSON: {}", e.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	/** A request with the parameter action=get
+	 *  will return JSON data with info on
+	 *  the available brand personalities. I'm assuming the client is available 
+	 *  at this point.
+	 */
+	private void doGetPersonalities(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Integer clientKey = (Integer) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
+		Client client = Client.getByKey(clientKey);
+		String idStr = request.getParameter ("id");
+		int id = -1;
+		if (idStr != null) {
+			try {
+				id = Integer.parseInt(idStr);
+			}
+			catch (Exception e) {}
+		}
+		if (id <= 0) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		client.setBrandPersonality (id);
+		
 	}
 }

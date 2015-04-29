@@ -18,6 +18,8 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.co.jaimon.test.SimpleImageInfo;
+
 import com.brndbot.system.Assert;
 import com.brndbot.system.SystemProp;
 import com.brndbot.system.Utils;
@@ -239,24 +241,37 @@ public class UserLogo implements TableModel
 				url);
 		// local_image_file_name should be something like 'images/file
 
-		if (max_img_height > 0 || max_img_width > 0)
-		{
+		if (max_img_height > 0 || max_img_width > 0) {
 			String tomcat_base = SystemProp.get(SystemProp.TOMCAT_BASE);
 			String image_file = Utils.Slashies(tomcat_base + "\\" + local_image_file_name);
+			int width = 0;
+			int height = 0;
 			logger.debug ("image_file = {}", image_file);
 			BufferedImage bimg = null;
 			try {
 				bimg = ImageIO.read(new File(image_file));
+				if (bimg != null) {
+					width = bimg.getWidth();
+					height = bimg.getHeight();
+				}
 			} 
 			catch (IOException e) 
 			{
 				logger.error ("Exception in getBoundImage: {}", e.getClass().getName());
 				e.printStackTrace();
 			}
-			if (bimg != null)
-			{
-				int width = bimg.getWidth();
-				int height = bimg.getHeight();
+			catch (Throwable t) {
+				// Some versions of Openjdk don't support JPEG in ImageIO.
+				try {
+					SimpleImageInfo sii = new SimpleImageInfo (new File(image_file));
+					width = sii.getWidth();
+					height = sii.getHeight();
+				}
+				catch (IOException e) {
+					// Shouldn't fail the 2nd time??
+				}
+			}
+			if (width > 0 && height > 0) {
 				
 				double scalex = (double) max_img_width / width;
 				double scaley = (double) max_img_height / height;

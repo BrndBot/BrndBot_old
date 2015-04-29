@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uk.co.jaimon.test.SimpleImageInfo;
 import javazoom.upload.UploadFile;
 
 import com.brndbot.system.BrndbotException;
@@ -331,13 +332,22 @@ public class Image implements TableModel
 			bimg = ImageIO.read(new File(image_file));
 		} 
 		catch (IOException e) {
+			logger.error ("Could not read {}", local_image_file_name);
 			e.printStackTrace();
+			return "";
 		}
 		catch (Throwable t) {
-			// TODO Some versions of Openjdk don't support JPEG in ImageIO.
-			// Until I work up a backup, use this just so it doesn't break.
-			s = genImageTag (null, local_image_file_name,
-					max_img_height, max_img_width, max_img_height, max_img_width);
+			// Some versions of Openjdk don't support JPEG in ImageIO.
+			try {
+				SimpleImageInfo sii = new SimpleImageInfo (new File(image_file));
+
+				s = genImageTag (null, local_image_file_name,
+						max_img_height, max_img_width, sii.getHeight(), sii.getWidth());
+			}
+			catch (IOException e) {
+				// Shouldn't fail the 2nd time??
+				return "";
+			}
 		}
 
 		if (bimg != null)
@@ -531,10 +541,12 @@ public class Image implements TableModel
 						return_image.setImageHeight(bimg.getHeight());
 					}
 					catch (Throwable t) {
-						// TODO temporary repair due to problem with JPEG in ImageIO
-						logger.error ("JavaIO problem in uploadFile: {}", t.getClass().getName());
-						return_image.setImageWidth(200);
-						return_image.setImageHeight(200);
+						// ImageIO is not available for JPEG in some Java environments.
+						// Use SimpleImageInfo as a fallback.
+						instrm.reset();
+						SimpleImageInfo sii = new SimpleImageInfo (instrm);
+						return_image.setImageWidth (sii.getWidth());
+						return_image.setImageHeight (sii.getHeight());
 					}
 
 					// Store in the database
