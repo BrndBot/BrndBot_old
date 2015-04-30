@@ -110,7 +110,7 @@ public class ImageServlet extends HttpServlet {
 					throws ServletException, IOException {
 		DbConnection con = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 	
 			MimeTypedInputStream imgStream;
 			if (useDefaultImage) 
@@ -165,7 +165,7 @@ public class ImageServlet extends HttpServlet {
 			boolean useDefaultImage,
 			boolean useFusedImage) 
 					throws ServletException, IOException, BrndbotException {
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con = DbConnection.getDb();
 
 		Image image;
 		if (useDefaultImage) {

@@ -27,7 +27,7 @@ public class AvailableFontRenderer extends Renderer {
 		User u = new User (userId);
 		DbConnection con = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			logger.debug ("Calling loadClientInfo");
 			u.loadClientInfo(con);
 			int persId = u.getPersonalityID();

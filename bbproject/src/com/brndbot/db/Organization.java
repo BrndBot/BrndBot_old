@@ -48,7 +48,7 @@ public class Organization implements TableModel {
 		ResultSet rs = null;
 		try
 		{
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			String sql = "SELECT id, Name, Directory FROM organization WHERE Authcode = ?;";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setString (1, authCode);
@@ -86,7 +86,7 @@ public class Organization implements TableModel {
 		PreparedStatement pstmt = null;
 		try
 		{
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			String sql = "SELECT Name, moduleclass, Directory FROM organization WHERE id = ?;";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setInt (1, orgId);
@@ -125,7 +125,7 @@ public class Organization implements TableModel {
 		PreparedStatement pstmt = null;
 		try
 		{
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			String sql = "SELECT id, moduleclass, Directory FROM organization WHERE name = ?;";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setString (1, name);

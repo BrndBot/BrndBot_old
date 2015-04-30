@@ -46,7 +46,7 @@ public class RemoveLogoServlet extends HttpServlet
 		DbConnection con = null;
 		try {
 			// Get rid of previous values
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 	
 			HttpSession session = request.getSession();
 			int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);

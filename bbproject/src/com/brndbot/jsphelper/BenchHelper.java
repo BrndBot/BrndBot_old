@@ -106,7 +106,7 @@ public class BenchHelper extends Helper {
 	public ArrayList<Palette> getUserPalette () throws BrndbotException {
 		DbConnection con = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			return Palette.getUserPalette (userId, con);
 		}
 		finally {
@@ -208,7 +208,7 @@ public class BenchHelper extends Helper {
 		DbConnection con = null;
 		try {
 			if (paletteArray == null) {
-				con = DbConnection.GetDb();
+				con = DbConnection.getDb();
 				paletteArray = Palette.getUserPalette(userId, con);
 			}
 		} finally {

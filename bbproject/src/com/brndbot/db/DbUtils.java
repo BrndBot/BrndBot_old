@@ -83,7 +83,7 @@ public class DbUtils
 		throws SQLException
 	{
 		Statement stmt = con.createStatement();
-		ResultSet rs = con.QueryDB("SELECT LAST_INSERT_ID();", stmt);
+		ResultSet rs = con.queryDB("SELECT LAST_INSERT_ID();", stmt);
 		int last_id = 0;
 		if (rs.next())
 		{

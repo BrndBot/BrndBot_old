@@ -122,7 +122,7 @@ public class ModelButtonServlet extends HttpServlet {
 	private String getOrganizationDir (int userId) throws BrndbotException {
 		DbConnection con = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			User user = new User(userId);
 			user.loadClientInfo(con);
 			int orgId = user.getOrganizationID();

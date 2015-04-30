@@ -209,7 +209,7 @@ public class User implements TableModel
 			// Get the new user ID
 			sql = "select LAST_INSERT_ID() FROM user;";
 			stmt = con.createStatement();
-			ResultSet rs = con.QueryDB(sql, stmt);
+			ResultSet rs = con.queryDB(sql, stmt);
 			if (rs.next())
 			{
 				userId = rs.getInt(1);
@@ -357,7 +357,7 @@ public class User implements TableModel
 		Statement stmt = con.createStatement();
 		String sql = "SELECT IsPriv FROM user WHERE " +
 			"UserID = " + user_id + ";";
-		ResultSet rs = con.QueryDB(sql, stmt);
+		ResultSet rs = con.queryDB(sql, stmt);
 		try
 		{
 			if (rs.next())

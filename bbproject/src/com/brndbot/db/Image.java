@@ -275,7 +275,7 @@ public class Image implements TableModel
 		if (Image != null)
 		{
 			String sql = "DELETE FROM images WHERE ImageID = " + image_id + " AND UserID = " + user_id + ";";
-			con.ExecuteDB(sql, false);
+			con.executeDB(sql, false);
 		}
 	}
 
@@ -283,7 +283,7 @@ public class Image implements TableModel
 			int max_image_height, int max_image_width) throws BrndbotException
 	{
 		logger.debug("entering getBoundImage");
-		DbConnection con = DbConnection.GetDb();
+		DbConnection con = DbConnection.getDb();
 		String s = "<div style=\"padding:0.625rem;\">Invalid image</div>";
 		try {
 			Image image = getImageByID(image_id, user_id, con);

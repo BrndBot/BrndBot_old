@@ -100,7 +100,7 @@ public class SavePromotionServlet extends HttpServlet {
 		
 		DbConnection con =null;
 		try {
-			con =  DbConnection.GetDb();
+			con =  DbConnection.getDb();
 			Image.deleteFusedImages(userID, con);		// delete old presentation
 			logger.debug ("saving image");
 			img.setImage(imgBytes);

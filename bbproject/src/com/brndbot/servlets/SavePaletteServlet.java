@@ -41,7 +41,7 @@ public class SavePaletteServlet extends HttpServlet
 		try {
 			
 			// Get rid of previous values
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 	
 			HttpSession session = request.getSession();
 			int user_id = SessionUtils.getIntSession(session, SessionUtils.USER_ID);

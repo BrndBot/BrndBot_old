@@ -43,7 +43,7 @@ public abstract class Helper {
 		userId = id;
 		DbConnection con = null;
 		try {
-			con= DbConnection.GetDb();
+			con= DbConnection.getDb();
 			user = User.getUserNameAndLogo(id, con);
 		} catch (Exception e) {
 			logger.error ("Error in setting user ID: {}", e.getClass().getName());

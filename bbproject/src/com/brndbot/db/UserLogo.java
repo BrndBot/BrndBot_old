@@ -159,7 +159,7 @@ public class UserLogo implements TableModel
 			}
 			String sql = "DELETE FROM userlogo WHERE UserID = " + 
 					user_id + ";";
-			con.ExecuteDB(sql, false);
+			con.executeDB(sql, false);
 			con.commit();
 		} 
 		catch (SQLException e1) 
@@ -179,7 +179,7 @@ public class UserLogo implements TableModel
 		String s = "<div style=\"padding:0.625rem;\">Invalid logo</div>";
 		DbConnection con = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			UserLogo logo = getLogoByUserID(user_id, con);
 			if (logo != null)
 			{
@@ -290,7 +290,7 @@ public class UserLogo implements TableModel
 		Statement stmt = con.createStatement();
 		String sql = "SELECT * FROM userlogo WHERE UserID = " + user_id + ";";
 		logger.debug(sql);
-		ResultSet rs = con.QueryDB(sql, stmt);
+		ResultSet rs = con.queryDB(sql, stmt);
 		UserLogo logo = null;
 		try 
 		{
@@ -321,7 +321,7 @@ public class UserLogo implements TableModel
 		Statement stmt = con.createStatement();
 		String sql = "SELECT LogoID FROM userlogo as a, User WHERE a.UserID = " + user_id + 
 			" AND a.UserID = User.UserID;";
-		ResultSet rs = con.QueryDB(sql, stmt);
+		ResultSet rs = con.queryDB(sql, stmt);
 		int logo_id = 0;
 		try 
 		{

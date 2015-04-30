@@ -104,7 +104,7 @@ public class Client implements Serializable {
 		}
 		DbConnection con = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			User user = new User(uid);
 			user.loadClientInfo(con);
 			int orgId = user.getOrganizationID();
@@ -140,6 +140,33 @@ public class Client implements Serializable {
 				con.close();
 		}
 	}
+	
+	/** Update the user information */
+	public void updateUserInfo (int userId) {
+		User usr = new User(userId);
+		DbConnection con = null;
+		try {
+			con = DbConnection.getDb();
+			usr.loadClientInfo(con);
+			int persId = usr.getPersonalityID();
+			brandPersonality = new BrandPersonality (persId);
+			Personality pers = Personality.getById(persId);
+			if (pers == null || pers.getOrgId() != usr.getOrganizationID()) {
+				logger.warn ("Setting up dummy BrandPersonality");
+				brandPersonality = new BrandPersonality();		// Can only use own organization's brand personality
+			}
+			else {
+				logger.debug ("Brand personality name = {}", pers.getName());
+				brandPersonality.setName (pers.getName());
+			}
+		} catch (Exception e) {
+			
+		} finally {
+			if (con != null)
+				con.close();
+		}
+	}
+	
 	
 	/** Return a non-working CLient object for unit testing purposes. */
 	protected static Client getDummyClient () {
@@ -270,6 +297,7 @@ public class Client implements Serializable {
 	
 	/** Specify the active brand personality */
 	public void setBrandPersonality (int id) {
+		logger.debug ("setBrandPersonality, id = {}", id);
 		touch();
 		Personality pers = Personality.getById(id);
 		if (pers == null ) {

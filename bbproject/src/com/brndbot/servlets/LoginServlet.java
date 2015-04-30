@@ -78,7 +78,7 @@ public class LoginServlet extends HttpServlet
 		int user_id = -1;
 		User user = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			user_id = User.Login(email_address, password, con);
 			if (user_id == 0)
 			{
@@ -106,7 +106,7 @@ public class LoginServlet extends HttpServlet
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
 		session.removeAttribute(SessionUtils.LOGIN_ERROR);
 		Client client = Client.getClient (session);		// Load up the client
-		client.setBrandPersonality (user.getPersonalityID());
+		client.updateUserInfo (user_id);
 		SessionUtils.saveSessionData (request, SessionUtils.CLIENT, client.getCacheKey());
 		SessionUtils.saveSessionData (request, SessionUtils.ORGANIZATION, client.getOrganizationName());
 

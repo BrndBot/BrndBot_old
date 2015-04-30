@@ -54,7 +54,7 @@ public class EmailExistServlet extends HttpServlet
 		DbConnection con = null;
 
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			// Gather data
 			String userEmail = Utils.getStringParameter(request, "hiddenEmail").toLowerCase();
 			String authCode = Utils.getStringParameter(request, "hiddenAuth").toLowerCase();

@@ -78,7 +78,7 @@ public class SaveUserServlet extends HttpServlet
 		// Add record to database
 		int user_id = -1;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			User user = new User();
 			user.setEmail(userEmail);
 			user.setHashedPassword(hashedPassword);

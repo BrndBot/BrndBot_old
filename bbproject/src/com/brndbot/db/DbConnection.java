@@ -65,7 +65,7 @@ public class DbConnection
 		}
 	}
 
-	static public DbConnection GetDb() throws BrndbotException
+	static public DbConnection getDb() throws BrndbotException
 	{
 		DbConnection con = null;
 		if (_driver == null)
@@ -198,7 +198,7 @@ public class DbConnection
 	/** Issue a database query. This is protected so that only db classes can
 	 *  user it. */
 	// For SQL that retrieves some information from the database
-	protected ResultSet QueryDB(String sql, Statement stmt)
+	protected ResultSet queryDB(String sql, Statement stmt)
 	{
 		ResultSet rs = null;
 
@@ -215,7 +215,7 @@ public class DbConnection
 	}
 
 	// For SQL that retrieves some information from the database
-	protected ResultSet QueryDBException(String sql, Statement stmt) throws SQLException
+	protected ResultSet queryDBException(String sql, Statement stmt) throws SQLException
 	{
 		ResultSet rs = null;
 
@@ -240,7 +240,7 @@ public class DbConnection
 	}
 */	
 
-	protected int ExecuteDB(String sql, boolean tossException)
+	protected int executeDB(String sql, boolean tossException)
 		throws SQLException
 	{
 		Statement stmt = null;

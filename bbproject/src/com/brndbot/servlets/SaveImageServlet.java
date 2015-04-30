@@ -120,7 +120,7 @@ public class SaveImageServlet extends HttpServlet
 				@SuppressWarnings("rawtypes")
 				Hashtable files = data.getFiles();
 	
-				con = DbConnection.GetDb();
+				con = DbConnection.getDb();
 				logger.debug("files.size:  " + files.size());
 				Image image = null;
 				try {

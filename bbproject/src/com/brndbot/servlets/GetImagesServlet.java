@@ -66,7 +66,7 @@ public class GetImagesServlet extends HttpServlet
 			image_type = ImageType.USER_UPLOAD;
 
 		try {
-			DbConnection con = DbConnection.GetDb();
+			DbConnection con = DbConnection.getDb();
 			JSONArray json_array = null;
 			try {
 				json_array = Image.getImagesForDisplay(user_id, image_type, con);

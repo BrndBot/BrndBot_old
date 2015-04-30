@@ -43,7 +43,7 @@ public class Personality implements TableModel {
 		DbConnection con = null;
 		ResultSet rs = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			String sql = "SELECT name, orgid FROM personality WHERE id = ?;";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setInt (1, id);
@@ -71,7 +71,7 @@ public class Personality implements TableModel {
 		List<Personality> results = new ArrayList<>();
 		ResultSet rs = null;
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			String sql = "SELECT id, name FROM personality WHERE orgid = ?;";
 			pstmt = con.createPreparedStatement(sql);
 			pstmt.setInt (1, orgId);

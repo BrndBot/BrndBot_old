@@ -48,7 +48,7 @@ public class ImagesServlet extends HttpServlet {
 		
 		JSONArray returnArray = new JSONArray();
 		try {
-			con = DbConnection.GetDb();
+			con = DbConnection.getDb();
 			for (Image img : images) {
 				JSONObject item = new JSONObject();
 				item.put ("id", img.getImageID());
