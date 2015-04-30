@@ -104,9 +104,17 @@ public class SaveUserServlet extends HttpServlet
 
 		logger.debug("Saved user_id: " + user_id);
 		session.setAttribute(SessionUtils.USER_ID, "" + user_id);
-		Client client = Client.getClient (session);		// Load up the client
-		session.setAttribute(SessionUtils.CLIENT, client.getCacheKey());
-		session.setAttribute(SessionUtils.ORGANIZATION, client.getOrganizationName());
+		try {
+			Client client = Client.getClient (session);		// Load up the client
+			logger.debug ("SaveUserServlet 2, client = {}", client.toString());
+			session.setAttribute(SessionUtils.CLIENT, client.getCacheKey());
+			session.setAttribute(SessionUtils.ORGANIZATION, client.getOrganizationName());
+		}
+		catch (Exception e) {
+			// ****BUG CHASING****
+			e.printStackTrace();
+		}
+		logger.debug ("SaveUserServlet 3");
 		
 		response.setStatus(HttpServletResponse.SC_OK);
 		return;

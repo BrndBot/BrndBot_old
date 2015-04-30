@@ -98,7 +98,8 @@ public class EmailExistServlet extends HttpServlet
 						e.getClass().getName(), e.getMessage());
 		}
 		finally {
-			con.close();
+			if (con != null)
+				con.close();
 		}
 
 		return;

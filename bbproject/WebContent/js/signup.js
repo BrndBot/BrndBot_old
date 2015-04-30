@@ -142,14 +142,14 @@ $(document).ready(function()
             select: "upload logo",
             headerStatusUploaded: "Success!"
         },
-        error: onError,
-        success: onSuccess,
+        error: onLogoError,
+        success: onLogoSuccess,
         multiple: false,
-        select: onSelect,
+        select: onLogoSelect,
         showFileList: false
     });
    
-    function onSuccess(e)
+    function onLogoSuccess(e)
     {
     	// Get the name for pictaculous/php all
     	var logoName = e.response.imageName;
@@ -399,9 +399,19 @@ function startOver(toLogo)
       });
 }
 
+/* The user has clicked the "finished" button in the brand personality
+ * selection pane */
 function goHome()
 {
-	window.location = "home.jsp";
+	// Set the selected brand personality
+	var id = $("#lookPane2 option:selected").attr("name");
+	console.log ("Personality ID = " + id);
+	$.ajax({
+		type: "GET",
+		url: "PersonalityServlet?action=select&id=" + id,
+	}).done (function (imgdata, textStatus, jqXHR) {
+		window.location = "home.jsp";
+	});
 }
 
 function skipPalette()
@@ -435,7 +445,7 @@ function posSelected()
 }
 
 function showLookPane () {
-	$('#lookPane2 ul').kendoListView ({
+	$('#lookPane2 select').kendoListView ({
 		dataSource: new kendo.data.DataSource ({
 			transport: {
 					read: 
@@ -483,7 +493,7 @@ function handleFiles(files)
 	}
 }
 
-function onSelect(e)
+function onLogoSelect(e)
 {
 	$('#imageTarget').hide();
 	$('#filesHome').hide();
@@ -535,7 +545,7 @@ function replaceAll(find, rep, str)
 }
 */
 
-function onError(e) 
+function onLogoError(e) 
 {
 	// New informative error. Hint. "No error information" is by definition not informative.
     var err = e.XMLHttpRequest.responseText;
@@ -615,6 +625,7 @@ function createMyAccount(e)
 	// servlet checks would create a race condition.
 	$('#hiddenEmail').val($('#userEmail').val());
 	$('#hiddenAuth').val($('#authCode').val());
+	console.log ("Auth code = " + $('#authCode').val());
     $.ajax({
         type: 'POST',
         url: 'EmailExistServlet',

@@ -388,9 +388,11 @@ var MAX_BOUNDING_WIDTH  = '<%=UserLogo.MAX_BOUNDING_WIDTH %>';
 			</div>
 		</div>
 		<div id="lookPane2" style="width:100%;display:none;">
-			<ul style="width:100%;">
-			
-			</ul>
+			<label>Brand personality:
+				<select style="max-width:400px;">
+				<% /* options get inserted here */ %>
+				</select>
+			</label>
 			<div style="padding-top:1.5rem">
 				<div class="unit size1of3">
 					<button id="signUpComplete" class="greenButton rounded" style="width:9.375rem">finished</button>
@@ -440,7 +442,7 @@ session_mgr.setImageID(IMAGE_TYPE_LOGO);
 </script>
 
 <script type="text/x-kendo-template" id="personalitiesTemplate">
-	<li class="selPersonality" data-id="#:id#">#:name#</li>
+	<option class="selPersonality" name="#:id#" data-id="#:id#">#:name#</li>
 </script>
 </body>
 </html>

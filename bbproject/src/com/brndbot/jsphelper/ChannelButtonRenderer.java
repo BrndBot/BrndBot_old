@@ -32,6 +32,7 @@ public class ChannelButtonRenderer extends Renderer {
 		 */
 		super ();
 		
+		logger.debug ("ChannelButtonRenderer, modelName = {}", modelName);
 		Map<String, StyleSet> styleSetMap = null;
 		// Check which channels are represented in the styles
 		
@@ -45,8 +46,15 @@ public class ChannelButtonRenderer extends Renderer {
 				logger.debug ("styleSetMap is null!");
 				// But this might be legitimate; just no stylesets.
 			}
+			/****DEBUG*****/
+			Set<String> keys = styleSetMap.keySet();
+			for (String key : keys) {
+				logger.debug("StyleSetMap key {}", key);
+			}
+			/**** /DEBUG*****/
 			if (styleSetMap != null) {
 				for (StyleSet ss : styleSetMap.values()) {
+					logger.debug ("Checking StyleSet {}", ss.toString());
 					Set<String> channels = ss.getChannels ();
 					for (String channel : channels) {
 						if ("Facebook".equals (channel)) {

@@ -61,7 +61,6 @@ public class ChooseColorServlet extends HttpServlet {
 			return;
 		}
 		URL url = new URL(phpServerPage + "?name=" + urlstr);
-		logger.debug ("Decoded URL = {}",url.toString());
 		try {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection ();
 			conn.setConnectTimeout (10000);
@@ -77,7 +76,7 @@ public class ChooseColorServlet extends HttpServlet {
 				if (bytesRead <= 0)
 					break;
 				String s = new String (buf, "UTF-8");
-				System.out.println (s);
+				//System.out.println (s);
 				outstrm.write (buf, 0, bytesRead);
 			}
 			outstrm.flush();

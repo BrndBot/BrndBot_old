@@ -39,8 +39,8 @@ public class PersonalityServlet extends HttpServlet {
 	 * on the "action" URL parameter. */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug ("Entering PersonalityServlet");
 		String action = request.getParameter ("action");
+		logger.debug ("Entering PersonalityServlet, action = {}", action);
 		if ("get".equals (action)) {
 			doGetPersonalities (request, response);
 		}
@@ -57,12 +57,15 @@ public class PersonalityServlet extends HttpServlet {
 	 *  the available brand personalities. I'm assuming the client is available 
 	 *  at this point.
 	 */
-	private void doSelectPersonality(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void doGetPersonalities(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		logger.debug ("doSelectPersonality");
 		Integer clientKey = (Integer) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
 		Client client = Client.getByKey(clientKey);
 		String orgName = client.getOrganizationName();
+		logger.debug ("orgName = {}", orgName);
 		Organization org = Organization.getByName(orgName);
 		List<Personality> personalities = Personality.getPersonalitiesByOrgId(org.getId());
+		logger.debug ("Found {} personalities", personalities.size());
 		
 		/* OK,now for building the JSON...  */
 		try {
@@ -81,6 +84,7 @@ public class PersonalityServlet extends HttpServlet {
 				PrintWriter out = response.getWriter();
 				out.println(jsonStr);
 				out.flush();
+				logger.debug ("returning successfully");
 				response.setStatus(HttpServletResponse.SC_OK);
 			}
 			else {
@@ -99,7 +103,7 @@ public class PersonalityServlet extends HttpServlet {
 	 *  the available brand personalities. I'm assuming the client is available 
 	 *  at this point.
 	 */
-	private void doGetPersonalities(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void doSelectPersonality(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Integer clientKey = (Integer) SessionUtils.getSessionData(request, SessionUtils.CLIENT);
 		Client client = Client.getByKey(clientKey);
 		String idStr = request.getParameter ("id");
@@ -114,6 +118,7 @@ public class PersonalityServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
+
 		client.setBrandPersonality (id);
 		
 	}

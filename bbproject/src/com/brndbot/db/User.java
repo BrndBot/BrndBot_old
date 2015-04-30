@@ -193,7 +193,7 @@ public class User implements TableModel
 		//int user_id = 0;
 		try
 		{
-			String sql = "INSERT INTO user " +
+			final String sql = "INSERT INTO user " +
 					" (EmailAddress, Password, Company, CompanyAddress, URL, FacebookURL, TwitterHandle, orgid) " +
 					" VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 			pstmt = con.createPreparedStatement(sql);
@@ -207,9 +207,9 @@ public class User implements TableModel
 			pstmt.setInt(8, orgId);
 			pstmt.executeUpdate();
 			// Get the new user ID
-			sql = "select LAST_INSERT_ID() FROM user;";
+			final String sql2 = "select LAST_INSERT_ID() FROM user;";
 			stmt = con.createStatement();
-			ResultSet rs = con.queryDB(sql, stmt);
+			ResultSet rs = con.queryDB(sql2, stmt);
 			if (rs.next())
 			{
 				userId = rs.getInt(1);
@@ -227,13 +227,28 @@ public class User implements TableModel
 			return;
 		}
 		finally {
-			pstmt = null;
-			//con.close();
+			DbUtils.close(pstmt);
 		}
 	
 	}
 	
-
+	/* This feels like a hack. The whole class isn't very clean. */
+	public void savePersonality (DbConnection con) {
+		PreparedStatement pstmt = null;
+		try {
+			final String sql = "UPDATE user SET personalityid=? WHERE UserID=?";
+			pstmt = con.createPreparedStatement (sql);
+			pstmt.setInt (1, personalityId);
+			pstmt.setInt (2, userId);
+			pstmt.executeUpdate();
+		}
+		catch (Exception e) {
+			logger.error ("Exception in savePersonality: {}  {}", e.getClass().getName(), e.getMessage());
+		}
+		finally {
+			DbUtils.close(pstmt);
+		}
+	}
 
 	static public boolean doesEmailExist(String email, DbConnection con)
 	{

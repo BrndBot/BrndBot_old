@@ -262,7 +262,7 @@ updatePrototypeText: function(tarea) {
     		console.log ("text width: " + style.fabricObject.getWidth());
     		
     		/***** EXPERIMENTAL CODE *******/
-    		benchcontent.makeTextFit(style);
+    		//benchcontent.makeTextFit(style);
     		bench.currentPromotion.canvas.renderAll();
     	}
     }
@@ -300,7 +300,7 @@ updatePrototypePointSize: function(tarea) {
     			style.fabricObject.scale (1.0);
     			style.setLocalPointSize (pointSize);
     			style.fabricObject.setFontSize(pointSize);
-    			makeTextFit(style);
+    			//benchcontent.makeTextFit(style);
     			bench.currentPromotion.canvas.renderAll();
     		}
     	}

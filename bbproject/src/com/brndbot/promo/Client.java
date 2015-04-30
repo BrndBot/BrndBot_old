@@ -30,6 +30,7 @@ import com.brndbot.system.SystemProp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+//import org.xhtmlrenderer.extend.UserInterface;
 
 /**
  *  Client is a class that holds the
@@ -75,7 +76,7 @@ public class Client implements Serializable {
 	
 	private String clientInterfaceClass;
 	
-	//private int userId;
+	private int userId;
 	
 	/* The human-readable name of the organization */
 	private String organizationName;
@@ -102,6 +103,7 @@ public class Client implements Serializable {
 		if (client != null && client.isValid()) {
 			return client;
 		}
+
 		DbConnection con = null;
 		try {
 			con = DbConnection.getDb();
@@ -111,10 +113,10 @@ public class Client implements Serializable {
 			Organization org = Organization.getById(orgId);
 			String moduleClass = org.getModuleClass();
 			client = new Client (moduleClass);
+			client.userId = uid;
 			client.organizationName = org.getName();
 			client.organizationDirName = org.getDirectoryName();
 			int persId = user.getPersonalityID();
-			logger.debug ("Brand personality ID = {}", persId);
 			client.brandPersonality = new BrandPersonality(persId);
 			Personality pers = Personality.getById(persId);
 			if (pers == null || pers.getOrgId() != orgId) {
@@ -122,7 +124,6 @@ public class Client implements Serializable {
 				client.brandPersonality = new BrandPersonality();		// Can only use own organization's brand personality
 			}
 			else {
-				logger.debug ("Brand personality name = {}", pers.getName());
 				client.brandPersonality.setName (pers.getName());
 			}
 			client.loadModels ();
@@ -148,16 +149,17 @@ public class Client implements Serializable {
 		try {
 			con = DbConnection.getDb();
 			usr.loadClientInfo(con);
-			int persId = usr.getPersonalityID();
-			brandPersonality = new BrandPersonality (persId);
-			Personality pers = Personality.getById(persId);
-			if (pers == null || pers.getOrgId() != usr.getOrganizationID()) {
-				logger.warn ("Setting up dummy BrandPersonality");
-				brandPersonality = new BrandPersonality();		// Can only use own organization's brand personality
-			}
-			else {
-				logger.debug ("Brand personality name = {}", pers.getName());
-				brandPersonality.setName (pers.getName());
+			if (brandPersonality == null || brandPersonality.isDummy()) {
+				int persId = usr.getPersonalityID();
+				brandPersonality = new BrandPersonality (persId);
+				Personality pers = Personality.getById(persId);
+				if (pers == null || pers.getOrgId() != usr.getOrganizationID()) {
+					logger.warn ("Setting up dummy BrandPersonality");
+					brandPersonality = new BrandPersonality();		// Can only use own organization's brand personality
+				}
+				else {
+					brandPersonality.setName (pers.getName());
+				}
 			}
 		} catch (Exception e) {
 			
@@ -233,10 +235,7 @@ public class Client implements Serializable {
 	}
 	
 
-	
-	/** Since ClientInterface is transient, we may have to re-create it
-	 *  at any time. 
-	 *  TODO is this still true? */
+
 	private void createClientInterface () throws ClientException {
 		try {
 			@SuppressWarnings("unchecked")
@@ -295,7 +294,7 @@ public class Client implements Serializable {
 		return brandPersonality;
 	}
 	
-	/** Specify the active brand personality */
+	/** Specify the active brand personality and save to the database. */
 	public void setBrandPersonality (int id) {
 		logger.debug ("setBrandPersonality, id = {}", id);
 		touch();
@@ -305,8 +304,25 @@ public class Client implements Serializable {
 			logger.warn ("Setting up dummy BrandPersonality");
 			brandPersonality = new BrandPersonality();		// Can only use own organization's brand personality
 		}
-		brandPersonality.setName (pers.getName());
+		else {
+			User user = new User (userId);
+			user.setPersonalityID(id);
+			DbConnection con = null;
 
+			try {
+				con = DbConnection.getDb();
+				user.savePersonality(con);
+			}
+			catch (Exception e) {
+				logger.error ("Error in setBrandPersonality: {}  {}", e.getClass().getName(), e.getMessage());
+			}
+			finally {
+				if (con != null)
+					con.close();
+			}
+		}
+		brandPersonality.setName (pers.getName());
+		
 	}
 	
 	public ModelCollection getModelCollection () {
@@ -360,7 +376,6 @@ public class Client implements Serializable {
 		pathb.append ("/");
 		String path = pathb.toString();
 		logger.debug ("loadStyleSets: path = {}", path);
-//		Map<String, Model> models = modelCollection.getAllModels();
 		File styleSetDir = new File (path);
 		if (!styleSetDir.exists() || !styleSetDir.isDirectory()) {
 			logger.error ("No style set directory {}", path);

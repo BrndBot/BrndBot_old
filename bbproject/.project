@@ -3,6 +3,7 @@
 	<name>bbproject</name>
 	<comment></comment>
 	<projects>
+		<project>brndbotclient</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
