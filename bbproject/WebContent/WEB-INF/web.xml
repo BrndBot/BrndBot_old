@@ -115,11 +115,6 @@
     </servlet>
 
     <servlet>
-      <servlet-name>ImagesServlet</servlet-name>
-      <servlet-class>com.brndbot.servlets.ImagesServlet</servlet-class>
-    </servlet>
-
-    <servlet>
       <servlet-name>PersonalityServlet</servlet-name>
       <servlet-class>com.brndbot.servlets.PersonalityServlet</servlet-class>
     </servlet>
@@ -210,11 +205,6 @@
     </servlet-mapping>
 
     <servlet-mapping>
-      <servlet-name>ImagesServlet</servlet-name>
-      <url-pattern>/ImagesServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
       <servlet-name>PersonalityServlet</servlet-name>
       <url-pattern>/PersonalityServlet</url-pattern>
     </servlet-mapping>
@@ -277,11 +267,6 @@
 	<filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
 		<servlet-name>ImageServlet</servlet-name>
-	</filter-mapping>
-	
-	<filter-mapping>
-		<filter-name>AuthenticationFilter</filter-name>
-		<servlet-name>ImagesServlet</servlet-name>
 	</filter-mapping>
 	
     <filter-mapping>

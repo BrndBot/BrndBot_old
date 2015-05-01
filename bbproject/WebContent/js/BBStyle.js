@@ -26,6 +26,7 @@ function StyleSet () {
 	this.width = 0;
 	this.height = 0;
 	this.availableImages = [];
+	this.defaultImage = null;
 	this.paletteColors = [];
 	this.logoData = null;
 
@@ -95,11 +96,12 @@ function StyleSet () {
 		for (var i = 0; i < colors.length; i++) {
 			this.paletteColors.push(colors[i]);
 		}
-	}
+	};
 	
 	/** Assign the array of available images to the StyleSet.
 	 *  This has to be done to each StyleSet that's activated.
-	 *  Repeating it is harmless.
+	 *  Repeating it is harmless. Each image objects has the fields
+	 *  ID, width, and height.
 	 */
 	this.assignAvailableImages = function (imgs) {
 		this.availableImages = imgs;
@@ -311,8 +313,7 @@ function Style (styleType, styleSet) {
 				this.sourceHeight = imgData.height;
 			}
 			else {
-				// All wrong, but give it something.
-				alert ("No imgData");
+				// No image available. Make up dimensions for the default image.
 				this.sourceWidth = 100;
 				this.sourceHeight = 100;
 			}
@@ -466,6 +467,12 @@ function Style (styleType, styleSet) {
 		clipY -= dispDims.height / 2;
 		
 		var style = this;
+		// Use the default image if no image ID is available
+		var imgURL;
+		if (id)
+			imgURL = "ImageServlet?img=" + id;
+		else
+			imgURL = "ImageServlet?img=default";
 		var img = fabric.Image.fromURL("ImageServlet?img=" + id, function (img) {
 			img.hasControls = false;
 			img.selectable = false;
@@ -782,7 +789,7 @@ function Style (styleType, styleSet) {
 	this.setLocalDropShadowEnabled = function (b) {
 		// Takes true or false
 		this.modelField.localStyle.dropShadowEnabled = b;
-	}
+	};
 	
 	this.hasDropShadow = function () {
 		if (this.modelField.localStyle.dropShadowEnabled !== null)
@@ -800,7 +807,7 @@ function Style (styleType, styleSet) {
 			return this.hCenter;
 		else
 			return false;
-	}
+	};
 
 	/* Function for the x, y, and anchor calculations. Returns an object with 
 	 * fields x and y. */
@@ -967,7 +974,6 @@ function Style (styleType, styleSet) {
 		for (var i = 0; i < this.availableImages.length; i++) {
 			var img = this.availableImages[i];
 			if (img.ID == id) {
-				console.log ("findImage, id = " + id + "  width = " + img.width + "  height = " + img.height);
 				return img;
 			}
 		}

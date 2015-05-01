@@ -119,6 +119,11 @@ public class Client implements Serializable {
 			int persId = user.getPersonalityID();
 			client.brandPersonality = new BrandPersonality(persId);
 			Personality pers = Personality.getById(persId);
+			if (pers == null)
+				logger.warn ("Null BrandPersonality for ID {}", persId);
+			else if (pers.getOrgId() != orgId) {
+				logger.warn ("Personality orgId is {}, user orgId is {}", pers.getOrgId(), orgId);
+			}
 			if (pers == null || pers.getOrgId() != orgId) {
 				logger.warn ("Setting up dummy BrandPersonality");
 				client.brandPersonality = new BrandPersonality();		// Can only use own organization's brand personality

@@ -38,6 +38,8 @@ insertStyles: function (dest) {
 		cloneStyleSet.attachToModel(bench.currentPromotion.model);
 		var promo = new Promotion (bench.currentPromotion.model, cloneStyleSet);
 		var canvas = $(this).find("canvas");
+		canvas.attr("width", styleSet.width);		// **TESTING** does this matter?
+		canvas.attr("height", styleSet.height);
 		promo.draw (canvas.attr("id"));
 		var scaleRatio = 1.0;
 //		if (styleSet.width > benchstyle.MAX_STYLE_HT || styleSet.height > benchstyle.MAX_STYLE_HT) {

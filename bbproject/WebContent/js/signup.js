@@ -405,6 +405,8 @@ function goHome()
 {
 	// Set the selected brand personality
 	var id = $("#lookPane2 option:selected").attr("name");
+	if (!id)
+		id = $("#lookPane2 option:first").attr("name");
 	console.log ("Personality ID = " + id);
 	$.ajax({
 		type: "GET",
@@ -445,30 +447,45 @@ function posSelected()
 }
 
 function showLookPane () {
-	$('#lookPane2 select').kendoListView ({
-		dataSource: new kendo.data.DataSource ({
-			transport: {
-					read: 
-					{
-						type: "POST",
-						url: "PersonalityServlet?action=get",
-						dataType: "json"
-					}
-			},
-			error: function (xhr) {
-				console.log ("Error in showLookPane: " + xhr.statusCode());
-			}
-		}),
-		template: kendo.template($('#personalitiesTemplate').html())
+	$.ajax({ type: "POST",
+		url: "PersonalityServlet?action=get",
+		dataType: "json"
+	}).done (function (data, textStatus, jqXHR) {
+		for (var i = 0; i < data.length; i++) {
+			var datum = data[i];
+			var template = kendo.template($('#personalitiesTemplate').html());
+			var html = kendo.render (template, [datum]);
+			$("#lookPane2 select").append(html);
+		}
+		// Select first option
+		$('#lookPane2 option:first').prop ("selected", true);
+		$('#lookPane').show();
+		$('#lookPane2').show();
 	});
+	
+	
+//	$('#lookPane2 select').kendoListView ({
+//		dataSource: new kendo.data.DataSource ({
+//			transport: {
+//					read: 
+//					{
+//						type: "POST",
+//						url: "PersonalityServlet?action=get",
+//						dataType: "json"
+//					}
+//			},
+//			error: function (xhr) {
+//				console.log ("Error in showLookPane: " + xhr.statusCode());
+//			}
+//		}),
+//		template: kendo.template($('#personalitiesTemplate').html());
+//	});
 //	$('.selPersonality').on ('click', function (e) {
 //		var persId = $(this).attr('data-id');
 //		$.ajax({
 //			type: GET,
 //		});
 //	});
-	$('#lookPane').show();
-	$('#lookPane2').show();
 }
 
 function handleFiles(files) 
