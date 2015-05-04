@@ -110,6 +110,15 @@ function StyleSet () {
 			style.availableImages = imgs;
 		}
 	};
+	
+	/** Reset transient values in the local style to undefined.
+	 */
+	this.resetTransientStyles = function () {
+		for (var i = 0; i < this.styles.length; i++) {
+			var style = this.styles[i];
+			style.resetTransientValues ();
+		}
+	};
 }
 
 /* The prototype constructor for one field in a Style.
@@ -361,7 +370,7 @@ function Style (styleType, styleSet) {
 			hasControls: false,
 			selectable: false,
 			fontSize: this.getPointSize(),
-			fontFamily: this.getTypeface(),
+			fontFamily: "'" + this.getTypeface() + "'",		// DUBIOUS HACK
 			fill: this.getColor(),
 			left: xpos,
 			top: pos.y,
@@ -856,6 +865,29 @@ function Style (styleType, styleSet) {
 		this.fabricateImage (this.canvas);
 	};
 	
+	
+	/* Reset local values to undefined where they shouldn't be retained over a 
+	 * style change. Keep color and content. */
+	this.resetTransientValues = function () {
+		var ls = this.modelField.localStyle;
+		ls.height = null;
+		ls.width = null;
+		ls.anchor = null;
+		ls.offsetX = null;
+		ls.offsetY = null;
+		ls.typeface = null;
+		ls.pointSize = null;
+		ls.bold = null;
+		ls.italic = null;
+		ls.opacity = null;
+		ls.multiply = null;
+		ls.alignment = null;
+		ls.dropShadowEnabled = null;
+		ls.dropShadowH = null;
+		ls.dropShadowV = null;
+		ls.dropShadowBlur = null;
+		ls.hCenter = null;
+	};
 
 	
 	/* Set displayDims so as to set a masking rectangle, then redraw.

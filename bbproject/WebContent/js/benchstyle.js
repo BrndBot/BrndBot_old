@@ -69,9 +69,8 @@ updateStyle: function (litem) {
 		styleSet = styleSet.copyForDisplay();		// ** will this help things?
 		$('#contentArea').empty();
 		bench.currentPromotion.applyStyleSet (styleSet);
+		styleSet.resetTransientStyles();
 		benchcontent.insertEditFields ( $('#contentArea'));
-		//benchdesign.insertEditFields ( $('#designArea'));
-		//bench.currentPromotion.redraw('finishedImage1');
 		bench.currentPromotion.draw('finishedImage1');
 		var canvas = $('#finishedImage1');
 		var canvasWidth;

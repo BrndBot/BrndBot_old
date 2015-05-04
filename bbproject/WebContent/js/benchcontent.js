@@ -116,6 +116,7 @@ insertEditFields: function (dest) {
 	benchcontent.selectedFieldID = null;
 	benchcontent.collapseUnselectedFields();
 	benchcontent.resizeTextAreas();
+	benchcontent.setTypefaceOptions();
 	benchcontent.setEditFieldHandlers ();
 	dest.show();
 },
@@ -232,6 +233,18 @@ resizeTextAreas: function () {
 	});
 },
 
+/*  Set the initially selected option for each style. We can't do this in
+ *  the template, since there's no HTML attribute in the select element
+ *  to pick the selected field.
+ */
+setTypefaceOptions: function () {
+	$(".selectTypeface").each (function () {
+		var style = benchcontent.elemToLinkedStyle($(this));
+		var typeface = style.getTypeface();
+		$(this).val(typeface);
+	});
+},
+
 /*  Set up click handlers for the edit fields. Change the selection and
  *  expand and collapse appropriately.
  */
@@ -254,7 +267,7 @@ updatePrototypeText: function(tarea) {
 	
     function testForChange() {
     	var style = benchcontent.elemToLinkedStyle(tarea);
-    	if (tarea.value != style.fabricObject.getText()) {
+    	if (style && (tarea.value != style.fabricObject.getText())) {
     		style.setLocalText(tarea.value);
     		style.fabricObject.scale (1.0);		// Reset scale for initial drawing  **** experimental ****
     		style.fabricObject.setText(tarea.value);

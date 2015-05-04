@@ -46,12 +46,6 @@ public class ChannelButtonRenderer extends Renderer {
 				logger.debug ("styleSetMap is null!");
 				// But this might be legitimate; just no stylesets.
 			}
-			/****DEBUG*****/
-			Set<String> keys = styleSetMap.keySet();
-			for (String key : keys) {
-				logger.debug("StyleSetMap key {}", key);
-			}
-			/**** /DEBUG*****/
 			if (styleSetMap != null) {
 				for (StyleSet ss : styleSetMap.values()) {
 					logger.debug ("Checking StyleSet {}", ss.toString());

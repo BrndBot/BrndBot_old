@@ -380,11 +380,10 @@ All rights reserved by Brndbot, Ltd. 2015
 		<div data-linkedfield="#:fieldid#" class="fieldExpander">#:fieldname#</div>
 
 		# if (styleType == 'text') {   #
-                <div class="editTextArea fieldExpander" >
-                        <textarea data-linkedfield="#:fieldid#"
+                <div class="editTextArea fieldExpander" data-linkedfield="#:fieldid#" >
+                        <textarea 
 							onfocus="benchcontent.updatePrototypeText(this)" rows="3" 
-							style="width:98%">#:content#
-						</textarea>
+							style="width:98%">#:content#</textarea>
                 </div>
                 <div class="collapsible">Font size</div>
                 <div class="editTextArea collapsible" >
@@ -394,7 +393,7 @@ All rights reserved by Brndbot, Ltd. 2015
                 </div>
                 <div class="collapsible">
                 	<label>Typeface
-                	<select data-linkedfield="#:fieldid#"
+                	<select class="selectTypeface" data-linkedfield="#:fieldid#"
                 			onchange="benchcontent.updatePrototypeTypeface(this)">
                 		<option value="serif" selected>Serif</option>
                 		<option value="sans-serif">Sans Serif</option>

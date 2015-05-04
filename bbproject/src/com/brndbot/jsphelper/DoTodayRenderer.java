@@ -1,5 +1,6 @@
 package com.brndbot.jsphelper;
 
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -86,9 +87,17 @@ import com.brndbot.promo.Client;
 		catButton.setAttribute ("onmouseout", "homejs.showNormalImage(this);");
 		Element buttonImage = new Element ("img");
 		buttonImage.setAttribute ("alt", "Promote " + cat);
-		buttonImage.setAttribute ("src", "ModelButtonServlet?category=" + cat);
-		buttonImage.setAttribute ("data-normalsrc", "ModelButtonServlet?category=" + cat);
-		buttonImage.setAttribute ("data-hoversrc", "ModelButtonServlet?hover=y&category=" + cat);
+		String encodedCat;
+		try {
+			encodedCat = URLEncoder.encode (cat, "UTF-8");
+		}
+		catch (Exception e) {
+			logger.error ("URL encoding error");
+			return null;
+		}
+		buttonImage.setAttribute ("src", "ModelButtonServlet?category=" + encodedCat);
+		buttonImage.setAttribute ("data-normalsrc", "ModelButtonServlet?category=" + encodedCat);
+		buttonImage.setAttribute ("data-hoversrc", "ModelButtonServlet?hover=y&category=" + encodedCat);
 		catButton.addContent (buttonImage);
 		buttonTD.addContent (catButton);
 		buttonTR.addContent (buttonTD);
