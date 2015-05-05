@@ -34,9 +34,10 @@ All rights reserved by Brndbot, Ltd. 2015
 %>
 
 <head>
+	<link href="css/fonts.css" rel="stylesheet">
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 	<!-- TODO generate font links dynamically -->
-	<link href='http://fonts.googleapis.com/css?family=Fjalla+One|Slabo+27px|Oleo+Script|Oswald:400,300,700' rel='stylesheet' type='text/css'>    
+	<link href='http://fonts.googleapis.com/css?family=Fjalla+One|Oleo+Script|Oswald:400,300,700' rel='stylesheet' type='text/css'>    
 
     <title>Brndbot Builder</title>
     <meta charset="utf-8">
