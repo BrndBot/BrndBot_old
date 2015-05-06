@@ -267,16 +267,17 @@ updatePrototypeText: function(tarea) {
 	
     function testForChange() {
     	var style = benchcontent.elemToLinkedStyle(tarea);
-    	if (style && (tarea.value != style.fabricObject.getText())) {
+    	if (style && (tarea.value != style.getFabricText())) {
     		style.setLocalText(tarea.value);
-    		style.fabricObject.scale (1.0);		// Reset scale for initial drawing  **** experimental ****
-    		style.fabricObject.setText(tarea.value);
-    		console.log ("bounding box width: " + style.fabricObject.getBoundingRectWidth());
-    		console.log ("text width: " + style.fabricObject.getWidth());
+    		//style.fabricObject.scale (1.0);		// Reset scale for initial drawing  **** experimental ****
+    		style.setFabricText(tarea.value);
+    		style.adjustFabricText (bench.currentPromotion);
+    		console.log ("bounding box width: " + style.getFabricBoundingRectWidth());
+    		console.log ("text width: " + style.getFabricWidth());
     		
     		/***** EXPERIMENTAL CODE *******/
     		//benchcontent.makeTextFit(style);
-    		bench.currentPromotion.canvas.renderAll();
+    		bench.currentPromotion.render();
     	}
     }
 
@@ -293,16 +294,14 @@ updatePrototypeText: function(tarea) {
 },
 
 makeTextFit: function (style) {
-	var drawnWidth = style.fabricObject.getWidth();
+	var drawnWidth = style.getFabricWidth();
 	var styleWidth = style.getWidth ();
 	if (drawnWidth > styleWidth) {
-		style.fabricObject.scale (styleWidth / drawnWidth);
+		style.setFabricScale (styleWidth / drawnWidth);
 	}
 },
 
 updatePrototypePointSize: function(tarea) {
-
-	//benchcontent.highlightTextArea(tarea);
 
 	function testForChange() {
     	if (!isNaN (tarea.value)) {
@@ -310,11 +309,11 @@ updatePrototypePointSize: function(tarea) {
     		var newsize = Number(tarea.value);
     		if (newsize != style.getPointSize ()) {
     			var pointSize = Number (tarea.value);
-    			style.fabricObject.scale (1.0);
+    			style.setFabricScale (1.0);
     			style.setLocalPointSize (pointSize);
-    			style.fabricObject.setFontSize(pointSize);
+    			style.setFabricFontSize(pointSize);
     			//benchcontent.makeTextFit(style);
-    			bench.currentPromotion.canvas.renderAll();
+    			bench.currentPromotion.render();
     		}
     	}
     }
@@ -333,7 +332,7 @@ updatePrototypePointSize: function(tarea) {
  * ColorSelector */
 setColor: function (style, color ) {
 	style.setLocalColor (color);
-	style.fabricObject.fill = color;
+	style.setFabricFill (color);
 	var fieldid = style.positionInStyleSet().toString();
 	var btn = $(".colorSelectButton[data-linkedfield='" + fieldid + "']");
 	btn.css("background-color", color);
@@ -346,8 +345,8 @@ updatePrototypeItalic: function (cbox) {
    	var nowChecked = $(cbox).prop('checked');
    	if (nowChecked != style.isItalic()) {
    		style.setLocalItalic(nowChecked);
-   		style.fabricObject.setFontStyle (nowChecked ? "italic" : "normal");
-		bench.currentPromotion.canvas.renderAll();
+   		style.setFabricFontStyle (nowChecked ? "italic" : "normal");
+		bench.currentPromotion.render();
    	}
 },
 
@@ -357,8 +356,8 @@ updatePrototypeBold: function (cbox) {
    	var nowChecked = $(cbox).prop('checked');
    	if (nowChecked != style.isBold()) {
    		style.setLocalBold(nowChecked);
-   		style.fabricObject.setFontWeight (nowChecked ? "bold" : "normal");
-		bench.currentPromotion.canvas.renderAll();
+   		style.setFabricFontWeight (nowChecked ? "bold" : "normal");
+		bench.currentPromotion.render();
 	}
 },
 
@@ -379,7 +378,7 @@ updatePrototypeDropShadow: function (cbox) {
 //		style.setLocalDropShadowV(dsv.val());
 //		style.setLocalDropShadowBlur(dsb.val());
 		style.updateDropShadow();
-		bench.currentPromotion.canvas.renderAll();
+		bench.currentPromotion.render();
 	}
 	else {
 		dsh.prop('disabled', true);
@@ -388,7 +387,7 @@ updatePrototypeDropShadow: function (cbox) {
 		
 		style.setLocalDropShadowEnabled (false);
 		style.updateDropShadow();
-		bench.currentPromotion.canvas.renderAll();
+		bench.currentPromotion.render();
 	}
 },
 
@@ -401,7 +400,7 @@ updatePrototypeDropShadow: function (cbox) {
 //    		if (h >= 0) {
 //    			style.setLocalDropShadowH (h);
 //    			style.updateDropShadow();
-//    			bench.currentPromotion.canvas.renderAll();
+//    			bench.currentPromotion.render();
 //    		}
 //    	}
 //    }
@@ -421,7 +420,7 @@ updatePrototypeDropShadow: function (cbox) {
 //    		if (v >= 0) {
 //    			style.setLocalDropShadowV (v);
 //    			style.updateDropShadow();
-//    			bench.currentPromotion.canvas.renderAll();
+//    			bench.currentPromotion.render();
 //    		}
 //    	}
 //    }
@@ -440,7 +439,7 @@ updatePrototypeDropShadow: function (cbox) {
 //    		if (b >= 0) {
 //    			style.setLocalDropShadowBlur (b);
 //    			style.updateDropShadow();
-//    			bench.currentPromotion.canvas.renderAll();
+//    			bench.currentPromotion.render();
 //    		}
 //    	}
 //    }
@@ -459,8 +458,8 @@ updatePrototypeTypeface: function (sel) {
    	var currentTypeface = style.getTypeface();
    	if (typeface != currentTypeface) {
    		style.setLocalTypeface (typeface);
-   		style.fabricObject.setFontFamily (typeface);
-		bench.currentPromotion.canvas.renderAll();
+   		style.setFabricFontFamily (typeface);
+		bench.currentPromotion.render();
    	}
 },
 
@@ -473,8 +472,8 @@ updateXPos: function(tarea) {
     		if (newpos != style.getX ()) {
     			style.setLocalX(Number (tarea.value));
     			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			style.fabricObject.setLeft(Number(style.getX()));
-    			bench.currentPromotion.canvas.renderAll();
+    			style.setFabricLeft(Number(style.getX()));
+    			bench.currentPromotion.render();
     		}
     	}
     	else {
@@ -499,9 +498,8 @@ updateYPos: function(tarea) {
     		var newpos = Number(tarea.value);
     		if (newpos != style.getY ()) {
     			style.setLocalY(Number (tarea.value));
-    			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			style.fabricObject.setTop(Number(style.getY()));
-    			bench.currentPromotion.canvas.renderAll();
+    			style.setFabricTop(Number(style.getY()));
+    			bench.currentPromotion.render();
     		}
     	}
     	else {
@@ -525,9 +523,8 @@ updateWidth: function(tarea) {
     		var newwid = Number(tarea.value);
     		if (newwid != style.getWidth ()) {
     			style.setLocalWidth(Number (tarea.value));
-    			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			style.fabricObject.setWidth(Number(style.getWidth()));
-    			bench.currentPromotion.canvas.renderAll();
+    			style.setFabricWidth(Number(style.getWidth()));
+    			bench.currentPromotion.render();
     		}
     	}
     	else {
@@ -552,9 +549,8 @@ updateHeight: function(tarea) {
     		var newht = Number(tarea.value);
     		if (newht != style.getHeight ()) {
     			style.setLocalHeight(Number (tarea.value));
-    			//TODO this assumes a top left anchor. Need to adjust for the various cases.
-    			style.fabricObject.setHeight(Number(style.getHeight()));
-    			bench.currentPromotion.canvas.renderAll();
+    			style.setFabricHeight(Number(style.getHeight()));
+    			bench.currentPromotion.render();
     		}
     	}
     	else {
@@ -572,15 +568,15 @@ updateHeight: function(tarea) {
 
 highlightTextArea: function (tarea) {
 	var style = benchcontent.elemToLinkedStyle(tarea);
-	style.fabricObject.setBackgroundColor('#C0C0C0');
-	bench.currentPromotion.canvas.renderAll();
+	style.setFabricBackgroundColor('#C0C0C0');
+	bench.currentPromotion.render();
 	
 },
 
 unhighlightTextArea: function(tarea) {
 	var style = benchcontent.elemToLinkedStyle(tarea);
-	style.fabricObject.setBackgroundColor('');
-	bench.currentPromotion.canvas.renderAll();
+	style.setFabricBackgroundColor('');
+	bench.currentPromotion.render();
 },
 
 cropper: null,
@@ -646,7 +642,7 @@ applyCrop: function (coords) {
 	styl.drawToMask (cropx, cropy, cropw, croph);
 	
 	
-	bench.currentPromotion.canvas.renderAll();
+	bench.currentPromotion.render();
 },
 
 galleryTarget: null,
@@ -731,7 +727,7 @@ useClickedImage: function (btn) {
 	style.setLocalImageID(id);
 	$("#imagePickerHolder").hide();
 	$("#promoViewHolder").show();
-	bench.currentPromotion.canvas.renderAll();
+	bench.currentPromotion.render();
 	$("#galleryBenchHeader").hide();
 	$("#normalBenchHeader").show();
 	$("#cancelGalleryPane").hide();

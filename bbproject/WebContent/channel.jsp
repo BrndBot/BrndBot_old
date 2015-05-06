@@ -20,11 +20,13 @@
 <c:set var="channel_email" value ="<%= ChannelEnum.CH_EMAIL.getValue() %>" scope="page"/>
 <c:set var="channel_facebook" value ="<%= ChannelEnum.CH_FACEBOOK.getValue() %>" scope="page"/>
 <c:set var="channel_twitter" value ="<%= ChannelEnum.CH_TWITTER.getValue() %>" scope="page"/>
+<c:set var="channel_print" value ="<%= ChannelEnum.CH_PRINT.getValue() %>" scope="page"/>
 
 <script type="text/javascript">
 	var EMAIL_CHANNEL = ${channel_email};
 	var FACEBOOK_CHANNEL = ${channel_facebook};
 	var TWITTER_CHANNEL = ${channel_twitter};
+	var PRINT_CHANNEL = ${channel_print};
 </script>
 
 <%

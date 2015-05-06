@@ -483,6 +483,9 @@ var bench = {
 			  case TWITTER_CHANNEL:
 				  window.location.assign ("submittwitter.jsp");
 				  break;
+			  case PRINT_CHANNEL:
+				  window.location.assign ("submit.jsp");
+				  break;
 			  default:
 				  window.location.assign ("submit.jsp");
 			  	  break;

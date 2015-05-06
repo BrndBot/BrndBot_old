@@ -159,7 +159,7 @@ function Promotion (model, styleSet) {
 		}
 	};
 	
-	/* Redrawz a Promotion. */
+	/* Redraw a Promotion. */
 	this.redraw = function (location) {
 		var styles = this.styleSet.styles;
 		var len = styles.length;
@@ -169,6 +169,11 @@ function Promotion (model, styleSet) {
 			this.fabricObject = null;
 			this.draw (location);
 		}	
+	};
+	
+	/* Re-render the canvas. */
+	this.render = function () {
+		this.canvas.renderAll();
 	};
 	
 	// Export the Promotion as a data URL

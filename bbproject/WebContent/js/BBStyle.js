@@ -393,7 +393,14 @@ function Style (styleType, styleSet) {
 		this.fabricObject = text;
 		canvas.add(text);
 		canvas.moveTo(text, this.index);
-		console.log ("bounding box width: " + text.getBoundingRectWidth());
+		var bRectWidth = text.getBoundingRectWidth();
+		if (this.hCenter) {
+			// Reposition to center and redraw
+			xpos += (this.getWidth() - bRectWidth) / 2;
+			text.left = xpos;
+			text.width = bRectWidth;
+			text.render(canvas.getContext());
+		}
 		console.log ("text width: " + text.getWidth());
 	};
 
@@ -582,6 +589,11 @@ function Style (styleType, styleSet) {
 		this.modelField.localStyle.text = txt;
 	};
 	
+	/* Get the actual text in the fabric object. */
+	this.getFabricText = function () {
+		return this.fabricObject ? this.fabricObject.getText() : "";
+	};
+	
 	this.isBold = function () {
 		return (this.modelField.localStyle.bold !== null) ? this.modelField.localStyle.bold : this.bold;
 	};
@@ -605,6 +617,8 @@ function Style (styleType, styleSet) {
 	this.setLocalPointSize  = function (n) {
 		this.modelField.localStyle.pointSize = n;
 	};
+	
+
 	
 	this.getTypeface = function () {
 		return this.modelField.localStyle.typeface ? this.modelField.localStyle.typeface : this.typeface;
@@ -888,6 +902,90 @@ function Style (styleType, styleSet) {
 		ls.hCenter = null;
 	};
 
+	/***** FUNCTIONS THAT DIRECTLY AFFECT THE CANVAS *****/
+	
+	/* Set the drawing text. */
+	this.setFabricText = function (s) {
+		var text = this.fabricObject;
+		text.setText (s);
+	};
+	
+	/* This bit is necessary to handle centering after setFabricText */
+	this.adjustFabricText = function (promo) {
+		
+		var text = this.fabricObject;
+		var bRectWidth = text.getBoundingRectWidth();
+		var xpos = this.getPosition().x;
+		if (this.hCenter) {
+			// Reposition to center and redraw
+			xpos += (this.getWidth() - bRectWidth) / 2;
+			text.left = xpos;
+			text.width = bRectWidth;
+			text.render(promo.canvas.getContext());
+		}
+	};
+	
+	/* Set the font size in the drawing object */
+	this.setFabricFontSize = function (n) {
+		this.fabricObject.setFontSize (n);
+	};
+	
+	/* Set the drawing scale. */
+	this.setFabricScale = function (sc) {
+		this.fabricObject.scale (sc);
+	};
+	
+	/* Set the fill color. */
+	this.setFabricFill = function (f) {
+		this.fabricObject.fill = f;
+	};
+	
+	/* Set the font style. Usual arguments will be "italic" or "normal". */
+	this.setFabricFontStyle = function (s) {
+		this.fabricObject.setFontStyle (s);
+	};
+	
+	/* Set the font weight. */
+	this.setFabricFontWeight = function (w) {
+		this.fabricObject.setFontWeight (w);
+	};
+	
+	/* Set the font family. */
+	this.setFabricFontFamily = function (ff) {
+		this.fabricObject.setFontFamily (ff);
+	};
+	
+	/* Set left boundary. */
+	this.setFabricLeft = function (n) {
+		this.fabricObject.setLeft (n);
+	};
+	
+	this.setFabricTop = function (n) {
+		this.fabricObject.setTop (n);
+	};
+	
+	this.setFabricWidth = function (n) {
+		this.fabricObject.setWidth (n);
+	};
+	
+	this.setFabricHeight = function (n) {
+		this.fabricObject.setHeight (n);
+	};
+	
+	this.setFabricBackgroundColor = function (c) {
+		this.fabricObject.setBackgroundColor (c);
+	};
+	
+	/* Fabric object getters */
+	
+	this.getFabricWidth = function () {
+		return this.fabricObject.getWidth();
+	};
+	
+	this.getFabricBoundingRectWidth = function () {
+		return this.fabricObject.getBoundingRectWidth();
+	}
+	
 	
 	/* Set displayDims so as to set a masking rectangle, then redraw.
 	 * 

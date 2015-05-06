@@ -148,51 +148,6 @@ prototypes to select, and the user picks one for processing in the editor (bench
 
 					</div>  <!-- end listBackground -->
 				</div>
-
-				<div id="channelJsp" style="display:none;">
-					<div class="spaceMe">
-						<div style="text-align:left;">
-							<div class="formHeader formSpacer">
-								Okay, and how would you like to promote<br />
-								this <span id="chanTypeContent">class</span> today?
-							</div>
-							<div class="formLabelFor formSpacer" style="font-variant: normal;">
-								Choose the type of message you'd like to send.
-							</div>
-						</div>
-					</div>
-					<div style="text-align:center;">
-						<div id="chanEmailBadge" class="homeBadge">
-							<div>
-								<img src="images/home/email.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Create Email
-							</div>
-						</div>
-					
-<!--						<div id="chanTwitterBadge" class="homeBadge">
-							<div>
-								<img src="images/home/twitter.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Create Tweet
-							</div>
--->
-						</div>
-						<div id="chanFacebookBadge" class="homeBadge">
-							<div>
-								<img src="images/home/facebook.png" alt="" />
-							</div>
-							<div class="badgePrompt">
-								Create Post
-							</div>
-						</div>
-					</div>
-					<div style="clear:both">&nbsp;</div>
-				</div>
-				<!--  END channelJsp -->
-
 			</div>
 		</div>
 	</div>

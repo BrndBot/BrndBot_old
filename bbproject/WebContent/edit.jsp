@@ -384,6 +384,7 @@ All rights reserved by Brndbot, Ltd. 2015
                 <div class="editTextArea fieldExpander" data-linkedfield="#:fieldid#" >
                         <textarea 
 							onfocus="benchcontent.updatePrototypeText(this)" rows="3" 
+							data-linkedfield="#:fieldid#"
 							style="width:98%">#:content#</textarea>
                 </div>
                 <div class="collapsible">Font size</div>
