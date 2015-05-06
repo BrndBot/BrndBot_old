@@ -365,12 +365,11 @@ function Style (styleType, styleSet) {
 		else if (alignment == "center")
 			xpos = pos.x + this.getWidth() / 2;
 		
-		// TODO replace this with Textbox when it becomes available in fabric.js
 		var text = new fabric.Text(this.getText(), {
 			hasControls: false,
 			selectable: false,
+			fontFamily: this.getTypeface(),
 			fontSize: this.getPointSize(),
-			fontFamily: "'" + this.getTypeface() + "'",		// DUBIOUS HACK
 			fill: this.getColor(),
 			left: xpos,
 			top: pos.y,

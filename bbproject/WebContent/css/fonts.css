@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+/* Google calls this Slabo 27px, which greatly confuses canvas. We grab their
+   declaration and change the name to Slabo. */
+@font-face {
+  font-family: 'Slabo';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Slabo 27px'), local('Slabo27px-Regular'), url(https://fonts.gstatic.com/s/slabo27px/v3/PuwvqkdbcqU-fCZ9Ed-b7QzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2'), url(https://fonts.gstatic.com/s/slabo27px/v3/PuwvqkdbcqU-fCZ9Ed-b7b3hpw3pgy2gAi-Ip7WPMi0.woff) format('woff');
+}
