@@ -36,7 +36,9 @@ public class AvailableFontRenderer extends Renderer {
 			StringBuilder sb = new StringBuilder();
 			for (String font : fonts) {
 				logger.debug ("Adding font {}", font);
-				sb.append ("<option value='");
+				sb.append ("<option style='font-family:");
+				sb.append (font);		// TODO do I need to change spaces to +s?
+				sb.append ("' value='");
 				sb.append (font);
 				sb.append ("'>");
 				sb.append (prettify(font));

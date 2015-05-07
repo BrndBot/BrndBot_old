@@ -312,7 +312,7 @@ updatePrototypePointSize: function(tarea) {
     			style.setFabricScale (1.0);
     			style.setLocalPointSize (pointSize);
     			style.setFabricFontSize(pointSize);
-    			//benchcontent.makeTextFit(style);
+        		style.adjustFabricText (bench.currentPromotion);
     			bench.currentPromotion.render();
     		}
     	}
@@ -346,6 +346,7 @@ updatePrototypeItalic: function (cbox) {
    	if (nowChecked != style.isItalic()) {
    		style.setLocalItalic(nowChecked);
    		style.setFabricFontStyle (nowChecked ? "italic" : "normal");
+		style.adjustFabricText (bench.currentPromotion);
 		bench.currentPromotion.render();
    	}
 },
@@ -357,39 +358,37 @@ updatePrototypeBold: function (cbox) {
    	if (nowChecked != style.isBold()) {
    		style.setLocalBold(nowChecked);
    		style.setFabricFontWeight (nowChecked ? "bold" : "normal");
+		style.adjustFabricText (bench.currentPromotion);
 		bench.currentPromotion.render();
 	}
 },
 
-updatePrototypeDropShadow: function (cbox) {
-	var style = benchcontent.elemToLinkedStyle(cbox);
-	var nowChecked = $(cbox).prop('checked');
-	var table = $(cbox).closest('table');
-	var dsh = table.find('.dsh');
-	var dsv = table.find('.dsv');
-	var dsb = table.find('.dsb');
-	if (nowChecked) {
-		// Checking it merely enables the specific controls
-		table.find('.dsh').prop('disabled', false);
-		table.find('.dsv').prop('disabled', false);
-		table.find('.dsb').prop('disabled', false);
-		style.setLocalDropShadowEnabled (true);
-//		style.setLocalDropShadowH(dsh.val());
-//		style.setLocalDropShadowV(dsv.val());
-//		style.setLocalDropShadowBlur(dsb.val());
-		style.updateDropShadow();
-		bench.currentPromotion.render();
-	}
-	else {
-		dsh.prop('disabled', true);
-		dsv.prop('disabled', true);
-		dsb.prop('disabled', true);
-		
-		style.setLocalDropShadowEnabled (false);
-		style.updateDropShadow();
-		bench.currentPromotion.render();
-	}
-},
+//updatePrototypeDropShadow: function (cbox) {
+//	var style = benchcontent.elemToLinkedStyle(cbox);
+//	var nowChecked = $(cbox).prop('checked');
+//	var table = $(cbox).closest('table');
+//	var dsh = table.find('.dsh');
+//	var dsv = table.find('.dsv');
+//	var dsb = table.find('.dsb');
+//	if (nowChecked) {
+//		// Checking it merely enables the specific controls
+//		table.find('.dsh').prop('disabled', false);
+//		table.find('.dsv').prop('disabled', false);
+//		table.find('.dsb').prop('disabled', false);
+//		style.setLocalDropShadowEnabled (true);
+//		style.updateDropShadow();
+//		bench.currentPromotion.render();
+//	}
+//	else {
+//		dsh.prop('disabled', true);
+//		dsv.prop('disabled', true);
+//		dsb.prop('disabled', true);
+//		
+//		style.setLocalDropShadowEnabled (false);
+//		style.updateDropShadow();
+//		bench.currentPromotion.render();
+//	}
+//},
 
 //updatePrototypeDropShadowH: function (input) {
 //	

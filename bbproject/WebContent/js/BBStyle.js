@@ -379,7 +379,8 @@ function Style (styleType, styleSet) {
 			height: this.getHeight(),
 			fontWeight: weight,
 			fontStyle: fstyle,
-			textAlign: alignment
+			textAlign: alignment,
+			textExtension: new TextExtension (this)
 		});
 		
 		if (this.hasDropShadow ()) {
@@ -393,15 +394,22 @@ function Style (styleType, styleSet) {
 		this.fabricObject = text;
 		canvas.add(text);
 		canvas.moveTo(text, this.index);
-		var bRectWidth = text.getBoundingRectWidth();
+		this.prepareFabricText (text);
+		var bRectWidth = text.getBoundingRect().width;
+
 		if (this.hCenter) {
 			// Reposition to center and redraw
 			xpos += (this.getWidth() - bRectWidth) / 2;
 			text.left = xpos;
 			text.width = bRectWidth;
+		}
+		if (bRectWidth > text.width) {
+			this.wrapText();
+			this.canvas.renderAll();		// needed to get rid of old text
+		}
+		else {
 			text.render(canvas.getContext());
 		}
-		console.log ("text width: " + text.getWidth());
 	};
 
 	this.fabricateBlock = function  (canvas) {
@@ -910,11 +918,11 @@ function Style (styleType, styleSet) {
 		text.setText (s);
 	};
 	
-	/* This bit is necessary to handle centering after setFabricText */
+	/* This bit is necessary to handle centering and wrapping after setFabricText */
 	this.adjustFabricText = function (promo) {
 		
 		var text = this.fabricObject;
-		var bRectWidth = text.getBoundingRectWidth();
+		var bRectWidth = text.getBoundingRect().width;
 		var xpos = this.getPosition().x;
 		if (this.hCenter) {
 			// Reposition to center and redraw
@@ -923,11 +931,13 @@ function Style (styleType, styleSet) {
 			text.width = bRectWidth;
 			text.render(promo.canvas.getContext());
 		}
+		this.wrapText();
 	};
 	
 	/* Set the font size in the drawing object */
 	this.setFabricFontSize = function (n) {
 		this.fabricObject.setFontSize (n);
+		this.fabricObject.textExtension.fontSize = n;
 	};
 	
 	/* Set the drawing scale. */
@@ -983,7 +993,7 @@ function Style (styleType, styleSet) {
 	};
 	
 	this.getFabricBoundingRectWidth = function () {
-		return this.fabricObject.getBoundingRectWidth();
+		return this.fabricObject.getBoundingRect().width;
 	}
 	
 	
@@ -1054,8 +1064,6 @@ function Style (styleType, styleSet) {
 		
 		this.displayDims.x = pos.x - maskX;
 		this.displayDims.y = pos.y - maskY;
-		
-		//this.fabricateImage(this.canvas);
 	};
 
 
@@ -1108,4 +1116,74 @@ function Style (styleType, styleSet) {
 		}
 		return null;
 	};
+	
+	/* Call this before drawing or redrawing a fabric.Text object 
+	 * property to make it draw according to its textExtension
+	 * property.
+	 */
+	this.prepareFabricText = function () {
+		var fabtext = this.fabricObject;
+		var ext = fabtext.textExtension;
+		if (ext) {
+			fabtext.setText (ext.wrappedText);
+			fabtext.setFontSize (ext.fontSize);
+		}
+	};
+	
+	/* Wrap a text Style. */
+	this.wrapText = function () {
+		var styleWidth = this.getWidth();
+		// Don't wrap on pathologically narrow fields or huge point sizes
+		if (this.getPointSize() * 2 > styleWidth)
+			return;
+		var textTokens = this.getText().split(/( +|\n)/);
+		// This split will put spaces and newlines in their own tokens. 
+		// multiple spaces will become one token, but each newline will be its
+		// own token. 
+
+		// Now we build a string one token at a time, and check its width at
+		// each point. Whenever we find that the width exceeds the box, 
+		// we take the last token away and append a newline. 
+		var tokidx = 0;
+		var fabtext = this.fabricObject;
+		var textExt = fabtext.textExtension;
+		textExt.wrappedText = "";
+		var singleWordLine = false;
+		for (;;) {
+			var oldWrappedText = textExt.wrappedText;
+			textExt.wrappedText += textTokens[tokidx];
+			this.prepareFabricText();
+			var wid = fabtext.getBoundingRect().width;
+			if (!singleWordLine && wid > styleWidth) {
+				// back up
+				textExt.wrappedText = oldWrappedText + "\n";
+				singleWordLine = true;
+				// We need to allow a single word that's too long through,
+				// or the wrapping algorithm will loop.
+				// TODO The shadow of the overlong line hangs over everything, so
+				// this doesn't work right. Should probably split or truncate the
+				// word in such cases.
+			}
+			else {
+				tokidx++;
+				singleWordLine = false;
+				if (tokidx >= textTokens.length)
+					break;
+			}
+		}
+	};
+	
+
+}
+
+
+
+/* Add a TextExtension as a property of a fabric.Text instance to add a level
+ * of management.
+ */
+function TextExtension (styl) {
+	/* Text with line breaks added to wrap */
+	this.wrappedText = styl.getText();
+	/* Size of actual drawing, <= style size */
+	this.fontSize = styl.getPointSize();
 }
