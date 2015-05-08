@@ -97,8 +97,18 @@ public class ModelButtonServlet extends HttpServlet {
 			logger.error ("BrndbotException in returnCategoryButton: {}", e.getMessage());
 		}
 		catch (IOException e) {
-			logger.debug ("Button image not found");
-			response.setStatus (HttpServletResponse.SC_NOT_FOUND);	
+			// Use default image if we couldn't get the specific one
+			try {
+				String redirectURL;
+				if (hover)
+					redirectURL = "images/DefaultCategoryBtnHover.png";
+				else
+					redirectURL = "images/DefaultCategoryBtn.png";
+				response.sendRedirect(redirectURL);
+			}
+			catch (Exception ee) {
+				response.setStatus (HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
 			return;
 		}
 		finally {

@@ -1154,22 +1154,45 @@ function Style (styleType, styleSet) {
 			textExt.wrappedText += textTokens[tokidx];
 			this.prepareFabricText();
 			var wid = fabtext.getBoundingRect().width;
-			if (!singleWordLine && wid > styleWidth) {
-				// back up
-				textExt.wrappedText = oldWrappedText + "\n";
-				singleWordLine = true;
-				// We need to allow a single word that's too long through,
-				// or the wrapping algorithm will loop.
-				// TODO The shadow of the overlong line hangs over everything, so
-				// this doesn't work right. Should probably split or truncate the
-				// word in such cases.
+			if (wid > styleWidth) {
+				if (!singleWordLine) {
+					// back up
+					textExt.wrappedText = oldWrappedText + "\n";
+					singleWordLine = true;
+				}
+				else {
+					// The line has just one word, and it doesn't fit.
+					// Split the word with a line break, working end to
+					// beginning, until it fits. If we can't get in even
+					// one letter, then forget wrapping altogether.
+					var holdText = textExt.wrappedText;
+					var fixedit = false;
+					for (var i = holdText.length; i >= oldWrappedText.length; --i) {
+						textExt.wrappedText = holdText.substring (0, i) +
+							"\n" +
+							holdText.substring (i);
+						this.prepareFabricText();
+						wid = fabtext.getBoundingRect().width;
+						if (wid <= styleWidth) {
+							fixedit = true;
+							tokidx++;
+							break;
+						}
+					}
+					// If we couldn't do anything, just punt the whole wrapping thing.
+					if (!fixedit) {
+						textExt.wrappedText = this.getText();
+						this.prepareFabricText();
+						return;
+					}
+				}
 			}
 			else {
 				tokidx++;
 				singleWordLine = false;
-				if (tokidx >= textTokens.length)
-					break;
 			}
+			if (tokidx >= textTokens.length)
+				break;
 		}
 	};
 	

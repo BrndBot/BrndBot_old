@@ -127,20 +127,6 @@
 	padding-left: 2.1875rem;
 }
 
-.viewClassesIcon {
-	background-image: url("/images/Classes_Small_White.png");
-	background-position: 0 0rem;
-}
-
-.viewWorkshopsIcon {
-	background-image: url("/images/Workshops_Small_White.png");
-	background-position: 0 0rem;
-}
-
-.viewTeachersIcon {
-	background-image: url("/images/Teacher_small_White.png");
-	background-position: 0 0rem;
-}
 
 /* template styles */
 .listItem
